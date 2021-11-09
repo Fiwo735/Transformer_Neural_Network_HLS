@@ -1,0 +1,120 @@
+{% extends "graph.xml.jinja" %}
+
+{# Properties #}
+{% block properties %}
+<Scalar name="max_t" type="uint32_t"/>
+{% endblock %}
+
+{# MessageTypes #}
+{% block messageTypes %}
+<MessageType id="synapse">
+      <Message>
+        <Scalar name="fired" type="int8_t"/>
+      </Message>
+</MessageType>
+{% endblock %}
+
+{# DeviceTypes #}
+{% block deviceTypes %}
+<DeviceType id="neuron">
+    <Properties>
+        <Scalar name="seed" type="uint32_t"/>
+        <Scalar name="a" type="float" default="0.0"/>
+        <Scalar name="b" type="float" default="0.0"/>
+        <Scalar name="c" type="float" default="0.0"/>
+        <Scalar name="d" type="float" default="0.0"/>
+        <Scalar name="Ir" type="float"/>
+        <Scalar name="fanin" type="uint32_t"/>
+    </Properties>
+    <State>
+        <Scalar name="rng" type="uint32_t"/>
+        <Scalar name="u" type="float"/>
+        <Scalar name="v" type="float"/>
+        <Scalar name="I" type="float"/>
+        <Scalar name="Icount" type="uint32_t"/>
+        <Scalar name="pendingFires" type="uint32_t"/>
+        <Scalar name="rts" type="uint32_t"/>
+        <Scalar name="t" type="uint32_t"/>
+    </State>
+    <OnInit>
+    <![CDATA[
+        deviceState->rng = deviceProperties->seed;
+
+        deviceState->v=-65;
+        deviceState->u=deviceProperties->b * deviceState->v;
+
+        deviceState->I=deviceProperties->Ir * grng(deviceState->rng);
+        deviceState->Icount=0;
+
+        deviceState->pendingFires=1;
+        
+        deviceState->rts = RTS_FLAG_fire; 
+    ]]>
+    </OnInit>
+    <InputPin name="input" messageTypeId="synapse">
+        <Properties>
+            <Scalar name="weight" type="float"/>
+        </Properties>
+        <OnReceive>
+        <![CDATA[
+                    
+        deviceState->Icount++;
+        if(message->fired){
+            deviceState->I += edgeProperties->weight; // fire at 1, (1 * weight) = weight so just add weight
+        }
+
+        if(deviceState->Icount == deviceProperties->fanin){
+            deviceState->pendingFires++;
+            deviceState->Icount=0;
+        }
+
+        handler_log(3, "Icount = %d, fanin=%d", deviceState->Icount, deviceProperties->fanin);
+                    
+        ]]>
+        </OnReceive>
+    </InputPin>
+    <OutputPin name="fire" messageTypeId="synapse" indexed="false">
+        <OnSend>
+        <![CDATA[
+
+            assert(deviceState->pendingFires > 0);
+
+            float &v=deviceState->v;
+            float &u=deviceState->u;
+            float &I=deviceState->I;
+
+            v+=(0.04*v*v+5*v+140-u+I); // step 1 ms
+            u+=deviceProperties->a*(deviceProperties->b*v-u);                 // stability
+
+            message->fired = v >= 30;
+
+            if(message->fired){
+                handler_log(1, "FIRE! %i", deviceState->t);
+                v=deviceProperties->c;
+                u += deviceProperties->d;
+            }
+
+            deviceState->I=deviceProperties->Ir * grng(deviceState->rng);
+            deviceState->Icount=0;
+
+            deviceState->pendingFires--;
+
+            handler_log(3, "fanin=%d", deviceProperties->fanin);
+
+            deviceState->t++;
+            if(deviceState->t > graphProperties->max_t){
+                *doSend=0;
+                fake_handler_exit(0);
+            }
+
+        ]]>
+        </OnSend>
+    </OutputPin>
+    <ReadyToSend>
+        <![CDATA[
+        *readyToSend = (deviceState->pendingFires > 0) ? RTS_FLAG_fire : 0;
+        ]]>
+    </ReadyToSend>
+</DeviceType>
+{% endblock %}
+

@@ -1,0 +1,15 @@
+<OutputPin name="{{pin.name}}" messageTypeId="{{pin.messageTypeId}}">
+    {%- if pin.properties is not none %}
+    <Properties>
+        {%- for p in pin.properties -%}
+        {% set template = p.template %}
+        {% include template %}
+        {%- endfor %}
+    </Properties>
+    {%- endif %}
+    <OnSend>
+        <![CDATA[
+            {{pin.onSend}}
+        ]]>
+    </OnSend>
+</OutputPin>

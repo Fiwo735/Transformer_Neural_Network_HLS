@@ -1,0 +1,22 @@
+{
+    "learning_rate": 1e-3,
+    "max_learning_rate": 0.5e-3,
+    "batch_size": 128,
+    "num_epochs": 5,
+    
+    "dropout_rate":0.01, 
+    "num_transformers": 3,
+    "embbed_dim": 128,
+    "num_heads": 2,
+    
+    "max_norm": 1,
+    "anneal_start": 0.3,
+    "init_div_factor": 30,
+    "final_div_factor": 10000,
+
+    "save_summary_steps": 2,
+    
+    "train": -1,
+    "val": 20000,
+    "ignore_index": -100
+}

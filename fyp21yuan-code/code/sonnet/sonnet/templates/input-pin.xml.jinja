@@ -1,0 +1,15 @@
+<InputPin name="{{pin.name}}" messageTypeId="{{pin.messageTypeId}}">
+    {%- if pin.properties is not none %}
+    <Properties>
+        {%- for p in pin.properties -%}
+        {% set template = p.template %}
+        {% include template %}
+        {%- endfor %}
+    </Properties>
+    {% endif -%}
+    <OnReceive>
+        <![CDATA[
+            {{pin.onReceive}}
+        ]]>
+    </OnReceive>
+</InputPin>
