@@ -1,0 +1,196 @@
+{% extends "graph.xml.jinja" %}
+
+{# Properties #}
+{% block properties %}
+<Scalar name="max_t" type="uint32_t"/>
+{% endblock %}
+
+{# MessageTypes #}
+{% block messageTypes %}
+<MessageType id="spike">
+        <Message>
+                <Scalar name="fired" type="int8_t"/>
+        </Message>
+</MessageType>
+<MessageType id="tick">
+        <Message>
+                <Scalar name="count" type="uint32_t"/>
+        </Message>
+</MessageType>
+{% endblock %}
+
+{# DeviceTypes #}
+{% block deviceTypes %}
+<DeviceType id="neuron">
+        <Properties>
+                <Scalar name="seed" type="uint32_t"/>
+                <Scalar name="refractory" type="uint32_t" default="0"/> 
+                <Scalar name="a" type="float" default="0.02"/>
+                <Scalar name="b" type="float" default="0.2"/>
+                <Scalar name="v" type="float" default="-62.51231218883935"/>
+                <Scalar name="u" type="float" default="7.93040395636523"/>
+                <Scalar name="Ir" type="float" default="5.0"/>
+                <Scalar name="fanin" type="uint32_t" default="100"/>
+        </Properties>
+        <State>
+                <Scalar name="rng" type="uint32_t"/>
+                <Scalar name="mcount" type="uint32_t"/>
+                <Scalar name="I" type="float"/>
+                <Scalar name="Icount" type="uint32_t"/>
+                <Scalar name="fireValue" type="int8_t"/>
+                <Scalar name="waitTick" type="int8_t"/>
+                <Scalar name="sentSpike" type="int8_t"/>
+                <Scalar name="finishRefractory" type="uint32_t"/>
+                <Scalar name="a" type="float"/>
+                <Scalar name="b" type="float"/>
+                <Scalar name="v" type="float"/>
+                <Scalar name="u" type="float"/>
+                <Scalar name="Ir" type="float"/>
+        </State>
+        <OnInit>
+        <![CDATA[
+                deviceState->rng = deviceProperties->seed;
+
+                deviceState->a = deviceProperties->a; // Set initial a value
+                deviceState->b = deviceProperties->b; // Set initial b value
+                deviceState->v = deviceProperties->v; // Set initial v value
+                deviceState->u = deviceProperties->u; // Set initial u value
+                deviceState->Ir = deviceProperties->Ir; // Set initial Ir value
+                deviceState->v = -65; // Set initial v value
+                deviceState->u = deviceState->v*deviceState->b; // Set initial u value
+
+                deviceState->fireValue=false; // We don't fire in the first round
+
+                deviceState->I=deviceProperties->Ir * grng(deviceState->rng);
+                deviceState->Icount=deviceProperties->fanin;
+                deviceState->waitTick=false;
+                deviceState->sentSpike=true;
+                deviceState->mcount = 0;
+        ]]>
+        </OnInit>
+        <InputPin name="tick" messageTypeId="tick">
+                <OnReceive>
+                        <![CDATA[
+                                deviceState->waitTick=false;
+                        ]]>
+                </OnReceive>
+        </InputPin>
+        <InputPin name="input" messageTypeId="spike">
+                <Properties>
+                        <Scalar name="weight" type="float"/>
+                </Properties>
+                <OnReceive>
+                <![CDATA[
+                        deviceState->Icount++;
+                        if(message->fired){
+                                deviceState->I += edgeProperties->weight;
+                        }
+                ]]>
+                </OnReceive>
+        </InputPin>
+        <OutputPin name="tock" messageTypeId="tick" indexed="false">
+                <OnSend>
+                <![CDATA[
+                        float &a = deviceState->a; // Assign a
+                        float &b = deviceState->b; // Assign b
+                        float &v = deviceState->v; // Assign v
+                        float &u = deviceState->u; // Assign u
+                        float &Ir = deviceState->Ir; // Assign Ir
+                        float &I=deviceState->I;
+
+                        if (deviceState->finishRefractory <= 0) {
+                                v += 0.04 * v * v + 5 * v + 140 - u + 10;
+                                u += a * (b * v - u);
+                        } else {
+                                //handler_log(1, "refractory=%d", deviceState->finishRefractory);
+                        }
+
+                        if (deviceState->finishRefractory > 0) 
+                        {
+                                deviceState->finishRefractory -= 1;
+                        } 
+
+                        message->count=0;
+                        deviceState->fireValue = v >= 30;
+
+                        if(deviceState->fireValue)
+                        {
+                                //deviceState->mcount += 1;
+                                message->count=1;
+                                handler_log(1, "FIRE!");
+                                deviceState->finishRefractory = deviceProperties->refractory;
+                                v = deviceProperties->v;
+                                u += deviceProperties->u;
+                        }
+
+                        deviceState->I=deviceProperties->Ir * grng(deviceState->rng);
+                        //handler_log(1, "rand=%f", deviceState->I/deviceProperties->Ir);
+                        deviceState->Icount=0;
+                        deviceState->sentSpike=false;
+                        deviceState->waitTick=true;
+                ]]>
+                </OnSend>
+        </OutputPin>
+        <OutputPin name="fire" messageTypeId="spike" indexed="false">
+                <OnSend>
+                        <![CDATA[
+                                message->fired=deviceState->fireValue;
+                                deviceState->sentSpike=true;
+                        ]]>
+                </OnSend>
+        </OutputPin>
+        <ReadyToSend>
+                <![CDATA[
+                        *readyToSend=0;
+                        if(deviceState->Icount==deviceProperties->fanin && !deviceState->waitTick && deviceState->sentSpike){
+                                *readyToSend |= RTS_FLAG_tock;
+                        }else if(!deviceState->waitTick && !deviceState->sentSpike){
+                                *readyToSend |= RTS_FLAG_fire;
+                        }
+                ]]>
+        </ReadyToSend>
+</DeviceType>
+<DeviceType id="clock">
+        <Properties>
+                <Scalar name="neuronCount" type="uint32_t"/>
+        </Properties>
+        <State>
+                <Scalar name="waitCount" type="uint32_t"/>
+                <Scalar name="mcount" type="uint32_t"/>
+                <Scalar name="t" type="uint32_t"/>
+        </State>
+        <OnInit>
+                <![CDATA[
+                        deviceState->waitCount = deviceProperties->neuronCount;
+                ]]>
+        </OnInit>
+        <InputPin name="tock" messageTypeId="tick">
+                <OnReceive>
+                        <![CDATA[
+                                deviceState->mcount += message->count;   
+                                deviceState->waitCount--;
+                        ]]>
+                </OnReceive>
+        </InputPin>
+        <OutputPin name="tick" messageTypeId="tick" indexed="false">
+                <OnSend>
+                        <![CDATA[
+                                deviceState->waitCount=deviceProperties->neuronCount;
+                                deviceState->t++;
+                                handler_log(1, "time = %d", deviceState->t);
+                                if(deviceState->t > graphProperties->max_t){
+                                        handler_log(1, "final count = %d", deviceState->mcount);
+                                        *doSend=false;
+                                        fake_handler_exit(0);
+                                }
+                        ]]>
+                </OnSend>
+        </OutputPin>
+        <ReadyToSend>
+                <![CDATA[
+                        *readyToSend = deviceState->waitCount==0 ? RTS_FLAG_tick : 0;
+                ]]>
+        </ReadyToSend>
+</DeviceType>
+{% endblock %}
+

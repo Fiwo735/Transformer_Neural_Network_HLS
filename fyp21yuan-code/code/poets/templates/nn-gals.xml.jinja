@@ -1,0 +1,196 @@
+{% extends "graph.xml.jinja" %}
+
+{# Properties #}
+{% block properties %}
+<Scalar name="batch" type="uint32_t"/>
+{% endblock %}
+
+{# MessageTypes #}
+{% block messageTypes %}
+<MessageType id="synapse">
+    <Documentation>Neuron activation meesage.</Documentation>
+    <Message>
+        <Scalar name="activation" type="float"/>
+        <Scalar name="batch" type="uint32_t"/>
+    </Message>
+</MessageType>
+{% endblock %}
+
+{# DeviceTypes #}
+{% block deviceTypes %}
+<DeviceType id="input">
+    <Properties>
+        <Array name="x" type="float" length="{{batch_size}}"/>
+    </Properties>
+    <State>
+        <Scalar name="rts" type="uint32_t"/>
+    </State>
+    <OnInit>
+    <![CDATA[
+        deviceState->rts=0;
+    ]]>
+    </OnInit>
+    <OutputPin name="fire" messageTypeId="synapse" indexed="false">
+        <OnSend>
+        <![CDATA[
+
+            if (deviceState->rts == graphProperties->batch)
+            {
+                *doSend=false;
+                fake_handler_exit(0);
+            }
+            else
+            {
+                message->batch = deviceState->rts;
+                message->activation = deviceProperties->x[deviceState->rts];
+       
+                deviceState->rts++;
+            }
+   
+        ]]>
+        </OnSend>
+    </OutputPin>
+    <ReadyToSend>
+        <![CDATA[
+            *readyToSend = (deviceState->rts <= graphProperties->batch) ? RTS_FLAG_fire : 0;
+        ]]>
+    </ReadyToSend>
+</DeviceType>
+<DeviceType id="output">
+    <Properties>
+        <Scalar name="fanin" type="uint32_t"/>
+        <Scalar name="b" type="float"/>
+    </Properties>
+    <State>
+        <Array name="z" type="float" length="{{batch_size}}">
+			<Default>{{[0] * batch_size}}</Default>
+		</Array>
+        <Array name="in_count" type="uint32_t" length="{{batch_size}}">
+			<Default>{{[0] * batch_size}}</Default>
+		</Array>
+        <Scalar name="received" type="uint32_t"/>
+    </State>
+    <OnInit>
+    <![CDATA[
+        deviceState->received=0;
+    ]]>
+    </OnInit>
+    <InputPin name="input" messageTypeId="synapse">
+        <Properties>
+            <Scalar name="weight" type="float" default="1.0"/>
+        </Properties>
+        <OnReceive>
+        <![CDATA[
+
+        if(deviceState->received == graphProperties->batch)
+        {
+            fake_handler_exit(0);
+        } else {
+
+            deviceState->z[message->batch] += edgeProperties->weight * message->activation;
+            deviceState->in_count[message->batch]++;
+
+            if(deviceState->in_count[message->batch] == deviceProperties->fanin)
+            {
+                deviceState->received++;
+                deviceState->z[message->batch] += deviceProperties->b;
+                handler_log(1, "Neuron Received: i=%d, z=%f", message->batch, deviceState->z[message->batch]);
+            }
+        
+        }
+            
+        ]]>
+        </OnReceive>
+    </InputPin>
+    <ReadyToSend>
+        <![CDATA[
+            
+        ]]>
+    </ReadyToSend>
+</DeviceType>
+<DeviceType id="neuron">
+    <Properties>
+        <Scalar name="fanin" type="uint32_t"/>
+        <Scalar name="b" type="float"/>
+    </Properties>
+    <State>
+        <Scalar name="received" type="uint32_t"/>
+        <Scalar name="sent" type="uint32_t"/>
+        <Scalar name="rts" type="uint32_t"/>
+        <Array name="rts_queue" type="uint32_t" length="{{batch_size}}">
+			<Default>{{[0] * batch_size}}</Default>
+		</Array>
+        <Array name="z" type="float" length="{{batch_size}}">
+			<Default>{{[0] * batch_size}}</Default>
+		</Array>
+        <Array name="in_count" type="uint32_t" length="{{batch_size}}">
+			<Default>{{[0] * batch_size}}</Default>
+		</Array>
+    </State>
+    <OnInit>
+        <![CDATA[
+            deviceState->received = 0;
+            deviceState->sent = 0;
+            deviceState->rts = 0;
+        ]]>
+    </OnInit>
+    <InputPin name="input" messageTypeId="synapse">
+        <Properties>
+            <Scalar name="weight" type="float"/>
+        </Properties>
+        <OnReceive>
+        <![CDATA[
+
+        if(message->activation)
+        {   
+            deviceState->in_count[message->batch]++;
+            deviceState->z[message->batch] += edgeProperties->weight * message->activation;
+        }
+
+        if(deviceState->in_count[message->batch] == deviceProperties->fanin)
+        {
+            deviceState->rts++;
+            deviceState->rts_queue[deviceState->received] = message->batch;
+            deviceState->received++;
+        }
+
+        // handler_log(1, "Neuron InputPin handler called, in_count=%d, batch=%d, rts=%d, z=%f", deviceState->in_count[message->batch], message->batch, deviceState->rts,  deviceState->z[message->batch]);
+    
+        ]]>
+        </OnReceive>
+    </InputPin>
+    <OutputPin name="fire" messageTypeId="synapse" indexed="false">
+        <OnSend>
+        <![CDATA[
+
+            if(deviceState->sent == graphProperties->batch)
+            {
+                *doSend=false;
+                fake_handler_exit(0);
+            }
+            
+            auto batch_id = deviceState->rts_queue[deviceState->sent];
+            float &z = deviceState->z[batch_id];
+
+            z = z + deviceProperties->b;
+            float a = (z > 0) ? z : 0.0;
+
+            message->batch = batch_id;
+            message->activation = a;
+            
+            deviceState->sent++;
+            deviceState->rts--;
+
+            // handler_log(1, "Neuron Fire: i=%d, x=%f, rts=%d", message->batch, message->activation, deviceState->rts);
+           
+        ]]>
+        </OnSend>
+    </OutputPin>
+    <ReadyToSend>
+        <![CDATA[
+            *readyToSend = (deviceState->rts > 0) ? RTS_FLAG_fire : 0;
+        ]]>
+    </ReadyToSend>
+</DeviceType>
+{% endblock %}
+

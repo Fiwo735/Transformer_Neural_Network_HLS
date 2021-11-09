@@ -1,0 +1,47 @@
+<DeviceType id="{{d.device_id}}">
+    <Properties>
+        {%- if d.properties is not none -%}
+        {%- for p in d.properties %}
+            {% set template = p.template %}
+            {%- include template -%}
+        {% endfor %}
+        {%- endif %}
+    </Properties>
+
+    <State>
+        {%- if d.states is not none -%}
+        {%- for p in d.states %}
+            {% set template = p.template %}
+            {%- include template -%}
+        {% endfor %}
+        {%- endif %}
+    </State>
+
+    <OnInit>
+        <![CDATA[
+            {{ d.onInit }}
+        ]]>
+    </OnInit>
+   
+   {#- Input Pins #}
+    {% for pin in d.inputPins -%}
+    {% set template = pin.template %}
+    {% filter indent(width=4) %}
+        {%- include template -%}
+    {% endfilter %}
+    {%- endfor %}
+    
+    {#- Output Pins #}
+    {% for pin in d.outputPins -%}
+    {% set template = pin.template %}
+    {% filter indent(width=4) %}
+        {%- include template -%}
+    {% endfilter %}
+    {%- endfor %}
+  
+    <ReadyToSend>
+        <![CDATA[
+            {{ d.readyToSend }}
+        ]]>
+    </ReadyToSend>
+</DeviceType>
