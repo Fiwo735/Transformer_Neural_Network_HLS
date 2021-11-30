@@ -1,0 +1,15 @@
+# HLS4ML tutorial repo
+hls4ml_tutorial/model_1
+hls4ml_tutorial/model_2
+hls4ml_tutorial/model_3
+hls4ml_tutorial/pruned_cnn
+hls4ml_tutorial/quantized_pruned_cnn
+hls4ml_tutorial/*.npy
+hls4ml_tutorial/scikit_learn_data
+hls4ml_tutorial/__pycache__
+hls4ml_tutorial/images
+hls4ml_tutorial/lost+found
+hls4ml_tutorial/hsperfdata_root
+
+*tar.gz
+*events.out*

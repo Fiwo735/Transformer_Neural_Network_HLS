@@ -77,19 +77,22 @@ class JetDataset(Dataset):
         """
 
         if data_dir is None:
+            print('data_dir is None, so using Path(__file__).parent / "../../data/processed/train-val"')
             data_dir : Path = Path(__file__).parent / "../../data/processed/train-val"
         else:
             data_dir : Path = Path(data_dir)
         
+        # print("data_dir is {0}".format(data_dir))
+
         assert data_dir.is_dir(), f"argument data_dir needs to be a valid directory (got {data_dir})"
         
         if recursive:
             file_paths = list(data_dir.glob('**/*.h5'))
         else:
             file_paths = list(data_dir.glob('*.h5'))
-        
+
         if len(file_paths) < 1:
-            raise RuntimeError('No hdf5 files found')
+            raise RuntimeError('No hdf5 files found!')
 
         if not lazy:
             data = self.load_hdf5_files(file_paths[0:max(cache_size, len(file_paths))])
@@ -376,6 +379,7 @@ def get_dataset(data_dir=None, splits:typing.List[str]=['train-val']):
     datasets = {}
 
     for split in ['train-val', 'test']:
+    # for split in ['train', 'val']: # FILIP
         transform = RandomPermute() if split == 'train-val' else None
         if split in splits:
             dataset = JetDataset(data_dir / split, transform=transform)
