@@ -133,6 +133,7 @@ if __name__ == '__main__':
     # Creating dataloaders
     # (1) creating dataset
     dataset = data.get_dataset(args.data_dir)
+    # dataset = data.get_dataset(args.data_dir, splits=['train', 'val']) #FILIP
 
     # (2) train-validation split
     dataset_size = len(dataset)
