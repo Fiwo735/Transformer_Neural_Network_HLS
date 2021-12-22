@@ -22,8 +22,8 @@
 #include "parameters.h"
 
 void myproject(
-    input_t data_in[N_INPUT_1_1],
-    result_t data_out[N_LAYER_11],
+    input_t fc1_input[N_INPUT_1_1],
+    result_t layer13_out[N_LAYER_11],
     unsigned short &const_size_in_1,
     unsigned short &const_size_out_1
 ) {
@@ -61,17 +61,53 @@ void myproject(
     //hls-fpga-machine-learning insert layers
     std::ofstream fout("tb_data/csim_layers.log");
 
-    fout << "data_in:" << "\n";
-    nnet::print_result<input_t, N_INPUT_1_1>(data_in, fout);
+    fout << "fc1_input:" << "\n";
+    nnet::print_result<input_t, N_INPUT_1_1>(fc1_input, fout);
+
+    layer2_t layer2_out[N_LAYER_2];
+    #pragma HLS ARRAY_PARTITION variable=layer2_out complete dim=0
+    nnet::dense<input_t, layer2_t, config2>(fc1_input, layer2_out, w2, b2); // fc1
+    fout << "layer2_out:" << "\n";
+    nnet::print_result<layer2_t, N_LAYER_2>(layer2_out, fout);
+
+    layer4_t layer4_out[N_LAYER_2];
+    #pragma HLS ARRAY_PARTITION variable=layer4_out complete dim=0
+    nnet::relu<layer2_t, layer4_t, relu_config4>(layer2_out, layer4_out); // relu1
+    fout << "layer4_out:" << "\n";
+    nnet::print_result<layer4_t, N_LAYER_2>(layer4_out, fout);
+
+    layer5_t layer5_out[N_LAYER_5];
+    #pragma HLS ARRAY_PARTITION variable=layer5_out complete dim=0
+    nnet::dense<layer4_t, layer5_t, config5>(layer4_out, layer5_out, w5, b5); // fc2
+    fout << "layer5_out:" << "\n";
+    nnet::print_result<layer5_t, N_LAYER_5>(layer5_out, fout);
+
+    layer7_t layer7_out[N_LAYER_5];
+    #pragma HLS ARRAY_PARTITION variable=layer7_out complete dim=0
+    nnet::relu<layer5_t, layer7_t, relu_config7>(layer5_out, layer7_out); // relu2
+    fout << "layer7_out:" << "\n";
+    nnet::print_result<layer7_t, N_LAYER_5>(layer7_out, fout);
+
+    layer8_t layer8_out[N_LAYER_8];
+    #pragma HLS ARRAY_PARTITION variable=layer8_out complete dim=0
+    nnet::dense<layer7_t, layer8_t, config8>(layer7_out, layer8_out, w8, b8); // fc3
+    fout << "layer8_out:" << "\n";
+    nnet::print_result<layer8_t, N_LAYER_8>(layer8_out, fout);
+
+    layer10_t layer10_out[N_LAYER_8];
+    #pragma HLS ARRAY_PARTITION variable=layer10_out complete dim=0
+    nnet::relu<layer8_t, layer10_t, relu_config10>(layer8_out, layer10_out); // relu3
+    fout << "layer10_out:" << "\n";
+    nnet::print_result<layer10_t, N_LAYER_8>(layer10_out, fout);
 
     layer11_t layer11_out[N_LAYER_11];
     #pragma HLS ARRAY_PARTITION variable=layer11_out complete dim=0
-    nnet::dense<input_t, layer11_t, config11>(data_in, layer11_out, w11, b11); // output
+    nnet::dense<layer10_t, layer11_t, config11>(layer10_out, layer11_out, w11, b11); // output
     fout << "layer11_out:" << "\n";
     nnet::print_result<layer11_t, N_LAYER_11>(layer11_out, fout);
 
-    nnet::softmax<input_t, result_t, softmax_config13>(data_in, data_out); // softmax
-    fout << "data_out:" << "\n";
-    nnet::print_result<result_t, N_LAYER_11>(data_out, fout);
+    nnet::softmax<layer11_t, result_t, softmax_config13>(layer11_out, layer13_out); // softmax
+    fout << "layer13_out:" << "\n";
+    nnet::print_result<result_t, N_LAYER_11>(layer13_out, fout);
 
 }
