@@ -7,10 +7,9 @@ def extract_weights_biases(model_path: str, result_path:str, var_type:str, flatt
 
   for layer_name, values in model['state_dict'].items():
 
-  # if layer_name == 'transformers.1.self_attention.norm.weight':
-
     h_file_name = layer_name.replace('.', '_')
     out_file = open(result_path + h_file_name + '.h', 'w')
+    txt_file = open(result_path + h_file_name + '.txt', 'w')
 
     # comments with information
     values = values.numpy()
@@ -38,12 +37,14 @@ def extract_weights_biases(model_path: str, result_path:str, var_type:str, flatt
     values_list = ['\n' * (n % 7 == 6) + str(val) for n, val in enumerate(values.tolist())]
     values_to_write = ', '.join(values_list)
     out_file.write(values_to_write)
+    txt_file.write(values_to_write.replace('\n', ''))
 
     # closing endifs
     out_file.write("};\n\n")
     out_file.write("#endif\n\n")
     out_file.write("#endif\n")
     out_file.close()
+    txt_file.close()
   
 
   # print summary
