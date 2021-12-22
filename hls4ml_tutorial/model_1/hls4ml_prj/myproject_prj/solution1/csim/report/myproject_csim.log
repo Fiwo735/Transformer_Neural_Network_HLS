@@ -7,7 +7,7 @@ Loading weights from txt
 Predictions
 1 0 0 0 0 
 Quantized predictions
-0.0107422 0.322266 0.22168 0.22168 0.22168 
+0 0 0 0 0 
 INFO: Saved inference results to file: tb_data/csim_results.log
 INFO: [SIM 1] CSim done with 0 errors.
 INFO: [SIM 3] *************** CSIM finish ***************
