@@ -79,22 +79,54 @@ void myproject(
 
     // 2.1 jet transformer
     input_t transformer_0_out[N_TRANSFORMER];
-    nnet::transformer<input_t, input_t, transformer_config>(embedded_input, transformer_0_out, transformers_0_linear_0_weight, transformers_0_linear_0_bias);
+    nnet::transformer<input_t, input_t, transformer_config1>(
+        embedded_input,
+        transformer_0_out,
+        transformers_0_linear_0_weight,
+        transformers_0_linear_0_bias,
+        transformers_0_linear_0_weight,
+        transformers_0_linear_0_weight,
+        transformers_0_linear_0_weight,
+        transformers_0_linear_0_weight,
+        transformers_0_linear_0_weight,
+        transformers_0_linear_0_bias
+    );
     fout << "transformer_0_out:" << "\n";
     nnet::print_result<input_t, N_TRANSFORMER>(transformer_0_out, fout);
 
     // 2.1 jet transformer
     input_t transformer_1_out[N_TRANSFORMER];
-    nnet::transformer<input_t, input_t, transformer_config>(transformer_0_out, transformer_1_out, transformers_0_linear_0_weight, transformers_0_linear_0_bias);
+    nnet::transformer<input_t, input_t, transformer_config1>(
+        transformer_0_out,
+        transformer_1_out,
+        transformers_0_linear_0_weight,
+        transformers_0_linear_0_bias,
+        transformers_0_linear_0_weight,
+        transformers_0_linear_0_weight,
+        transformers_0_linear_0_weight,
+        transformers_0_linear_0_weight,
+        transformers_0_linear_0_weight,
+        transformers_0_linear_0_bias
+    );
     fout << "transformer_1_out:" << "\n";
     nnet::print_result<input_t, N_TRANSFORMER>(transformer_1_out, fout);
 
     // 2.1 jet transformer
     input_t transformer_2_out[N_TRANSFORMER];
-    nnet::transformer<input_t, input_t, transformer_config>(transformer_1_out, transformer_2_out, transformers_0_linear_0_weight, transformers_0_linear_0_bias);
+    nnet::transformer<input_t, input_t, transformer_config1>(
+        transformer_1_out,
+        transformer_2_out,
+        transformers_0_linear_0_weight,
+        transformers_0_linear_0_bias,
+        transformers_0_linear_0_weight,
+        transformers_0_linear_0_weight,
+        transformers_0_linear_0_weight,
+        transformers_0_linear_0_weight,
+        transformers_0_linear_0_weight,
+        transformers_0_linear_0_bias
+    );
     fout << "transformer_2_out:" << "\n";
     nnet::print_result<input_t, N_TRANSFORMER>(transformer_2_out, fout);
-
 
     layer11_t layer11_out[N_LAYER_11];
     #pragma HLS ARRAY_PARTITION variable=layer11_out complete dim=0
@@ -102,6 +134,7 @@ void myproject(
     fout << "layer11_out:" << "\n";
     nnet::print_result<layer11_t, N_LAYER_11>(layer11_out, fout);
 
+    // 3 softmax
     nnet::softmax<input_t, result_t, softmax_config13>(layer11_out, data_out); // softmax
     fout << "data_out:" << "\n";
     nnet::print_result<result_t, N_LAYER_11>(data_out, fout);
