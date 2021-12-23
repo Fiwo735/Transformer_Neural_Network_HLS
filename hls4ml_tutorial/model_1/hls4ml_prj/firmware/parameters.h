@@ -11,7 +11,9 @@
 #include "nnet_utils/nnet_dense.h"
 #include "nnet_utils/nnet_dense_compressed.h"
 #include "nnet_utils/nnet_dense_stream.h"
+#include "nnet_utils/nnet_batchnorm.h"
 #include "nnet_utils/nnet_transformer.h"
+
  
 //hls-fpga-machine-learning insert weights
 #include "weights/w2.h"
@@ -141,7 +143,7 @@ struct softmax_config13 : nnet::activ_config {
     typedef ap_fixed<18,8> inv_table_t;
 };
 
-struct transformer_config : nnet::dense_config {
+struct transformer_config1 : nnet::transformer_config {
     static const unsigned n_in = N_TRANSFORMER;
     static const unsigned n_out = N_TRANSFORMER;
     static const unsigned io_type = nnet::io_parallel;
@@ -152,6 +154,18 @@ struct transformer_config : nnet::dense_config {
     static const bool store_weights_in_bram = false;
     typedef ap_fixed<16,6> accum_t;
     typedef model_default_t bias_t;
+    typedef model_default_t scale_t;
+    typedef model_default_t norm1_bias_t;
+    typedef model_default_t norm1_weight_t;
+    typedef model_default_t ff_weight_t;
+    typedef model_default_t ff_bias_t;
+    typedef model_default_t Q_weight_t;
+    typedef model_default_t K_weight_t;
+    typedef model_default_t V_weight_t;
+    typedef model_default_t inv_sqrt_d_k_t;
+    typedef model_default_t exp_table_t;
+    typedef model_default_t inv_table_t;
+    typedef model_default_t table_t;
     typedef model_default_t weight_t;
     typedef model_default_t data_T;
     typedef model_default_t res_T;
@@ -159,6 +173,8 @@ struct transformer_config : nnet::dense_config {
     template<class x_T, class y_T, class res_T>
     using product = nnet::product::mult<x_T, y_T, res_T>;
 };
+
+
 
 
 #endif

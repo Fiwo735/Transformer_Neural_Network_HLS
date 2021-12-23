@@ -38,7 +38,11 @@ obj/myproject.o: ../../../../firmware/myproject.cpp \
  ../../../../firmware/nnet_utils/nnet_dense_compressed.h \
  ../../../../firmware/nnet_utils/nnet_dense.h \
  ../../../../firmware/nnet_utils/nnet_dense_stream.h \
+ ../../../../firmware/nnet_utils/nnet_batchnorm.h \
  ../../../../firmware/nnet_utils/nnet_transformer.h \
+ ../../../../firmware/nnet_utils/nnet_activation_stream.h \
+ ../../../../firmware/nnet_utils/nnet_self_attention.h \
+ ../../../../firmware/nnet_utils/nnet_array.h \
  ../../../../firmware/weights/w2.h ../../../../firmware/weights/b2.h \
  ../../../../firmware/weights/w5.h ../../../../firmware/weights/b5.h \
  ../../../../firmware/weights/w8.h ../../../../firmware/weights/b8.h \
