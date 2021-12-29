@@ -22,8 +22,8 @@
 #include "parameters.h"
 
 void myproject(
-    input_t fc1_input[N_INPUT_1_1],
-    result_t layer13_out[N_LAYER_11],
+    input_t data_in[N_INPUT_1_1],
+    result_t data_out[N_LAYER_11],
     unsigned short &const_size_in_1,
     unsigned short &const_size_out_1
 ) {
@@ -41,6 +41,7 @@ void myproject(
     static bool loaded_weights = false;
     if (!loaded_weights) {
         //hls-fpga-machine-learning insert load weights
+        std::cout << "Loading weights from txt" << "\n";
         nnet::load_weights_from_txt<model_default_t, 1024>(w2, "w2.txt");
         nnet::load_weights_from_txt<model_default_t, 64>(b2, "b2.txt");
         nnet::load_weights_from_txt<model_default_t, 2048>(w5, "w5.txt");
@@ -49,6 +50,12 @@ void myproject(
         nnet::load_weights_from_txt<model_default_t, 32>(b8, "b8.txt");
         nnet::load_weights_from_txt<model_default_t, 160>(w11, "w11.txt");
         nnet::load_weights_from_txt<model_default_t, 5>(b11, "b11.txt");
+
+        nnet::load_weights_from_txt<model_default_t, 2048>(inp_layer_weight, "inp_layer_weight.txt");
+        nnet::load_weights_from_txt<model_default_t, 128>(inp_layer_bias, "inp_layer_bias.txt");
+        nnet::load_weights_from_txt<model_default_t, 128>(cls_token, "cls_token.txt");
+        nnet::load_weights_from_txt<model_default_t, 128>(transformers_0_linear_0_weight, "transformers_0_linear_0_weight.txt");
+        nnet::load_weights_from_txt<model_default_t, 128>(transformers_0_linear_0_bias, "transformers_0_linear_0_bias.txt");
         loaded_weights = true;
     }
 #endif
@@ -58,35 +65,78 @@ void myproject(
     // ****************************************
 
     //hls-fpga-machine-learning insert layers
+    std::ofstream fout("tb_data/csim_layers.log");
 
-    layer2_t layer2_out[N_LAYER_2];
-    #pragma HLS ARRAY_PARTITION variable=layer2_out complete dim=0
-    nnet::dense<input_t, layer2_t, config2>(fc1_input, layer2_out, w2, b2); // fc1
+    fout << "data_in:" << "\n";
+    nnet::print_result<input_t, N_INPUT_1_1>(data_in, fout);
 
-    layer4_t layer4_out[N_LAYER_2];
-    #pragma HLS ARRAY_PARTITION variable=layer4_out complete dim=0
-    nnet::relu<layer2_t, layer4_t, relu_config4>(layer2_out, layer4_out); // relu1
+    // 1 input embedding + class token
+    input_t embedded_input[N_TRANSFORMER];
+    nnet::dense<input_t, input_t, config2>(data_in, embedded_input, inp_layer_weight, inp_layer_bias); // fc1
+    embedded_input[N_INPUT_1_1] = cls_token[0];
+    fout << "embedded_input:" << "\n";
+    nnet::print_result<input_t, N_TRANSFORMER>(embedded_input, fout);
 
-    layer5_t layer5_out[N_LAYER_5];
-    #pragma HLS ARRAY_PARTITION variable=layer5_out complete dim=0
-    nnet::dense<layer4_t, layer5_t, config5>(layer4_out, layer5_out, w5, b5); // fc2
+    // 2.1 jet transformer
+    input_t transformer_0_out[N_TRANSFORMER];
+    nnet::transformer<input_t, input_t, transformer_config1>(
+        embedded_input,
+        transformer_0_out,
+        transformers_0_linear_0_weight,
+        transformers_0_linear_0_bias,
+        transformers_0_linear_0_weight,
+        transformers_0_linear_0_weight,
+        transformers_0_linear_0_weight,
+        transformers_0_linear_0_weight,
+        transformers_0_linear_0_weight,
+        transformers_0_linear_0_bias
+    );
+    fout << "transformer_0_out:" << "\n";
+    nnet::print_result<input_t, N_TRANSFORMER>(transformer_0_out, fout);
 
-    layer7_t layer7_out[N_LAYER_5];
-    #pragma HLS ARRAY_PARTITION variable=layer7_out complete dim=0
-    nnet::relu<layer5_t, layer7_t, relu_config7>(layer5_out, layer7_out); // relu2
+    // 2.1 jet transformer
+    input_t transformer_1_out[N_TRANSFORMER];
+    nnet::transformer<input_t, input_t, transformer_config1>(
+        transformer_0_out,
+        transformer_1_out,
+        transformers_0_linear_0_weight,
+        transformers_0_linear_0_bias,
+        transformers_0_linear_0_weight,
+        transformers_0_linear_0_weight,
+        transformers_0_linear_0_weight,
+        transformers_0_linear_0_weight,
+        transformers_0_linear_0_weight,
+        transformers_0_linear_0_bias
+    );
+    fout << "transformer_1_out:" << "\n";
+    nnet::print_result<input_t, N_TRANSFORMER>(transformer_1_out, fout);
 
-    layer8_t layer8_out[N_LAYER_8];
-    #pragma HLS ARRAY_PARTITION variable=layer8_out complete dim=0
-    nnet::dense<layer7_t, layer8_t, config8>(layer7_out, layer8_out, w8, b8); // fc3
-
-    layer10_t layer10_out[N_LAYER_8];
-    #pragma HLS ARRAY_PARTITION variable=layer10_out complete dim=0
-    nnet::relu<layer8_t, layer10_t, relu_config10>(layer8_out, layer10_out); // relu3
+    // 2.1 jet transformer
+    input_t transformer_2_out[N_TRANSFORMER];
+    nnet::transformer<input_t, input_t, transformer_config1>(
+        transformer_1_out,
+        transformer_2_out,
+        transformers_0_linear_0_weight,
+        transformers_0_linear_0_bias,
+        transformers_0_linear_0_weight,
+        transformers_0_linear_0_weight,
+        transformers_0_linear_0_weight,
+        transformers_0_linear_0_weight,
+        transformers_0_linear_0_weight,
+        transformers_0_linear_0_bias
+    );
+    fout << "transformer_2_out:" << "\n";
+    nnet::print_result<input_t, N_TRANSFORMER>(transformer_2_out, fout);
 
     layer11_t layer11_out[N_LAYER_11];
     #pragma HLS ARRAY_PARTITION variable=layer11_out complete dim=0
-    nnet::dense<layer10_t, layer11_t, config11>(layer10_out, layer11_out, w11, b11); // output
+    nnet::dense<input_t, layer11_t, config11>(transformer_2_out, layer11_out, w11, b11); // output
+    fout << "layer11_out:" << "\n";
+    nnet::print_result<layer11_t, N_LAYER_11>(layer11_out, fout);
 
-    nnet::softmax<layer11_t, result_t, softmax_config13>(layer11_out, layer13_out); // softmax
+    // 3 softmax
+    nnet::softmax<input_t, result_t, softmax_config13>(layer11_out, data_out); // softmax
+    fout << "data_out:" << "\n";
+    nnet::print_result<result_t, N_LAYER_11>(data_out, fout);
 
 }

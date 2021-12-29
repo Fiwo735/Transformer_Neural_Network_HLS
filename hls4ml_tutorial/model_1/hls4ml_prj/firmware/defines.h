@@ -9,6 +9,7 @@
 
 //hls-fpga-machine-learning insert numbers
 #define N_INPUT_1_1 16
+#define N_TRANSFORMER 17
 #define N_LAYER_2 64
 #define N_LAYER_5 32
 #define N_LAYER_8 32

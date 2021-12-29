@@ -13,3 +13,24 @@ hls4ml_tutorial/hsperfdata_root
 
 *tar.gz
 *events.out*
+
+# Thesis
+thesis/*.aux
+thesis/*.bbl
+thesis/*.blg
+thesis/*.fdb_latexmk
+thesis/*.fls
+thesis/*.lof
+thesis/*.log
+thesis/*.lot
+thesis/*.out
+thesis/*.synctex.gz
+thesis/*.toc
+
+# Datasets
+.energyflow
+example_data
+
+# VSCode
+.vscode
+
