@@ -12,7 +12,7 @@ def extract_weights_biases(model_path: str, result_path:str, var_type:str, flatt
     txt_file = open(result_path + h_file_name + '.txt', 'w')
 
     # comments with information
-    values = values.numpy()
+    values = values.cpu().numpy()
     out_file.write("// Numpy array shape " + str(list(values.shape)) + "\n")
     out_file.write("// Min " + str(np.amin(values)) + "\n")
     out_file.write("// Max " + str(np.amax(values)) + "\n")
@@ -59,8 +59,8 @@ def extract_weights_biases(model_path: str, result_path:str, var_type:str, flatt
 
 
 if __name__ == "__main__":
-  model_path = "fyp21yuan-code/experiments/constituent_base/best.pth.tar"
+  model_path = "fyp21yuan_code/experiments/constituent_base/best.pth.tar"
   result_path = "extracted_weights_biases/"
   #TODO which flatten_order is needed?
-  extract_weights_biases(model_path=model_path, result_path=result_path, var_type="float", flatten_order='C')
+  extract_weights_biases(model_path=model_path, result_path=result_path, var_type="model_default", flatten_order='C')
 

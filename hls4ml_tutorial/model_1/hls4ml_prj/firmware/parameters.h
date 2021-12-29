@@ -16,14 +16,6 @@
 
  
 //hls-fpga-machine-learning insert weights
-#include "weights/w2.h"
-#include "weights/b2.h"
-#include "weights/w5.h"
-#include "weights/b5.h"
-#include "weights/w8.h"
-#include "weights/b8.h"
-#include "weights/w11.h"
-#include "weights/b11.h"
 #include "weights/cls_token.h"
 #include "weights/inp_layer_weight.h"
 #include "weights/inp_layer_bias.h"

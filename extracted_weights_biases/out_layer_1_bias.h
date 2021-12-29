@@ -1,15 +1,15 @@
 // Numpy array shape [5]
-// Min -0.14734806
-// Max 0.36158058
+// Min -0.04611927821116513
+// Max 0.0720819793473946
 // Number of zeros 0
 
 #ifndef OUT_LAYER_1_BIAS_H_
 #define OUT_LAYER_1_BIAS_H_
 
 #ifndef __SYNTHESIS__
-float out_layer_1_bias[5];
+model_default out_layer_1_bias[5];
 #else
-float out_layer_1_bias[5] = {0.03423453867435455, 0.36158058047294617, -0.13170640170574188, -0.14690755307674408, -0.1473480612039566};
+model_default out_layer_1_bias[5] = {0.0720819793473946, 0.009213375339325092, -0.01585773565719206, -0.04611927821116513, 0.041447590483698435};
 
 #endif
 
