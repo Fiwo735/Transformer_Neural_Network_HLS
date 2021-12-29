@@ -135,24 +135,71 @@ class SelfAttention(nn.Module):
             out : self attention value + input feature (batch_m, seq_len, C)
         """
 
-        m_batch, seq_len, C = x.size() 
+        m_batch, seq_len, C = x.size()
+        if not self.training:
+            print("x.size()")
+            print(x.size())
+
         C_H = self.head_dim
+        if not self.training:
+            print("self.head_dim")
+            print(self.head_dim)
+
+        if not self.training:
+            print("input")
+            print(x)
 
         # Normalization across channels
         out = self.norm(x)
+        if not self.training:
+            print("out (after norm)")
+            print(out)
 
         # Queries, keys, and values
         out = self.qkv(out).view(m_batch, seq_len, self.heads, -1)   # (batch_m, seq_len, num_heads, 2*C_head + C//num_head )
+        if not self.training:
+            print("out (after qkv)")
+            print(out)
+
         queries, keys, values = torch.split(out, [C_H, C_H, C // self.heads], dim=-1)
+        if not self.training:
+            print("queries")
+            print(queries)
+            print("keys")
+            print(keys)
+            print("values")
+            print(values)
 
         # Attention softmax(Q^T*K)
         energy = torch.einsum("nqhc,nkhc->nhqk", [queries, keys])  # (batch_m, num_heads, seq_len, seq_len)
-        attention = torch.softmax(energy / (C ** (1 / 2)), dim=-1) # (batch_m, num_heads, seq_len, seq_len) 
+        if not self.training:
+            print("energy")
+            print(energy)
+
+        attention = torch.softmax(energy / (C ** (1 / 2)), dim=-1) # (batch_m, num_heads, seq_len, seq_len)
+        if not self.training:
+            print("attention")
+            print(attention)
 
         # Output
         out = torch.einsum("nhql,nlhc->nqhc", [attention, values]) # (batch_m, seq_len, num_heads, C//num_head)
+        if not self.training:
+            print("out (after einsum)")
+            print(out)
+
         out = out.reshape(m_batch, seq_len, -1) # (batch_m, seq_len, C)
+        if not self.training:
+            print("out (after reshape)")
+            print(out)
+
         out = self.out(out)
+        if not self.training:
+            print("out (after out())")
+            print(out)
+
+        if not self.training:
+            print("out + x (before returning")
+            print(out + x)
         
         return out + x
 
@@ -280,10 +327,33 @@ class Transformer(nn.Module):
             energy: self-attention energy (batch_m, seq_len, seq_len)
         """
 
+        if not self.training:
+            print("input")
+            print(x)
+
         x = self.self_attention(x)
+
+        if not self.training:
+            print("x (after self-attention)")
+            print(x)
+
         out = self.linear(x)
+
+        if not self.training:
+            print("out (after linear)")
+            print(out)
+
         out = x + out
+
+        if not self.training:
+            print("out (after x + out)")
+            print(out)
+
         out =  self.dropout(out)
+
+        if not self.training:
+            print("out (after dropout)")
+            print(out)
 
         return out
 

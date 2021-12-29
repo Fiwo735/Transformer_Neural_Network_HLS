@@ -198,7 +198,7 @@ def train(model, optimizer, scheduler, criterion, dataloader, metrics, writer, p
         batch_targets = np.empty((BATCH_SIZE,))
         for i, sample in enumerate(train_set):
             # print(f"i:{i}")
-            if i > 9998:
+            if i > 49998:
                 break
 
             # Unpack batch, move to device

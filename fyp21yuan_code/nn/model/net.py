@@ -52,22 +52,50 @@ class ConstituentNet(nn.Module):
     def forward(self, x):
 
         m_batch, seq_len, _ = x.size() # (m_batch, seq_len=100, input_dim=16)
+        if not self.training:
+            print("x.size()")
+            print(x.size())
+
+        if not self.training:
+            print("input")
+            print(x)
 
         # Input layer
         out = self.inp_layer(x) # (m_batch, seq_len, C)
+        if not self.training:
+            print("out (after input layer)")
+            print(out)
 
         # Append class tokens to input
         cls_tokens = self.cls_token.repeat(m_batch, 1, 1)
         out = torch.cat((cls_tokens, out), dim=1) # (m_batch, seq_len + 1, C)
+        if not self.training:
+            print("cls_tokens")
+            print(cls_tokens)
+            print("out (after class tokens)")
+            print(out)
 
         # Transformer layers
         for transformer in self.transformers:
             out = transformer(out)       # (m_batch, seq_len + 1, C)
+            if not self.training:
+                print("out (after transformer layer)")
+                print(out)
 
         # Output layer
         out = out[:, 0]                           # (m_batch, 1, C)
+        if not self.training:
+            print("out (after out[:, 0])")
+            print(out)
+            
         out = self.out_layer(out).squeeze(1)      # (m_batch, 1, C) -> (batch_m, num_classes)
+        if not self.training:
+            print("out (after out layer)")
+            print(out)
 
+        if not self.training:
+            print("softmax (before returning)")
+            print(F.log_softmax(out, dim=-1))
         return F.log_softmax(out, dim=-1)
 
 
