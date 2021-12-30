@@ -17,17 +17,44 @@ namespace nnet {
 
 struct transformer_config
 {
-    // Internal data type definitions
-    typedef float accum_t;
-    typedef float weight_t;
+
+    static const unsigned n_SA_norm_weight = 128;
+    static const unsigned n_SA_norm_bias = 128;
+    static const unsigned n_SA_QKV_weight = 49152;
+    static const unsigned n_SA_dense_weight = 16384;
+    static const unsigned n_SA_dense_bias = 128;
+
+    static const unsigned n_norm0_weight = 128;
+    static const unsigned n_norm0_bias = 128;
+    static const unsigned n_dense0_weight = 32768;
+    static const unsigned n_norm1_weight = 256;
+    static const unsigned n_norm1_bias = 256;
+    static const unsigned n_dense1_weight = 32768;
+
+    typedef float SA_norm_weight_t;
+    typedef float SA_norm_bias_t;
+    typedef float SA_QKV_weight_t;
+    typedef float SA_dense_weight_t;
+    typedef float SA_dense_bias_t;
+
+    typedef float norm0_weight_t;
+    typedef float norm0_bias_t;
+    typedef float dense0_weight_t;
     typedef float norm1_weight_t;
     typedef float norm1_bias_t;
-    typedef float Q_weight_t;
-    typedef float K_weight_t;
-    typedef float V_weight_t;
-    typedef float inv_sqrt_d_k_t;
-    typedef float ff_weight_t;
-    typedef float ff_bias_t;
+    typedef float dense1_weight_t;
+
+    // // Internal data type definitions
+    // typedef float accum_t;
+    // typedef float weight_t;
+    // typedef float norm1_weight_t;
+    // typedef float norm1_bias_t;
+    // typedef float Q_weight_t;
+    // typedef float K_weight_t;
+    // typedef float V_weight_t;
+    // typedef float inv_sqrt_d_k_t;
+    // typedef float ff_weight_t;
+    // typedef float ff_bias_t;
     typedef float exp_table_t;
     typedef float inv_table_t;
     typedef float table_t;
@@ -37,8 +64,9 @@ struct transformer_config
     typedef float scale_t;
 
     // Layer Sizes
-    static const unsigned n_in = 10;
-    static const unsigned n_out = 10;
+    static const unsigned n_in = 256;
+    static const unsigned n_in_doubled = 512;
+    static const unsigned n_out = 256;
     static const unsigned n_filt = -1;
     static const unsigned d_k = 10;
     static const unsigned d_v = 10;
@@ -64,57 +92,99 @@ template<class data_T, class res_T, typename CONFIG_T>
 void transformer(
     data_T    data[CONFIG_T::n_in],
     res_T     res[CONFIG_T::n_out],
-    typename CONFIG_T::norm1_weight_t norm1_weight[CONFIG_T::n_in],
-    typename CONFIG_T::norm1_bias_t   norm1_bias[CONFIG_T::n_in],
-    typename CONFIG_T::Q_weight_t     Q_weight[CONFIG_T::n_in],
-    typename CONFIG_T::K_weight_t     K_weight[CONFIG_T::n_in],
-    typename CONFIG_T::V_weight_t     V_weight[CONFIG_T::n_in],
-    typename CONFIG_T::inv_sqrt_d_k_t inv_sqrt_d_k[CONFIG_T::n_in],
-    typename CONFIG_T::ff_weight_t    ff_weights[CONFIG_T::n_in*CONFIG_T::n_out],
-    typename CONFIG_T::ff_bias_t      ff_biases[CONFIG_T::n_out]
+
+    typename CONFIG_T::SA_norm_weight_t  SA_norm_weight[CONFIG_T::n_SA_norm_weight],
+    typename CONFIG_T::SA_norm_bias_t    SA_norm_bias[CONFIG_T::n_SA_norm_bias],
+    typename CONFIG_T::SA_QKV_weight_t   SA_QKV_weight[CONFIG_T::n_SA_QKV_weight],
+    typename CONFIG_T::SA_dense_weight_t SA_dense_weight[CONFIG_T::n_SA_dense_weight],
+    typename CONFIG_T::SA_dense_bias_t   SA_dense_bias[CONFIG_T::n_SA_dense_bias],
+
+    typename CONFIG_T::norm0_weight_t    norm0_weight[CONFIG_T::n_norm0_weight],
+    typename CONFIG_T::norm0_bias_t      norm0_bias[CONFIG_T::n_norm0_bias],
+    typename CONFIG_T::dense0_weight_t   dense0_weight[CONFIG_T::n_dense0_weight],
+    typename CONFIG_T::norm1_weight_t    norm1_weight[CONFIG_T::n_norm1_weight],
+    typename CONFIG_T::norm1_bias_t      norm1_bias[CONFIG_T::n_norm1_bias],
+    typename CONFIG_T::dense1_weight_t   dense1_weight[CONFIG_T::n_dense1_weight]
 ){
+    std::ofstream fout("tb_data/csim_layers.log");
 
-    // 1 Normalise
-    data_T input_norm_out[CONFIG_T::n_in];
-    nnet::normalize<data_T, data_T, CONFIG_T>(data, input_norm_out, norm1_weight, norm1_bias);
-
-    // // 2 Self-attention
+    // 1 Self-attention
     data_T self_attention_out[CONFIG_T::n_in];
-    self_attention<data_T, data_T, CONFIG_T>(input_norm_out, self_attention_out, Q_weight, K_weight, V_weight, inv_sqrt_d_k);
+    nnet::self_attention<data_T, data_T, CONFIG_T>(
+        data,
+        self_attention_out,
+        
+        SA_norm_weight,
+        SA_norm_bias,
+        SA_QKV_weight,
+        SA_dense_weight,
+        SA_dense_bias
+    );
+    fout << "self_attention_out:" << "\n";
+    nnet::print_result<data_T, CONFIG_T::n_in>(self_attention_out, fout);
 
-    // 3 Sum (0) + (2)
-    data_T middle_sum_out[CONFIG_T::n_in];
-    Middle_sum: for (int imidsum = 0; imidsum < CONFIG_T::n_in; imidsum++) {
-        if (CONFIG_T::io_type == io_serial){
-            #pragma HLS PIPELINE
-        }
-        middle_sum_out[imidsum] = self_attention_out[imidsum] + data[imidsum];
+    // 2.1 norm
+    data_T norm0_out[CONFIG_T::n_in];
+    nnet::normalize<data_T, data_T, CONFIG_T>(self_attention_out, norm0_out, norm0_weight, norm0_bias);
+    fout << "norm0_out:" << "\n";
+    nnet::print_result<data_T, CONFIG_T::n_in>(norm0_out, fout);
+
+    // 2.2 SiLU
+    data_T SiLU0_out[CONFIG_T::n_in];
+    data_T sigmoid0_out[CONFIG_T::n_in];
+    nnet::sigmoid<data_T, data_T, CONFIG_T>(norm0_out, sigmoid0_out);
+    silu0: for (int isilu0 = 0; isilu0 < CONFIG_T::n_in; isilu0++) {
+        SiLU0_out[isilu0] = CONFIG_T::template product<data_T, data_T, data_T>::product(norm0_out[isilu0], sigmoid0_out[isilu0]);
     }
+    fout << "SiLU0_out:" << "\n";
+    nnet::print_result<data_T, CONFIG_T::n_in>(SiLU0_out, fout);
 
-    // 4 Normalise
-    data_T sum_norm_out[CONFIG_T::n_in];
-    nnet::normalize<data_T, data_T, CONFIG_T>(middle_sum_out, sum_norm_out, norm1_weight, norm1_bias);
+    // 2.3 dense
+    data_T dense0_out[CONFIG_T::n_in_doubled];
+    data_T zero_bias[CONFIG_T::n_in_doubled]; // TODO: do we need to initialize to 0?
+    nnet::dense<data_T, data_T, CONFIG_T>(SiLU0_out, dense0_out, dense0_weight, zero_bias);
+    fout << "dense0_out:" << "\n";
+    nnet::print_result<data_T, CONFIG_T::n_in_doubled>(dense0_out, fout);
 
-    // // 5 FF
-    data_T FF_out[CONFIG_T::n_in];
-    nnet::dense<data_T, data_T, CONFIG_T>(sum_norm_out, FF_out, ff_weights, ff_biases);
+    // 2.4 norm
+    data_T norm1_out[CONFIG_T::n_in_doubled];
+    nnet::normalize<data_T, data_T, CONFIG_T>(dense0_out, norm1_out, norm1_weight, norm1_bias);
+    fout << "norm1_out:" << "\n";
+    nnet::print_result<data_T, CONFIG_T::n_in_doubled>(norm1_out, fout);
 
-    // 6 Sum (3) + (5)
-    data_T end_sum_out[CONFIG_T::n_in];
+    // 2.5 SiLU
+    data_T SiLU1_out[CONFIG_T::n_in_doubled];
+    data_T sigmoid1_out[CONFIG_T::n_in_doubled];
+    nnet::sigmoid<data_T, data_T, CONFIG_T>(norm1_out, sigmoid1_out);
+    silu1: for (int isilu1 = 0; isilu1 < CONFIG_T::n_in_doubled; isilu1++) {
+        SiLU1_out[isilu1] = CONFIG_T::template product<data_T, data_T, data_T>::product(norm1_out[isilu1], sigmoid1_out[isilu1]);
+    }
+    fout << "SiLU1_out:" << "\n";
+    nnet::print_result<data_T, CONFIG_T::n_in_doubled>(SiLU1_out, fout);
+
+    // 2.6 dense
+    data_T dense1_out[CONFIG_T::n_in];
+    nnet::dense<data_T, data_T, CONFIG_T>(SiLU1_out, dense1_out, dense1_weight, zero_bias);
+    fout << "dense1_out:" << "\n";
+    nnet::print_result<data_T, CONFIG_T::n_in>(dense1_out, fout);
+
+    // 3 Sum (1) + (2)
+    data_T sum_out[CONFIG_T::n_in];
     Final_sum: for (int iendsum = 0; iendsum < CONFIG_T::n_in; iendsum++) {
         if (CONFIG_T::io_type == io_serial){
             #pragma HLS PIPELINE
         }
-        end_sum_out[iendsum] = middle_sum_out[iendsum] + FF_out[iendsum];
+        sum_out[iendsum] = self_attention_out[iendsum] + dense1_out[iendsum];
     }
+    fout << "sum_out:" << "\n";
+    nnet::print_result<data_T, CONFIG_T::n_in>(sum_out, fout);
 
-    // 7 Cast
+    // 4 Cast
     Result: for(int ires = 0; ires < CONFIG_T::n_out; ires++){
         if (CONFIG_T::io_type == io_serial){
             #pragma HLS UNROLL
         }
-        //res[ires] = (res_T) (acc[ires]);
-        res[ires] = cast<data_T, res_T, CONFIG_T>(end_sum_out[ires]);
+        res[ires] = cast<data_T, res_T, CONFIG_T>(sum_out[ires]);
     }
 }
 
