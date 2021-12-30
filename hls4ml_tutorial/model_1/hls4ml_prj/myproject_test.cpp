@@ -76,9 +76,9 @@ int main(int argc, char **argv)
       }
 
       //hls-fpga-machine-learning insert data
-      input_t fc1_input[N_INPUT_1_1];
-      nnet::copy_data<float, input_t, 0, N_INPUT_1_1>(in, fc1_input);
-      result_t layer13_out[N_LAYER_11];
+      input_t fc1_input[N_INPUT];
+      nnet::copy_data<float, input_t, 0, N_INPUT>(in, fc1_input);
+      result_t layer13_out[N_LABELS];
 
       //hls-fpga-machine-learning insert top-level-function
       unsigned short size_in1,size_out1;
@@ -87,18 +87,18 @@ int main(int argc, char **argv)
       if (e % CHECKPOINT == 0) {
         std::cout << "Predictions" << std::endl;
         //hls-fpga-machine-learning insert predictions
-        for(int i = 0; i < N_LAYER_11; i++) {
+        for(int i = 0; i < N_LABELS; i++) {
           std::cout << pr[i] << " ";
         }
         std::cout << std::endl;
         std::cout << "Quantized predictions" << std::endl;
         //hls-fpga-machine-learning insert quantized
-        nnet::print_result<result_t, N_LAYER_11>(layer13_out, std::cout, true);
+        nnet::print_result<result_t, N_LABELS>(layer13_out, std::cout, true);
       }
       e++;
 
       //hls-fpga-machine-learning insert tb-output
-      nnet::print_result<result_t, N_LAYER_11>(layer13_out, fout);
+      nnet::print_result<result_t, N_LABELS>(layer13_out, fout);
 
     }
     fin.close();
@@ -107,19 +107,19 @@ int main(int argc, char **argv)
     std::cout << "INFO: Unable to open input/predictions file, using default input." << std::endl;
 
     //hls-fpga-machine-learning insert zero
-    input_t fc1_input[N_INPUT_1_1];
-    nnet::fill_zero<input_t, N_INPUT_1_1>(fc1_input);
-    result_t layer13_out[N_LAYER_11];
+    input_t fc1_input[N_INPUT];
+    nnet::fill_zero<input_t, N_INPUT>(fc1_input);
+    result_t layer13_out[N_LABELS];
 
     //hls-fpga-machine-learning insert top-level-function
     unsigned short size_in1,size_out1;
     myproject(fc1_input,layer13_out,size_in1,size_out1);
 
     //hls-fpga-machine-learning insert output
-    nnet::print_result<result_t, N_LAYER_11>(layer13_out, std::cout, true);
+    nnet::print_result<result_t, N_LABELS>(layer13_out, std::cout, true);
 
     //hls-fpga-machine-learning insert tb-output
-    nnet::print_result<result_t, N_LAYER_11>(layer13_out, fout);
+    nnet::print_result<result_t, N_LABELS>(layer13_out, fout);
 
   }
 

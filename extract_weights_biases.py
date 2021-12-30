@@ -1,7 +1,7 @@
 import torch
 import numpy as np
 
-def extract_weights_biases(model_path: str, result_path:str, var_type:str = "default_model_t", flatten_order:str = "C"):
+def extract_weights_biases(model_path: str, result_path:str, var_type:str = "model_default_t", flatten_order:str = "C"):
   model = torch.load(model_path)
   overview = []
   parameters_include = []

@@ -28,8 +28,8 @@
 
 // Prototype of top level function for C-synthesis
 void myproject(
-    input_t fc1_input[N_INPUT_1_1],
-    result_t layer13_out[N_LAYER_11],
+    input_t fc1_input[N_INPUT],
+    result_t layer13_out[N_LABELS],
     unsigned short &const_size_in_1,
     unsigned short &const_size_out_1
 );
