@@ -57,8 +57,8 @@
 #include "weights/transformers_2_linear_3_bias.h"
 #include "weights/transformers_2_linear_5_weight.h"
 
-#include "weights/my_example0.h"
-#include "weights/my_example1.h"
+// #include "weights/my_example0.h"
+// #include "weights/my_example1.h"
 
 struct my_example_config : nnet::dense_config {
     static const unsigned n_in = 6;
