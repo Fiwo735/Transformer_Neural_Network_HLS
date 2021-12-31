@@ -84,8 +84,8 @@ void myproject(
         nnet::load_weights_from_txt<model_default_t, 256>(transformers_2_linear_3_bias, "transformers_2_linear_3_bias.txt");
         nnet::load_weights_from_txt<model_default_t, 32768>(transformers_2_linear_5_weight, "transformers_2_linear_5_weight.txt");
 
-        nnet::load_weights_from_txt<model_default_t, 6>(my_example0, "my_example0.txt");
-        nnet::load_weights_from_txt<model_default_t, 6>(my_example1, "my_example1.txt");
+        // nnet::load_weights_from_txt<model_default_t, 6>(my_example0, "my_example0.txt");
+        // nnet::load_weights_from_txt<model_default_t, 6>(my_example1, "my_example1.txt");
 
         loaded_weights = true;
     }

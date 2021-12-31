@@ -77,7 +77,7 @@ void self_attention(
     nnet::normalize<data_T, data_T, NORM_CONFIG_T>(data, input_norm, norm_weight, norm_bias);
     fout << "input_norm ("<< CONFIG_T::n_in << "):" << "\n";
     nnet::print_result<data_T, CONFIG_T::n_in>(input_norm, fout);
-    fout << "after printing input_norm" << "\n";
+    // fout << "after printing input_norm" << "\n";
     
     // 2.1 qkv (dense)
     data_T qkv_out[CONFIG_T::n_qkv];

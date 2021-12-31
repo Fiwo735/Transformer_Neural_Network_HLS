@@ -82,6 +82,4 @@ obj/myproject.o: ../../../../firmware/myproject.cpp \
  ../../../../firmware/weights/transformers_2_linear_2_weight.h \
  ../../../../firmware/weights/transformers_2_linear_3_weight.h \
  ../../../../firmware/weights/transformers_2_linear_3_bias.h \
- ../../../../firmware/weights/transformers_2_linear_5_weight.h \
- ../../../../firmware/weights/my_example0.h \
- ../../../../firmware/weights/my_example1.h
+ ../../../../firmware/weights/transformers_2_linear_5_weight.h

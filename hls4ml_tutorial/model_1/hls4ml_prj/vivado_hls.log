@@ -6,7 +6,7 @@
 
 source /vol/cc/opt/Xilinx/2019.2/Vivado/2019.2/scripts/vivado_hls/hls.tcl -notrace
 INFO: [HLS 200-10] Running '/vol/cc/opt/Xilinx/2019.2/Vivado/2019.2/bin/unwrapped/lnx64.o/vivado_hls'
-INFO: [HLS 200-10] For user 'faw18' on host 'cccad4.doc.ic.ac.uk' (Linux_x86_64 version 3.10.0-1127.el7.x86_64) on Fri Dec 31 03:11:21 GMT 2021
+INFO: [HLS 200-10] For user 'faw18' on host 'cccad4.doc.ic.ac.uk' (Linux_x86_64 version 3.10.0-1127.el7.x86_64) on Fri Dec 31 05:17:09 GMT 2021
 INFO: [HLS 200-10] In directory '/homes/faw18/Documents/FYP/hls4ml_tutorial/model_1/hls4ml_prj'
 Sourcing Tcl script 'build_prj.tcl'
 INFO: [HLS 200-10] Opening project '/homes/faw18/Documents/FYP/hls4ml_tutorial/model_1/hls4ml_prj/myproject_prj'.
@@ -31,9 +31,9 @@ Loading weights from txt
 Predictions
 1 0 0 0 0 
 Quantized predictions
-0 0 0.875 0.0302734 0 
+0 0 0 0 0 
 INFO: Saved inference results to file: tb_data/csim_results.log
 INFO: [SIM 211-1] CSim done with 0 errors.
 INFO: [SIM 211-3] *************** CSIM finish ***************
-***** C SIMULATION COMPLETED IN 0h0m12s *****
-INFO: [Common 17-206] Exiting vivado_hls at Fri Dec 31 03:11:44 2021...
+***** C SIMULATION COMPLETED IN 0h0m10s *****
+INFO: [Common 17-206] Exiting vivado_hls at Fri Dec 31 05:17:24 2021...
