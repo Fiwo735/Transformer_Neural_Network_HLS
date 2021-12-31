@@ -1,12 +1,11 @@
 INFO: [SIM 2] *************** CSIM start ***************
 INFO: [SIM 4] CSIM will launch GCC as the compiler.
-make: `csim.exe' is up to date.
-Processing input 0
-Loading weights from txt
-Predictions
-1 0 0 0 0 
-Quantized predictions
-0 0 0 0.917969 0 
-INFO: Saved inference results to file: tb_data/csim_results.log
-INFO: [SIM 1] CSim done with 0 errors.
+   Compiling ../../../../firmware/myproject.cpp in debug mode
+In file included from ../../../../firmware/myproject.cpp:22:0:
+../../../../firmware/parameters.h:19:24: fatal error: weights/w2.h: No such file or directory
+ #include "weights/w2.h"
+                        ^
+compilation terminated.
+make: *** [obj/myproject.o] Error 1
+ERR: [SIM 100] 'csim_design' failed: compilation error(s).
 INFO: [SIM 3] *************** CSIM finish ***************
