@@ -60,7 +60,7 @@ struct transformer_config
     typedef float table_t;
 
     // Data type definitions for normalize
-    typedef float bias_t; //TODO: we need separate bias for norm1/norm2/ff?
+    typedef float bias_t;
     typedef float scale_t;
 
     // Layer Sizes
@@ -88,7 +88,7 @@ struct transformer_config
     using product = nnet::product::mult<x_T, y_T, res_T>;
 };
 
-template<class data_T, class res_T, typename CONFIG_T>
+template<class data_T, class res_T, typename CONFIG_T, typename SA_CONFIG_T, typename SA_NORM_CONFIG_T, typename SA_DENSE0_CONFIG_T, typename SA_DENSE1_CONFIG_T, typename SA_SOFTMAX_CONFIG_T, typename SA_DENSE2_CONFIG_T, typename SA_DENSE3_CONFIG_T, typename NORM0_CONFIG_T, typename SIG0_CONFIG_T, typename DENSE0_CONFIG_T, typename NORM1_CONFIG_T, typename SIG1_CONFIG_T, typename DENSE1_CONFIG_T>
 void transformer(
     data_T    data[CONFIG_T::n_in],
     res_T     res[CONFIG_T::n_out],
@@ -106,11 +106,11 @@ void transformer(
     typename CONFIG_T::norm1_bias_t      norm1_bias[CONFIG_T::n_norm1_bias],
     typename CONFIG_T::dense1_weight_t   dense1_weight[CONFIG_T::n_dense1_weight]
 ){
-    std::ofstream fout("tb_data/csim_layers.log");
+    std::ofstream fout("tb_data/csim_layers.log", std::ios_base::app);
 
     // 1 Self-attention
     data_T self_attention_out[CONFIG_T::n_in];
-    nnet::self_attention<data_T, data_T, CONFIG_T>(
+    nnet::self_attention<data_T, data_T, SA_CONFIG_T, SA_NORM_CONFIG_T, SA_DENSE0_CONFIG_T, SA_DENSE1_CONFIG_T, SA_SOFTMAX_CONFIG_T, SA_DENSE2_CONFIG_T, SA_DENSE3_CONFIG_T>(
         data,
         self_attention_out,
         
@@ -120,52 +120,55 @@ void transformer(
         SA_dense_weight,
         SA_dense_bias
     );
-    fout << "self_attention_out:" << "\n";
+    fout << "self_attention_out ("<< CONFIG_T::n_in << "):" << "\n";
     nnet::print_result<data_T, CONFIG_T::n_in>(self_attention_out, fout);
 
     // 2.1 norm
     data_T norm0_out[CONFIG_T::n_in];
-    nnet::normalize<data_T, data_T, CONFIG_T>(self_attention_out, norm0_out, norm0_weight, norm0_bias);
-    fout << "norm0_out:" << "\n";
+    nnet::normalize<data_T, data_T, NORM0_CONFIG_T>(self_attention_out, norm0_out, norm0_weight, norm0_bias);
+    fout << "norm0_out ("<< CONFIG_T::n_in << "):" << "\n";
     nnet::print_result<data_T, CONFIG_T::n_in>(norm0_out, fout);
 
     // 2.2 SiLU
     data_T SiLU0_out[CONFIG_T::n_in];
     data_T sigmoid0_out[CONFIG_T::n_in];
-    nnet::sigmoid<data_T, data_T, CONFIG_T>(norm0_out, sigmoid0_out);
+    nnet::sigmoid<data_T, data_T, SIG0_CONFIG_T>(norm0_out, sigmoid0_out);
     silu0: for (int isilu0 = 0; isilu0 < CONFIG_T::n_in; isilu0++) {
         SiLU0_out[isilu0] = CONFIG_T::template product<data_T, data_T, data_T>::product(norm0_out[isilu0], sigmoid0_out[isilu0]);
     }
-    fout << "SiLU0_out:" << "\n";
+    fout << "SiLU0_out ("<< CONFIG_T::n_in << "):" << "\n";
     nnet::print_result<data_T, CONFIG_T::n_in>(SiLU0_out, fout);
 
     // 2.3 dense
     data_T dense0_out[CONFIG_T::n_in_doubled];
-    data_T zero_bias[CONFIG_T::n_in_doubled]; // TODO: do we need to initialize to 0?
-    nnet::dense<data_T, data_T, CONFIG_T>(SiLU0_out, dense0_out, dense0_weight, zero_bias);
-    fout << "dense0_out:" << "\n";
+    data_T zero_bias0[CONFIG_T::n_in_doubled];
+    nnet::fill_zero<data_T,CONFIG_T::n_in_doubled >(zero_bias0);
+    nnet::dense<data_T, data_T, DENSE0_CONFIG_T>(SiLU0_out, dense0_out, dense0_weight, zero_bias0);
+    fout << "dense0_out ("<< CONFIG_T::n_in_doubled << "):" << "\n";
     nnet::print_result<data_T, CONFIG_T::n_in_doubled>(dense0_out, fout);
 
     // 2.4 norm
     data_T norm1_out[CONFIG_T::n_in_doubled];
-    nnet::normalize<data_T, data_T, CONFIG_T>(dense0_out, norm1_out, norm1_weight, norm1_bias);
-    fout << "norm1_out:" << "\n";
+    nnet::normalize<data_T, data_T, NORM1_CONFIG_T>(dense0_out, norm1_out, norm1_weight, norm1_bias);
+    fout << "norm1_out ("<< CONFIG_T::n_in_doubled << "):" << "\n";
     nnet::print_result<data_T, CONFIG_T::n_in_doubled>(norm1_out, fout);
 
     // 2.5 SiLU
     data_T SiLU1_out[CONFIG_T::n_in_doubled];
     data_T sigmoid1_out[CONFIG_T::n_in_doubled];
-    nnet::sigmoid<data_T, data_T, CONFIG_T>(norm1_out, sigmoid1_out);
+    nnet::sigmoid<data_T, data_T, SIG1_CONFIG_T>(norm1_out, sigmoid1_out);
     silu1: for (int isilu1 = 0; isilu1 < CONFIG_T::n_in_doubled; isilu1++) {
         SiLU1_out[isilu1] = CONFIG_T::template product<data_T, data_T, data_T>::product(norm1_out[isilu1], sigmoid1_out[isilu1]);
     }
-    fout << "SiLU1_out:" << "\n";
+    fout << "SiLU1_out ("<< CONFIG_T::n_in_doubled << "):" << "\n";
     nnet::print_result<data_T, CONFIG_T::n_in_doubled>(SiLU1_out, fout);
 
     // 2.6 dense
     data_T dense1_out[CONFIG_T::n_in];
-    nnet::dense<data_T, data_T, CONFIG_T>(SiLU1_out, dense1_out, dense1_weight, zero_bias);
-    fout << "dense1_out:" << "\n";
+    data_T zero_bias1[CONFIG_T::n_in];
+    nnet::fill_zero<data_T,CONFIG_T::n_in >(zero_bias1);
+    nnet::dense<data_T, data_T, DENSE1_CONFIG_T>(SiLU1_out, dense1_out, dense1_weight, zero_bias1);
+    fout << "dense1_out ("<< CONFIG_T::n_in << "):" << "\n";
     nnet::print_result<data_T, CONFIG_T::n_in>(dense1_out, fout);
 
     // 3 Sum (1) + (2)
@@ -176,7 +179,7 @@ void transformer(
         }
         sum_out[iendsum] = self_attention_out[iendsum] + dense1_out[iendsum];
     }
-    fout << "sum_out:" << "\n";
+    fout << "sum_out ("<< CONFIG_T::n_in << "):" << "\n";
     nnet::print_result<data_T, CONFIG_T::n_in>(sum_out, fout);
 
     // 4 Cast
@@ -186,6 +189,8 @@ void transformer(
         }
         res[ires] = cast<data_T, res_T, CONFIG_T>(sum_out[ires]);
     }
+
+    fout.close();
 }
 
 }

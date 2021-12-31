@@ -41,12 +41,17 @@ void dense(
     typename CONFIG_T::weight_t  weights[CONFIG_T::n_in*CONFIG_T::n_out],
     typename CONFIG_T::bias_t    biases[CONFIG_T::n_out])
 {
+    std::ofstream fout("tb_data/csim_layers.log", std::ios_base::app);
+    // fout << "in dense" << "\n";
+
     #pragma HLS inline
     if (CONFIG_T::strategy == nnet::latency) {
         dense_latency<data_T, res_T, CONFIG_T>(data, res, weights, biases);
     } else {
         dense_resource<data_T, res_T, CONFIG_T>(data, res, weights, biases);
     }
+
+    fout.close();
 }
 
 }
