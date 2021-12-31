@@ -43,12 +43,45 @@ obj/myproject.o: ../../../../firmware/myproject.cpp \
  ../../../../firmware/nnet_utils/nnet_activation_stream.h \
  ../../../../firmware/nnet_utils/nnet_self_attention.h \
  ../../../../firmware/nnet_utils/nnet_array.h \
- ../../../../firmware/weights/w2.h ../../../../firmware/weights/b2.h \
- ../../../../firmware/weights/w5.h ../../../../firmware/weights/b5.h \
- ../../../../firmware/weights/w8.h ../../../../firmware/weights/b8.h \
- ../../../../firmware/weights/w11.h ../../../../firmware/weights/b11.h \
  ../../../../firmware/weights/cls_token.h \
  ../../../../firmware/weights/inp_layer_weight.h \
  ../../../../firmware/weights/inp_layer_bias.h \
+ ../../../../firmware/weights/out_layer_0_weight.h \
+ ../../../../firmware/weights/out_layer_0_bias.h \
+ ../../../../firmware/weights/out_layer_1_weight.h \
+ ../../../../firmware/weights/out_layer_1_bias.h \
+ ../../../../firmware/weights/transformers_0_self_attention_norm_weight.h \
+ ../../../../firmware/weights/transformers_0_self_attention_norm_bias.h \
+ ../../../../firmware/weights/transformers_0_self_attention_qkv_weight.h \
+ ../../../../firmware/weights/transformers_0_self_attention_out_weight.h \
+ ../../../../firmware/weights/transformers_0_self_attention_out_bias.h \
  ../../../../firmware/weights/transformers_0_linear_0_weight.h \
- ../../../../firmware/weights/transformers_0_linear_0_bias.h
+ ../../../../firmware/weights/transformers_0_linear_0_bias.h \
+ ../../../../firmware/weights/transformers_0_linear_2_weight.h \
+ ../../../../firmware/weights/transformers_0_linear_3_weight.h \
+ ../../../../firmware/weights/transformers_0_linear_3_bias.h \
+ ../../../../firmware/weights/transformers_0_linear_5_weight.h \
+ ../../../../firmware/weights/transformers_1_self_attention_norm_weight.h \
+ ../../../../firmware/weights/transformers_1_self_attention_norm_bias.h \
+ ../../../../firmware/weights/transformers_1_self_attention_qkv_weight.h \
+ ../../../../firmware/weights/transformers_1_self_attention_out_weight.h \
+ ../../../../firmware/weights/transformers_1_self_attention_out_bias.h \
+ ../../../../firmware/weights/transformers_1_linear_0_weight.h \
+ ../../../../firmware/weights/transformers_1_linear_0_bias.h \
+ ../../../../firmware/weights/transformers_1_linear_2_weight.h \
+ ../../../../firmware/weights/transformers_1_linear_3_weight.h \
+ ../../../../firmware/weights/transformers_1_linear_3_bias.h \
+ ../../../../firmware/weights/transformers_1_linear_5_weight.h \
+ ../../../../firmware/weights/transformers_2_self_attention_norm_weight.h \
+ ../../../../firmware/weights/transformers_2_self_attention_norm_bias.h \
+ ../../../../firmware/weights/transformers_2_self_attention_qkv_weight.h \
+ ../../../../firmware/weights/transformers_2_self_attention_out_weight.h \
+ ../../../../firmware/weights/transformers_2_self_attention_out_bias.h \
+ ../../../../firmware/weights/transformers_2_linear_0_weight.h \
+ ../../../../firmware/weights/transformers_2_linear_0_bias.h \
+ ../../../../firmware/weights/transformers_2_linear_2_weight.h \
+ ../../../../firmware/weights/transformers_2_linear_3_weight.h \
+ ../../../../firmware/weights/transformers_2_linear_3_bias.h \
+ ../../../../firmware/weights/transformers_2_linear_5_weight.h \
+ ../../../../firmware/weights/my_example0.h \
+ ../../../../firmware/weights/my_example1.h

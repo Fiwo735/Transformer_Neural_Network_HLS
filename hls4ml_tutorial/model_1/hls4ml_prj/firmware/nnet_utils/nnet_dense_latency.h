@@ -35,6 +35,9 @@ void dense_latency(
     typename CONFIG_T::weight_t  weights[CONFIG_T::n_in*CONFIG_T::n_out],
     typename CONFIG_T::bias_t    biases[CONFIG_T::n_out])
 {
+    std::ofstream fout("tb_data/csim_layers.log", std::ios_base::app);
+    // fout << "in dense_latency" << "\n";
+
     data_T cache;
     typename CONFIG_T::accum_t mult[CONFIG_T::n_in*CONFIG_T::n_out];
     typename CONFIG_T::accum_t acc[CONFIG_T::n_out];
@@ -94,6 +97,7 @@ void dense_latency(
             }
         int index = ii*CONFIG_T::n_out+jj;
         mult[index] = CONFIG_T::template product<data_T, typename CONFIG_T::weight_t, typename CONFIG_T::accum_t>::product(cache, weights[index]);
+        // fout << "ii=" << ii << ", jj=" << jj << ", index=" << index << ", cache=" << cache << ", weights[index]=" << weights[index] << ", mult[index]=" << mult[index] << "\n";
         }
     }
 
@@ -103,6 +107,7 @@ void dense_latency(
             #pragma HLS UNROLL
         }
         acc[iacc] = (typename CONFIG_T::accum_t) biases[iacc];
+        // fout << "iacc=" << iacc << ", acc[iacc]=" << acc[iacc] << "\n";
     }
 
     // Accumulate multiplication result
@@ -111,8 +116,9 @@ void dense_latency(
             #pragma HLS PIPELINE
         }
         Accum2: for(int jj = 0; jj < CONFIG_T::n_out; jj++) {
-        int index = ii*CONFIG_T::n_out+jj;
-        acc[jj] += mult[index];
+            int index = ii*CONFIG_T::n_out+jj;
+            acc[jj] += mult[index];
+            // fout << "ii=" << ii << ", jj=" << jj << ", index=" << index << ", mult[index]=" << mult[index] << ", acc[jj]=" << acc[jj] << "\n";
         }
     }
 
@@ -124,6 +130,8 @@ void dense_latency(
         //res[ires] = (res_T) (acc[ires]);
         res[ires] = cast<data_T, res_T, CONFIG_T>(acc[ires]);
     }
+
+    fout.close();
 }
 
 }

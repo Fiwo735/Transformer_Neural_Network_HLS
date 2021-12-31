@@ -1,126 +1,13 @@
 INFO: [SIM 2] *************** CSIM start ***************
 INFO: [SIM 4] CSIM will launch GCC as the compiler.
    Compiling ../../../../firmware/myproject.cpp in debug mode
-In file included from ../../../../firmware/parameters.h:15:0,
-                 from ../../../../firmware/myproject.cpp:22:
-../../../../firmware/nnet_utils/nnet_transformer.h: In instantiation of ‘void nnet::transformer(data_T*, res_T*, typename CONFIG_T::SA_norm_weight_t*, typename CONFIG_T::SA_norm_bias_t*, typename CONFIG_T::SA_QKV_weight_t*, typename CONFIG_T::SA_dense_weight_t*, typename CONFIG_T::SA_dense_bias_t*, typename CONFIG_T::norm0_weight_t*, typename CONFIG_T::norm0_bias_t*, typename CONFIG_T::dense0_weight_t*, typename CONFIG_T::norm1_weight_t*, typename CONFIG_T::norm1_bias_t*, typename CONFIG_T::dense1_weight_t*) [with data_T = ap_fixed<16, 6>; res_T = ap_fixed<16, 6>; CONFIG_T = transformer_config0; typename CONFIG_T::SA_norm_weight_t = ap_fixed<16, 6>; typename CONFIG_T::SA_norm_bias_t = ap_fixed<16, 6>; typename CONFIG_T::SA_QKV_weight_t = ap_fixed<16, 6>; typename CONFIG_T::SA_dense_weight_t = ap_fixed<16, 6>; typename CONFIG_T::SA_dense_bias_t = ap_fixed<16, 6>; typename CONFIG_T::norm0_weight_t = ap_fixed<16, 6>; typename CONFIG_T::norm0_bias_t = ap_fixed<16, 6>; typename CONFIG_T::dense0_weight_t = ap_fixed<16, 6>; typename CONFIG_T::norm1_weight_t = ap_fixed<16, 6>; typename CONFIG_T::norm1_bias_t = ap_fixed<16, 6>; typename CONFIG_T::dense1_weight_t = ap_fixed<16, 6>]’:
-../../../../firmware/myproject.cpp:135:5:   required from here
-../../../../firmware/nnet_utils/nnet_transformer.h:113:51: error: no matching function for call to ‘self_attention(ap_fixed<16, 6>*&, ap_fixed<16, 6> [256], transformer_config0::SA_norm_weight_t*&, transformer_config0::SA_norm_bias_t*&, transformer_config0::SA_QKV_weight_t*&, transformer_config0::SA_dense_weight_t*&, transformer_config0::SA_dense_bias_t*&)’
-     nnet::self_attention<data_T, data_T, CONFIG_T>(
-     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
-         data,
-         ~~~~~                                      
-         self_attention_out,
-         ~~~~~~~~~~~~~~~~~~~                        
- 
-                                                    
-         SA_norm_weight,
-         ~~~~~~~~~~~~~~~                            
-         SA_norm_bias,
-         ~~~~~~~~~~~~~                              
-         SA_QKV_weight,
-         ~~~~~~~~~~~~~~                             
-         SA_dense_weight,
-         ~~~~~~~~~~~~~~~~                           
-         SA_dense_bias
-         ~~~~~~~~~~~~~                              
-     );
-     ~                                              
-In file included from ../../../../firmware/nnet_utils/nnet_transformer.h:10:0,
-                 from ../../../../firmware/parameters.h:15,
-                 from ../../../../firmware/myproject.cpp:22:
-../../../../firmware/nnet_utils/nnet_self_attention.h:63:6: note: candidate: template<class data_T, class res_T, class CONFIG_T> void nnet::self_attention(data_T*, res_T*, typename CONFIG_T::norm_weight_t*, typename CONFIG_T::norm_bias_t*, typename CONFIG_T::QKV_weight_t*, typename CONFIG_T::dense_weight_t*, typename CONFIG_T::dense_bias_t*)
- void self_attention(
-      ^~~~~~~~~~~~~~
-../../../../firmware/nnet_utils/nnet_self_attention.h:63:6: note:   template argument deduction/substitution failed:
-../../../../firmware/nnet_utils/nnet_self_attention.h: In substitution of ‘template<class data_T, class res_T, class CONFIG_T> void nnet::self_attention(data_T*, res_T*, typename CONFIG_T::norm_weight_t*, typename CONFIG_T::norm_bias_t*, typename CONFIG_T::QKV_weight_t*, typename CONFIG_T::dense_weight_t*, typename CONFIG_T::dense_bias_t*) [with data_T = ap_fixed<16, 6>; res_T = ap_fixed<16, 6>; CONFIG_T = transformer_config0]’:
-../../../../firmware/nnet_utils/nnet_transformer.h:113:51:   required from ‘void nnet::transformer(data_T*, res_T*, typename CONFIG_T::SA_norm_weight_t*, typename CONFIG_T::SA_norm_bias_t*, typename CONFIG_T::SA_QKV_weight_t*, typename CONFIG_T::SA_dense_weight_t*, typename CONFIG_T::SA_dense_bias_t*, typename CONFIG_T::norm0_weight_t*, typename CONFIG_T::norm0_bias_t*, typename CONFIG_T::dense0_weight_t*, typename CONFIG_T::norm1_weight_t*, typename CONFIG_T::norm1_bias_t*, typename CONFIG_T::dense1_weight_t*) [with data_T = ap_fixed<16, 6>; res_T = ap_fixed<16, 6>; CONFIG_T = transformer_config0; typename CONFIG_T::SA_norm_weight_t = ap_fixed<16, 6>; typename CONFIG_T::SA_norm_bias_t = ap_fixed<16, 6>; typename CONFIG_T::SA_QKV_weight_t = ap_fixed<16, 6>; typename CONFIG_T::SA_dense_weight_t = ap_fixed<16, 6>; typename CONFIG_T::SA_dense_bias_t = ap_fixed<16, 6>; typename CONFIG_T::norm0_weight_t = ap_fixed<16, 6>; typename CONFIG_T::norm0_bias_t = ap_fixed<16, 6>; typename CONFIG_T::dense0_weight_t = ap_fixed<16, 6>; typename CONFIG_T::norm1_weight_t = ap_fixed<16, 6>; typename CONFIG_T::norm1_bias_t = ap_fixed<16, 6>; typename CONFIG_T::dense1_weight_t = ap_fixed<16, 6>]’
-../../../../firmware/myproject.cpp:135:5:   required from here
-../../../../firmware/nnet_utils/nnet_self_attention.h:63:6: error: no type named ‘dense_bias_t’ in ‘struct transformer_config0’
-In file included from ../../../../firmware/parameters.h:15:0,
-                 from ../../../../firmware/myproject.cpp:22:
-../../../../firmware/nnet_utils/nnet_transformer.h: In instantiation of ‘void nnet::transformer(data_T*, res_T*, typename CONFIG_T::SA_norm_weight_t*, typename CONFIG_T::SA_norm_bias_t*, typename CONFIG_T::SA_QKV_weight_t*, typename CONFIG_T::SA_dense_weight_t*, typename CONFIG_T::SA_dense_bias_t*, typename CONFIG_T::norm0_weight_t*, typename CONFIG_T::norm0_bias_t*, typename CONFIG_T::dense0_weight_t*, typename CONFIG_T::norm1_weight_t*, typename CONFIG_T::norm1_bias_t*, typename CONFIG_T::dense1_weight_t*) [with data_T = ap_fixed<16, 6>; res_T = ap_fixed<16, 6>; CONFIG_T = transformer_config0; typename CONFIG_T::SA_norm_weight_t = ap_fixed<16, 6>; typename CONFIG_T::SA_norm_bias_t = ap_fixed<16, 6>; typename CONFIG_T::SA_QKV_weight_t = ap_fixed<16, 6>; typename CONFIG_T::SA_dense_weight_t = ap_fixed<16, 6>; typename CONFIG_T::SA_dense_bias_t = ap_fixed<16, 6>; typename CONFIG_T::norm0_weight_t = ap_fixed<16, 6>; typename CONFIG_T::norm0_bias_t = ap_fixed<16, 6>; typename CONFIG_T::dense0_weight_t = ap_fixed<16, 6>; typename CONFIG_T::norm1_weight_t = ap_fixed<16, 6>; typename CONFIG_T::norm1_bias_t = ap_fixed<16, 6>; typename CONFIG_T::dense1_weight_t = ap_fixed<16, 6>]’:
-../../../../firmware/myproject.cpp:135:5:   required from here
-../../../../firmware/nnet_utils/nnet_transformer.h:128:46: error: no matching function for call to ‘normalize(ap_fixed<16, 6> [256], ap_fixed<16, 6> [256], transformer_config0::norm0_weight_t*&, transformer_config0::norm0_bias_t*&)’
-     nnet::normalize<data_T, data_T, CONFIG_T>(self_attention_out, norm0_out, norm0_weight, norm0_bias);
-     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-In file included from ../../../../firmware/parameters.h:14:0,
-                 from ../../../../firmware/myproject.cpp:22:
-../../../../firmware/nnet_utils/nnet_batchnorm.h:51:6: note: candidate: template<class data_T, class res_T, class CONFIG_T> void nnet::normalize(data_T*, res_T*, typename CONFIG_T::scale_t*, typename CONFIG_T::bias_t*)
- void normalize(
-      ^~~~~~~~~
-../../../../firmware/nnet_utils/nnet_batchnorm.h:51:6: note:   template argument deduction/substitution failed:
-In file included from ../../../../firmware/parameters.h:15:0,
-                 from ../../../../firmware/myproject.cpp:22:
-../../../../firmware/nnet_utils/nnet_transformer.h:128:46: note:   cannot convert ‘norm0_weight’ (type ‘transformer_config0::norm0_weight_t* {aka ap_fixed<16, 6>*}’) to type ‘nnet::transformer_config::scale_t* {aka float*}’
-     nnet::normalize<data_T, data_T, CONFIG_T>(self_attention_out, norm0_out, norm0_weight, norm0_bias);
-     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-In file included from ../../../../firmware/parameters.h:15:0,
-                 from ../../../../firmware/myproject.cpp:22:
-../../../../firmware/nnet_utils/nnet_transformer.h:145:42: error: no matching function for call to ‘dense(ap_fixed<16, 6> [256], ap_fixed<16, 6> [512], transformer_config0::dense0_weight_t*&, ap_fixed<16, 6> [512])’
-     nnet::dense<data_T, data_T, CONFIG_T>(SiLU0_out, dense0_out, dense0_weight, zero_bias);
-     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-In file included from ../../../../firmware/parameters.h:11:0,
-                 from ../../../../firmware/myproject.cpp:22:
-../../../../firmware/nnet_utils/nnet_dense.h:38:6: note: candidate: template<class data_T, class res_T, class CONFIG_T> void nnet::dense(data_T*, res_T*, typename CONFIG_T::weight_t*, typename CONFIG_T::bias_t*)
- void dense(
-      ^~~~~
-../../../../firmware/nnet_utils/nnet_dense.h:38:6: note:   template argument deduction/substitution failed:
-In file included from ../../../../firmware/parameters.h:15:0,
-                 from ../../../../firmware/myproject.cpp:22:
-../../../../firmware/nnet_utils/nnet_transformer.h:145:42: note:   cannot convert ‘zero_bias’ (type ‘ap_fixed<16, 6> [512]’) to type ‘nnet::transformer_config::bias_t* {aka float*}’
-     nnet::dense<data_T, data_T, CONFIG_T>(SiLU0_out, dense0_out, dense0_weight, zero_bias);
-     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-In file included from ../../../../firmware/parameters.h:13:0,
-                 from ../../../../firmware/myproject.cpp:22:
-../../../../firmware/nnet_utils/nnet_dense_stream.h:29:6: note: candidate: template<class data_T, class res_T, class CONFIG_T> void nnet::dense(hls::stream<srcType>&, hls::stream<dstType>&, typename CONFIG_T::weight_t*, typename CONFIG_T::bias_t*)
- void dense(
-      ^~~~~
-../../../../firmware/nnet_utils/nnet_dense_stream.h:29:6: note:   template argument deduction/substitution failed:
-In file included from ../../../../firmware/parameters.h:15:0,
-                 from ../../../../firmware/myproject.cpp:22:
-../../../../firmware/nnet_utils/nnet_transformer.h:145:42: note:   cannot convert ‘SiLU0_out’ (type ‘ap_fixed<16, 6> [256]’) to type ‘hls::stream<ap_fixed<16, 6> >&’
-     nnet::dense<data_T, data_T, CONFIG_T>(SiLU0_out, dense0_out, dense0_weight, zero_bias);
-     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-../../../../firmware/nnet_utils/nnet_transformer.h:151:46: error: no matching function for call to ‘normalize(ap_fixed<16, 6> [512], ap_fixed<16, 6> [512], transformer_config0::norm1_weight_t*&, transformer_config0::norm1_bias_t*&)’
-     nnet::normalize<data_T, data_T, CONFIG_T>(dense0_out, norm1_out, norm1_weight, norm1_bias);
-     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-In file included from ../../../../firmware/parameters.h:14:0,
-                 from ../../../../firmware/myproject.cpp:22:
-../../../../firmware/nnet_utils/nnet_batchnorm.h:51:6: note: candidate: template<class data_T, class res_T, class CONFIG_T> void nnet::normalize(data_T*, res_T*, typename CONFIG_T::scale_t*, typename CONFIG_T::bias_t*)
- void normalize(
-      ^~~~~~~~~
-../../../../firmware/nnet_utils/nnet_batchnorm.h:51:6: note:   template argument deduction/substitution failed:
-In file included from ../../../../firmware/parameters.h:15:0,
-                 from ../../../../firmware/myproject.cpp:22:
-../../../../firmware/nnet_utils/nnet_transformer.h:151:46: note:   cannot convert ‘norm1_weight’ (type ‘transformer_config0::norm1_weight_t* {aka ap_fixed<16, 6>*}’) to type ‘nnet::transformer_config::scale_t* {aka float*}’
-     nnet::normalize<data_T, data_T, CONFIG_T>(dense0_out, norm1_out, norm1_weight, norm1_bias);
-     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-../../../../firmware/nnet_utils/nnet_transformer.h:167:42: error: no matching function for call to ‘dense(ap_fixed<16, 6> [512], ap_fixed<16, 6> [256], transformer_config0::dense1_weight_t*&, ap_fixed<16, 6> [512])’
-     nnet::dense<data_T, data_T, CONFIG_T>(SiLU1_out, dense1_out, dense1_weight, zero_bias);
-     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-In file included from ../../../../firmware/parameters.h:11:0,
-                 from ../../../../firmware/myproject.cpp:22:
-../../../../firmware/nnet_utils/nnet_dense.h:38:6: note: candidate: template<class data_T, class res_T, class CONFIG_T> void nnet::dense(data_T*, res_T*, typename CONFIG_T::weight_t*, typename CONFIG_T::bias_t*)
- void dense(
-      ^~~~~
-../../../../firmware/nnet_utils/nnet_dense.h:38:6: note:   template argument deduction/substitution failed:
-In file included from ../../../../firmware/parameters.h:15:0,
-                 from ../../../../firmware/myproject.cpp:22:
-../../../../firmware/nnet_utils/nnet_transformer.h:167:42: note:   cannot convert ‘zero_bias’ (type ‘ap_fixed<16, 6> [512]’) to type ‘nnet::transformer_config::bias_t* {aka float*}’
-     nnet::dense<data_T, data_T, CONFIG_T>(SiLU1_out, dense1_out, dense1_weight, zero_bias);
-     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-In file included from ../../../../firmware/parameters.h:13:0,
-                 from ../../../../firmware/myproject.cpp:22:
-../../../../firmware/nnet_utils/nnet_dense_stream.h:29:6: note: candidate: template<class data_T, class res_T, class CONFIG_T> void nnet::dense(hls::stream<srcType>&, hls::stream<dstType>&, typename CONFIG_T::weight_t*, typename CONFIG_T::bias_t*)
- void dense(
-      ^~~~~
-../../../../firmware/nnet_utils/nnet_dense_stream.h:29:6: note:   template argument deduction/substitution failed:
-In file included from ../../../../firmware/parameters.h:15:0,
-                 from ../../../../firmware/myproject.cpp:22:
-../../../../firmware/nnet_utils/nnet_transformer.h:167:42: note:   cannot convert ‘SiLU1_out’ (type ‘ap_fixed<16, 6> [512]’) to type ‘hls::stream<ap_fixed<16, 6> >&’
-     nnet::dense<data_T, data_T, CONFIG_T>(SiLU1_out, dense1_out, dense1_weight, zero_bias);
-     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-make: *** [obj/myproject.o] Error 1
-ERR: [SIM 100] 'csim_design' failed: compilation error(s).
+   Generating csim.exe
+Processing input 0
+Loading weights from txt
+Predictions
+1 0 0 0 0 
+Quantized predictions
+0 0 0.875 0.0302734 0 
+INFO: Saved inference results to file: tb_data/csim_results.log
+INFO: [SIM 1] CSim done with 0 errors.
 INFO: [SIM 3] *************** CSIM finish ***************
