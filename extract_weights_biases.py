@@ -1,12 +1,16 @@
 import torch
 import numpy as np
 
-def extract_weights_biases(model_path: str, result_path:str, var_type:str = "default_model_t", flatten_order:str = "C"):
+def extract_weights_biases(model_path: str, result_path:str, var_type:str = "model_default_t", flatten_order:str = "C"):
   model = torch.load(model_path)
   overview = []
   parameters_include = []
+  load_weights_from_txt = []
+
+  # i = 0
 
   for layer_name, values in model['state_dict'].items():
+    # i += 1
 
     h_file_name = layer_name.replace('.', '_')
     parameters_include.append('#include "weights/' + h_file_name + '.h"')
@@ -26,8 +30,25 @@ def extract_weights_biases(model_path: str, result_path:str, var_type:str = "def
     out_file.write("#ifndef " + header_guard_name + "\n")
     out_file.write("#define " + header_guard_name + "\n\n")
 
-    values = values.flatten(order=flatten_order)
-    declaration = var_type + " " + h_file_name + "[" + str(len(values)) + "]"
+    # print(layer_name)
+    # print(values.shape)
+    if len(values.shape) > 1:
+      # print(values.shape[-2:])
+      # print(values)
+      dim0, dim1 = values.shape[-2:]
+      values = values.flatten(order='C')
+      # print('flatten C')
+      # print(values)
+      values = values.reshape(dim1, dim0, order='F')
+      # print('reshape F')
+      # print(values)
+      values = values.flatten(order='C')
+      # print('flaten C final')
+      # print(values)
+
+    elements_count = len(values)
+    declaration = var_type + " " + h_file_name + "[" + str(elements_count) + "]"
+    load_weights_from_txt.append(f'nnet::load_weights_from_txt<{var_type}, {elements_count}>({h_file_name}, "{h_file_name}.txt");')
 
     # declaration
     out_file.write("#ifndef __SYNTHESIS__\n")
@@ -47,7 +68,9 @@ def extract_weights_biases(model_path: str, result_path:str, var_type:str = "def
     out_file.write("#endif\n")
     out_file.close()
     txt_file.close()
-  
+
+    # if i == 2:
+    #   exit()  
 
   # print summary
   print("Model taken from {}".format(model_path))
@@ -61,6 +84,9 @@ def extract_weights_biases(model_path: str, result_path:str, var_type:str = "def
 
   # print section of #includes for parameters.h
   print("\n".join(parameters_include))
+
+  #print section of nnet::load_weights_from_txt for myproject.cpp
+  print("\n".join(load_weights_from_txt))
 
 
 if __name__ == "__main__":
