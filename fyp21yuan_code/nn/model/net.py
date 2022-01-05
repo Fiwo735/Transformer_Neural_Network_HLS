@@ -4,6 +4,7 @@ import torch.nn.functional as F
 
 from .layer import Perceiver, PerceiverDynamicQuery, Transformer, FourierMixer, CrossTransformer
 
+torch.set_printoptions(profile='full', sci_mode=False, threshold=2097152)
 
 class DNN(nn.Module):
 
@@ -40,63 +41,101 @@ class ConstituentNet(nn.Module):
         self.num_transformers = num_transformers
         
         self.inp_layer = nn.Linear(in_dim, embbed_dim)
-        self.out_layer = nn.Sequential(
-            nn.LayerNorm(embbed_dim),
-            nn.Linear(embbed_dim, num_classes)
-        )
+        # self.out_layer = nn.Sequential(
+        #     nn.LayerNorm(embbed_dim),
+        #     nn.Linear(embbed_dim, num_classes)
+        # )
+        self.out_layer_0 = nn.LayerNorm(embbed_dim)
+        self.out_layer_1 = nn.Linear(embbed_dim, num_classes)
+        
         self.cls_token = nn.Parameter(torch.randn(1, 1, embbed_dim)) # learned classification token, (1, 1, C)
         self.transformers = nn.ModuleList([
             Transformer(embbed_dim, num_heads=num_heads, dropout=dropout) for _ in range(num_transformers)
         ])
 
+        self.curr_mean = 0.0
+        self.curr_var = 0.0
+        self.counter = 0
+
+    def get_avg_mean(self):
+        return self.curr_mean / self.counter
+
+    def get_avg_var(self):
+        return self.curr_var / self.counter
+
+    def get_counter(self):
+        return self.counter
+
     def forward(self, x):
 
         m_batch, seq_len, _ = x.size() # (m_batch, seq_len=100, input_dim=16)
         if not self.training:
-            print("x.size()")
+            print(f"x.size()")
             print(x.size())
 
         if not self.training:
-            print("input")
+            print(f"input -> {x.size()}")
             print(x)
 
         # Input layer
         out = self.inp_layer(x) # (m_batch, seq_len, C)
         if not self.training:
-            print("out (after input layer)")
+            print(f"out (after input layer) -> {out.size()}")
             print(out)
 
         # Append class tokens to input
         cls_tokens = self.cls_token.repeat(m_batch, 1, 1)
         out = torch.cat((cls_tokens, out), dim=1) # (m_batch, seq_len + 1, C)
         if not self.training:
-            print("cls_tokens")
+            print(f"cls_tokens -> {cls_tokens.size()}")
             print(cls_tokens)
-            print("out (after class tokens)")
+            print(f"out (after class tokens) -> {out.size()}")
             print(out)
 
         # Transformer layers
         for transformer in self.transformers:
             out = transformer(out)       # (m_batch, seq_len + 1, C)
             if not self.training:
-                print("out (after transformer layer)")
+                print(f"out (after transformer layer) -> {out.size()}")
                 print(out)
 
         # Output layer
         out = out[:, 0]                           # (m_batch, 1, C)
         if not self.training:
-            print("out (after out[:, 0])")
-            print(out)
-            
-        out = self.out_layer(out).squeeze(1)      # (m_batch, 1, C) -> (batch_m, num_classes)
-        if not self.training:
-            print("out (after out layer)")
+            print(f"out (after out[:, 0]) -> {out.size()}")
             print(out)
 
+        # For normalization calculation embedding
+        if self.training:
+            self.curr_var += torch.var(out, unbiased=False)
+            self.curr_mean += torch.mean(out)
+            self.counter += 1
+
+        out = self.out_layer_0(out)
         if not self.training:
-            print("softmax (before returning)")
-            print(F.log_softmax(out, dim=-1))
-        return F.log_softmax(out, dim=-1)
+            print(f"out (after out layer 0) -> {out.size()}")
+            print(out)
+
+        out = self.out_layer_1(out)
+        if not self.training:
+            print(f"out (after out layer 1) -> {out.size()}")
+            print(out)
+
+        out = out.squeeze(1)
+        if not self.training:
+            print(f"out (after squeeze()) -> {out.size()}")
+            print(out)
+            
+        # out = self.out_layer(out).squeeze(1)      # (m_batch, 1, C) -> (batch_m, num_classes)
+        # if not self.training:
+        #     print("out (after out layer)")
+        #     print(out)
+
+        final_result = F.log_softmax(out, dim=-1)
+        if not self.training:
+            print(f"final_result (softmax) -> {final_result.size()}")
+            print(final_result)
+        return final_result
 
 
 class ConstituentNetFourier(nn.Module):
@@ -404,3 +443,5 @@ if __name__ == "__main__":
     # instantiate model
     model = ConstituentNet()
     print("Model created: ", model)
+
+torch.set_printoptions(profile=None, sci_mode=None, threshold=None)
