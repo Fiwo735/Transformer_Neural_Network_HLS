@@ -126,22 +126,21 @@ void myproject(
 
     // 2 class token
     input_t embedded_with_cls[N_TRANSFORMER];
-    cls1: for (int icls1 = 0; icls1 < N_EMBEDDED; icls1++) {
-        embedded_with_cls[icls1] = embedded_input[icls1];
-    }
-    cls2: for (int icls2 = 0; icls2 < N_BATCH_SIZE; icls2++) {
-        embedded_with_cls[N_EMBEDDED + icls2] = cls_token[icls2];
-    }
     fout << "class tokens ("<< N_BATCH_SIZE << "):" << "\n";
     nnet::print_result<input_t, N_BATCH_SIZE>(cls_token, fout);
-    fout << "class token sum ("<< N_TRANSFORMER << "):" << "\n";
+
+    nnet::concatenate2d<input_t, input_t, input_t, concat_config0>(cls_token, embedded_input, embedded_with_cls);
+    fout << "class token concat ("<< N_TRANSFORMER << "):" << "\n";
     nnet::print_result<input_t, N_TRANSFORMER>(embedded_with_cls, fout);
 
     // 3.1 jet transformer
     input_t transformer_0_out[N_TRANSFORMER];
+    typename self_attention_config0::inv_sqrt_d_k_t inv_sqrt_d_k = N_SA_INV_SQRT_SIZE0;
     nnet::transformer<input_t, input_t, transformer_config0, self_attention_config0, sa_norm_config0, sa_dense_config0, sa_dense_config1, sa_softmax_config0, sa_dense_config2, sa_dense_config3, normalize_config1, sigmoid_config0, transformer_dense_config0, normalize_config2, sigmoid_config1, transformer_dense_config1>(
         embedded_with_cls,
         transformer_0_out,
+
+        inv_sqrt_d_k,
 
         transformers_0_self_attention_norm_weight,
         transformers_0_self_attention_norm_bias,
@@ -165,6 +164,8 @@ void myproject(
         transformer_0_out,
         transformer_1_out,
 
+        inv_sqrt_d_k,
+
         transformers_1_self_attention_norm_weight,
         transformers_1_self_attention_norm_bias,
         transformers_1_self_attention_qkv_weight,
@@ -187,6 +188,8 @@ void myproject(
     //     transformer_1_out,
     //     transformer_2_out,
 
+    //     inv_sqrt_d_k,
+
     //     transformers_2_self_attention_norm_weight,
     //     transformers_2_self_attention_norm_bias,
     //     transformers_2_self_attention_qkv_weight,
@@ -204,11 +207,16 @@ void myproject(
     // nnet::print_result<input_t, N_TRANSFORMER>(transformer_2_out, fout);
 
     // 4.1 MLP dimension reduction
+    // TODO: implement this using a new function
     input_t mlp_dimensions_reduced[N_BATCH_SIZE];
-    mlp_dim: for (int imlp = 0; imlp < N_BATCH_SIZE; imlp++) {
-        // mlp_dimensions_reduced[imlp] = transformer_2_out[imlp];
-        mlp_dimensions_reduced[imlp] = transformer_1_out[imlp];
+    mlp_dim: for (int imlp = 0; imlp < N_TRANSFORMER; imlp++) {
+        mlp_dimensions_reduced[imlp] = transformer_1_out[2 * imlp];
     }
+
+
+
+
+
     fout << "mlp_dimensions_reduced ("<< N_BATCH_SIZE << "):" << "\n";
     nnet::print_result<input_t, N_BATCH_SIZE>(mlp_dimensions_reduced, fout);
 
