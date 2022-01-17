@@ -171,16 +171,16 @@ if __name__ == "__main__":
   model_path = "fyp21yuan_code/experiments/constituent_base/best.pth.tar"
   result_path = "extracted_weights_biases/"
   norm_layer_base_names = {
-    'out_layer_0': (-0.0422399528324604, 1.6616789102554321),
-    'transformers.0.linear.0': (-0.014030318707227707, 127.25072479248047),
-    'transformers.0.linear.3': (0.0001844080543378368, 0.11668402701616287),
-    'transformers.0.self_attention.norm': (0.013345913961529732, 127.07893371582031),
-    'transformers.1.linear.0': (-0.029353268444538116, 127.50463104248047),
-    'transformers.1.linear.3': (0.017480721697211266, 0.11090429127216339),
-    'transformers.1.self_attention.norm': (-0.01761310175061226, 127.43500518798828),
-    'transformers.2.linear.0': (-0.043246205896139145, 127.74173736572266),
-    'transformers.2.linear.3': (-0.00957483146339655, 0.11539013683795929),
-    'transformers.2.self_attention.norm': (-0.04083692282438278, 127.71623992919922),
+    # 'out_layer_0': (-0.0422399528324604, 1.6616789102554321),
+    # 'transformers.0.linear.0': (-0.014030318707227707, 127.25072479248047),
+    # 'transformers.0.linear.3': (0.0001844080543378368, 0.11668402701616287),
+    # 'transformers.0.self_attention.norm': (0.013345913961529732, 127.07893371582031),
+    # 'transformers.1.linear.0': (-0.029353268444538116, 127.50463104248047),
+    # 'transformers.1.linear.3': (0.017480721697211266, 0.11090429127216339),
+    # 'transformers.1.self_attention.norm': (-0.01761310175061226, 127.43500518798828),
+    # 'transformers.2.linear.0': (-0.043246205896139145, 127.74173736572266),
+    # 'transformers.2.linear.3': (-0.00957483146339655, 0.11539013683795929),
+    # 'transformers.2.self_attention.norm': (-0.04083692282438278, 127.71623992919922),
   }
   extract_weights_biases(model_path=model_path, result_path=result_path, norm_layer_base_names=norm_layer_base_names)
 
