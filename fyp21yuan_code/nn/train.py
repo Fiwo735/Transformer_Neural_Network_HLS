@@ -198,7 +198,7 @@ def train(model, optimizer, scheduler, criterion, dataloader, metrics, writer, p
         batch_targets = np.empty((BATCH_SIZE,))
         for i, sample in enumerate(train_set):
             # print(f"i:{i}")
-            if i > 49998:
+            if i > 1000:
                 break
 
             # Unpack batch, move to device
@@ -236,9 +236,9 @@ def train(model, optimizer, scheduler, criterion, dataloader, metrics, writer, p
                 # print(tensor_targets.shape)
                 # print(tensor_targets)
 
-                model = model.double()
-                outputs = model(tensor_input_seqs.double())
-                # outputs = model(tensor_input_1ds.double())               # torch.tensor (n, num_classes)
+                model = model.float()
+                outputs = model(tensor_input_seqs.float())
+                # outputs = model(tensor_input_1ds.float())               # torch.tensor (n, num_classes)
 
                 # print(outputs.shape)
                 # print(outputs)
@@ -495,6 +495,12 @@ if __name__ == '__main__':
         val_dataloader = None,#val_loader,
         train_set=dataset,
     )
+
+    print(f"Net mean: {model.get_avg_mean()}, var: {model.get_avg_var()}")
+    for index, transformer in enumerate(model.transformers):
+        print(f"Trans{index} mean0: {transformer.get_avg_mean0()}, var0: {transformer.get_avg_var0()}")
+        print(f"Trans{index} mean3: {transformer.get_avg_mean3()}, var3: {transformer.get_avg_var3()}")
+        print(f"SA{index} mean: {transformer.self_attention.get_avg_mean()}, var: {transformer.self_attention.get_avg_var()}")
 
     # Close tensorboard writer
     writer.close()
