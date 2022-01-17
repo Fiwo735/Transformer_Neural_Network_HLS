@@ -26,13 +26,13 @@ obj/myproject.o: ../../../../firmware/myproject.cpp \
  ../../../../firmware/nnet_utils/nnet_helpers.h \
  ../../../../firmware/nnet_utils/nnet_activation.h \
  ../../../../firmware/nnet_utils/nnet_common.h \
+ ../../../../firmware/nnet_utils/nnet_mult.h \
+ ../../../../firmware/nnet_utils/nnet_helpers.h \
  ../../../../firmware/nnet_utils/nnet_activation_stream.h \
  ../../../../firmware/nnet_utils/nnet_types.h \
  ../../../../firmware/nnet_utils/nnet_stream.h \
  ../../../../firmware/nnet_utils/nnet_activation.h \
  ../../../../firmware/nnet_utils/nnet_dense.h \
- ../../../../firmware/nnet_utils/nnet_mult.h \
- ../../../../firmware/nnet_utils/nnet_helpers.h \
  ../../../../firmware/nnet_utils/nnet_dense_latency.h \
  ../../../../firmware/nnet_utils/nnet_dense_resource.h \
  ../../../../firmware/nnet_utils/nnet_dense_compressed.h \
@@ -43,6 +43,8 @@ obj/myproject.o: ../../../../firmware/myproject.cpp \
  ../../../../firmware/nnet_utils/nnet_activation_stream.h \
  ../../../../firmware/nnet_utils/nnet_self_attention.h \
  ../../../../firmware/nnet_utils/nnet_array.h \
+ ../../../../firmware/nnet_utils/nnet_layernorm.h \
+ ../../../../firmware/nnet_utils/nnet_merge.h \
  ../../../../firmware/weights/cls_token.h \
  ../../../../firmware/weights/inp_layer_weight.h \
  ../../../../firmware/weights/inp_layer_bias.h \

@@ -17,8 +17,8 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef NNET_BATCHNORM_H_
-#define NNET_BATCHNORM_H_
+#ifndef NNET_LAYERNORM_H_
+#define NNET_LAYERNORM_H_
 
 #include "nnet_common.h"
 #include "nnet_dense.h"
@@ -27,16 +27,18 @@
 
 namespace nnet {
 
-struct batchnorm_config
+struct layernorm_config
 {
     // Internal data type definitions
     typedef float bias_t;
     typedef float scale_t;
+    // typedef float inverse_count_t;
 
     // Layer Sizes
     static const unsigned n_in = 10;
     static const unsigned n_filt = -1;
-    
+    // inverse_count_t inverse_count = 0.1;
+
     // Resource reuse info
     static const unsigned io_type = io_parallel;
     static const unsigned reuse_factor = 1;
@@ -48,7 +50,7 @@ struct batchnorm_config
 };
 
 template<class data_T, class res_T, typename CONFIG_T>
-void normalize(
+void layer_normalize(
     data_T    data[CONFIG_T::n_in],
     res_T     res[CONFIG_T::n_in],
     typename CONFIG_T::scale_t  scale[CONFIG_T::n_in],
@@ -77,7 +79,15 @@ void normalize(
         #pragma HLS ARRAY_RESHAPE variable=scale complete dim=1
         #pragma HLS ARRAY_RESHAPE variable=bias complete dim=1
         #pragma HLS DATAFLOW
-    }            
+    }
+
+    // Calculate mean
+    data_T mean = (data_T) 0.0;
+    Mean: for (int imean = 0; imean < CONFIG_T::n_in; imean++) {
+      mean += data[imean];
+    }
+    // mean *= CONFIG_T::inverse_count;
+    mean /= CONFIG_T::n_in;
 
     // Calculate result
     Result: for (int ires = 0; ires < CONFIG_T::n_in; ires++) {
@@ -87,76 +97,14 @@ void normalize(
         }
         
         if (CONFIG_T::n_filt==-1) {
+            data_T numerator = data[ires] - mean;
+            // data_T denominator = 
             res[ires] = CONFIG_T::template product<data_T, typename CONFIG_T::scale_t, res_T>::product(data[ires], scale[ires]) + bias[ires];
 	    } else {
             int norm_index = ires%CONFIG_T::n_filt;
             res[ires] = CONFIG_T::template product<data_T, typename CONFIG_T::scale_t, res_T>::product(data[ires], scale[norm_index]) + bias[norm_index];
         }
 	}
-}
-
-// ****************************************************
-//       Merged Batch Normalization and Quantized Tanh
-// ****************************************************
-struct batchnorm_quantized_tanh_config
-{
-    // Layer Sizes
-    static const unsigned n_in = 10;
-    static const unsigned n_filt = -1;
-    
-    // Resource reuse info
-    static const unsigned io_type = io_parallel;
-    static const unsigned reuse_factor = 1;
-    static const unsigned n_zeros = 0;
-};
-
-template<class data_T, typename CONFIG_T>
-void  normalize_binary_tanh(data_T data[CONFIG_T::n_in], ap_uint<1> res[CONFIG_T::n_in], data_T threshold[CONFIG_T::n_in])
-{
-    if (CONFIG_T::io_type == io_parallel){
-        #pragma HLS PIPELINE
-        #pragma HLS ARRAY_PARTITION variable=res complete
-    }
-
-    data_T datareg;   
-    ap_uint<1> cache; 
-    for (int ii=0; ii<CONFIG_T::n_in; ii++) {
-        if (CONFIG_T::io_type == io_serial){
-            #pragma HLS PIPELINE
-        }
-        datareg = data[ii];	 
-        int norm_index = CONFIG_T::n_filt==-1 ? ii : ii%CONFIG_T::n_filt;
-        if( datareg > threshold[norm_index] ) cache = 1;
-        else cache = 0;
-
-        res[ii] = (ap_uint<1>) cache;
- 
-    }   
-}
-
-template<class data_T, typename CONFIG_T>
-void  normalize_ternary_tanh(data_T data[CONFIG_T::n_in], ap_int<2> res[CONFIG_T::n_in], data_T threshold_hi[CONFIG_T::n_in], data_T threshold_lo[CONFIG_T::n_in])
-{
-    if (CONFIG_T::io_type == io_parallel){
-        #pragma HLS PIPELINE
-        #pragma HLS ARRAY_PARTITION variable=res complete
-    }
-
-    data_T datareg;   
-    ap_int<2> cache; 
-    for (int ii=0; ii<CONFIG_T::n_in; ii++) {
-        if (CONFIG_T::io_type == io_serial){
-            #pragma HLS PIPELINE
-        }
-        datareg = data[ii];
-        int norm_index = CONFIG_T::n_filt==-1 ? ii : ii%CONFIG_T::n_filt;
-        if( datareg > threshold_hi[norm_index] ) cache = 1;
-        else if( datareg <= threshold_lo[norm_index]) cache = -1;
-        else cache = 0;
-
-        res[ii] = (ap_int<2>) cache;
-
-    }
 }
 
 }
