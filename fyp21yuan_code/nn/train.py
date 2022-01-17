@@ -500,7 +500,7 @@ if __name__ == '__main__':
     for index, transformer in enumerate(model.transformers):
         print(f"Trans{index} mean0: {transformer.get_avg_mean0()}, var0: {transformer.get_avg_var0()}")
         print(f"Trans{index} mean3: {transformer.get_avg_mean3()}, var3: {transformer.get_avg_var3()}")
-        print(f"SA{index} mean: {transformer.self_attention.get_avg_mean0()}, var: {transformer.self_attention.get_avg_var0()}")
+        print(f"SA{index} mean: {transformer.self_attention.get_avg_mean()}, var: {transformer.self_attention.get_avg_var()}")
 
     # Close tensorboard writer
     writer.close()

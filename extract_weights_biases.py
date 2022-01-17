@@ -1,10 +1,12 @@
 import torch
 import numpy as np
-from typing import Optional, List
+from typing import Optional, List, Dict, Tuple
 
 def transform_norm_weights_biases(
   arr: np.array,
   is_weight: bool,
+  mean: float,
+  var: float,
   corr_old_weights: Optional[List[float]] = None,
   eps: int = 1e-5
 ) -> np.array:
@@ -32,7 +34,7 @@ def transform_norm_weights_biases(
 def extract_weights_biases(
   model_path: str,
   result_path: str,
-  norm_layer_base_names: List[str],
+  norm_layer_base_names: Dict[str, Tuple[float, float]],
   var_type: str = "model_default_t",
   flatten_order: str = "C",
 ) -> None:
@@ -90,9 +92,10 @@ def extract_weights_biases(
     # apply the mean/variance embedding for normalization layers
     current_base = '.'.join(layer_name.split('.')[:-1])
     # print(f'Checking if {layer_name} (with base {current_base}) is in norm_layer_base_names')
-    if current_base in norm_layer_base_names:
+    if current_base in norm_layer_base_names.keys():
       print(f'Applying mean/var calculation embedding to {layer_name}')
       current_is_weight = layer_name.split('.')[-1] == 'weight'
+      mean, var = norm_layer_base_names[current_base]
 
       if not current_is_weight:
         assert previous_base == current_base and previous_was_weight,\
@@ -100,11 +103,22 @@ def extract_weights_biases(
         assert len(values) == len(previous_weights),\
           f'Layer base name {current_base} suggests it is a bias, but previous weights have different length'
         
-        values = transform_norm_weights_biases(values, is_weight=current_is_weight, corr_old_weights=previous_weights)
+        values = transform_norm_weights_biases(
+          values,
+          is_weight=current_is_weight,
+          mean=mean,
+          var=var,
+          corr_old_weights=previous_weights
+        )
       
       else:
         previous_weights = values.copy()
-        values = transform_norm_weights_biases(values, is_weight=current_is_weight)
+        values = transform_norm_weights_biases(
+          values,
+          is_weight=current_is_weight,
+          mean=mean,
+          var=var
+        )
 
       previous_base = current_base
       previous_was_weight = current_is_weight
@@ -156,17 +170,17 @@ def extract_weights_biases(
 if __name__ == "__main__":
   model_path = "fyp21yuan_code/experiments/constituent_base/best.pth.tar"
   result_path = "extracted_weights_biases/"
-  norm_layer_base_names = [
-    'out_layer.0',
-    'transformers.0.linear.0',
-    'transformers.0.linear.3',
-    'transformers.0.self_attention.norm',
-    'transformers.1.linear.0',
-    'transformers.1.linear.3',
-    'transformers.1.self_attention.norm',
-    'transformers.2.linear.0',
-    'transformers.2.linear.3',
-    'transformers.2.self_attention.norm',
-  ]
+  norm_layer_base_names = {
+    'out_layer_0': (-0.0422399528324604, 1.6616789102554321),
+    'transformers.0.linear.0': (-0.014030318707227707, 127.25072479248047),
+    'transformers.0.linear.3': (0.0001844080543378368, 0.11668402701616287),
+    'transformers.0.self_attention.norm': (0.013345913961529732, 127.07893371582031),
+    'transformers.1.linear.0': (-0.029353268444538116, 127.50463104248047),
+    'transformers.1.linear.3': (0.017480721697211266, 0.11090429127216339),
+    'transformers.1.self_attention.norm': (-0.01761310175061226, 127.43500518798828),
+    'transformers.2.linear.0': (-0.043246205896139145, 127.74173736572266),
+    'transformers.2.linear.3': (-0.00957483146339655, 0.11539013683795929),
+    'transformers.2.self_attention.norm': (-0.04083692282438278, 127.71623992919922),
+  }
   extract_weights_biases(model_path=model_path, result_path=result_path, norm_layer_base_names=norm_layer_base_names)
 
