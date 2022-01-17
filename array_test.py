@@ -216,13 +216,16 @@ print(f'{transformed_W0 = }')
 print(f'{transformed_b0 = }')
 # c1_norm = lambda x: (x - col1_mean) / (np.sqrt(col1_var + eps)) * W0 + b0
 # c2_norm = lambda x: (x - col2_mean) / (np.sqrt(col2_var + eps)) * W0 + b0
-W0 = 291.8788422537572
-b0 = -0.035605809673920956
+W0 = 0.08868025162534571
+b0 = -0.0006761925608737499
 c1_norm = lambda x: x * W0 + b0
 c2_norm = lambda x: x * W0 + b0
 
-print(c1_norm(col1_data[0]))
-print(c2_norm(col2_data[0]))
+x0 = 3.9991e-02
+x1 = -6.1523e+00
+
+print(c1_norm(x0))
+print(c2_norm(x1))
 
 
 # name = 'transformer.0.self.norm.weight'
