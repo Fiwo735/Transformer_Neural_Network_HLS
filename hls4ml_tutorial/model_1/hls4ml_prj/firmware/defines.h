@@ -8,8 +8,16 @@
 #include <cstdio>
 
 //hls-fpga-machine-learning insert numbers
+
+// TODO JETS
+// #define N_COLLISIONS 5
+
+// TODO particle counter
 #define N_JET_COUNT 1
+
+// TODO 
 #define N_BATCH_SIZE 128
+
 #define N_FEATURES 16
 
 // #define N_INPUT (N_BATCH_SIZE)
@@ -19,16 +27,18 @@
 
 #define N_LABELS 5
 
+#define N_SA_INV_SQRT_SIZE0 0.0883883476483
+
 //hls-fpga-machine-learning insert layer-precision
 // typedef ap_fixed<16,6> model_default_t;
 // typedef ap_fixed<16,6> input_t;
 // typedef ap_fixed<16,6> result_t;
 // typedef ap_fixed<18,8> general_table_t;
 
-typedef ap_fixed<19,9> model_default_t;
-typedef ap_fixed<19,9> input_t;
-typedef ap_fixed<19,9> result_t;
-typedef ap_fixed<19,9> general_table_t;
+typedef ap_fixed<32,9> model_default_t;
+typedef ap_fixed<32,9> input_t;
+typedef ap_fixed<32,9> result_t;
+typedef ap_fixed<32,9> general_table_t;
 
 // typedef float general_table_t;
 // typedef float model_default_t;

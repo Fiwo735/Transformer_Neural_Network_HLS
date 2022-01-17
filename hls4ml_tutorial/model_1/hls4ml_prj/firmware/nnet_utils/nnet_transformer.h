@@ -93,6 +93,7 @@ void transformer(
     data_T    data[CONFIG_T::n_in],
     res_T     res[CONFIG_T::n_out],
 
+    typename SA_CONFIG_T::inv_sqrt_d_k_t SA_inv_sqrt_d_k,
     typename CONFIG_T::SA_norm_weight_t  SA_norm_weight[CONFIG_T::n_SA_norm_weight],
     typename CONFIG_T::SA_norm_bias_t    SA_norm_bias[CONFIG_T::n_SA_norm_bias],
     typename CONFIG_T::SA_QKV_weight_t   SA_QKV_weight[CONFIG_T::n_SA_QKV_weight],
@@ -113,6 +114,8 @@ void transformer(
     nnet::self_attention<data_T, data_T, SA_CONFIG_T, SA_NORM_CONFIG_T, SA_DENSE0_CONFIG_T, SA_DENSE1_CONFIG_T, SA_SOFTMAX_CONFIG_T, SA_DENSE2_CONFIG_T, SA_DENSE3_CONFIG_T>(
         data,
         self_attention_out,
+
+        SA_inv_sqrt_d_k,
         
         SA_norm_weight,
         SA_norm_bias,
@@ -131,11 +134,12 @@ void transformer(
 
     // 2.2 SiLU
     data_T SiLU0_out[CONFIG_T::n_in];
-    data_T sigmoid0_out[CONFIG_T::n_in];
-    nnet::sigmoid<data_T, data_T, SIG0_CONFIG_T>(norm0_out, sigmoid0_out);
-    silu0: for (int isilu0 = 0; isilu0 < CONFIG_T::n_in; isilu0++) {
-        SiLU0_out[isilu0] = CONFIG_T::template product<data_T, data_T, data_T>::product(norm0_out[isilu0], sigmoid0_out[isilu0]);
-    }
+    // data_T sigmoid0_out[CONFIG_T::n_in];
+    // nnet::sigmoid<data_T, data_T, SIG0_CONFIG_T>(norm0_out, sigmoid0_out);
+    // silu0: for (int isilu0 = 0; isilu0 < CONFIG_T::n_in; isilu0++) {
+    //     SiLU0_out[isilu0] = CONFIG_T::template product<data_T, data_T, data_T>::product(norm0_out[isilu0], sigmoid0_out[isilu0]);
+    // }
+    nnet::silu<data_T, data_T, SIG0_CONFIG_T>(norm0_out, SiLU0_out);
     fout << "SiLU0_out ("<< CONFIG_T::n_in << "):" << "\n";
     nnet::print_result<data_T, CONFIG_T::n_in>(SiLU0_out, fout);
 
@@ -155,11 +159,12 @@ void transformer(
 
     // 2.5 SiLU
     data_T SiLU1_out[CONFIG_T::n_in_doubled];
-    data_T sigmoid1_out[CONFIG_T::n_in_doubled];
-    nnet::sigmoid<data_T, data_T, SIG1_CONFIG_T>(norm1_out, sigmoid1_out);
-    silu1: for (int isilu1 = 0; isilu1 < CONFIG_T::n_in_doubled; isilu1++) {
-        SiLU1_out[isilu1] = CONFIG_T::template product<data_T, data_T, data_T>::product(norm1_out[isilu1], sigmoid1_out[isilu1]);
-    }
+    // data_T sigmoid1_out[CONFIG_T::n_in_doubled];
+    // nnet::sigmoid<data_T, data_T, SIG1_CONFIG_T>(norm1_out, sigmoid1_out);
+    // silu1: for (int isilu1 = 0; isilu1 < CONFIG_T::n_in_doubled; isilu1++) {
+    //     SiLU1_out[isilu1] = CONFIG_T::template product<data_T, data_T, data_T>::product(norm1_out[isilu1], sigmoid1_out[isilu1]);
+    // }
+    nnet::silu<data_T, data_T, SIG0_CONFIG_T>(norm1_out, SiLU1_out);
     fout << "SiLU1_out ("<< CONFIG_T::n_in_doubled << "):" << "\n";
     nnet::print_result<data_T, CONFIG_T::n_in_doubled>(SiLU1_out, fout);
 
