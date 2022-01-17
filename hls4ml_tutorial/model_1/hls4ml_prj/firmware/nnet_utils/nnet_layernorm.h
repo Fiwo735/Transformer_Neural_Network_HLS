@@ -89,20 +89,30 @@ void layer_normalize(
     // mean *= CONFIG_T::inverse_count;
     mean /= CONFIG_T::n_in;
 
+    // Calculate variance
+    data_T var = (data_T) 0.0;
+    Var: for (int ivar = 0; ivar < CONFIG_T::n_in; ivar++) {
+        data_T curr_diff = data[ivar] - mean;
+        var += CONFIG_T::template product<data_T, data_T, data_T>::product(curr_diff, curr_diff);
+    }
+    var /= (CONFIG_T::n_in - 1);
+
     // Calculate result
+    data_T eps = (data_T) 0.00001;
+    data_T denominator = std::sqrt(var + eps);
     Result: for (int ires = 0; ires < CONFIG_T::n_in; ires++) {
         if (CONFIG_T::io_type == io_serial){
             #pragma HLS UNROLL
             #pragma HLS PIPELINE
         }
         
+        data_T numerator = data[ires] - mean;
+        numerator /= denominator;
         if (CONFIG_T::n_filt==-1) {
-            data_T numerator = data[ires] - mean;
-            // data_T denominator = 
-            res[ires] = CONFIG_T::template product<data_T, typename CONFIG_T::scale_t, res_T>::product(data[ires], scale[ires]) + bias[ires];
+            res[ires] = CONFIG_T::template product<data_T, typename CONFIG_T::scale_t, res_T>::product(numerator, scale[ires]) + bias[ires];
 	    } else {
             int norm_index = ires%CONFIG_T::n_filt;
-            res[ires] = CONFIG_T::template product<data_T, typename CONFIG_T::scale_t, res_T>::product(data[ires], scale[norm_index]) + bias[norm_index];
+            res[ires] = CONFIG_T::template product<data_T, typename CONFIG_T::scale_t, res_T>::product(numerator, scale[norm_index]) + bias[norm_index];
         }
 	}
 }
