@@ -23,6 +23,7 @@
 #include <cmath>
 #include "ap_fixed.h"
 #include "nnet_common.h"
+#include "nnet_mult.h"
 
 namespace nnet {
 
@@ -40,13 +41,16 @@ struct activ_config
 
     // Internal data type definitions
     typedef ap_fixed<18,8> table_t;
+
+    template<class x_T, class y_T, class res_T>
+    using product = nnet::product::mult<x_T, y_T, res_T>;
 };
 
 // *************************************************
 //       LINEAR Activation -- See Issue 53
 // *************************************************
 template<class data_T, class res_T, typename CONFIG_T>
-void  linear(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in])
+void linear(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in])
 {
     if (CONFIG_T::io_type == io_parallel){
         #pragma HLS PIPELINE
@@ -66,7 +70,7 @@ void  linear(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in])
 //       RELU Activation
 // *************************************************
 template<class data_T, class res_T, typename CONFIG_T>
-void  relu(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in])
+void relu(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in])
 {
     if (CONFIG_T::io_type == io_parallel){
         #pragma HLS PIPELINE
@@ -84,7 +88,7 @@ void  relu(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in])
 }
 
 template<class data_T, class res_T, int MAX_INT, typename CONFIG_T>
-void  relu_max(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in])
+void relu_max(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in])
 {
     if (CONFIG_T::io_type == io_parallel){
         #pragma HLS PIPELINE
@@ -103,13 +107,13 @@ void  relu_max(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in])
 }
 
 template<class data_T, class res_T, typename CONFIG_T>
-void  relu6(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in])
+void relu6(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in])
 {
     relu_max<data_T, res_T, 6, CONFIG_T>(data, res);
 }
 
 template<class data_T, class res_T, typename CONFIG_T>
-void  relu1(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in])
+void relu1(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in])
 {
     relu_max<data_T, res_T, 1, CONFIG_T>(data, res);
 }
@@ -137,7 +141,7 @@ void init_sigmoid_table(typename CONFIG_T::table_t table_out[N_TABLE])
 }
 
 template<class data_T, class res_T, typename CONFIG_T>
-void  sigmoid(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in])
+void sigmoid(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in])
 {
     // Initialize the lookup table
 #ifdef __HLS_SYN__
@@ -168,6 +172,24 @@ void  sigmoid(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in])
         if (index < 0)   index = 0;
         if (index > CONFIG_T::table_size-1) index = CONFIG_T::table_size-1;
         res[ii] = (res_T) sigmoid_table[index];
+    }
+}
+
+// *************************************************
+//       Sigmoid Linear Unit Activation
+// *************************************************
+
+template<class data_T, class res_T, typename CONFIG_T>
+void silu(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in])
+{
+    data_T sigmoid_result[CONFIG_T::n_in];
+    sigmoid<data_T, data_T, CONFIG_T>(data, sigmoid_result);
+
+    for (int ii = 0; ii < CONFIG_T::n_in; ii++) {
+        // if (CONFIG_T::io_type == io_serial){
+        //     #pragma HLS PIPELINE
+        // } //TODO: PIPELINE or UNROLL?
+        res[ii] = (res_T) CONFIG_T::template product<data_T, data_T, data_T>::product(data[ii], sigmoid_result[ii]);
     }
 }
 
@@ -346,7 +368,7 @@ void init_invert_table_legacy(typename CONFIG_T::table_t table_out[N_TABLE])
 }
 
 template<class data_T, class res_T, typename CONFIG_T>
-void  softmax_legacy(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in])
+void softmax_legacy(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in])
 {
     // Initialize the lookup table
 #ifdef __HLS_SYN__
@@ -443,7 +465,7 @@ void init_tanh_table(typename CONFIG_T::table_t table_out[N_TABLE])
 
 
 template<class data_T, class res_T, typename CONFIG_T>
-void  tanh(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in])
+void tanh(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in])
 {
     // Initialize the lookup table
 #ifdef __HLS_SYN__
@@ -482,7 +504,7 @@ void  tanh(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in])
 //       Hard sigmoid Activation
 // *************************************************
 template<class data_T, class res_T, typename CONFIG_T>
-void  hard_sigmoid(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in])
+void hard_sigmoid(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in])
 {
     if (CONFIG_T::io_type == io_parallel){
         #pragma HLS PIPELINE
@@ -506,7 +528,7 @@ void  hard_sigmoid(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in])
 //       Leaky RELU Activation
 // *************************************************
 template<class data_T, class res_T, typename CONFIG_T>
-void  leaky_relu(data_T data[CONFIG_T::n_in], data_T alpha, res_T res[CONFIG_T::n_in])
+void leaky_relu(data_T data[CONFIG_T::n_in], data_T alpha, res_T res[CONFIG_T::n_in])
 {
     if (CONFIG_T::io_type == io_parallel){
         #pragma HLS PIPELINE
@@ -527,7 +549,7 @@ void  leaky_relu(data_T data[CONFIG_T::n_in], data_T alpha, res_T res[CONFIG_T::
 //       Thresholded RELU Activation
 // *************************************************
 template<class data_T, class res_T, typename CONFIG_T>
-void  thresholded_relu(data_T data[CONFIG_T::n_in], data_T theta, res_T res[CONFIG_T::n_in])
+void thresholded_relu(data_T data[CONFIG_T::n_in], data_T theta, res_T res[CONFIG_T::n_in])
 {
     if (CONFIG_T::io_type == io_parallel){
         #pragma HLS PIPELINE
@@ -567,7 +589,7 @@ void init_softplus_table(typename CONFIG_T::table_t table_out[N_TABLE])
 }
 
 template<class data_T, class res_T, typename CONFIG_T>
-void  softplus(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in])
+void softplus(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in])
 {
     // Initialize the lookup table
 #ifdef __HLS_SYN__
@@ -624,7 +646,7 @@ void init_softsign_table(typename CONFIG_T::table_t table_out[N_TABLE])
 }
 
 template<class data_T, class res_T, typename CONFIG_T>
-void  softsign(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in])
+void softsign(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in])
 {
     // Initialize the lookup table
 #ifdef __HLS_SYN__
@@ -681,7 +703,7 @@ void init_elu_table(typename CONFIG_T::table_t table_out[N_TABLE])
 }
 
 template<class data_T, class res_T, typename CONFIG_T>
-void  elu(data_T data[CONFIG_T::n_in], const res_T alpha, res_T res[CONFIG_T::n_in])
+void elu(data_T data[CONFIG_T::n_in], const res_T alpha, res_T res[CONFIG_T::n_in])
 {
     // Initialize the lookup table
 #ifdef __HLS_SYN__
@@ -719,7 +741,7 @@ void  elu(data_T data[CONFIG_T::n_in], const res_T alpha, res_T res[CONFIG_T::n_
 }
 
 template<class data_T, class res_T, typename CONFIG_T>
-void  elu(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in])
+void elu(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in])
 {
     elu<data_T, res_T, CONFIG_T>(data, 1.0, res);
 }
@@ -747,7 +769,7 @@ void init_selu_table(typename CONFIG_T::table_t table_out[N_TABLE])
 }
 
 template<class data_T, class res_T, typename CONFIG_T>
-void  selu(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in])
+void selu(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in])
 {
     // Initialize the lookup table
 #ifdef __HLS_SYN__
@@ -788,7 +810,7 @@ void  selu(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in])
 //       PReLU Activation
 // *************************************************
 template<class data_T, class res_T, typename CONFIG_T>
-void  prelu(data_T data[CONFIG_T::n_in], data_T alpha[CONFIG_T::n_in], res_T res[CONFIG_T::n_in])
+void prelu(data_T data[CONFIG_T::n_in], data_T alpha[CONFIG_T::n_in], res_T res[CONFIG_T::n_in])
 {
     if (CONFIG_T::io_type == io_parallel){
         #pragma HLS PIPELINE
@@ -809,7 +831,7 @@ void  prelu(data_T data[CONFIG_T::n_in], data_T alpha[CONFIG_T::n_in], res_T res
 //       Binary TanH Activation
 // *************************************************
 template<class data_T, class res_T, typename CONFIG_T>
-void  binary_tanh(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in])
+void binary_tanh(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in])
 {
     if (CONFIG_T::io_type == io_parallel){
         #pragma HLS PIPELINE
@@ -833,7 +855,7 @@ void  binary_tanh(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in])
 //       Ternary TanH Activation
 // *************************************************
 template<class data_T, class res_T, typename CONFIG_T>
-void  ternary_tanh(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in])
+void ternary_tanh(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in])
 {
 
     if (CONFIG_T::io_type == io_parallel){

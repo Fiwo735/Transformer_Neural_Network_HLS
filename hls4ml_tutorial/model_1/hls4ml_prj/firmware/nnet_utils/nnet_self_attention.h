@@ -11,6 +11,8 @@
 #include "hls_stream.h"
 #include <math.h>
 
+#include "nnet_layernorm.h"
+
 namespace nnet {
 
 struct self_attention_config
@@ -63,6 +65,8 @@ template<class data_T, class res_T, typename CONFIG_T, typename NORM_CONFIG_T, t
 void self_attention(
     data_T    data[CONFIG_T::n_in],
     res_T     res[CONFIG_T::n_out],
+
+    typename CONFIG_T::inv_sqrt_d_k_t inv_sqrt_d_k,
 
     typename CONFIG_T::norm_weight_t  norm_weight[CONFIG_T::n_norm_weight],
     typename CONFIG_T::norm_bias_t    norm_bias[CONFIG_T::n_norm_bias],
@@ -128,9 +132,9 @@ void self_attention(
 
     // 4.2 scale
     data_T energy_scaled[CONFIG_T::n_energy];
-    model_default_t inv_sqrt_d_k = 1; //TODO: implement properly using config
+    // model_default_t inv_sqrt_d_k = INVERSE; //TODO: implement properly using config
     Scale: for (int iscale = 0; iscale < CONFIG_T::n_energy; iscale++) {
-        energy_scaled[iscale] = CONFIG_T::template product<data_T, data_T, data_T>::product(energy[iscale], inv_sqrt_d_k);//TODO:CONFIG_T::inv_sqrt_d_k);
+        energy_scaled[iscale] = CONFIG_T::template product<data_T, data_T, data_T>::product(energy[iscale], inv_sqrt_d_k);//TODO: CONFIG_T::inv_sqrt_d_k);
     }
     fout << "energy_scaled ("<< CONFIG_T::n_energy << "):" << "\n";
     nnet::print_result<data_T, CONFIG_T::n_energy>(energy_scaled, fout);

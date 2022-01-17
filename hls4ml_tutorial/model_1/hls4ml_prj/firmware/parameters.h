@@ -13,6 +13,7 @@
 #include "nnet_utils/nnet_dense_stream.h"
 #include "nnet_utils/nnet_batchnorm.h"
 #include "nnet_utils/nnet_transformer.h"
+#include "nnet_utils/nnet_merge.h"
 
 
 //hls-fpga-machine-learning insert weights
@@ -128,6 +129,16 @@ struct transformer_dense_config1 : nnet::dense_config {
     typedef ap_uint<1> index_t;
     template<class x_T, class y_T, class res_T>
     using product = nnet::product::mult<x_T, y_T, res_T>;
+};
+
+struct concat_config0 : nnet::concat_config {
+    static const unsigned n_elem1_0 = 128;
+    static const unsigned n_elem1_1 = 1;
+
+    static const unsigned n_elem2_0 = 128;
+    static const unsigned n_elem2_1 = 1;
+
+    static const unsigned axis = -1;
 };
 
 // // relu1
@@ -281,6 +292,9 @@ struct sigmoid_config0 : nnet::activ_config {
 
     // Internal data type definitions
     typedef general_table_t table_t;
+
+    template<class x_T, class y_T, class res_T>
+    using product = nnet::product::mult<x_T, y_T, res_T>;
 };
 
 struct sigmoid_config1 : nnet::activ_config {
@@ -296,6 +310,9 @@ struct sigmoid_config1 : nnet::activ_config {
 
     // Internal data type definitions
     typedef general_table_t table_t;
+
+    template<class x_T, class y_T, class res_T>
+    using product = nnet::product::mult<x_T, y_T, res_T>;
 };
 
 struct mlp_config : nnet::dense_config {
