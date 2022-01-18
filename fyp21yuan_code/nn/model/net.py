@@ -53,15 +53,19 @@ class ConstituentNet(nn.Module):
             Transformer(embbed_dim, num_heads=num_heads, dropout=dropout) for _ in range(num_transformers)
         ])
 
-        self.curr_mean = 0.0
-        self.curr_var = 0.0
+        # self.curr_mean = 0.0
+        # self.curr_var = 0.0
+        self.curr_mean = None
+        self.curr_var = None
         self.counter = 0
 
     def get_avg_mean(self):
-        return self.curr_mean / self.counter
+        # return self.curr_mean / self.counter
+        return torch.div(self.curr_mean, self.counter)
 
     def get_avg_var(self):
-        return self.curr_var / self.counter
+        # return self.curr_var / self.counter
+        return torch.div(self.curr_var, self.counter)
 
     def get_counter(self):
         return self.counter
@@ -107,8 +111,10 @@ class ConstituentNet(nn.Module):
 
         # For normalization calculation embedding
         if self.training:
-            self.curr_var += torch.var(out, unbiased=False)
-            self.curr_mean += torch.mean(out)
+            cur_var = torch.var(out, dim=1, unbiased=False)
+            self.curr_var = (self.curr_var + cur_var) if self.curr_var is not None else (cur_var)
+            cur_mean = torch.mean(out, dim=1)
+            self.curr_mean = (self.curr_mean + cur_mean) if self.curr_mean is not None else (cur_mean)
             self.counter += 1
 
         out = self.out_layer_0(out)
