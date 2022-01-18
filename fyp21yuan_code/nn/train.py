@@ -20,6 +20,8 @@ import model.loss as loss
 
 import h5py
 
+from typing import Callable
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MODEL = lambda **args :  net.ConstituentNet(**args)
 
@@ -198,7 +200,7 @@ def train(model, optimizer, scheduler, criterion, dataloader, metrics, writer, p
         batch_targets = np.empty((BATCH_SIZE,))
         for i, sample in enumerate(train_set):
             # print(f"i:{i}")
-            if i > 1000:
+            if i > 700:
                 break
 
             # Unpack batch, move to device
@@ -496,12 +498,63 @@ if __name__ == '__main__':
         train_set=dataset,
     )
 
-    print(f"Net mean: {model.get_avg_mean()}, var: {model.get_avg_var()}")
-    for index, transformer in enumerate(model.transformers):
-        print(f"Trans{index} mean0: {transformer.get_avg_mean0()}, var0: {transformer.get_avg_var0()}")
-        print(f"Trans{index} mean3: {transformer.get_avg_mean3()}, var3: {transformer.get_avg_var3()}")
-        print(f"SA{index} mean: {transformer.self_attention.get_avg_mean()}, var: {transformer.self_attention.get_avg_var()}")
+    def mean_var_info(name: str, index: int, mean: torch.Tensor, var: torch.Tensor, ctr: int, sub_index: str='') -> str:
+        result = f"{name}{index}\n"
+        result += f"mean{sub_index}: {mean.size()}\n\t"
 
+        curr_mean = torch.mean(mean, dim=0)
+        if len(mean.size()) > 1:
+            result += f"[0]: {curr_mean[0]}\n\t"
+            result += f"[1:]: {torch.mean(curr_mean[1:])}\n"
+        else:
+            result += f"{curr_mean}\n"
+
+        result += f"var{sub_index}: {var.size()}\n\t"
+
+        curr_var = torch.mean(var, dim=0)
+        if len(var.size()) > 1:
+            result += f"[0]: {curr_var[0]}\n\t"
+            result += f"[1:]: {torch.mean(curr_var[1:])}\n"
+            print(f"[({curr_mean[0]}, {curr_var[0]}), ({torch.mean(curr_mean[1:])}, {torch.mean(curr_var[1:])})],")
+        else:
+            result += f"{curr_var}\n"
+            print(f"[({curr_mean}, {curr_var})],")
+
+        result += f"ctr{sub_index}: {ctr}\n"
+
+        return result
+
+    with open("training_mean_var.txt", 'w') as afile:
+        afile.write(mean_var_info(name='Net', index=0, mean=model.get_avg_mean(), var=model.get_avg_var(), ctr=model.get_counter()))
+        # afile.write(f"Net mean: {model.get_avg_mean().size()}\n{torch.mean(model.get_avg_mean())}\nvar: {model.get_avg_var().size()}\n{torch.mean(model.get_avg_var())}\nctr: {model.get_counter()}\n")
+        for index, tr in enumerate(model.transformers):
+            afile.write('-'*20 + '\n')
+            afile.write(mean_var_info(name='Trans', index=index, sub_index='0', mean=tr.get_avg_mean0(), var=tr.get_avg_var0(), ctr=tr.get_counter0()))
+            afile.write(mean_var_info(name='Trans', index=index, sub_index='3', mean=tr.get_avg_mean3(), var=tr.get_avg_var3(), ctr=tr.get_counter3()))
+            afile.write(mean_var_info(name='SA', index=index, mean=tr.self_attention.get_avg_mean(), var=tr.self_attention.get_avg_var(), ctr=tr.self_attention.get_counter()))
+            # afile.write(f"Trans{index} mean0: {tr.get_avg_mean0().size()}\n{torch.mean(tr.get_avg_mean0(), dim=0)}\nvar0: {tr.get_avg_var0().size()}\n{torch.mean(tr.get_avg_var0(), dim=0)}\nctr0: {tr.get_counter0()}\n")
+            # afile.write(f"Trans{index} mean3: {tr.get_avg_mean3().size()}\n{torch.mean(tr.get_avg_mean3(), dim=0)}\nvar3: {tr.get_avg_var3().size()}\n{torch.mean(tr.get_avg_var3(), dim=0)}\nctr3: {tr.get_counter3()}\n")
+            # afile.write(f"SA{index} mean: {tr.self_attention.get_avg_mean().size()}\n{torch.mean(tr.self_attention.get_avg_mean(), dim=0)}\nvar: {tr.self_attention.get_avg_var().size()}\n{torch.mean(tr.self_attention.get_avg_var(), dim=0)}\nctr: {tr.self_attention.get_counter()}\n")
+    
+    with open("training_mean_var_detailed.txt", 'w') as afile:
+        afile.write(f"Net mean: \n{model.get_avg_mean()}\nvar: \n{model.get_avg_var()}\nctr: {model.get_counter()}\n")
+        for index, tr in enumerate(model.transformers):
+            afile.write('-'*20 + '\n')
+            afile.write(f"Trans{index} mean0: \n{tr.get_avg_mean0()}\nvar0: \n{tr.get_avg_var0()}\nctr0: {tr.get_counter0()}\n")
+            afile.write(f"Trans{index} mean3: \n{tr.get_avg_mean3()}\nvar3: \n{tr.get_avg_var3()}\nctr3: {tr.get_counter3()}\n")
+            afile.write(f"SA{index} mean: \n{tr.self_attention.get_avg_mean()}\nvar: \n{tr.self_attention.get_avg_var()}\nctr: {tr.self_attention.get_counter()}\n")
+
+
+    # print(f"Net mean: \n{model.get_avg_mean()}\n, var: \n{model.get_avg_var()}\n, ctr: \n{model.get_counter()}\n")
+    # for index, transformer in enumerate(model.transformers):
+    #     print(f"Trans{index} mean0: \n{transformer.get_avg_mean0()}\n, var0: \n{transformer.get_avg_var0()}\n, ctr0: \n{transformer.get_counter0()}\n")
+    #     print(f"Trans{index} mean3: \n{transformer.get_avg_mean3()}\n, var3: \n{transformer.get_avg_var3()}\n, ctr3: \n{transformer.get_counter3()}\n")
+    #     print(f"SA{index} mean: \n{transformer.self_attention.get_avg_mean()}\n, var: \n{transformer.self_attention.get_avg_var()}\n, ctr: \n{transformer.self_attention.get_counter()}\n")
+
+    # for index, transformer in enumerate(model.transformers):
+    #     print(f"Trans{index} mean0: {transformer.linear_0.running_mean}, var0: {transformer.linear_0.running_var}")
+    #     print(f"Trans{index} mean3: {transformer.linear_3.running_mean}, var3: {transformer.linear_3.running_var}")
+    #     print(f"SA{index} mean: {transformer.self_attention.norm.running_mean}, var: {transformer.self_attention.norm.running_var}")
     # Close tensorboard writer
     writer.close()
 
