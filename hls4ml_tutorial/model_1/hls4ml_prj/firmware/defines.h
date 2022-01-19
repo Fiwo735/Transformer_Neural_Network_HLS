@@ -35,10 +35,15 @@
 // typedef ap_fixed<16,6> result_t;
 // typedef ap_fixed<18,8> general_table_t;
 
-typedef ap_fixed<32,9> model_default_t;
-typedef ap_fixed<32,9> input_t;
-typedef ap_fixed<32,9> result_t;
-typedef ap_fixed<32,9> general_table_t;
+// typedef ap_fixed<32,9> model_default_t;
+// typedef ap_fixed<32,9> input_t;
+// typedef ap_fixed<32,9> result_t;
+// typedef ap_fixed<32,9> general_table_t;
+
+typedef ap_fixed<64,32> model_default_t;
+typedef ap_fixed<64,32> input_t;
+typedef ap_fixed<64,32> result_t;
+typedef ap_fixed<64,32> general_table_t;
 
 // typedef float general_table_t;
 // typedef float model_default_t;

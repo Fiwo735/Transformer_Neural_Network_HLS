@@ -96,6 +96,8 @@ void transformer(
     typename SA_CONFIG_T::inv_sqrt_d_k_t SA_inv_sqrt_d_k,
     typename CONFIG_T::SA_norm_weight_t  SA_norm_weight[CONFIG_T::n_SA_norm_weight],
     typename CONFIG_T::SA_norm_bias_t    SA_norm_bias[CONFIG_T::n_SA_norm_bias],
+    typename CONFIG_T::SA_norm_weight_t  SA_norm_weight_1[CONFIG_T::n_SA_norm_weight],
+    typename CONFIG_T::SA_norm_bias_t    SA_norm_bias_1[CONFIG_T::n_SA_norm_bias],
     typename CONFIG_T::SA_QKV_weight_t   SA_QKV_weight[CONFIG_T::n_SA_QKV_weight],
     typename CONFIG_T::SA_dense_weight_t SA_dense_weight[CONFIG_T::n_SA_dense_weight],
     typename CONFIG_T::SA_dense_bias_t   SA_dense_bias[CONFIG_T::n_SA_dense_bias],
@@ -119,6 +121,8 @@ void transformer(
         
         SA_norm_weight,
         SA_norm_bias,
+        SA_norm_weight_1,
+        SA_norm_bias_1,
         SA_QKV_weight,
         SA_dense_weight,
         SA_dense_bias

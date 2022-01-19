@@ -70,6 +70,8 @@ void self_attention(
 
     typename CONFIG_T::norm_weight_t  norm_weight[CONFIG_T::n_norm_weight],
     typename CONFIG_T::norm_bias_t    norm_bias[CONFIG_T::n_norm_bias],
+    typename CONFIG_T::norm_weight_t  norm_weight_1[CONFIG_T::n_norm_weight],
+    typename CONFIG_T::norm_bias_t    norm_bias_1[CONFIG_T::n_norm_bias],
     typename CONFIG_T::QKV_weight_t   QKV_weight[CONFIG_T::n_QKV_weight],
     typename CONFIG_T::dense_weight_t dense_weight[CONFIG_T::n_dense_weight],
     typename CONFIG_T::dense_bias_t   dense_bias[CONFIG_T::n_dense_bias]
@@ -78,7 +80,8 @@ void self_attention(
 
     // 1 norm
     data_T input_norm[CONFIG_T::n_in];
-    nnet::normalize<data_T, data_T, NORM_CONFIG_T>(data, input_norm, norm_weight, norm_bias);
+    // nnet::normalize<data_T, data_T, NORM_CONFIG_T>(data, input_norm, norm_weight, norm_bias);
+    nnet::layer_normalize<data_T, data_T, NORM_CONFIG_T>(data, input_norm, norm_weight, norm_bias, norm_weight_1, norm_bias_1);
     fout << "input_norm ("<< CONFIG_T::n_in << "):" << "\n";
     nnet::print_result<data_T, CONFIG_T::n_in>(input_norm, fout);
     // fout << "after printing input_norm" << "\n";

@@ -37,6 +37,7 @@ struct layernorm_config
     // Layer Sizes
     static const unsigned n_in = 10;
     static const unsigned n_filt = -1;
+    static const unsigned n_layers = 2;
     // inverse_count_t inverse_count = 0.1;
 
     // Resource reuse info
@@ -54,9 +55,10 @@ void layer_normalize(
     data_T    data[CONFIG_T::n_in],
     res_T     res[CONFIG_T::n_in],
     typename CONFIG_T::scale_t  scale[CONFIG_T::n_in],
-    typename CONFIG_T::bias_t   bias[CONFIG_T::n_in]
-)
-{
+    typename CONFIG_T::bias_t   bias[CONFIG_T::n_in],
+    typename CONFIG_T::scale_t  scale_1[CONFIG_T::n_in],
+    typename CONFIG_T::bias_t   bias_1[CONFIG_T::n_in]
+){
     data_T cache;
    
     // Use a function_instantiate in case it helps to explicitly optimize unchanging weights/biases
@@ -81,39 +83,59 @@ void layer_normalize(
         #pragma HLS DATAFLOW
     }
 
-    // Calculate mean
-    data_T mean = (data_T) 0.0;
-    Mean: for (int imean = 0; imean < CONFIG_T::n_in; imean++) {
-      mean += data[imean];
-    }
-    // mean *= CONFIG_T::inverse_count;
-    mean /= CONFIG_T::n_in;
+    // // Calculate mean
+    // data_T mean = (data_T) 0.0;
+    // Mean: for (int imean = 0; imean < CONFIG_T::n_in; imean++) {
+    //   mean += data[imean];
+    // }
+    // // mean *= CONFIG_T::inverse_count;
+    // mean /= CONFIG_T::n_in;
 
-    // Calculate variance
-    data_T var = (data_T) 0.0;
-    Var: for (int ivar = 0; ivar < CONFIG_T::n_in; ivar++) {
-        data_T curr_diff = data[ivar] - mean;
-        var += CONFIG_T::template product<data_T, data_T, data_T>::product(curr_diff, curr_diff);
-    }
-    var /= (CONFIG_T::n_in - 1);
+    // // Calculate variance
+    // data_T var = (data_T) 0.0;
+    // Var: for (int ivar = 0; ivar < CONFIG_T::n_in; ivar++) {
+    //     data_T curr_diff = data[ivar] - mean;
+    //     data_T squared = CONFIG_T::template product<data_T, data_T, data_T>::product(curr_diff, curr_diff);
+    //     if (squared < 0){
+    //         std::cout << "data[ivar]: " << data[ivar] << " mean: " << mean << " curr_diff: " << curr_diff << std::endl;
+    //         std::cout << "squared: " << squared << std::endl;
+    //     }
+    //     var += squared;
+    // }
+    // var /= (CONFIG_T::n_in - 1);
 
-    // Calculate result
-    data_T eps = (data_T) 0.00001;
-    data_T denominator = std::sqrt(var + eps);
-    Result: for (int ires = 0; ires < CONFIG_T::n_in; ires++) {
+    // // Calculate result
+    // data_T eps = (data_T) 0.00001;
+    // var += eps;
+    // std::cout << "var: " << var << std::endl;
+    // float float_var = (float) var;
+    // data_T denominator = (data_T) std::sqrt(float_var);
+    Result: for (int ires = 0; ires < CONFIG_T::n_in; ires += CONFIG_T::n_layers) {
         if (CONFIG_T::io_type == io_serial){
             #pragma HLS UNROLL
             #pragma HLS PIPELINE
         }
-        
-        data_T numerator = data[ires] - mean;
-        numerator /= denominator;
+
+        // data_T numerator = data[ires] - mean;
+        // numerator /= denominator;
         if (CONFIG_T::n_filt==-1) {
-            res[ires] = CONFIG_T::template product<data_T, typename CONFIG_T::scale_t, res_T>::product(numerator, scale[ires]) + bias[ires];
+            res[ires] = CONFIG_T::template product<data_T, typename CONFIG_T::scale_t, res_T>::product(data[ires], scale[ires]) + bias[ires];
 	    } else {
             int norm_index = ires%CONFIG_T::n_filt;
-            res[ires] = CONFIG_T::template product<data_T, typename CONFIG_T::scale_t, res_T>::product(numerator, scale[norm_index]) + bias[norm_index];
+            res[ires] = CONFIG_T::template product<data_T, typename CONFIG_T::scale_t, res_T>::product(data[norm_index], scale[norm_index]) + bias[norm_index];
         }
+
+
+        Split: for (int isplit = 1; isplit < CONFIG_T::n_layers; isplit++) {
+            int icomb = ires + isplit;
+            if (CONFIG_T::n_filt==-1) {
+                res[icomb] = CONFIG_T::template product<data_T, typename CONFIG_T::scale_t, res_T>::product(data[icomb], scale_1[icomb]) + bias_1[icomb];
+            } else {
+                int norm_index = icomb%CONFIG_T::n_filt;
+                res[icomb] = CONFIG_T::template product<data_T, typename CONFIG_T::scale_t, res_T>::product(data[norm_index], scale_1[norm_index]) + bias_1[norm_index];
+            }
+        }
+        
 	}
 }
 
