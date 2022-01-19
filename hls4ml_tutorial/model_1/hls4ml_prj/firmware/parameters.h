@@ -25,7 +25,9 @@
 #include "weights/out_layer_1_weight.h"
 #include "weights/out_layer_1_bias.h"
 #include "weights/transformers_0_self_attention_norm_weight.h"
+#include "weights/transformers_0_self_attention_norm_weight_1.h"
 #include "weights/transformers_0_self_attention_norm_bias.h"
+#include "weights/transformers_0_self_attention_norm_bias_1.h"
 #include "weights/transformers_0_self_attention_qkv_weight.h"
 #include "weights/transformers_0_self_attention_out_weight.h"
 #include "weights/transformers_0_self_attention_out_bias.h"
@@ -36,7 +38,9 @@
 #include "weights/transformers_0_linear_3_bias.h"
 #include "weights/transformers_0_linear_5_weight.h"
 #include "weights/transformers_1_self_attention_norm_weight.h"
+#include "weights/transformers_1_self_attention_norm_weight_1.h"
 #include "weights/transformers_1_self_attention_norm_bias.h"
+#include "weights/transformers_1_self_attention_norm_bias_1.h"
 #include "weights/transformers_1_self_attention_qkv_weight.h"
 #include "weights/transformers_1_self_attention_out_weight.h"
 #include "weights/transformers_1_self_attention_out_bias.h"
@@ -47,7 +51,9 @@
 #include "weights/transformers_1_linear_3_bias.h"
 #include "weights/transformers_1_linear_5_weight.h"
 #include "weights/transformers_2_self_attention_norm_weight.h"
+#include "weights/transformers_2_self_attention_norm_weight_1.h"
 #include "weights/transformers_2_self_attention_norm_bias.h"
+#include "weights/transformers_2_self_attention_norm_bias_1.h"
 #include "weights/transformers_2_self_attention_qkv_weight.h"
 #include "weights/transformers_2_self_attention_out_weight.h"
 #include "weights/transformers_2_self_attention_out_bias.h"
@@ -400,7 +406,7 @@ struct self_attention_config0 : nnet::self_attention_config {
     using product = nnet::product::mult<x_T, y_T, res_T>;
 };
 
-struct sa_norm_config0 : nnet::batchnorm_config {
+struct sa_norm_config0 : nnet::layernorm_config {
     // Internal data type definitions
     typedef model_default_t bias_t;
     typedef model_default_t scale_t;
@@ -408,6 +414,7 @@ struct sa_norm_config0 : nnet::batchnorm_config {
     // Layer Sizes
     static const unsigned n_in = 256;
     static const unsigned n_filt = -1;
+    static const unsigned n_layers = 2;
     
     // Resource reuse info
     static const unsigned io_type = nnet::io_parallel;

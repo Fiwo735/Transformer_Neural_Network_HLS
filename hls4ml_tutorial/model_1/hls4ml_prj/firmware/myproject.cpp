@@ -51,7 +51,9 @@ void myproject(
         nnet::load_weights_from_txt<model_default_t, 640>(out_layer_1_weight, "out_layer_1_weight.txt");
         nnet::load_weights_from_txt<model_default_t, 5>(out_layer_1_bias, "out_layer_1_bias.txt");
         nnet::load_weights_from_txt<model_default_t, 128>(transformers_0_self_attention_norm_weight, "transformers_0_self_attention_norm_weight.txt");
+        nnet::load_weights_from_txt<model_default_t, 128>(transformers_0_self_attention_norm_weight_1, "transformers_0_self_attention_norm_weight_1.txt");
         nnet::load_weights_from_txt<model_default_t, 128>(transformers_0_self_attention_norm_bias, "transformers_0_self_attention_norm_bias.txt");
+        nnet::load_weights_from_txt<model_default_t, 128>(transformers_0_self_attention_norm_bias_1, "transformers_0_self_attention_norm_bias_1.txt");
         nnet::load_weights_from_txt<model_default_t, 49152>(transformers_0_self_attention_qkv_weight, "transformers_0_self_attention_qkv_weight.txt");
         nnet::load_weights_from_txt<model_default_t, 16384>(transformers_0_self_attention_out_weight, "transformers_0_self_attention_out_weight.txt");
         nnet::load_weights_from_txt<model_default_t, 128>(transformers_0_self_attention_out_bias, "transformers_0_self_attention_out_bias.txt");
@@ -62,7 +64,9 @@ void myproject(
         nnet::load_weights_from_txt<model_default_t, 256>(transformers_0_linear_3_bias, "transformers_0_linear_3_bias.txt");
         nnet::load_weights_from_txt<model_default_t, 32768>(transformers_0_linear_5_weight, "transformers_0_linear_5_weight.txt");
         nnet::load_weights_from_txt<model_default_t, 128>(transformers_1_self_attention_norm_weight, "transformers_1_self_attention_norm_weight.txt");
+        nnet::load_weights_from_txt<model_default_t, 128>(transformers_1_self_attention_norm_weight_1, "transformers_1_self_attention_norm_weight_1.txt");
         nnet::load_weights_from_txt<model_default_t, 128>(transformers_1_self_attention_norm_bias, "transformers_1_self_attention_norm_bias.txt");
+        nnet::load_weights_from_txt<model_default_t, 128>(transformers_1_self_attention_norm_bias_1, "transformers_1_self_attention_norm_bias_1.txt");
         nnet::load_weights_from_txt<model_default_t, 49152>(transformers_1_self_attention_qkv_weight, "transformers_1_self_attention_qkv_weight.txt");
         nnet::load_weights_from_txt<model_default_t, 16384>(transformers_1_self_attention_out_weight, "transformers_1_self_attention_out_weight.txt");
         nnet::load_weights_from_txt<model_default_t, 128>(transformers_1_self_attention_out_bias, "transformers_1_self_attention_out_bias.txt");
@@ -73,7 +77,9 @@ void myproject(
         nnet::load_weights_from_txt<model_default_t, 256>(transformers_1_linear_3_bias, "transformers_1_linear_3_bias.txt");
         nnet::load_weights_from_txt<model_default_t, 32768>(transformers_1_linear_5_weight, "transformers_1_linear_5_weight.txt");
         nnet::load_weights_from_txt<model_default_t, 128>(transformers_2_self_attention_norm_weight, "transformers_2_self_attention_norm_weight.txt");
+        nnet::load_weights_from_txt<model_default_t, 128>(transformers_2_self_attention_norm_weight_1, "transformers_2_self_attention_norm_weight_1.txt");
         nnet::load_weights_from_txt<model_default_t, 128>(transformers_2_self_attention_norm_bias, "transformers_2_self_attention_norm_bias.txt");
+        nnet::load_weights_from_txt<model_default_t, 128>(transformers_2_self_attention_norm_bias_1, "transformers_2_self_attention_norm_bias_1.txt");
         nnet::load_weights_from_txt<model_default_t, 49152>(transformers_2_self_attention_qkv_weight, "transformers_2_self_attention_qkv_weight.txt");
         nnet::load_weights_from_txt<model_default_t, 16384>(transformers_2_self_attention_out_weight, "transformers_2_self_attention_out_weight.txt");
         nnet::load_weights_from_txt<model_default_t, 128>(transformers_2_self_attention_out_bias, "transformers_2_self_attention_out_bias.txt");
@@ -144,6 +150,8 @@ void myproject(
 
         transformers_0_self_attention_norm_weight,
         transformers_0_self_attention_norm_bias,
+        transformers_0_self_attention_norm_weight_1,
+        transformers_0_self_attention_norm_bias_1,
         transformers_0_self_attention_qkv_weight,
         transformers_0_self_attention_out_weight,
         transformers_0_self_attention_out_bias,
@@ -168,6 +176,8 @@ void myproject(
 
         transformers_1_self_attention_norm_weight,
         transformers_1_self_attention_norm_bias,
+        transformers_1_self_attention_norm_weight_1,
+        transformers_1_self_attention_norm_bias_1,
         transformers_1_self_attention_qkv_weight,
         transformers_1_self_attention_out_weight,
         transformers_1_self_attention_out_bias,
@@ -192,6 +202,8 @@ void myproject(
 
     //     transformers_2_self_attention_norm_weight,
     //     transformers_2_self_attention_norm_bias,
+    //     transformers_2_self_attention_norm_weight_1,
+    //     transformers_2_self_attention_norm_bias_1,
     //     transformers_2_self_attention_qkv_weight,
     //     transformers_2_self_attention_out_weight,
     //     transformers_2_self_attention_out_bias,
