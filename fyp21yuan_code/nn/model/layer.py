@@ -113,6 +113,7 @@ class SelfAttention(nn.Module):
 
         super(SelfAttention, self).__init__()
         self.in_dim = in_dim
+        print(f"SelfAttention.in_dim={self.in_dim}")
         self.channel_in = in_dim # C
         self.latent_dim = latent_dim if latent_dim is not None else in_dim
         self.head_dim = self.latent_dim // num_heads
@@ -120,22 +121,27 @@ class SelfAttention(nn.Module):
         self.heads = num_heads
         self.gamma = 1  # self.gamma = nn.Parameter(torch.zeros(1))
 
-        self.norm = nn.LayerNorm(in_dim) 
+        self.norm = nn.LayerNorm(in_dim)
+        # self.norm = nn.BatchNorm1d(in_dim) 
         self.qkv = nn.Linear(in_dim, 2*self.latent_dim + in_dim, bias=False)
         self.out = nn.Linear(in_dim, in_dim)
 
-        self.curr_mean = 0.0
-        self.curr_var = 0.0
+        # self.curr_mean = 0.0
+        # self.curr_var = 0.0
+        self.curr_mean = None
+        self.curr_var = None
         self.counter = 0
 
         assert  (in_dim // num_heads) * num_heads == in_dim, "Embedding dim needs to be divisible by num_heads"
         assert  self.head_dim * num_heads ==  self.latent_dim, "Latent dim needs to be divisible by num_heads."
 
     def get_avg_mean(self):
-        return self.curr_mean / self.counter
+        # return self.curr_mean / self.counter
+        return torch.div(self.curr_mean, self.counter)
 
     def get_avg_var(self):
-        return self.curr_var / self.counter
+        # return self.curr_var / self.counter
+        return torch.div(self.curr_var, self.counter)
     
     def get_counter(self):
         return self.counter
@@ -165,8 +171,10 @@ class SelfAttention(nn.Module):
 
         # For normalization calculation embedding
         if self.training:
-            self.curr_var += torch.var(x, unbiased=False)
-            self.curr_mean += torch.mean(x)
+            cur_var = torch.var(x, dim=2, unbiased=False)
+            self.curr_var = (self.curr_var + cur_var) if self.curr_var is not None else (cur_var)
+            cur_mean = torch.mean(x, dim=2)
+            self.curr_mean = (self.curr_mean + cur_mean) if self.curr_mean is not None else (cur_mean)
             self.counter += 1
             
         # Normalization across channels
@@ -330,6 +338,7 @@ class Transformer(nn.Module):
     def __init__(self, in_dim:int, latent_dim:typing.Optional[int]=None, num_heads:int=1, dropout:float=0.) -> None:
         super(Transformer, self).__init__()
         self.in_dim = in_dim
+        print(f"Transformer.in_dim={self.in_dim}")
         self.latent_dim = latent_dim if latent_dim is not None else in_dim
         self.channel_in = in_dim
         self.self_attention = SelfAttention(in_dim, latent_dim=self.latent_dim, num_heads=num_heads)
@@ -342,35 +351,45 @@ class Transformer(nn.Module):
         #     nn.Linear(in_dim*2, in_dim, bias=False),
         # )
         self.linear_0 = nn.LayerNorm(in_dim)
+        # self.linear_0 = nn.BatchNorm1d(in_dim)
         self.linear_1 = nn.SiLU()
         self.linear_2 = nn.Linear(in_dim, in_dim*2, bias=False)
         self.linear_3 = nn.LayerNorm(in_dim*2)
+        # self.linear_3 = nn.BatchNorm1d(in_dim*2)
         self.linear_4 = nn.SiLU()
         self.linear_5 = nn.Linear(in_dim*2, in_dim, bias=False)
 
         self.dropout = nn.Dropout(dropout)
 
-        self.curr_mean0 = 0.0
-        self.curr_var0 = 0.0
+        # self.curr_mean0 = 0.0
+        # self.curr_var0 = 0.0
+        self.curr_mean0 = None
+        self.curr_var0 = None
         self.counter0 = 0
-        self.curr_mean3 = 0.0
-        self.curr_var3 = 0.0
+        # self.curr_mean3 = 0.0
+        # self.curr_var3 = 0.0
+        self.curr_mean3 = None
+        self.curr_var3 = None
         self.counter3 = 0
 
     def get_avg_mean0(self):
-        return self.curr_mean0 / self.counter0
+        # return self.curr_mean0 / self.counter0
+        return torch.div(self.curr_mean0, self.counter0)
 
     def get_avg_var0(self):
-        return self.curr_var0 / self.counter0
+        # return self.curr_var0 / self.counter0
+        return torch.div(self.curr_var0, self.counter0)
 
     def get_counter0(self):
         return self.counter0
 
     def get_avg_mean3(self):
-        return self.curr_mean3 / self.counter3
+        # return self.curr_mean3 / self.counter3
+        return torch.div(self.curr_mean3, self.counter3)
 
     def get_avg_var3(self):
-        return self.curr_var3 / self.counter3
+        # return self.curr_var3 / self.counter3
+        return torch.div(self.curr_var3, self.counter3)
 
     def get_counter3(self):
         return self.counter3
@@ -396,8 +415,13 @@ class Transformer(nn.Module):
 
         # For normalization calculation embedding
         if self.training:
-            self.curr_var0 += torch.var(x, unbiased=False)
-            self.curr_mean0 += torch.mean(x)
+            # self.curr_var0 += torch.var(x, unbiased=False)
+            # self.curr_mean0 += torch.mean(x)
+            # self.counter0 += 1
+            cur_var0 = torch.var(x, dim=2, unbiased=False)
+            self.curr_var0 = (self.curr_var0 + cur_var0) if self.curr_var0 is not None else (cur_var0)
+            cur_mean0 = torch.mean(x, dim=2)
+            self.curr_mean0 = (self.curr_mean0 + cur_mean0) if self.curr_mean0 is not None else (cur_mean0)
             self.counter0 += 1
 
         out0 = self.linear_0(x)
@@ -417,8 +441,14 @@ class Transformer(nn.Module):
 
         # For normalization calculation embedding
         if self.training:
-            self.curr_var3 += torch.var(out2, unbiased=False)
-            self.curr_mean3 += torch.mean(out2)
+            # self.curr_var3 += torch.var(out2, unbiased=False)
+            # self.curr_mean3 += torch.mean(out2)
+            # self.counter3 += 1
+
+            cur_var3 = torch.var(out2, dim=2, unbiased=False)
+            self.curr_var3 = (self.curr_var3 + cur_var3) if self.curr_var3 is not None else (cur_var3)
+            cur_mean3 = torch.mean(out2, dim=2)
+            self.curr_mean3 = (self.curr_mean3 + cur_mean3) if self.curr_mean3 is not None else (cur_mean3)
             self.counter3 += 1
 
         out3 = self.linear_3(out2)
