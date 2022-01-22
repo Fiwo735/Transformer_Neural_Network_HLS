@@ -190,21 +190,21 @@ print(two_cols_data)
 col1_data = np.array([el for i, el in enumerate(two_cols_data) if ((i < 252 and i % 12 < 6) or (i >= 252 and i % 4 < 2))])
 col2_data = np.array([el for i, el in enumerate(two_cols_data) if ((i < 252 and i % 12 >= 6) or (i >= 252 and i % 4 >= 2))])
 
-print(col1_data)
-print(col2_data)
+# print(col1_data)
+# print(col2_data)
 
-print(col1_data.shape)
-print(col2_data.shape)
+# print(col1_data.shape)
+# print(col2_data.shape)
 
-col1_mean = col1_data.mean()
-col1_var = col1_data.var()
-col2_mean = col2_data.mean()
-col2_var = col2_data.var()
+# col1_mean = col1_data.mean()
+# col1_var = col1_data.var()
+# col2_mean = col2_data.mean()
+# col2_var = col2_data.var()
 
-print(f"{col1_mean = }")
-print(f"{col1_var = }")
-print(f"{col2_mean = }")
-print(f"{col2_var = }")
+# print(f"{col1_mean = }")
+# print(f"{col1_var = }")
+# print(f"{col2_mean = }")
+# print(f"{col2_var = }")
 
 col_data = torch.unsqueeze(torch.cat((torch.unsqueeze(torch.from_numpy(col1_data), dim=0), torch.unsqueeze(torch.from_numpy(col2_data), dim=0)), dim=0), dim=0)
 # col_mean = 
@@ -220,20 +220,20 @@ col_var = torch.var(col_data, dim=2, unbiased=False)
 print("col_var:")
 print(col_var)
 
-col_var_sum = None
-col_var_sum = (col_var_sum + col_var) if col_var_sum is not None else (col_var)
-col_var_sum = (col_var_sum + col_var) if col_var_sum is not None else (col_var)
-col_var_sum = (col_var_sum + col_var) if col_var_sum is not None else (col_var)
-print("col_var_sum")
-print(col_var_sum)
+# col_var_sum = None
+# col_var_sum = (col_var_sum + col_var) if col_var_sum is not None else (col_var)
+# col_var_sum = (col_var_sum + col_var) if col_var_sum is not None else (col_var)
+# col_var_sum = (col_var_sum + col_var) if col_var_sum is not None else (col_var)
+# print("col_var_sum")
+# print(col_var_sum)
 
-col_var_avg = torch.div(col_var_sum, 3)
-print("col_var_avg")
-print(col_var_avg)
+# col_var_avg = torch.div(col_var_sum, 3)
+# print("col_var_avg")
+# print(col_var_avg)
 
 eps = 1e-5
-W0 = 0.9996862411499023
-b0 = 0.0005073264474049211
+W0 = 0.99982661008 # 0.99982661008
+b0 = 0.00038191396 # 0.00038191396
 
 def layer_norm(x, mean, var, eps, weight, bias):
   numerator = x - mean
@@ -317,6 +317,18 @@ print(f"Biggest error in col2 is {np.amax(col2_diff)}")
 A = torch.tensor([1, 2, 3])
 print(A[0])
 print(A[1:])
+
+X0 = 3.9991e-02
+X1 = -6.1523
+
+b0 = -0.01386488933016245
+b1 = -0.0007655795714506348
+
+W0 = 1.0169684936528849
+W1 = 0.08921465251486772
+
+print(f"{(X0*W0+b0)=}")
+print(f"{(X1*W1+b1)=}")
 
 # transformed_b0 = b0 - W0 * col1_mean / np.sqrt(col1_var + eps)
 # transformed_W0 = W0 / np.sqrt(col1_var + eps)
