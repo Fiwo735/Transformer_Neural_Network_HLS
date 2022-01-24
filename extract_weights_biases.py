@@ -68,9 +68,18 @@ def prepare_files(
   # transform row-major to column-major to match HLS data layout
   # print(layer_name)
   # print(values.shape)
+
+  if layer_name == 'transformers.0.self_attention.qkv.weight':
+    print('-'*10 + 'transformers.0.self_attention.qkv.weight' + '-'*10)
+    print(values.shape)
+    print(values)
+    print(values[0][0])
+    print(values[0][1])
+    print(values[1][0])
   if len(values.shape) > 1:
     # print(values.shape[-2:])
     # print(values)
+    # TODO check if the below is always equivalent to flattening a transpose
     dim0, dim1 = values.shape[-2:]
     values = values.flatten(order='C')
     # print('flatten C')
