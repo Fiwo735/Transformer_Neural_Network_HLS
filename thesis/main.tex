@@ -9,6 +9,10 @@
 \usepackage[a4paper,top=3cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=2.0cm]{geometry}
 \usepackage{parskip} % paragraph style with no indentations and spaces between
 
+%% References
+\usepackage[nottoc]{tocbibind} %include bibliography in ToC
+\usepackage[numbers]{natbib}
+
 %% Useful packages
 \usepackage{amsmath}
 \usepackage{graphicx}
@@ -50,7 +54,7 @@
 % \input{conclusion/conclusion.tex}
 % \input{appendix/appendix.tex}
 
-\bibliographystyle{alpha}
-\bibliography{bibs/sample}
+\bibliographystyle{unsrtnat}
+\bibliography{references/references}
 
 \end{document}
