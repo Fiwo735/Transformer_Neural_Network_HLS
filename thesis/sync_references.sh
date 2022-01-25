@@ -15,6 +15,13 @@ for filename in ${WSL_path}*bib; do
   if [ "${filename}" != "${all_references}" ]; then
     echo "Appending contents of ${filename}"
     contents=$(<${filename})
-    echo "${contents}" >> "${all_references}"
+
+    # Remove characters causing problems in NatBib
+    filtered=${contents//[ö]/o}
+    
+    echo "${filtered}" >> "${all_references}"
   fi
 done
+
+# put capitalised words in titles in {} as otherwise NatBib makes them lowercase
+python3 fix_caps_in_title.py ${all_references}
