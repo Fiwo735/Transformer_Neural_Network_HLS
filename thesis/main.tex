@@ -10,8 +10,11 @@
 \usepackage{parskip} % paragraph style with no indentations and spaces between
 
 %% References
-\usepackage[nottoc]{tocbibind} %include bibliography in ToC
+\usepackage[nottoc]{tocbibind} % include bibliography in ToC
 \usepackage[numbers]{natbib}
+\addto\captionsenglish{
+  \renewcommand{\bibname}{References}
+} % change name from 'Bibliography' to 'References'
 
 %% Useful packages
 \usepackage{amsmath}
@@ -22,6 +25,7 @@
 \usepackage[export]{adjustbox}
 \usepackage{adjustbox}
 \usepackage{multirow}
+\usepackage{outlines}
 
 %% Auxiliary packages
 \usepackage{lipsum} % lorem ipsum
@@ -36,10 +40,10 @@
 % Your abstract goes here
 % \end{abstract}
 
-% \renewcommand{\abstractname}{Acknowledgements}
-% \begin{abstract}
-% Thanks mum!
-% \end{abstract}
+\renewcommand{\abstractname}{Acknowledgements}
+\begin{abstract}
+Although the project is at an early stage, I would like to express my gratitude to Professor Wayne Luk and Zhiqiang Que for guiding me through the project and always being available to answer any of my questions.
+\end{abstract}
 
 {\hypersetup{linkcolor=black} \tableofcontents}
 % \listoffigures
