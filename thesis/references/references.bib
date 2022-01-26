@@ -12,11 +12,186 @@
 	journal = {Journal of Instrumentation},
 	abstract = {The large muon trigger systems based on Resistive Plate Chambers (RPC) at the LHC experiments are currently operated with R134a based mixture. Unfortunately R134a is considered a greenhouse gas with high impact on the enviroment and therefore will be subject to regulations aiming in strongly reducing the available quantity on the market. The immediat effects might be instability on the price and incertitude in the product availability. Alternative gases (HFO-1234yf and HFO-1234ze) have been already identified by industry for specific applications as replacement of R134a. Moreover, HFCs similar to the R134a but with lower global warming potential (GWP) are already available (HFC-245fa, HFC-32, HFC-152a). The present contribution describes the results obtained with RPCs operated with new enviromemtal friendly gases. A particular attention has been addressed to the possibility of maintening the current operation conditions (i.e. currently used applied voltage and front-end electronics) in order to be able to use a new mixture for RPC systems even where the common infrastructure (i.e. high voltage and detector components) cannot be replaced for operation at higher applied voltages.}
 }
-@article{RefWorks:RefID:11-elabd2021graph,
+@article{30-lahti2019yet?,
+	author={Sakari Lahti and Panu Sjovall and Jarno Vanne and Timo D. Hamalainen},
+	year={2019},
+	month={May},
+	title={Are We There Yet? A Study on the State of High-Level Synthesis},
+	journal={IEEE transactions on computer-aided design of integrated circuits and systems},
+	volume={38},
+	number={5},
+	pages={898-911},
+	abstract={To increase productivity in designing digital hardware components, high-level synthesis (HLS) is seen as the next step in raising the design abstraction level. However, the quality of results (QoRs) of HLS tools has tended to be behind those of manual register-transfer level (RTL) flows. In this paper, we survey the scientific literature published since 2010 about the QoR and productivity differences between the HLS and RTL design flows. Altogether, our survey spans 46 papers and 118 associated applications. Our results show that on average, the QoR of RTL flow is still better than that of the state-of-the-art HLS tools. However, the average development time with HLS tools is only a third of that of the RTL flow, and a designer obtains over four times as high productivity with HLS. Based on our findings, we also present a model case study to sum up the best practices in comparative studies between HLS and RTL. The outcome of our case study is also in line with the survey results, as using an HLS tool is seen to increase the productivity by a factor of six. In addition, to help close the QoR gap, we present a survey of literature focused on improving HLS. Our results let us conclude that HLS is currently a viable option for fast prototyping and for designs with short time to market.},
+	isbn={0278-0070},
+	url={https://ieeexplore.ieee.org/document/8356004},
+	doi={10.1109/TCAD.2018.2834439}
+}
+@article{28-li2018gpu-outperforming,
+	author={Yixing Li and Zichuan Liu and Kai Xu and Hao Yu and Fengbo Ren},
+	year={2018},
+	month={Jul 27,},
+	title={A {GPU}-Outperforming {FPGA} Accelerator Architecture for Binary Convolutional Neural Networks},
+	journal={ACM journal on emerging technologies in computing systems},
+	volume={14},
+	number={2},
+	pages={1-16},
+	abstract={FPGA-based hardware accelerators for convolutional neural networks (CNNs) have received attention due to their higher energy efficiency than GPUs. However, it is challenging for FPGA-based solutions to achieve a higher throughput than GPU counterparts. In this article, we demonstrate that FPGA acceleration can be a superior solution in terms of both throughput and energy efficiency when a CNN is trained with binary constraints on weights and activations. Specifically, we propose an optimized fully mapped FPGA accelerator architecture tailored for bitwise convolution and normalization that features massive spatial parallelism with deep pipelines stages. A key advantage of the FPGA accelerator is that its performance is insensitive to data batch size, while the performance of GPU acceleration varies largely depending on the batch size of the data. Experiment results show that the proposed accelerator architecture for binary CNNs running on a Virtex-7 FPGA is 8.3\<times> faster and 75\<times> more energy-efficient than a Titan X GPU for processing online individual requests in small batch sizes. For processing static data in large batch sizes, the proposed solution is on a par with a Titan X GPU in terms of throughput while delivering 9.5\<times> higher energy efficiency.},
+	isbn={1550-4832},
+	url={http://dl.acm.org/citation.cfm?id=3154839},
+	doi={10.1145/3154839}
+}
+@inproceedings{27-nurvitadhi2017fpgas,
+	author={Eriko Nurvitadhi and Ganesh Venkatesh and Jaewoong Sim and Debbie Marr and Randy Huang and Jason Ong Gee Hock and Yeong Tat Liew and Krishnan Srivatsan and Duncan Moss and Suchit Subhaschandra and Guy Boudoukh},
+	year={Feb 22, 2017},
+	title={Can {FPGA}s Beat {GPU}s in Accelerating Next-Generation Deep Neural Networks?},
+	series={FPGA '17},
+	publisher={ACM},
+	pages={5-14},
+	abstract={Current-generation Deep Neural Networks (DNNs), such as AlexNet and VGG, rely heavily on dense floating-point matrix multiplication (GEMM), which maps well to GPUs (regular parallelism, high TFLOP/s). Because of this, GPUs are widely used for accelerating DNNs. Current FPGAs offer superior energy efficiency (Ops/Watt), but they do not offer the performance of today's GPUs on DNNs. In this paper, we look at upcoming FPGA technology advances, the rapid pace of innovation in DNN algorithms, and consider whether future high-performance FPGAs will outperform GPUs for next-generation DNNs. The upcoming Intel\<registered> 14-nm Stratix? 10 FPGAs will have thousands of hard floating-point units (DSPs) and on-chip RAMs (M20K memory blocks). They will also have high bandwidth memories (HBMs) and improved frequency (HyperFlex? core architecture). This combination of features brings FPGA raw floating point performance within striking distance of GPUs. Meanwhile, DNNs are quickly evolving. For example, recent innovations that exploit sparsity (e.g., pruning) and compact data types (e.g., 1-2 bit) result in major leaps in algorithmic efficiency. However, these innovations introduce irregular parallelism on custom data types, which are difficult for GPUs to handle but would be a great fit for FPGA's extreme customizability.
+This paper evaluates a selection of emerging DNN algorithms on two generations of Intel FPGAs (Arria'10, Stratix'10) against the latest highest performance Titan X Pascal GPU. We created a customizable DNN accelerator template for FPGAs and used it in our evaluations. First, we study various GEMM operations for next-generation DNNs. Our results show that Stratix 10 FPGA is 10%, 50%, and 5.4x better in performance (TOP/sec) than Titan X Pascal GPU on GEMM operations for pruned, Int6, and binarized DNNs, respectively. Then, we present a detailed case study on accelerating Ternary ResNet which relies on sparse GEMM on 2-bit weights (i.e., weights constrained to 0,+1,-1) and full-precision neurons. The Ternary ResNet accuracy is within ~1% of the full-precision ResNet which won the 2015 ImageNet competition. On Ternary-ResNet, the Stratix 10 FPGA can deliver 60% better performance over Titan X Pascal GPU, while being 2.3x better in performance/watt. Our results indicate that FPGAs may become the platform of choice for accelerating next-generation DNNs.},
+	url={http://dl.acm.org/citation.cfm?id=3021740},
+	doi={10.1145/3020078.3021740}
+}
+@inproceedings{26-nurvitadhi2016accelerating,
+	author={Eriko Nurvitadhi and David Sheffield and Jaewoong Sim and Asit Mishra and Ganesh Venkatesh and Debbie Marr},
+	year={Dec 2016},
+	title={Accelerating Binarized Neural Networks: Comparison of {FPGA}, {CPU}, {GPU}, and {ASIC}},
+	publisher={IEEE},
+	pages={77-84},
+	abstract={Deep neural networks (DNNs) are widely used in data analytics, since they deliver state-of-the-art accuracies. Binarized neural networks (BNNs) are recently proposed optimized variant of DNNs. BNNs constraint network weight and/or neuron value to either +1 or -1, which is representable in 1 bit. This leads to dramatic algorithm efficiency improvement, due to reduction in the memory and computational demands. This paper evaluates the opportunity to further improve the execution efficiency of BNNs through hardware acceleration. We first proposed a BNN hardware accelerator design. Then, we implemented the proposed accelerator on Aria 10 FPGA as well as 14-nm ASIC, and compared them against optimized software on Xeon server CPU, Nvidia Titan X server GPU, and Nvidia TX1 mobile GPU. Our evaluation shows that FPGA provides superior efficiency over CPU and GPU. Even though CPU and GPU offer high peak theoretical performance, they are not as efficiently utilized since BNNs rely on binarized bit-level operations that are better suited for custom hardware. Finally, even though ASIC is still more efficient, FPGA can provide orders of magnitudes in efficiency improvements over software, without having to lock into a fixed ASIC solution.},
+	url={https://ieeexplore.ieee.org/document/7929192},
+	doi={10.1109/FPT.2016.7929192}
+}
+@article{25-boutros2018improve,
+	author={Andrew Boutros and Sadegh Yazdanshenas and Vaughn Betz},
+	year={2018},
+	month={Dec 22,},
+	title={You Cannot Improve What You Do not Measure},
+	journal={ACM transactions on reconfigurable technology and systems},
+	volume={11},
+	number={3},
+	pages={1-23},
+	abstract={Recently, deep learning (DL) has become best-in-class for numerous applications but at a high computational cost that necessitates high-performance energy-efficient acceleration. The reconfigurability of FPGAs is appealing due to the rapid change in DL models but also causes lower performance and area-efficiency compared to ASICs. In this article, we implement three state-of-the-art computing architectures (CAs) for convolutional neural network (CNN) inference on FPGAs and ASICs. By comparing the FPGA and ASIC implementations, we highlight the area and performance costs of programmability to pinpoint the inefficiencies in current FPGA architectures. We perform our experiments using three variations of these CAs for AlexNet, VGG-16 and ResNet-50 to allow extensive comparisons. We find that the performance gap varies significantly from 2.8\<times> to 6.3\<times>, while the area gap is consistent across CAs with an 8.7 average FPGA-to-ASIC area ratio. Among different blocks of the CAs, the convolution engine, constituting up to 60% of the total area, has a high area ratio ranging from 13 to 31. Motivated by our FPGA vs. ASIC comparisons, we suggest FPGA architectural changes such as increasing DSP block count, enhancing low-precision support in DSP blocks and rethinking the on-chip memories to reduce the programmability gap for DL applications.},
+	isbn={1936-7406},
+	url={http://dl.acm.org/citation.cfm?id=3242898},
+	doi={10.1145/3242898}
+}
+@article{24-ramanaiah2011asic,
+	author={K. Venkata Ramanaiah and Cyril Prasanna Raj},
+	year={2011},
+	title={{ASIC} Implementation of Neural Network Based Image Compression},
+	journal={International Journal of Computer Theory and Engineering},
+	pages={494-498},
+	isbn={1793-8201},
+	doi={10.7763/IJCTE.2011.V3.356}
+}
+@article{23-knag2015sparse,
+	author={Phil Knag and Jung Kuk Kim and Thomas Chen and Zhengya Zhang},
+	year={2015},
+	month={Apr},
+	title={A Sparse Coding Neural Network {ASIC} With On-Chip Learning for Feature Extraction and Encoding},
+	journal={IEEE journal of solid-state circuits},
+	volume={50},
+	number={4},
+	pages={1070-1079},
+	abstract={Hardware-based computer vision accelerators will be an essential part of future mobile devices to meet the low power and real-time processing requirement. To realize a high energy efficiency and high throughput, the accelerator architecture can be massively parallelized and tailored to vision processing, which is an advantage over software-based solutions and general-purpose hardware. In this work, we present an ASIC that is designed to learn and extract features from images and videos. The ASIC contains 256 leaky integrate-and-fire neurons connected in a scalable two-layer network of 8 \<times> 8 grids linked in a 4-stage ring. Sparse neuron activation and the relatively small grid keep the spike collision probability low to save access arbitration. The weight memory is divided into core memory and auxiliary memory, such that the auxiliary memory is only powered on for learning to save inference power. High-throughput inference is accomplished by the parallel operation of neurons. Efficient learning is implemented by passing parameter update messages, which is further simplified by an approximation technique. A 3.06 mm 2 65 nm CMOS ASIC test chip is designed to achieve a maximum inference throughput of 1.24 Gpixel/s at 1.0 V and 310 MHz, and on-chip learning can be completed in seconds. To improve the power consumption and energy efficiency, core memory supply voltage can be reduced to 440 mV to take advantage of the error resilience of the algorithm, reducing the inference power to 6.67 mW for a 140 Mpixel/s throughput at 35 MHz.},
+	isbn={0018-9200},
+	url={https://ieeexplore.ieee.org/document/7015626},
+	doi={10.1109/JSSC.2014.2386892}
+}
+@misc{22-graphcoregraphcore,
+	author={Graphcore},
+	title={Graphcore Intelligence Processing Unit},
+	volume={2022},
+	number={Jan 26,},
+	url={https://www.graphcore.ai/products/ipu}
+}
+@article{21-zhang2019recent,
+	author={Qianru Zhang and Meng Zhang and Tinghuan Chen and Zhifei Sun and Yuzhe Ma and Bei Yu},
+	year={2019},
+	month={Jan 5,},
+	title={Recent advances in convolutional neural network acceleration},
+	journal={Neurocomputing (Amsterdam)},
+	volume={323},
+	pages={37-51},
+	abstract={In recent years, convolutional neural networks (CNNs) have shown great performance in various fields such as image classification, pattern recognition, and multi-media compression. Two of the feature properties, local connectivity and weight sharing, can reduce the number of parameters and increase processing speed during training and inference. However, as the dimension of data becomes higher and the CNN architecture becomes more complicated, the end-to-end approach or the combined manner of CNN is computationally intensive, which becomes limitation to CNN’s further implementation. Therefore, it is necessary and urgent to implement CNN in a faster way. In this paper, we first summarize the acceleration methods that contribute to but not limited to CNN by reviewing a broad variety of research papers. We propose a taxonomy in terms of three levels, i.e. structure level, algorithm level, and implementation level, for acceleration methods. We also analyze the acceleration methods in terms of CNN architecture compression, algorithm optimization, and hardware-based improvement. At last, we give a discussion on different perspectives of these acceleration and optimization methods within each level. The discussion shows that the methods in each level still have large exploration space. By incorporating such a wide range of disciplines, we expect to provide a comprehensive reference for researchers who are interested in CNN acceleration.},
+	isbn={0925-2312},
+	url={https://dx.doi.org/10.1016/j.neucom.2018.09.038},
+	doi={10.1016/j.neucom.2018.09.038}
+}
+@article{20-chen2020gpu-accelerated,
+	author={Gang Chen and Haitao Meng and Yucheng Liang and Kai Huang},
+	year={2020},
+	month={Dec 1,},
+	title={{GPU}-Accelerated Real-Time Stereo Estimation With Binary Neural Network},
+	journal={IEEE transactions on parallel and distributed systems},
+	volume={31},
+	number={12},
+	pages={2896-2907},
+	abstract={Depth estimation from stereo images is essential to many applications such as robotics and autonomous vehicles, most of which ask for the real-time response, high energy and storage efficiency. Recent work has shown deep neural networks (DNN) perform extremely well for stereo estimation. However, these state-of-the-art DNN based algorithms are challenging to be deployed into real-world applications due to the high computational complexities of DNNs. Most of them are too slow for real-time inference and require several seconds of GPU computation to process image frames. In this article, we address the problem of fast stereo estimation and propose an efficient and light-weighted stereo matching system, called StereoBit, to produce a disparity map in a real-time manner while achieving close to state-of-the-art accuracy. To achieve this goal, we propose a binary neural network to generate weighted Hamming distance for an efficient similarity join in stereo estimation. In addition, we propose a novel approximation approach to derive StereoBit network directly from the well-trained network with the cosine similarity. Our approximation strategies enable a significant speedup while maintaining almost the same accuracy compared to the network with the cosine similarity. Furthermore, we present an optimization framework for fully exploiting the computing power of StereoBit. The framework provides a significant speedup of stereo estimation routines, and at the same time, reduces the memory usage for storing parameters. The effectiveness of StereoBit is evaluated by comprehensive experiments. StereoBit can achieve 60 frames per second on an NVIDIA TITAN Xp GPU on KITTI 2012 benchmark while achieving 3-pixel non-occluded stereo error 3.56 percent.},
+	isbn={1045-9219},
+	url={https://ieeexplore.ieee.org/document/9130887},
+	doi={10.1109/TPDS.2020.3006238}
+}
+@inproceedings{19-iyer2018gpu,
+	author={Sainathan Ganesh Iyer and Anurag Dipakumar Pawar},
+	year={Aug 2018},
+	title={{GPU} and {CPU} Accelerated Mining of Cryptocurrencies and their Financial Analysis},
+	publisher={IEEE},
+	pages={599-604},
+	abstract={When Bitcoin's price skyrocketed then cryptocurrencies dragged the world's attention. Since then "Cryptocurrency Mining" has became a buzz word for computer geeks as well as for those who wanted to add a new source of income. "Mining" is a process of solving computational problems using hardware which results in obtaining rewards in the form digital currency. Large number of people who could afford a personal computer, started getting attracted towards mining, which resulted in formation of "Mining Pools". Mining Pools are an explicit example of teamwork where miners share their efforts to mine cryptocurrencies. This paper throws light on some of the key concepts of mining such as hash rates, pool analytics and various mining software. A complete financial report is enclosed in this paper which discusses the profitability or non-profitability of various cryptocurrencies and hardware by considering various attributes like pool fee, electricity costs, and revenues excluding the cost of hardware. This paper is an outcome of practical mining of several cryptocurrencies on GPUs and CPUs (non-custom hardware) which results in contextually slower mining as compared to high-end miners. Proposed data will guide novice miners to start mining.},
+	url={https://ieeexplore.ieee.org/document/8653733},
+	doi={10.1109/I-SMAC.2018.8653733}
+}
+@inproceedings{17-dagli1989applications,
+	author={Dagli and Lammers},
+	year={1989},
+	title={Possible applications of neural networks in manufacturing},
+	publisher={IEEE TAB Neural Network Committee},
+	pages={605 vol.2},
+	abstract={Summary form only given. An examination is made of the potential of neural networks and the impact of parallel processing in the design and operations of manufacturing systems. After an initial discussion on possible areas of application, an approach that integrates artificial intelligence, operations research, and neural networks for the solution of a scheduling problem is examined.< >},
+	url={https://ieeexplore.ieee.org/document/118423},
+	doi={10.1109/IJCNN.1989.118423}
+}
+@article{16-wu1995neural,
+	author={Cathy Wu and Michael Berry and Sailaja Shivakumar and Jerry McLarty},
+	year={1995},
+	month={Oct 1,},
+	title={Neural Networks for Full-Scale Protein Sequence Classification: Sequence Encoding with Singular Value Decomposition},
+	journal={Machine learning},
+	volume={21},
+	number={1},
+	pages={177},
+	abstract={Byline: Cathy Wu (1), Michael Berry (2), Sailaja Shivakumar (3), Jerry McLarty (3) Keywords: neural networks; database search; protein classification; sequence analysis; superfamily; singular value decomposition (SVD) A neural network classification method has been developed as an alternative approach to the search/organization problem of protein sequence databases. The neural networks used are three-layered, feed-forward, back-propagation networks. The protein sequences are encoded into neural input vectors by a hashing method that counts occurrences of n-gram words. A new SVD (singular value decomposition) method, which compresses the long and sparse n-gram input vectors and captures semantics of n-gram words, has improved the generalization capability of the network. A full-scale protein classification system has been implemented on a Cray supercomputer to classify unknown sequences into 3311 PIR (Protein Identification Resource) superfamilies/families at a speed of less than 0.05 CPU second per sequence. The sensitivity is close to 90% overall, and approaches 100% for large superfamilies. The system could be used to reduce the database search time and is being used to help organize the PIR protein sequence database. Author Affiliation: Article History: Registration Date: 26/08/2004},
+	isbn={0885-6125},
+	doi={10.1023/A:1022677900508}
+}
+@inproceedings{15-nurvitadhi2016accelerating,
+	author={Eriko Nurvitadhi and Jaewoong Sim and David Sheffield and Asit Mishra and Srivatsan Krishnan and Debbie Marr},
+	year={Aug 2016},
+	title={Accelerating recurrent neural networks in analytics servers: Comparison of {FPGA}, {CPU}, {GPU}, and {ASIC}},
+	publisher={EPFL},
+	pages={1-4},
+	abstract={Recurrent neural networks (RNNs) provide state-of-the-art accuracy for performing analytics on datasets with sequence (e.g., language model). This paper studied a state-of-the-art RNN variant, Gated Recurrent Unit (GRU). We first proposed memoization optimization to avoid 3 out of the 6 dense matrix vector multiplications (SGEMVs) that are the majority of the computation in GRU. Then, we study the opportunities to accelerate the remaining SGEMVs using FPGAs, in comparison to 14-nm ASIC, GPU, and multi-core CPU. Results show that FPGA provides superior performance/Watt over CPU and GPU because FPGA's on-chip BRAMs, hard DSPs, and reconfigurable fabric allow for efficiently extracting fine-grained parallelisms from small/medium size matrices used by GRU. Moreover, newer FPGAs with more DSPs, on-chip BRAMs, and higher frequency have the potential to narrow the FPGA-ASIC efficiency gap.},
+	url={https://ieeexplore.ieee.org/document/7577314},
+	doi={10.1109/FPL.2016.7577314}
+}
+@inproceedings{14-najafi2017hardware,
+	author={Mohammadreza Najafi and Kaiwen Zhang and Mohammad Sadoghi and Hans-Arno Jacobsen},
+	year={Jun 2017},
+	title={Hardware Acceleration Landscape for Distributed Real-Time Analytics: Virtues and Limitations},
+	publisher={IEEE},
+	pages={1938-1948},
+	abstract={We are witnessing a technological revolution with a broad impact ranging from daily life (e.g., personalized medicine and education) to industry (e.g., data-driven healthcare, commerce, agriculture, and mining). At the core of this transformation lies "data". This transformation is facilitated by embedded devices, collectively known as Internet of Things (IoT), which produce real-time feeds of sensor data which are collected and processed to produce a dynamic physical model used for optimized real-time decision making. At the infrastructure level, there is a need to develop a scalable architecture for processing massive volumes of present and historical data at an unprecedented velocity to support the IoT paradigm. To cope with such extreme scale, we argue for the need to revisit the hardware and software co-design landscape in light of two key technological advancements. First is the virtualization of computation and storage over highly distributed data centers spanning across continents. Second is the emergence of a variety of specialized hardware accelerators that complement traditional general-purpose processors. Further efforts are required to unify these two trends in order to harness the power of big data. In this paper, we present a formulation and characterization of the hardware acceleration landscape geared towards real-time analytics in the cloud. Our goal is to assist both researchers and practitioners navigating the newly revived field of software and hardware co-design for building next generation distributed systems. We further present a case study to explore software and hardware interplay for designing distributed real-time stream processing.},
+	isbn={1063-6927},
+	url={https://ieeexplore.ieee.org/document/7980135},
+	doi={10.1109/ICDCS.2017.194}
+}
+@article{11-elabd2021graph,
 	author={Abdelrahman Elabd and Vesal Razavimaleki and Shi-Yu Huang and Javier Duarte and Markus Atkinson and Gage DeZoort and Peter Elmer and Jin-Xuan Hu and Shih-Chieh Hsu and Bo-Cheng Lai and Mark Neubauer and Isobel Ojalvo and Savannah Thais},
 	year={2021},
 	month={Dec 3,},
-	title={Graph Neural Networks for Charged Particle Tracking on {FPG}As},
+	title={Graph Neural Networks for Charged Particle Tracking on {FPGA}s},
 	abstract={The determination of charged particle trajectories in collisions at the CERN
 Large Hadron Collider (LHC) is an important but challenging problem, especially
 in the high interaction density conditions expected during the future
@@ -36,7 +211,7 @@ inclusion of charged particle tracking GNNs at the trigger level for HL-LHC
 experiments.},
 	url={https://arxiv.org/abs/2112.02048}
 }
-@article{RefWorks:RefID:9-newman2019jedi-net:,
+@article{9-newman2019jedi-net:,
 	author={Harvey B. Newman and Avikar Periwal and Maria Spiropulu and Javier M. Duarte and Maurizio Pierini and Eric A. Moreno and Aidana Serikova and Olmo Cerri and Jean-Roch Vlimant and Thong Q. Nguyen},
 	year={2019},
 	month={Aug 14,},
@@ -50,7 +225,7 @@ experiments.},
 	url={http://cds.cern.ch/record/2688535},
 	doi={10.1140/epjc/s10052-020-7608-4}
 }
-@article{RefWorks:RefID:8-fahim2021hls4ml:,
+@article{8-fahim2021hls4ml:,
 	author={Farah Fahim and Benjamin Hawks and Christian Herwig and James Hirschauer and Sergo Jindariani and Nhan Tran and Luca P. Carloni and Giuseppe Di Guglielmo and Philip Harris and Jeffrey Krupa and Dylan Rankin and Manuel Blanco Valentin and Josiah Hester and Yingyi Luo and John Mamish and Seda Orgrenci-Memik and Thea Aarrestad and Hamza Javed and Vladimir Loncar and Maurizio Pierini and Adrian Alan Pol and Sioni Summers and Javier Duarte and Scott Hauck and Shih-Chieh Hsu and Jennifer Ngadiuba and Mia Liu and Duc Hoang and Edward Kreinar and Zhenbin Wu},
 	year={2021},
 	month={Mar 9,},
@@ -71,11 +246,11 @@ generation of domain scientists with accessible, efficient, and powerful tools
 for machine-learning-accelerated discovery.},
 	url={https://arxiv.org/abs/2103.05579}
 }
-@article{RefWorks:RefID:7-moore2019reports,
+@article{7-moore2019reports,
 	author={Liam Moore and Karl Nordstrom and Sreedevi Varma and Malcolm Fairbairn},
 	year={2019},
 	month={Sep 24,},
-	title={Reports of my demise are greatly exaggerated: ${N}$-subjettiness taggers take on jet images},
+	title={Reports of my demise are greatly exaggerated: $N$-subjettiness taggers take on jet images},
 	journal={SciPost physics},
 	volume={7},
 	number={3},
@@ -85,7 +260,7 @@ for machine-learning-accelerated discovery.},
 	url={https://hal.archives-ouvertes.fr/hal-01851157},
 	doi={10.21468/SciPostPhys.7.3.036}
 }
-@article{RefWorks:RefID:6-de2016jet-images,
+@article{6-de2016jet-images,
 	author={Luke de Oliveira and Michael Kagan and Lester Mackey and Benjamin Nachman and Ariel Schwartzman},
 	year={2016},
 	month={Jul 13,},
@@ -105,7 +280,7 @@ can out-perform standard physically-motivated feature driven approaches to jet t
 	url={https://link.springer.com/article/10.1007/JHEP07(2016)069},
 	doi={10.1007/JHEP07(2016)069}
 }
-@article{RefWorks:RefID:5-cogan2015jet-images:,
+@article{5-cogan2015jet-images:,
 	author={Josh Cogan and Michael Kagan and Emanuel Strauss and Ariel Schwarztman},
 	year={2015},
 	month={Feb 18,},
@@ -125,19 +300,19 @@ boson decays with respect to a background of quark- and gluoninitiated jets. Usi
 	url={https://link.springer.com/article/10.1007/JHEP02(2015)118},
 	doi={10.1007/JHEP02(2015)118}
 }
-@misc{RefWorks:RefID:4-cernjets,
+@misc{4-cernjets,
 	author={CERN},
 	title={Jets at {CMS} and the determination of their energy scale | {CMS} Experiment},
 	volume={2022},
 	number={Jan 24,}
 }
-@phdthesis{RefWorks:RefID:3-yuan2021constituentnet:,
+@techreport{3-yuan2021constituentnet:,
 	author={Xinyang Yuan},
 	year={2021},
 	month={-09-22},
 	title={ConstituentNet: Learn to Solve Jet Tagging through Attention}
 }
-@article{RefWorks:RefID:2-capeans2017strategies,
+@article{2-capeans2017strategies,
 	author={M. Capeans and R. Guida and B. Mandelli},
 	year={2017},
 	title={Strategies for reducing the environmental impact of gaseous detector operation at the {CERN} {LHC} experiments},
@@ -150,10 +325,16 @@ boson decays with respect to a background of quark- and gluoninitiated jets. Usi
 	url={https://www.sciencedirect.com/science/article/pii/S0168900216302807},
 	doi={https://doi.org/10.1016/j.nima.2016.04.067}
 }
-@misc{RefWorks:RefID:1-cernfacts,
+@misc{1-cernfacts,
 	author={CERN},
 	title={Facts and figures about the {LHC} | {CERN}},
 	volume={2022},
 	number={Jan 23,},
 	url={https://home.cern/resources/faqs/facts-and-figures-about-lhc}
+}
+@inproceedings{nn_cpu_optim,
+title	= {Improving the speed of neural networks on {CPU}s},
+author	= {Vincent Vanhoucke and Andrew Senior and Mark Z. Mao},
+year	= {2011},
+booktitle	= {Deep Learning and Unsupervised Feature Learning Workshop, {NIPS} 2011}
 }
