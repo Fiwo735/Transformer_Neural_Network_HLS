@@ -20,12 +20,19 @@
 \usepackage{amsmath}
 \usepackage{graphicx}
 \usepackage[table,xcdraw]{xcolor}
-\usepackage[colorinlistoftodos]{todonotes}
 \usepackage[colorlinks=true, allcolors=blue]{hyperref}
 \usepackage[export]{adjustbox}
 \usepackage{adjustbox}
 \usepackage{multirow}
 \usepackage{outlines}
+\usepackage{xargs}
+
+%% Todo notes
+\usepackage[colorinlistoftodos]{todonotes} % todo notes, add [disable] to turn them off
+\newcommandx{\indo}[2][1=]{\todo[linecolor=red,backgroundcolor=red!25,bordercolor=red,inline,#1]{#2}}
+\newcommandx{\maybe}[2][1=]{\todo[linecolor=blue,backgroundcolor=blue!25,bordercolor=blue,inline,#1]{#2}}
+\newcommandx{\todofig}[2][1=]{\todo[linecolor=green,backgroundcolor=green!25,bordercolor=green,inline,#1]{#2}}
+% \newcommandx{\improvement}[2][1=]{\todo[linecolor=Plum,backgroundcolor=Plum!25,bordercolor=Plum,#1]{#2}}
 
 %% Auxiliary packages
 \usepackage{lipsum} % lorem ipsum
@@ -60,5 +67,7 @@ Although the project is at an early stage, I would like to express my gratitude 
 
 \bibliographystyle{unsrtnat}
 \bibliography{references/references}
+
+\listoftodos[Notes]
 
 \end{document}
