@@ -1,16 +1,11 @@
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ how the report is structured}{4}{section*.2}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ find more info about the structure and timings}{5}{section*.3}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ general short info about ML, tensors}{5}{section*.4}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ training-validation-test dataset and the dataset we use}{5}{section*.5}%
-\contentsline {todo}{\color@fb@x {}{green}{}{green!25}{\leavevmode {\color {green!25}o}}\ serial + parallel + pipeline blocks }{8}{section*.6}%
-\contentsline {todo}{\color@fb@x {}{green}{}{green!25}{\leavevmode {\color {green!25}o}}\ pareto front with a missing area highlighting it should be explored as there are likely interesting designs there}{8}{section*.7}%
-\contentsline {todo}{\color@fb@x {}{green}{}{green!25}{\leavevmode {\color {green!25}o}}\ roofline model}{8}{section*.8}%
-\contentsline {todo}{\color@fb@x {}{blue}{}{blue!25}{\leavevmode {\color {blue!25}o}}\ some graphics to potentially add: fpga lattice, hls to rtl flow, rtl to bit stream flow}{8}{section*.9}%
-\contentsline {todo}{\color@fb@x {}{blue}{}{blue!25}{\leavevmode {\color {blue!25}o}}\ difficulty: rtl > hls > python hl4ml, draw comparison with assembly}{8}{section*.10}%
-\contentsline {todo}{\color@fb@x {}{blue}{}{blue!25}{\leavevmode {\color {blue!25}o}}\ FPGA are very hard-coded -> make the code deployable on any platform with optimal settings automatically}{8}{section*.11}%
-\contentsline {todo}{\color@fb@x {}{blue}{}{blue!25}{\leavevmode {\color {blue!25}o}}\ HLS is difficult, so coding hardware in Python is desired -> make it easy for engineers and physicists to design systems}{8}{section*.12}%
-\contentsline {todo}{\color@fb@x {}{blue}{}{blue!25}{\leavevmode {\color {blue!25}o}}\ Metaprogramming allows for optimizations and customisability}{8}{section*.13}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ mention exams and cw deadlines}{9}{section*.14}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ mention what has been done so far and how it relates to the project plan}{11}{section*.15}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ area under curve, confusion matrix (true false positive nagative)}{12}{section*.16}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ shorten pareto and roofline and maybe more coz theyre explained in background now}{12}{section*.17}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ explain}{7}{section*.4}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ explain}{7}{section*.5}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ explain}{7}{section*.6}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ explain}{7}{section*.7}%
+\contentsline {todo}{\color@fb@x {}{blue}{}{blue!25}{\leavevmode {\color {blue!25}o}}\ some graphics to potentially add: fpga lattice, hls to rtl flow, rtl to bit stream flow}{11}{section*.8}%
+\contentsline {todo}{\color@fb@x {}{blue}{}{blue!25}{\leavevmode {\color {blue!25}o}}\ difficulty: rtl > hls > python hl4ml, draw comparison with assembly}{12}{section*.9}%
+\contentsline {todo}{\color@fb@x {}{blue}{}{blue!25}{\leavevmode {\color {blue!25}o}}\ FPGA are very hard-coded -> make the code deployable on any platform with optimal settings automatically}{12}{section*.10}%
+\contentsline {todo}{\color@fb@x {}{blue}{}{blue!25}{\leavevmode {\color {blue!25}o}}\ HLS is difficult, so coding hardware in Python is desired -> make it easy for engineers and physicists to design systems}{12}{section*.11}%
+\contentsline {todo}{\color@fb@x {}{blue}{}{blue!25}{\leavevmode {\color {blue!25}o}}\ Metaprogramming allows for optimizations and customisability}{12}{section*.12}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ area under curve, confusion matrix (true false positive nagative)}{16}{section*.13}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ shorten pareto and roofline and maybe more coz theyre explained in background now}{16}{section*.14}%

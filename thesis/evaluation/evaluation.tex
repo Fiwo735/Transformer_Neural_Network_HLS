@@ -1,4 +1,4 @@
-\chapter{Evaluation Plan}
+\chapter{Evaluation Plan}\label{evaluation}
 This chapter outlines the proposed evaluation plan for the project. The first objective of developing and optimizing a state-of-the-art neural network in hardware can be evaluated quantitatively, while integrating it into the \textit{hls4ml} library and making it easy for new users to use requires a more qualitative approach.
 
 \section{Quantitative results}
@@ -15,7 +15,7 @@ The following describes the quantities that are planned to be measured:
     \2 Look-Up Tables (LUT)
 \end{outline}
 
-In the early stages of the project, the above quantities will be measured from the results from simulation and synthesis reports. At a later stage, the best designs will be run on actual hardware platforms to validate them under real-life use cases. The platform planned for this part is an Intel Stratix V FPGA hosted in a Maxeler MPC-X dataflow node with 8 Maia dataflow engines and 48 GB of DRAM.
+In the early stages of the project, the above quantities will be measured from the results from simulation and synthesis reports. At a later stage, the best designs will be run on actual hardware platforms to validate them under real-life use cases. The platform planned for this part is an Intel Stratix V FPGA hosted in a Maxeler MPC-X dataflow node with 8 Maia dataflow engines and 48 GB of DRAM. A consideration is also planned for the specific hardware used in the LHC detectors and its available resources, which cannot be directly tested on, but can guide the design state space exploration.
 
 Apart from clear design improvements, it is predicted that most evaluated designs will offer trade-offs between classification accuracy, inference throughput and hardware utilization. It is not possible to find a design that is superior in every way, hence a \textbf{Pareto front} will play a key role in understanding the overall performance and selecting configuration with specific needs in mind. The \textbf{Roofline model} can also be used to compare the obtained results with theoretical limits coming from inherent hardware limitations like clock frequency or memory bandwidth.
 

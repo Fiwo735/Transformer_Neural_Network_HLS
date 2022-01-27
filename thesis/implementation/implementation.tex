@@ -1,3 +1,15 @@
-\chapter{Implementation}
+\chapter{Implementation}\label{implementation}
+As depicted in the figure \ref{fig:gantt-chart}, part of the project plan from \autoref{project-plan} has already been implemented as of the time of publishing this report. This was done thanks to the smaller workload of the Autumn term in comparison to the Spring term as well as significant effort over the Winter break. This 'head start' is hoped to allow for a deeper state space exploration and a more refined final architecture and in case of faster than expected working pace, further extensions related to the \textit{hls4ml} library and automatic optimizations will also be considered.
 
-\indo{mention what has been done so far and how it relates to the project plan}
+The accomplishments so far can be categorized into four domains:
+
+\begin{itemize}
+  \item \textbf{Adaptation of the PyTorch ConstituentNet architecture} - thanks to an existing code base with the implementation, it was easier to understand the smaller details that were not fully explained in the original paper \cite{3-yuan2021constituentnet:}. However, many aspects of the provided code served as proof-of-concept and are suspected to had been changed after the publishing, as a new model could not be trained, nor the provided one could be evaluated. Without the help of the original author, a severe investigation and fixing process were required to progress the software implementation into a usable state. Despite those difficulties, the time was well spent on finding potential optimization points for the later stage of the project. Moreover, frequent reporting hooks were added in between the existing network layers, which allows for generating an inner view of the calculations happening on the CPU that gives the opportunity for direct, step-by-step comparison with the HLS implementation. Ultimately, the code base has reached a state where it is convenient to train models with different parameters and evaluate them against the datasets.
+  
+  \item \textbf{Model parameter extraction tool with layer normalization embedding} - in order to initialize 
+  
+  \item \textbf{Implementation of the ConstituentNet architecture in Vivado HLS} - 
+  
+  \item \textbf{Research into \textit{hls4ml} library and integration potential} - 
+  
+\end{itemize}
