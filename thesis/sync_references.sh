@@ -18,6 +18,7 @@ for filename in ${WSL_path}*bib; do
 
     # Remove characters causing problems in NatBib
     filtered=${contents//[ö]/o}
+    filtered=${filtered//[ń]/n}
     
     echo "${filtered}" >> "${all_references}"
   fi

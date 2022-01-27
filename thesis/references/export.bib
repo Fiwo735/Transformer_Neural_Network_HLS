@@ -1,3 +1,165 @@
+@article{RefWorks:RefID:45-liang2021pruning,
+	author={Tailin Liang and John Glossner and Lei Wang and Shaobo Shi and Xiaotong Zhang},
+	year={2021},
+	month={Oct 21,},
+	title={Pruning and quantization for deep neural network acceleration: A survey},
+	journal={Neurocomputing (Amsterdam)},
+	volume={461},
+	pages={370-403},
+	abstract={Deep neural networks have been applied in many applications exhibiting extraordinary abilities in the field of computer vision. However, complex network architectures challenge efficient real-time deployment and require significant computation resources and energy costs. These challenges can be overcome through optimizations such as network compression. Network compression can often be realized with little loss of accuracy. In some cases accuracy may even improve. This paper provides a survey on two types of network compression: pruning and quantization. Pruning can be categorized as static if it is performed offline or dynamic if it is performed at run-time. We compare pruning techniques and describe criteria used to remove redundant computations. We discuss trade-offs in element-wise, channel-wise, shape-wise, filter-wise, layer-wise and even network-wise pruning. Quantization reduces computations by reducing the precision of the datatype. Weights, biases, and activations may be quantized typically to 8-bit integers although lower bit width implementations are also discussed including binary neural networks. Both pruning and quantization can be used independently or combined. We compare current techniques, analyze their strengths and weaknesses, present compressed network accuracy results on a number of frameworks, and provide practical guidance for compressing networks.},
+	isbn={0925-2312},
+	url={https://dx.doi.org/10.1016/j.neucom.2021.07.045},
+	doi={10.1016/j.neucom.2021.07.045}
+}
+@article{RefWorks:RefID:44-vaswani2017attention,
+	author={Ashish Vaswani and Noam Shazeer and Niki Parmar and Jakob Uszkoreit and Llion Jones and Aidan N. Gomez and Lukasz Kaiser and Illia Polosukhin},
+	year={2017},
+	month={Jun 12,},
+	title={Attention Is All You Need},
+	abstract={The dominant sequence transduction models are based on complex recurrent or
+convolutional neural networks in an encoder-decoder configuration. The best
+performing models also connect the encoder and decoder through an attention
+mechanism. We propose a new simple network architecture, the Transformer, based
+solely on attention mechanisms, dispensing with recurrence and convolutions
+entirely. Experiments on two machine translation tasks show these models to be
+superior in quality while being more parallelizable and requiring significantly
+less time to train. Our model achieves 28.4 BLEU on the WMT 2014
+English-to-German translation task, improving over the existing best results,
+including ensembles by over 2 BLEU. On the WMT 2014 English-to-French
+translation task, our model establishes a new single-model state-of-the-art
+BLEU score of 41.8 after training for 3.5 days on eight GPUs, a small fraction
+of the training costs of the best models from the literature. We show that the
+Transformer generalizes well to other tasks by applying it successfully to
+English constituency parsing both with large and limited training data.},
+	url={https://arxiv.org/abs/1706.03762}
+}
+@techreport{RefWorks:RefID:42-kreinar2020distance-weighted,
+	author={Edward Kreinar and Zhenbin Wu and Gianluca Cerminara and Kinga Wozniak and Gerrit Van Onsem and Marcel Rieger and Giuseppe Di Guglielmo and Jan Kieseler and Shah Rukh Qasim and Sioni Summers and Sergo Jindariani and Jennifer Ngadiuba and Mia Liu and Philip Harris and Maurizio Pierini and Vladimir Loncar and Kevin Pedro and Yutaro Iiyama and Javier Duarte and Dylan Rankin and Nhan Tran and Abhijay Gupta},
+	year={2020},
+	title={Distance-Weighted Graph Neural Networks on FPGAs for Real-Time Particle Reconstruction in High Energy Physics},
+	institution={Frontiers Media S.A},
+	number={3},
+	pages={598927},
+	abstract={Graph neural networks have been shown to achieve excellent performance for several crucial tasks in particle physics, such as charged particle tracking, jet tagging, and clustering. An important domain for the application of these networks is the FGPA-based first layer of real-time data filtering at the CERN Large Hadron Collider, which has strict latency and resource constraints. We discuss how to design distance-weighted graph networks that can be executed with a latency of less than 1$\mu\mathrm{s}$ on an FPGA. To do so, we consider a representative task associated to particle reconstruction and identification in a next-generation calorimeter operating at a particle collider. We use a graph network architecture developed for such purposes, and apply additional simplifications to match the computing constraints of Level-1 trigger systems, including weight quantization. Using the $\mathtt{hls4ml}$ library, we convert the compressed models into firmware to be implemented on an FPGA. Performance of the synthesized models is presented both in terms of inference accuracy and resource usage.},
+	isbn={2624-909X},
+	url={http://cds.cern.ch/record/2728798},
+	doi={10.3389/fdata.2020.598927}
+}
+@article{RefWorks:RefID:41-elabd2021graph,
+	author={Abdelrahman Elabd and Vesal Razavimaleki and Shi-Yu Huang and Javier Duarte and Markus Atkinson and Gage DeZoort and Peter Elmer and Jin-Xuan Hu and Shih-Chieh Hsu and Bo-Cheng Lai and Mark Neubauer and Isobel Ojalvo and Savannah Thais},
+	year={2021},
+	month={Dec 3,},
+	title={Graph Neural Networks for Charged Particle Tracking on FPGAs},
+	abstract={The determination of charged particle trajectories in collisions at the CERN
+Large Hadron Collider (LHC) is an important but challenging problem, especially
+in the high interaction density conditions expected during the future
+high-luminosity phase of the LHC (HL-LHC). Graph neural networks (GNNs) are a
+type of geometric deep learning algorithm that has successfully been applied to
+this task by embedding tracker data as a graph -- nodes represent hits, while
+edges represent possible track segments -- and classifying the edges as true or
+fake track segments. However, their study in hardware- or software-based
+trigger applications has been limited due to their large computational cost. In
+this paper, we introduce an automated translation workflow, integrated into a
+broader tool called $\texttt{hls4ml}$, for converting GNNs into firmware for
+field-programmable gate arrays (FPGAs). We use this translation tool to
+implement GNNs for charged particle tracking, trained using the TrackML
+challenge dataset, on FPGAs with designs targeting different graph sizes, task
+complexites, and latency/throughput requirements. This work could enable the
+inclusion of charged particle tracking GNNs at the trigger level for HL-LHC
+experiments.},
+	url={https://arxiv.org/abs/2112.02048}
+}
+@article{RefWorks:RefID:40-ren2020unveiling,
+	author={Jie Ren and Lei Wu and Jin Min Yang},
+	year={2020},
+	month={Mar 10,},
+	title={Unveiling CP property of top-Higgs coupling with graph neural networks at the LHC},
+	journal={Physics letters. B},
+	volume={802},
+	pages={135198},
+	abstract={The top-Higgs coupling plays an important role in particle physics and cosmology. The precision measurements of this coupling can provide an insight to new physics beyond the Standard Model. In this paper, we propose to use Message Passing Neural Network (MPNN) to reveal the CP nature of top-Higgs interaction through semi-leptonic channel pp\<rightarrow>t(\<rightarrow>bℓ−\<nu>ℓ)t\<inverse>(\<rightarrow>b\<inverse>jj)h(\<rightarrow>bb\<inverse>). Using the test statistics constructed from the event classification probabilities given by the MPNN, we find that the pure CP-even and CP-odd components can be well distinguished at the LHC, with at most 300 fb−1 experimental data.},
+	isbn={0370-2693},
+	url={https://dx.doi.org/10.1016/j.physletb.2020.135198},
+	doi={10.1016/j.physletb.2020.135198}
+}
+@techreport{RefWorks:RefID:39-skoczeń2016lstm,
+	author={Andrzej Skoczeń and Maciej Wielgosz and Matej Mertik},
+	year={2016},
+	month={Nov 18,},
+	title={Using LSTM recurrent neural networks for monitoring the LHC superconducting magnets},
+	institution={Elsevier B.V},
+	number={867},
+	pages={40-50},
+	abstract={The superconducting LHC magnets are coupled with an electronic monitoring system which records and analyses voltage time series reflecting their performance. A currently used system is based on a range of preprogrammed triggers which launches protection procedures when a misbehavior of the magnets is detected. All the procedures used in the protection equipment were designed and implemented according to known working scenarios of the system and are updated and monitored by human operators. This paper proposes a novel approach to monitoring and fault protection of the Large Hadron Collider (LHC) superconducting magnets which employs state-of-the-art Deep Learning algorithms. Consequently, the authors of the paper decided to examine the performance of LSTM recurrent neural networks for modeling of voltage time series of the magnets. In order to address this challenging task different network architectures and hyper-parameters were used to achieve the best possible performance of the solution. The regression results were measured in terms of RMSE for different number of future steps and history length taken into account for the prediction. The best result of RMSE=0.00104 was obtained for a network of 128 LSTM cells within the internal layer and 16 steps history buffer.
+The superconducting LHC magnets are coupled with an electronic monitoring system which records and analyzes voltage time series reflecting their performance. A currently used system is based on a range of preprogrammed triggers which launches protection procedures when a misbehavior of the magnets is detected. All the procedures used in the protection equipment were designed and implemented according to known working scenarios of the system and are updated and monitored by human operators.},
+	isbn={0168-9002},
+	url={http://cds.cern.ch/record/2234465},
+	doi={10.1016/j.nima.2017.06.020}
+}
+@inproceedings{RefWorks:RefID:38-valentino2012classification,
+	author={G. Valentino and R. W. Assmann and R. Bruce and N. Sammut},
+	year={Jan 2012},
+	title={Classification of LHC beam loss spikes using Support Vector Machines},
+	publisher={IEEE},
+	pages={355-358},
+	abstract={The CERN Large Hadron Collider's (LHC) collimation system is the most complex beam cleaning system ever designed. It requires frequent setups to determine the beam centres and beam sizes at the 86 collimator positions. A collimator jaw is aligned to the beam halo when a clear beam loss spike is detected on a Beam Loss Monitor (BLM) downstream of the collimator. This paper presents a technique for identifying such clear loss spikes with the aid of Support Vector Machines. The training data was gathered from setups held during the first three months of the 2011 LHC run, and the model was tested with data from a machine development period.},
+	url={https://ieeexplore.ieee.org/document/6208988},
+	doi={10.1109/SAMI.2012.6208988}
+}
+@techreport{RefWorks:RefID:36-kreinar2018fast,
+	author={Edward Kreinar and Jennifer Ngadiuba and Zhenbin Wu and Philip Harris and Maurizio Pierini and Ryan Rivera and Song Han and Javier Duarte and Benjamin Kreis and Nhan Tran and Sergo Jindariani},
+	year={2018},
+	month={Apr 16,},
+	title={Fast inference of deep neural networks in FPGAs for particle physics},
+	institution={Institute of Physics (IOP)},
+	number={13},
+	pages={P07027},
+	abstract={Recent results at the Large Hadron Collider (LHC) have pointed to enhanced physics capabilities through the improvement of the real-time event processing techniques. Machine learning methods are ubiquitous and have proven to be very powerful in LHC physics, and particle physics as a whole. However, exploration of the use of such techniques in low-latency, low-power FPGA (Field Programmable Gate Array) hardware has only just begun. FPGA-based trigger and data acquisition systems have extremely low, sub-microsecond latency requirements that are unique to particle physics. We present a case study for neural network inference in FPGAs focusing on a classifier for jet substructure which would enable, among many other physics scenarios, searches for new dark sector particles and novel measurements of the Higgs boson. While we focus on a specific example, the lessons are far-reaching. A companion compiler package for this work is developed based on High-Level Synthesis (HLS) called hls4ml to build machine learning models in FPGAs. The use of HLS increases accessibility across a broad user community and allows for a drastic decrease in firmware development time. We map out FPGA resource usage and latency versus neural network hyperparameters to identify the problems in particle physics that would benefit from performing neural network inference with FPGAs. For our example jet substructure model, we fit well within the available resources of modern FPGAs with a latency on the scale of 100 ns.
+Recent results at the Large Hadron Collider (LHC) have pointed to enhanced physics capabilities through the improvement of the real-time event processing techniques. Machine learning methods are ubiquitous and have proven to be very powerful in LHC physics, and particle physics as a whole. However, exploration of the use of such techniques in low-latency, low-power FPGA hardware has only just begun. FPGA-based trigger and data acquisition (DAQ) systems have extremely low, sub-microsecond latency requirements that are unique to particle physics. We present a case study for neural network inference in FPGAs focusing on a classifier for jet substructure which would enable, among many other physics scenarios, searches for new dark sector particles and novel measurements of the Higgs boson. While we focus on a specific example, the lessons are far-reaching. We develop a package based on High-Level Synthesis (HLS) called hls4ml to build machine learning models in FPGAs. The use of HLS increases accessibility across a broad user community and allows for a drastic decrease in firmware development time. We map out FPGA resource usage and latency versus neural network hyperparameters to identify the problems in particle physics that would benefit from performing neural network inference with FPGAs. For our example jet substructure model, we fit well within the available resources of modern FPGAs with a latency on the scale of 100 ns.},
+	isbn={1748-0221},
+	url={http://cds.cern.ch/record/2316331},
+	doi={10.1088/1748-0221/13/07/P07027}
+}
+@article{RefWorks:RefID:35-cacciari2008anti-kt,
+	author={Matteo Cacciari and Gavin P. Salam and Gregory Soyez},
+	year={2008},
+	month={Apr 1,},
+	title={The anti-kt jet clustering algorithm},
+	journal={The journal of high energy physics},
+	volume={2008},
+	pages={063},
+	isbn={1126-6708},
+	url={http://iopscience.iop.org/1126-6708/2008/04/063},
+	doi={10.1088/1126-6708/2008/04/063}
+}
+@misc{RefWorks:RefID:34-pierinihls4ml,
+	author={Maurizio Pierini and Javier Mauricio Duarte and Nhan Tran and Marat Freytsis},
+	title={HLS4ML LHC Jet dataset (150 particles)},
+	volume={2022},
+	number={Jan 27,},
+	url={https://doi.org/10.5281/zenodo.3602260}
+}
+@misc{RefWorks:RefID:33-pierinihls4ml,
+	author={Maurizio Pierini and Javier Mauricio Duarte and Nhan Tran and Marat Freytsis},
+	title={HLS4ML LHC Jet dataset (100 particles)},
+	volume={2022},
+	number={Jan 27,},
+	url={https://doi.org/10.5281/zenodo.3602254}
+}
+@misc{RefWorks:RefID:32-pierinihls4ml,
+	author={Maurizio Pierini and Javier Mauricio Duarte and Nhan Tran and Marat Freytsis},
+	title={HLS4ML LHC Jet dataset (50 particles)},
+	volume={2022},
+	number={Jan 27,},
+	url={https://doi.org/10.5281/zenodo.3601443}
+}
+@misc{RefWorks:RefID:31-pierinihls4ml,
+	author={Maurizio Pierini and Javier Mauricio Duarte and Nhan Tran and Marat Freytsis},
+	title={HLS4ML LHC Jet dataset (30 particles)},
+	volume={2022},
+	number={Jan 27,},
+	url={https://doi.org/10.5281/zenodo.3601436}
+}
 @article{RefWorks:RefID:30-lahti2019yet?,
 	author={Sakari Lahti and Panu Sjovall and Jarno Vanne and Timo D. Hamalainen},
 	year={2019},

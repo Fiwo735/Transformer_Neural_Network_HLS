@@ -23,7 +23,7 @@ For many years, FPGAs have been modelled using Register-transfer level (RTL) des
 This report's work is based on Xilinx Vivado HLS design suite. When developing a solution, it is important to note, that the synthesis process can take a significant amount of time (a couple of hours on a modern powerful computer), and so there exist two simulation methods - a C-simulation that can quickly and directly evaluate a C/C++ benchmark against the software implementation of the design, and a more truthful, cosimulation that firstly synthesizes the design and the test bench to RTL and then performs an RTL simulation. A final, definitive evaluation of the results requires programming a target FPGA with the generated bit stream of the design and exchanging input/output data with a program running on a CPU.
 
 
-\subsection{Latency, throughput, and hardware resource utilization}
+\subsection{Latency, throughput, and hardware resource utilization}\label{latency-throughput-resources}
 To understand the differences between hardware designs targeted at the same functionality, it is beneficial to consider their following characteristics:
 
 \begin{itemize}
@@ -36,7 +36,7 @@ To fully understand the trade-offs between designs, one cannot forget about the 
 
 
 \subsection{Serial, parallel, and pipelined architectures}
-Hardware architectures use components that can be configured in different ways depending on the overall goal or a limiting factor. The high-level configurations  are displayed in fig. \ref{} and can be described as follows:
+Hardware architectures use components that can be configured in different ways depending on the overall goal or a limiting factor. The high-level configurations  are displayed in figure \ref{fig:serial-parallel-pipelined} and can be described as follows:
 
 \begin{itemize}
   \item \textbf{Serial} - elements are arranged in a chain, processing one after another. This way uses less resources than an equivalent parallel configuration.
@@ -44,17 +44,32 @@ Hardware architectures use components that can be configured in different ways d
   \item \textbf{Pipelined} - a more sophisticated arrangement, in which subsequent processing blocks (that can be either placed serially or in parallel) form a pipeline of processing stations separated by simple storage elements. This maximizes the usage of the design blocks, hence increasing throughput with a minimal sacrifice of latency and resource usage.
 \end{itemize}
 
-\todofig{serial + parallel + pipeline blocks }
+\begin{figure}[hpt!]
+  \centering
+  \includegraphics[trim={0cm 0cm 0cm 0cm}, width=0.75\textwidth, center]{background/serial_parallel_pipelined.pdf}
+  \caption{Diagram comparing serial and parallel configurations as well as showcasing designs with and without pipelining}
+  \label{fig:serial-parallel-pipelined}
+\end{figure}
 
 
 \subsection{Pareto front and Roofline model}
-To make an informed design decision, various architectures can be compared by arranging them on a dependency graph (e.g. latency vs resource usage) and observing the Pareto front - the set of solutions for which there are no better ones with regard to one quality given the other measure is worse. The slightly complex definition can be easily understood from fig. \ref{}, which also highlights another use of this method - finding design configurations that are yet to be explored.
+To make an informed design decision, various architectures can be compared by arranging them on a dependency graph (e.g. latency vs resource usage) and observing the Pareto front - the set of solutions for which there are no better ones with regard to one quality given the other measure is worse. The slightly complex definition can be easily understood from figure \ref{fig:pareto}, which also highlights another use of this method - finding design configurations that are yet to be explored.
 
-\todofig{pareto front with a missing area highlighting it should be explored as there are likely interesting designs there}
+\begin{figure}[hpt!]
+  \centering
+  \includegraphics[trim={0cm 0cm 0cm 0cm}, width=0.45\textwidth, center]{background/pareto.pdf}
+  \caption{Example graph with designs plotted against quantities A/B, Pareto front highlighted}
+  \label{fig:pareto}
+\end{figure}
 
-Another intuitive performance visualization comes in the form of the Roofline model, which compares the obtained results with theoretical limits coming from inherent hardware limitations like clock frequency or memory bandwidth. An example can be seen in fig \ref{}.
+Another intuitive performance visualization comes in the form of the Roofline model, which compares the obtained results with theoretical limits coming from inherent hardware limitations like clock frequency or memory bandwidth. An example can be seen in fig \ref{fig:roofline}.
 
-\todofig{roofline model}
+\begin{figure}[hpt!]
+  \centering
+  \includegraphics[trim={0cm 0cm 0cm 0cm}, width=0.45\textwidth, center]{background/roofline.pdf}
+  \caption{Example graph with computational and memory bandwidth limitations showcasing the Roofline model}
+  \label{fig:roofline}
+\end{figure}
 
 
 \maybe{some graphics to potentially add: fpga lattice, hls to rtl flow, rtl to bit stream flow}
