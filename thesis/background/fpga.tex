@@ -35,21 +35,21 @@ To understand the differences between hardware designs targeted at the same func
 To fully understand the trade-offs between designs, one cannot forget about the metric related to the specific task that is accelerated in hardware. In the case of this report, classification accuracy described in \autoref{ml-accuracy-auc-confusion}, will also play a key role in evaluating various configurations.
 
 
-\subsection{Serial, parallel, and pipelined architectures}
+\subsection{Serial, parallel, and pipelined architectures}\label{serial-parallel-pipelined}
 Hardware architectures use components that can be configured in different ways depending on the overall goal or a limiting factor. The high-level configurations  are displayed in figure \ref{fig:serial-parallel-pipelined} and can be described as follows:
+
+\begin{figure}[hpt!]
+  \centering
+  \includegraphics[trim={0cm 0cm 0cm 0cm}, width=0.5\textwidth, center]{background/serial_parallel_pipelined.pdf}
+  \caption{Diagram comparing serial and parallel configurations as well as showcasing designs with and without pipelining}
+  \label{fig:serial-parallel-pipelined}
+\end{figure}
 
 \begin{itemize}
   \item \textbf{Serial} - elements are arranged in a chain, processing one after another. This way uses less resources than an equivalent parallel configuration.
   \item \textbf{Parallel} - elements share a common input and start processing data at the same time. This way has a lower latency than an equivalent serial configuration.
   \item \textbf{Pipelined} - a more sophisticated arrangement, in which subsequent processing blocks (that can be either placed serially or in parallel) form a pipeline of processing stations separated by simple storage elements. This maximizes the usage of the design blocks, hence increasing throughput with a minimal sacrifice of latency and resource usage.
 \end{itemize}
-
-\begin{figure}[hpt!]
-  \centering
-  \includegraphics[trim={0cm 0cm 0cm 0cm}, width=0.75\textwidth, center]{background/serial_parallel_pipelined.pdf}
-  \caption{Diagram comparing serial and parallel configurations as well as showcasing designs with and without pipelining}
-  \label{fig:serial-parallel-pipelined}
-\end{figure}
 
 
 \subsection{Pareto front and Roofline model}

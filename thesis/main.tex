@@ -24,11 +24,19 @@
 \usepackage[export]{adjustbox}
 \usepackage{adjustbox}
 \usepackage{multirow}
-\usepackage{outlines}
 \usepackage{xargs}
 
+%% Itemize lists with more depth
+\usepackage{enumitem}
+% \usepackage{pifont}
+\usepackage{outlines}
+\usepackage{amssymb}
+\renewcommand{\labelitemii}{$\circ$}
+\renewcommand{\labelitemiii}{$\blacksquare$}
+% \renewcommand{\labelitemiv}{\textendash}
+
 %% Todo notes
-\usepackage[colorinlistoftodos]{todonotes} % todo notes, add [disable] to turn them off
+\usepackage[colorinlistoftodos,disable]{todonotes} % todo notes, add [disable] to turn them off
 \newcommandx{\indo}[2][1=]{\todo[linecolor=red,backgroundcolor=red!25,bordercolor=red,inline,#1]{#2}}
 \newcommandx{\maybe}[2][1=]{\todo[linecolor=blue,backgroundcolor=blue!25,bordercolor=blue,inline,#1]{#2}}
 \newcommandx{\todofig}[2][1=]{\todo[linecolor=green,backgroundcolor=green!25,bordercolor=green,inline,#1]{#2}}
@@ -54,7 +62,10 @@ Although the project is at an early stage, I would like to express my gratitude 
 
 {\hypersetup{linkcolor=black} \tableofcontents}
 \listoffigures
-\listoftables
+\begingroup % way to display both figure and table lists together
+  \let\clearpage\relax
+  \listoftables
+\endgroup
 
 \input{introduction/introduction.tex}
 \input{background/background.tex}
