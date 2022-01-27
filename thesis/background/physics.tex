@@ -2,7 +2,7 @@
 To be able to understand the scope of the project and the applicability of the work in modern research, this chapter gives an overview of the key concepts from particle physics that appear through the paper. The explanation is written with readers with no prior background in physics in mind.
 
 \subsection{Standard Model}
-A non-exhaustive list of the elementary particles is described, with particles that this report is concerned about (as they appear in the proton-proton collisions) being highlighted.
+A non-exhaustive list of the elementary particles is described below, with particles that this report is concerned about (as they appear in the proton-proton collisions) being highlighted.
 
 \begin{itemize}[leftmargin=7mm]
   \item Fermions
@@ -31,7 +31,7 @@ The information about the following decay processes form the dataset of this rep
 \end{figure}
 
 \subsection{Particle Accelerators and triggers at LHC}
-The two experiments that are of most concern in this paper are CMS and ATLAS. They are both large general-purpose particle detectors, that were notably involved in the discovery of the Higgs boson \cite{47-greeene2013higgs}. For real-time processing, the detectors are composed of triggers split into levels \citep[p.16]{48-trigger}:
+The two LHC experiments that are of most concern in this paper are CMS and ATLAS. They are both large general-purpose particle detectors, that were notably involved in the discovery of the Higgs boson \cite{47-greeene2013higgs}. For real-time processing, the detectors are composed of triggers split into levels \citep[p.16]{48-trigger}:
 
 \begin{itemize}
   \item \textbf{Level 1 trigger (L1T)} - it is implemented in hardware (FPGAs) and firmware, pipelined (a term explained in details in \autoref{serial-parallel-pipelined}) and it cannot allow for any dead-time, i.e. has to continuously process data with a fixed latency.
@@ -39,4 +39,4 @@ The two experiments that are of most concern in this paper are CMS and ATLAS. Th
   \item \textbf{Level 3 trigger (L3T)} - it is implemented in software, using farms of CPUs. It is close in behavior to non-real-time algorithms.
 \end{itemize}
 
-Since their origin, the L2T and L3T have been merged into High Level Trigger (HLT) \citep[p.47]{49-tappertriggering}, which is planned to rely on thousands of multithreaded CPUs and GPUs. As for the L1T key specifications that will be used to evaluate the design in this paper, its input data frequency is 40 MHz, which with a pipeline depth of 500 results in a 12.5 \(\mu s\) latency, and its output frequency is equal 750 kHz.
+Since their origin, the L2T and L3T have been merged into High Level Trigger (HLT) \citep[p.47]{49-tappertriggering}, which is planned to rely on thousands of multithreaded CPUs and GPUs. As for the L1T key specifications that will be used to evaluate the design in this paper, its input data frequency is 40 MHz, which with a pipeline depth of 500 results in a 12.5 \(\mu s\) latency, and its output frequency to HLT is equal to 750 kHz.
