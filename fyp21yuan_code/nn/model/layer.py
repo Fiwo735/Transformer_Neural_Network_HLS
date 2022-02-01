@@ -188,6 +188,10 @@ class SelfAttention(nn.Module):
         if not self.training:
             print(f"SA: out (after qkv) -> {out.size()}")
             print(out)
+            print(f"SA: WEIGHT of qkv -> {self.qkv.weight.size()}")
+            print(self.qkv.weight[0][0])
+            print(self.qkv.weight[0][1])
+            print(self.qkv.weight[1][0])
 
         out = out.view(m_batch, seq_len, self.heads, -1)   # (batch_m, seq_len, num_heads, 2*C_head + C//num_head )
         if not self.training:

@@ -6,41 +6,79 @@
 \usepackage[T1]{fontenc}
 
 %% Sets page size and margins
-\usepackage[a4paper,top=3cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+\usepackage[a4paper,top=3cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=2.0cm]{geometry}
+\usepackage{parskip} % paragraph style with no indentations and spaces between
+
+%% References
+\usepackage[nottoc]{tocbibind} % include bibliography in ToC
+\usepackage[numbers]{natbib}
+\addto\captionsenglish{
+  \renewcommand{\bibname}{References}
+} % change name from 'Bibliography' to 'References'
 
 %% Useful packages
 \usepackage{amsmath}
 \usepackage{graphicx}
-\usepackage[colorinlistoftodos]{todonotes}
+\usepackage[table,xcdraw]{xcolor}
 \usepackage[colorlinks=true, allcolors=blue]{hyperref}
+\usepackage[export]{adjustbox}
+\usepackage{adjustbox}
+\usepackage{multirow}
+\usepackage{xargs}
 
-\title{Project Title}
+%% Itemize lists with more depth
+\usepackage{enumitem}
+% \usepackage{pifont}
+\usepackage{outlines}
+\usepackage{amssymb}
+\renewcommand{\labelitemii}{$\circ$}
+\renewcommand{\labelitemiii}{$\blacksquare$}
+% \renewcommand{\labelitemiv}{\textendash}
+
+%% Todo notes
+\usepackage[colorinlistoftodos,disable]{todonotes} % todo notes, add [disable] to turn them off
+\newcommandx{\indo}[2][1=]{\todo[linecolor=red,backgroundcolor=red!25,bordercolor=red,inline,#1]{#2}}
+\newcommandx{\maybe}[2][1=]{\todo[linecolor=blue,backgroundcolor=blue!25,bordercolor=blue,inline,#1]{#2}}
+\newcommandx{\todofig}[2][1=]{\todo[linecolor=green,backgroundcolor=green!25,bordercolor=green,inline,#1]{#2}}
+% \newcommandx{\improvement}[2][1=]{\todo[linecolor=Plum,backgroundcolor=Plum!25,bordercolor=Plum,#1]{#2}}
+
+%% Auxiliary packages
+\usepackage{lipsum} % lorem ipsum
+
+\title{Reconfigurable Acceleration of Transformer Neural Networks with Meta-Programming Strategies for Particle Physics Experiments}
 \author{Filip Wojcicki}
-% Update supervisor and other title stuff in title/title.tex
+
 \begin{document}
 \input{title/title.tex}
 
-\begin{abstract}
-Your abstract goes here
-\end{abstract}
+% \begin{abstract}
+% Your abstract goes here
+% \end{abstract}
 
 \renewcommand{\abstractname}{Acknowledgements}
 \begin{abstract}
-Thanks mum!
+Although the project is at an early stage, I would like to express my gratitude to Professor Wayne Luk and Zhiqiang Que for guiding me through the project and always being available to answer any of my questions.
 \end{abstract}
 
-\tableofcontents
+{\hypersetup{linkcolor=black} \tableofcontents}
 \listoffigures
-\listoftables
+\begingroup % way to display both figure and table lists together
+  \let\clearpage\relax
+  \listoftables
+\endgroup
 
 \input{introduction/introduction.tex}
 \input{background/background.tex}
 \input{project/project.tex}
+\input{implementation/implementation.tex}
 \input{evaluation/evaluation.tex}
-\input{conclusion/conclusion.tex}
-\input{appendix/appendix.tex}
+\input{ethical/ethical.tex}
+% \input{conclusion/conclusion.tex}
+% \input{appendix/appendix.tex}
 
-\bibliographystyle{alpha}
-\bibliography{bibs/sample}
+\bibliographystyle{unsrtnat}
+\bibliography{references/references}
+
+\listoftodos[Notes]
 
 \end{document}
