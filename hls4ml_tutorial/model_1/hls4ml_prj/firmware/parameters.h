@@ -5,6 +5,7 @@
 #include "ap_fixed.h"
 
 #include "nnet_utils/nnet_helpers.h"
+// #include "nnet_utils/nnet_mult.h"
 //hls-fpga-machine-learning insert includes
 #include "nnet_utils/nnet_activation.h"
 #include "nnet_utils/nnet_activation_stream.h"
@@ -13,6 +14,7 @@
 #include "nnet_utils/nnet_dense_stream.h"
 #include "nnet_utils/nnet_batchnorm.h"
 #include "nnet_utils/nnet_transformer.h"
+
 #include "nnet_utils/nnet_merge.h"
 
 
@@ -67,25 +69,26 @@
 // #include "weights/my_example0.h"
 // #include "weights/my_example1.h"
 
-struct my_example_config : nnet::dense_config {
-    static const unsigned n_in = 6;
-    static const unsigned n_out = 4;
-    static const unsigned io_type = nnet::io_parallel;
-    static const unsigned strategy = nnet::latency;
-    static const unsigned reuse_factor = 1;
-    static const unsigned n_zeros = 0;
-    static const unsigned n_nonzeros = 6;
-    static const bool store_weights_in_bram = false;
-    typedef model_default_t accum_t;
-    typedef model_default_t bias_t;
-    typedef model_default_t weight_t;
-    typedef ap_uint<1> index_t;
-    template<class x_T, class y_T, class res_T>
-    using product = nnet::product::mult<x_T, y_T, res_T>;
-};
+// struct my_example_config : nnet::dense_config {
+//     static const unsigned n_in = 6;
+//     static const unsigned n_out = 4;
+//     static const unsigned io_type = nnet::io_parallel;
+//     static const unsigned strategy = nnet::latency;
+//     static const unsigned reuse_factor = 1;
+//     static const unsigned n_zeros = 0;
+//     static const unsigned n_nonzeros = 6;
+//     static const bool store_weights_in_bram = false;
+//     typedef model_default_t accum_t;
+//     typedef model_default_t bias_t;
+//     typedef model_default_t weight_t;
+//     typedef ap_uint<1> index_t;
+//     template<class x_T, class y_T, class res_T>
+//     using product = nnet::product::mult<x_T, y_T, res_T>;
+// };
 
 //hls-fpga-machine-learning insert layer-config
 // input embedding
+
 struct embedded_config : nnet::dense_config {
     static const unsigned n_in = N_INPUT;
     static const unsigned n_out = N_EMBEDDED;
@@ -387,6 +390,10 @@ struct self_attention_config0 : nnet::self_attention_config {
     static const unsigned n_in = 256;
     static const unsigned n_out = 256;
 
+    static const unsigned n_particles = 2; // 1 particle + hidden clas input cls
+    static const unsigned n_qkv_in_el = 128;
+    static const unsigned n_qkv_out_el = 384;
+
     static const unsigned n_qkv = 768;
     static const unsigned n_q = 256;
     static const unsigned n_k = 256;
@@ -427,8 +434,8 @@ struct sa_norm_config0 : nnet::layernorm_config {
 };
 
 struct sa_dense_config0 : nnet::dense_config {
-    static const unsigned n_in = 256;
-    static const unsigned n_out = 768;
+    static const unsigned n_in = 128;
+    static const unsigned n_out = 384;
     static const unsigned io_type = nnet::io_parallel;
     static const unsigned strategy = nnet::latency;
     static const unsigned reuse_factor = 1;
