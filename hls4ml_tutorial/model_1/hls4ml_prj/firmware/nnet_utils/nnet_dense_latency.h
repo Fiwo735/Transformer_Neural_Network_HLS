@@ -95,9 +95,10 @@ void dense_latency(
                 int multiplier_limit  = ceil(float(CONFIG_T::n_out) / float(CONFIG_T::reuse_factor));
                 CONFIG_T::template product<data_T, typename CONFIG_T::weight_t, typename CONFIG_T::accum_t>::limit(multiplier_limit);
             }
-        int index = ii*CONFIG_T::n_out+jj;
-        mult[index] = CONFIG_T::template product<data_T, typename CONFIG_T::weight_t, typename CONFIG_T::accum_t>::product(cache, weights[index]);
-        // fout << "ii=" << ii << ", jj=" << jj << ", index=" << index << ", cache=" << cache << ", weights[index]=" << weights[index] << ", mult[index]=" << mult[index] << "\n";
+            int index = ii*CONFIG_T::n_out+jj;
+            int index2 = ii + jj * CONFIG_T::n_in;
+            mult[index] = CONFIG_T::template product<data_T, typename CONFIG_T::weight_t, typename CONFIG_T::accum_t>::product(cache, weights[index]);
+            // fout << "ii=" << ii << ", jj=" << jj << ", index=" << index << ", cache=" << cache << ", weights[index]=" << weights[index] << ", mult[index]=" << mult[index] << "\n";
         }
     }
 

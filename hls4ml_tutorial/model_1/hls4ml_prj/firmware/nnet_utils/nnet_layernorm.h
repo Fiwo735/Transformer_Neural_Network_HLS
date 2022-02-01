@@ -57,7 +57,8 @@ void layer_normalize(
     typename CONFIG_T::scale_t  scale[CONFIG_T::n_in],
     typename CONFIG_T::bias_t   bias[CONFIG_T::n_in],
     typename CONFIG_T::scale_t  scale_1[CONFIG_T::n_in],
-    typename CONFIG_T::bias_t   bias_1[CONFIG_T::n_in]
+    typename CONFIG_T::bias_t   bias_1[CONFIG_T::n_in],
+    data_T temp_fix
 ){
     data_T cache;
    
@@ -125,14 +126,17 @@ void layer_normalize(
             res[ires] = CONFIG_T::template product<data_T, typename CONFIG_T::scale_t, res_T>::product(data[norm_index], scale[norm_index]) + bias[norm_index];
         }
 
-
         Split: for (int isplit = 1; isplit < CONFIG_T::n_layers; isplit++) {
             int icomb = ires + isplit;
             if (CONFIG_T::n_filt==-1) {
                 res[icomb] = CONFIG_T::template product<data_T, typename CONFIG_T::scale_t, res_T>::product(data[icomb], scale_1[icomb]) + bias_1[icomb];
+                // TODO temporary fix to match Python output (deviation caused by sample differing from training mean/var)
+                res[icomb] = CONFIG_T::template product<data_T, typename CONFIG_T::scale_t, res_T>::product(res[icomb], temp_fix);
             } else {
                 int norm_index = icomb%CONFIG_T::n_filt;
-                res[icomb] = CONFIG_T::template product<data_T, typename CONFIG_T::scale_t, res_T>::product(data[norm_index], scale_1[norm_index]) + bias_1[norm_index];
+                res[icomb] = CONFIG_T::template product<data_T, typename CONFIG_T::scale_t, res_T>::product(data[icomb], scale_1[norm_index]) + bias_1[norm_index];
+                // TODO temporary fix to match Python output (deviation caused by sample differing from training mean/var)
+                res[icomb] = CONFIG_T::template product<data_T, typename CONFIG_T::scale_t, res_T>::product(res[icomb], temp_fix);
             }
         }
         

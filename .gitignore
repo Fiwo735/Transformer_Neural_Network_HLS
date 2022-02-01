@@ -34,3 +34,6 @@ example_data
 # VSCode
 .vscode
 
+# C++
+*.o
+

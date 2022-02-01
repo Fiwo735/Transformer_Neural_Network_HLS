@@ -53,7 +53,9 @@ obj/myproject.o: ../../../../firmware/myproject.cpp \
  ../../../../firmware/weights/out_layer_1_weight.h \
  ../../../../firmware/weights/out_layer_1_bias.h \
  ../../../../firmware/weights/transformers_0_self_attention_norm_weight.h \
+ ../../../../firmware/weights/transformers_0_self_attention_norm_weight_1.h \
  ../../../../firmware/weights/transformers_0_self_attention_norm_bias.h \
+ ../../../../firmware/weights/transformers_0_self_attention_norm_bias_1.h \
  ../../../../firmware/weights/transformers_0_self_attention_qkv_weight.h \
  ../../../../firmware/weights/transformers_0_self_attention_out_weight.h \
  ../../../../firmware/weights/transformers_0_self_attention_out_bias.h \
@@ -64,7 +66,9 @@ obj/myproject.o: ../../../../firmware/myproject.cpp \
  ../../../../firmware/weights/transformers_0_linear_3_bias.h \
  ../../../../firmware/weights/transformers_0_linear_5_weight.h \
  ../../../../firmware/weights/transformers_1_self_attention_norm_weight.h \
+ ../../../../firmware/weights/transformers_1_self_attention_norm_weight_1.h \
  ../../../../firmware/weights/transformers_1_self_attention_norm_bias.h \
+ ../../../../firmware/weights/transformers_1_self_attention_norm_bias_1.h \
  ../../../../firmware/weights/transformers_1_self_attention_qkv_weight.h \
  ../../../../firmware/weights/transformers_1_self_attention_out_weight.h \
  ../../../../firmware/weights/transformers_1_self_attention_out_bias.h \
@@ -75,7 +79,9 @@ obj/myproject.o: ../../../../firmware/myproject.cpp \
  ../../../../firmware/weights/transformers_1_linear_3_bias.h \
  ../../../../firmware/weights/transformers_1_linear_5_weight.h \
  ../../../../firmware/weights/transformers_2_self_attention_norm_weight.h \
+ ../../../../firmware/weights/transformers_2_self_attention_norm_weight_1.h \
  ../../../../firmware/weights/transformers_2_self_attention_norm_bias.h \
+ ../../../../firmware/weights/transformers_2_self_attention_norm_bias_1.h \
  ../../../../firmware/weights/transformers_2_self_attention_qkv_weight.h \
  ../../../../firmware/weights/transformers_2_self_attention_out_weight.h \
  ../../../../firmware/weights/transformers_2_self_attention_out_bias.h \

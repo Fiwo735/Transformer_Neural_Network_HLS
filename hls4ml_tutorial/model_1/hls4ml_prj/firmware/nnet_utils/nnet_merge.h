@@ -39,7 +39,7 @@ struct dot_config {
     typedef float accum_t;
     // Product function to use
     template<class x_T, class y_T, class res_T>
-    using product = nnet::product::mult<x_T, y_T, res_T>;
+    using product = product::mult<x_T, y_T, res_T>;
 };
 
 struct concat_config {
