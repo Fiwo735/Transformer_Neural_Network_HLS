@@ -26,6 +26,7 @@ thesis/*.lot
 thesis/*.out
 thesis/*.synctex.gz
 thesis/*.toc
+thesis/*-converted-to*
 
 # Datasets
 .energyflow

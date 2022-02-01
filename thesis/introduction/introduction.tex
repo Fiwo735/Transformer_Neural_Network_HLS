@@ -1,0 +1,29 @@
+\chapter{Introduction}
+
+\section{Overview}
+Particle physics is one of the key branches of modern physics, with the Standard Model theory at its core. It tackles the underlying questions about the nature of the universe by describing the fundamental forces and elementary particles. In order to verify the correctness of the theories, countless experiments have to be designed and carefully executed, with the main driving force of the myriads of engineers, physicists and researchers at Large Hadron Collider (LHC) operated by the European Organization for Nuclear Research (CERN).
+
+LHC is the world's highest-energy particle collider that is capable of producing and detecting the heaviest types of particles that emerge from collisions such as proton-proton collisions. The detection is a challenging process as some particles like quarks and gluons cannot exist on their own, and they nearly instantly combine which results in collimated sprays of composite particles (hadrons) that are referred to as \textbf{jets} \cite{4-cernjets}. The initial particles created upon collision and their behaviors are of main interest of the physicists, which leads to \textbf{jet tagging} - the challenge of associating particle jets with their origin.
+
+
+\section{Motivation}\label{motivation}
+There are many detector types used for the analysis the particle collisions, each based on a different physical phenomenon, which result in availability of both higher and lower level features. The former have been successfully used in the past using more physically motivated machine learning (ML) algorithms, e.g. using computer vision \cite{5-cogan2015jet-images:}. However, more recently, various deep learning approaches have proven to outperform their predecessors \cite{6-de2016jet-images}. It has also been found that all the detected features carry the same underlying information, with convolutional neural networks trained on higher-level data achieving nearly identical accuracy as dense neural networks trained on the data from the other end of the spectrum \cite{7-moore2019reports}.
+
+The Petabytes/s throughput of information collected by the LHC detectors outclasses the real-time inference capabilities of the typical state-of-the-art solutions. The real-time decision-making is often required, hence this paper is motivated by the successful adoption of  \textit{\textbf{hls4ml}} codesign workflow in particle physics experiments \cite{8-fahim2021hls4ml:}. It allows ML researchers and physicists to easily deploy their solutions trained using common ML frameworks on reconfigurable or application specific hardware, vastly improving the detection algorithms throughput. However, \textit{hls4ml} lacks support for a number of neural network architectures that have been proven to outperform the previous state-of-the-art, including graph neural networks \cite{9-newman2019jedi-net:, 11-elabd2021graph} and transformer neural networks \cite{3-yuan2021constituentnet:}.
+
+
+\section{Objectives and Challenges}
+The purpose of this project is to develop state-of-the-art neural network architectures for Field-Programmable Gate Arrays (FPGA) technology. While working towards this goal, there is an emphasis on creating parametrizable and reusable designs as the next objective is to use metaprogramming strategies to integrate them into the \textit{hls4ml} library with various optimizations that offer trade-offs between speed and hardware resources usage.
+
+The two main challenges of the project involve:
+\begin{itemize}
+  \item Developing deep and complex neural networks in hardware which requires working at a much lower abstraction level than a typical ML framework. It is also crucial to stay aware of the underlying hardware architecture to exploit its strengths while still making it possible for users to configure it towards their needs.
+  \item Bridging the abstraction gap for the translation between \textit{hls4ml} high-level representation of neural networks and their customizable instantiation in hardware.
+\end{itemize}
+
+
+\section{Contributions}
+The project aims to benefit the open-source community of ML researches that are in need of faster and more parametrizable neural network inference. The targeted audience for that operation are physicists at LHC, nonetheless, the hope is for the work to positively contribute in many ML fields by both offering a reliable tool for acceleration of existing designs and providing a useful resource for learning about the nature of reconfigurable hardware and its potential use for neural networks.
+
+\section{Report outline}
+This report begins by discussing the necessary particle physics background to understand the scope of the work, followed by the explanation and related work in the field of machine learning, with an emphasis on the state-of-the-art neural networks, and a deeper dive into the reconfigurable hardware technology in \autoref{background}. In \autoref{project-plan} and \autoref{implementation}, the plan for the research is firstly outlined, followed by an up-to-date state of the implementation. Lastly, the planned evaluation metrics are discussed in \autoref{evaluation}, concluded by a consideration of ethical issues that might arise from the work in \autoref{ethical}.
