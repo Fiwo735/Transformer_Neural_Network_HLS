@@ -31,6 +31,7 @@ def transform_norm_weights_biases(
   return normalized_arr
 
 def prepare_files(
+  result_path: str,
   layer_name: str,
   values,
   var_type: str,
@@ -59,6 +60,14 @@ def prepare_files(
   out_file.write("// Max " + str(np.amax(values)) + "\n")
   out_file.write("// Number of zeros " + str(np.count_nonzero(values == 0)) + "\n\n")
   overview.append([str(list(values.shape)), layer_name])
+
+  # print debug raw values
+  if len(values.shape) <= 2:
+    np.savetxt(result_path + h_file_name + '_raw_' + '.txt', values, delimiter=', ', fmt='%.4f')
+  else:
+    assert len(values.shape) == 3, 'No more than 3 dimensions are expected'
+    for layer in values:
+      np.savetxt(result_path + h_file_name + '_raw_' + '.txt', layer, delimiter=', ', fmt='%.4f')
 
   # header guards
   header_guard_name = h_file_name.upper() + "_H_"
@@ -178,6 +187,7 @@ def extract_weights_biases(
     if current_base in norm_layer_base_names.keys() and len(norm_layer_base_names[current_base]) == 2:
       # special case that needs separate weight and biases for [0] and [1:] layers
       _, _, _ = prepare_files(
+        result_path=result_path,
         layer_name=layer_name,
         values=values,
         var_type=var_type,
@@ -192,6 +202,7 @@ def extract_weights_biases(
       )
 
       previous_base, previous_was_weight, previous_weights = prepare_files(
+        result_path=result_path,
         layer_name=layer_name,
         values=values,
         var_type=var_type,
@@ -207,6 +218,7 @@ def extract_weights_biases(
 
     else:
       previous_base, previous_was_weight, previous_weights = prepare_files(
+        result_path=result_path,
         layer_name=layer_name,
         values=values,
         var_type=var_type,
@@ -243,26 +255,26 @@ if __name__ == "__main__":
   model_path = "fyp21yuan_code/experiments/constituent_base/best.pth.tar"
   result_path = "extracted_weights_biases/"
   norm_layer_base_names = {
-    'out_layer_0':
-      [(-0.04077378660440445, 1.673102617263794)],
-    'transformers.0.linear.0':
-      [(-0.012944059446454048, 1.103999137878418), (-0.014849442057311535, 125.7703628540039)],
-    'transformers.0.linear.3':
-      [(-0.032312922179698944, 0.11169926822185516), (6.87299034325406e-05, 0.11682288348674774)],
-    'transformers.0.self_attention.norm':
-      [(0.014009090140461922, 0.9665623903274536), (0.01286216452717781, 125.5963363647461)],
-    'transformers.1.linear.0':
-      [(-0.05173889547586441, 1.2466895580291748), (-0.030176758766174316, 126.03379821777344)],
-    'transformers.1.linear.3':
-      [(-0.020823126658797264, 0.11339834332466125), (0.018381545320153236, 0.11115330457687378)],
-    'transformers.1.self_attention.norm':
-      [(-0.03877968341112137, 1.1650422811508179), (-0.018674537539482117, 125.95524597167969)],
-    'transformers.2.linear.0':
-      [(-0.0410560704767704, 1.3692392110824585), (-0.043287187814712524, 126.27474975585938)],
-    'transformers.2.linear.3':
-      [(-0.012881459668278694, 0.11419916152954102), (-0.009449217468500137, 0.11544090509414673)],
-    'transformers.2.self_attention.norm':
-      [(-0.04117840528488159, 1.3190522193908691), (-0.04152524471282959, 126.24896240234375)],
+    # 'out_layer_0':
+    #   [(-0.04077378660440445, 1.673102617263794)],
+    # 'transformers.0.linear.0':
+    #   [(-0.012944059446454048, 1.103999137878418), (-0.014849442057311535, 125.7703628540039)],
+    # 'transformers.0.linear.3':
+    #   [(-0.032312922179698944, 0.11169926822185516), (6.87299034325406e-05, 0.11682288348674774)],
+    # 'transformers.0.self_attention.norm':
+    #   [(0.014009090140461922, 0.9665623903274536), (0.01286216452717781, 125.5963363647461)],
+    # 'transformers.1.linear.0':
+    #   [(-0.05173889547586441, 1.2466895580291748), (-0.030176758766174316, 126.03379821777344)],
+    # 'transformers.1.linear.3':
+    #   [(-0.020823126658797264, 0.11339834332466125), (0.018381545320153236, 0.11115330457687378)],
+    # 'transformers.1.self_attention.norm':
+    #   [(-0.03877968341112137, 1.1650422811508179), (-0.018674537539482117, 125.95524597167969)],
+    # 'transformers.2.linear.0':
+    #   [(-0.0410560704767704, 1.3692392110824585), (-0.043287187814712524, 126.27474975585938)],
+    # 'transformers.2.linear.3':
+    #   [(-0.012881459668278694, 0.11419916152954102), (-0.009449217468500137, 0.11544090509414673)],
+    # 'transformers.2.self_attention.norm':
+    #   [(-0.04117840528488159, 1.3190522193908691), (-0.04152524471282959, 126.24896240234375)],
   }
   extract_weights_biases(model_path=model_path, result_path=result_path, norm_layer_base_names=norm_layer_base_names)
 
