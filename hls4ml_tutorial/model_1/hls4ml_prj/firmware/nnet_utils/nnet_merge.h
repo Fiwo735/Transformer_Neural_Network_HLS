@@ -297,6 +297,31 @@ void concatenate3d(
     }
 }
 
+// TODO
+template<class input_T, size_t split_count, size_t output_size>
+void split_equally(
+    input_T data[split_count * output_size],
+    input_T res[split_count][output_size]
+) {
+    for (int ii = 0; ii < output_size; ii++) {
+        for (int jj = 0; jj < split_count; jj++) {
+            res[jj][ii] = data[ii * split_count + jj];
+        }
+    }
+}
+
+template<class input_T, size_t split_count, size_t input_size>
+void join_equally(
+    input_T data[split_count][input_size],
+    input_T res[split_count * input_size]
+) {
+    for (int ii = 0; ii < input_size; ii++) {
+        for (int jj = 0; jj < split_count; jj++) {
+            res[ii * split_count + jj] = data[jj][ii];
+        }
+    }
+}
+
 }
 
 #endif

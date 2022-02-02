@@ -7,6 +7,7 @@
 #include "nnet_dense_latency.h"
 #include "nnet_dense_resource.h"
 #include "nnet_helpers.h"
+#include "nnet_merge.h"
 #include "nnet_array.h"
 #include "hls_stream.h"
 #include <math.h>
@@ -61,7 +62,7 @@ struct self_attention_config
     using product = product::mult<x_T, y_T, res_T>;
 };
 
-template<class data_T, class res_T, typename CONFIG_T, typename NORM_CONFIG_T, typename DENSE0_CONFIG_T, typename DENSE1_CONFIG_T, typename SOFTMAX_CONFIG_T, typename DENSE2_CONFIG_T, typename DENSE3_CONFIG_T>
+template<class data_T, class res_T, typename CONFIG_T, typename NORM_CONFIG_T, typename DENSE0_CONFIG_T, typename SA_TRANSPOSE0_CONFIG_T, typename DENSE1_CONFIG_T, typename SOFTMAX_CONFIG_T, typename DENSE2_CONFIG_T, typename DENSE3_CONFIG_T>
 void self_attention(
     data_T    data[CONFIG_T::n_in],
     res_T     res[CONFIG_T::n_out],
@@ -80,113 +81,113 @@ void self_attention(
 
     // 1 norm
     data_T input_norm[CONFIG_T::n_in];
-    // normalize<data_T, data_T, NORM_CONFIG_T>(data, input_norm, norm_weight, norm_bias);
     data_T temp_fix = (data_T) 0.215424;
-    layer_normalize<data_T, data_T, NORM_CONFIG_T>(data, input_norm, norm_weight, norm_bias, norm_weight_1, norm_bias_1, temp_fix);
-    fout << "input_norm ("<< CONFIG_T::n_in << "):" << "\n";
-    print_result<data_T, CONFIG_T::n_in>(input_norm, fout);
-    // fout << "after printing input_norm" << "\n";
+    data_T input_norm_in_el[CONFIG_T::n_particles][CONFIG_T::n_norm_el];
+    data_T input_norm_out_el[CONFIG_T::n_particles][CONFIG_T::n_norm_el];
+
+    nnet::split_equally<data_T, CONFIG_T::n_particles, CONFIG_T::n_norm_el>(data, input_norm_in_el);
+    Layer_normalize: for (int inorm = 0; inorm < CONFIG_T::n_particles; inorm++) {
+        layer_normalize<data_T, data_T, NORM_CONFIG_T>(input_norm_in_el[inorm], input_norm_out_el[inorm], norm_weight, norm_bias, norm_weight_1, norm_bias_1, temp_fix);
+    }
+    nnet::join_equally<data_T, CONFIG_T::n_particles, CONFIG_T::n_norm_el>(input_norm_out_el, input_norm);
+    nnet::print_full_result<data_T, CONFIG_T::n_in>("input_norm", input_norm, fout);
     
     // 2.1 qkv (dense)
     data_T qkv_out[CONFIG_T::n_qkv];
     data_T zero_bias0[CONFIG_T::n_qkv_out_el];
     fill_zero<data_T,CONFIG_T::n_qkv_out_el>(zero_bias0);
-
     data_T qkv_in_el[CONFIG_T::n_particles][CONFIG_T::n_qkv_in_el];
-    // split
-    for (int ii = 0; ii < CONFIG_T::n_qkv_in_el; ii++) {
-        for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
-            qkv_in_el[jj][ii] = input_norm[ii * CONFIG_T::n_particles + jj];
-    // for (int ii = 0; ii < CONFIG_T::n_particles; ii++) {
-    //     for (int jj = 0; jj < CONFIG_T::n_qkv_in_el; jj++) {
-    //         qkv_in_el[ii][jj] = input_norm[ii * CONFIG_T::n_qkv_in_el + jj];
-        }
-    }
-    // fout << "qkv in split ("<< CONFIG_T::n_qkv_in_el << "):" << "\n";
-    // print_result<data_T, CONFIG_T::n_qkv_in_el>(qkv_in_el[0], fout);
-    // print_result<data_T, CONFIG_T::n_qkv_in_el>(qkv_in_el[1], fout);
-
     data_T qkv_out_el[CONFIG_T::n_particles][CONFIG_T::n_qkv_out_el];
 
+    nnet::split_equally<data_T, CONFIG_T::n_particles, CONFIG_T::n_qkv_in_el>(input_norm, qkv_in_el);
     QKV: for (int iqkv = 0; iqkv < CONFIG_T::n_particles; iqkv++) {
         dense<data_T, data_T, DENSE0_CONFIG_T>(qkv_in_el[iqkv], qkv_out_el[iqkv], QKV_weight, zero_bias0);
     }
+    nnet::join_equally<data_T, CONFIG_T::n_particles, CONFIG_T::n_qkv_out_el>(qkv_out_el, qkv_out);
+    nnet::print_full_result<data_T, CONFIG_T::n_qkv>("qkv_out", qkv_out, fout);
 
-    // fout << "qkv out split ("<< CONFIG_T::n_qkv_out_el << "):" << "\n";
-    // print_result<data_T, CONFIG_T::n_qkv_out_el>(qkv_out_el[0], fout);
-    // print_result<data_T, CONFIG_T::n_qkv_out_el>(qkv_out_el[1], fout);
+    // 2.2 reshape
+    data_T qkv_reshaped[CONFIG_T::n_particles][CONFIG_T::n_qkv_out_el];
+    //TODO: implement this properly 384 (3*128) -> 2x192
+    QKV_reshape: for (int ii = 0; ii < CONFIG_T::n_particles; ii++) {
+        for (int jj = 0; jj < CONFIG_T::n_qkv_out_el; jj += 2) {
+            qkv_reshaped[ii][jj] = qkv_out[ii + jj];
+            qkv_reshaped[ii][jj+1] = qkv_out[ii + jj + CONFIG_T::n_qkv_out_el];
+        }
+        nnet::print_full_result<data_T, CONFIG_T::n_qkv_out_el>("qkv_reshaped[ii]", qkv_reshaped[ii], fout);
+    }
 
-    //concat
-    for (int ii = 0; ii < CONFIG_T::n_qkv_out_el; ii++) {
-        for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
-            qkv_out[ii * CONFIG_T::n_particles + jj] = qkv_out_el[jj][ii];
+    // 3 QKV split
+    data_T queries[CONFIG_T::n_particles][CONFIG_T::n_q];
+    data_T keys[CONFIG_T::n_particles][CONFIG_T::n_k];
+    data_T values[CONFIG_T::n_particles][CONFIG_T::n_v];
+
+    Queries_split: for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
+        for (int iq = 0; iq < CONFIG_T::n_q; iq++) {
+            queries[jj][iq] = qkv_reshaped[jj][iq];
+        }
+        nnet::print_full_result<data_T, CONFIG_T::n_q>("queries[jj]", queries[jj], fout);
+    }
+
+    Keys_split: for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
+        for (int ik = 0; ik < CONFIG_T::n_k; ik++) {
+            keys[jj][ik] = qkv_reshaped[jj][CONFIG_T::n_q + ik];
+        }
+        nnet::print_full_result<data_T, CONFIG_T::n_k>("keys[jj]", keys[jj], fout);
+    }
+
+    Values_split: for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
+        for (int iv = 0; iv < CONFIG_T::n_v; iv++) {
+            values[jj][iv] = qkv_reshaped[jj][CONFIG_T::n_q + CONFIG_T::n_k + iv];
+        }
+        nnet::print_full_result<data_T, CONFIG_T::n_v>("values[jj]", values[jj], fout);
+    }
+
+    data_T keys_transposed[CONFIG_T::n_particles][CONFIG_T::n_k];
+    for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
+        transpose_2d<data_T, SA_TRANSPOSE0_CONFIG_T>(keys[jj], keys_transposed[jj]);
+    }
+
+    // 4.1 energy - dense
+
+    data_T energy[CONFIG_T::n_particles][CONFIG_T::n_energy];
+    data_T zero_bias1[CONFIG_T::n_energy];
+    fill_zero<data_T,CONFIG_T::n_energy >(zero_bias1);
+
+    for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
+        dense<data_T, data_T, DENSE1_CONFIG_T>(queries[jj], energy[jj], keys[jj], zero_bias1);
+        nnet::print_full_result<data_T, CONFIG_T::n_energy>("energy[jj]", energy[jj], fout);
+    }
+
+    // 4.2 scale
+    data_T energy_scaled[CONFIG_T::n_particles][2][CONFIG_T::n_attention];
+    // model_default_t inv_sqrt_d_k = INVERSE; //TODO: implement properly using config
+    Scale: for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
+        for (int ii = 0; ii < 2; ii++) {
+            for (int iscale = 0; iscale < CONFIG_T::n_attention; iscale++) {
+                energy_scaled[jj][ii][iscale] = CONFIG_T::template product<data_T, data_T, data_T>::product(energy[jj][ii + iscale*2], inv_sqrt_d_k);//TODO: CONFIG_T::inv_sqrt_d_k);
+            }
+            nnet::print_full_result<data_T, CONFIG_T::n_attention>("energy_scaled[jj][ii]", energy_scaled[jj][ii], fout);
         }
     }
 
-    fout << "qkv_out ("<< CONFIG_T::n_qkv << "):" << "\n";
-    print_result<data_T, CONFIG_T::n_qkv>(qkv_out, fout);
-
-    // 2.2 reshape
-    data_T qkv_reshaped[CONFIG_T::n_qkv];
-    //TODO: implement this properly 384 (3*128) -> 2x192
-    QKV_reshape: for (int iqkv = 0; iqkv < CONFIG_T::n_qkv; iqkv++) {
-        qkv_reshaped[iqkv] = qkv_out[iqkv];
-    }
-    fout << "qkv_reshaped ("<< CONFIG_T::n_qkv << "):" << "\n";
-    print_result<data_T, CONFIG_T::n_qkv>(qkv_reshaped, fout);
-
-    // 3 split
-    data_T queries[CONFIG_T::n_q];
-    data_T keys[CONFIG_T::n_k];
-    data_T values[CONFIG_T::n_v];
-
-    Queries_split: for (int iq = 0; iq < CONFIG_T::n_q; iq++) {
-        queries[iq] = qkv_reshaped[iq];
-    }
-    fout << "queries ("<< CONFIG_T::n_q << "):" << "\n";
-    print_result<data_T, CONFIG_T::n_q>(queries, fout);
-    Keys_split: for (int ik = 0; ik < CONFIG_T::n_k; ik++) {
-        keys[ik] = qkv_reshaped[CONFIG_T::n_q + ik];
-    }
-    fout << "keys ("<< CONFIG_T::n_k << "):" << "\n";
-    print_result<data_T, CONFIG_T::n_k>(keys, fout);
-    Values_split: for (int iv = 0; iv < CONFIG_T::n_v; iv++) {
-        values[iv] = qkv_reshaped[CONFIG_T::n_q + CONFIG_T::n_k + iv];
-    }
-    fout << "values ("<< CONFIG_T::n_v << "):" << "\n";
-    print_result<data_T, CONFIG_T::n_v>(values, fout);
-
-    // 4.1 energy - dense
-    data_T energy[CONFIG_T::n_energy];
-    // transpose_2d<data_T, CONFIG_T>(); //TODO: might need to transpose keys
-    data_T zero_bias1[CONFIG_T::n_energy];
-    fill_zero<data_T,CONFIG_T::n_energy >(zero_bias1);
-    dense<data_T, data_T, DENSE1_CONFIG_T>(queries, energy, keys, zero_bias1);
-    fout << "energy ("<< CONFIG_T::n_energy << "):" << "\n";
-    print_result<data_T, CONFIG_T::n_energy>(energy, fout);
-
-    // 4.2 scale
-    data_T energy_scaled[CONFIG_T::n_energy];
-    // model_default_t inv_sqrt_d_k = INVERSE; //TODO: implement properly using config
-    Scale: for (int iscale = 0; iscale < CONFIG_T::n_energy; iscale++) {
-        energy_scaled[iscale] = CONFIG_T::template product<data_T, data_T, data_T>::product(energy[iscale], inv_sqrt_d_k);//TODO: CONFIG_T::inv_sqrt_d_k);
-    }
-    fout << "energy_scaled ("<< CONFIG_T::n_energy << "):" << "\n";
-    print_result<data_T, CONFIG_T::n_energy>(energy_scaled, fout);
-
     // 5 attention - softmax
-    data_T attention[CONFIG_T::n_energy];
-    softmax<data_T, data_T, SOFTMAX_CONFIG_T>(energy_scaled, attention); // softmax
-    fout << "attention ("<< CONFIG_T::n_energy << "):" << "\n";
-    print_result<data_T, CONFIG_T::n_energy>(attention, fout);
+    data_T attention[CONFIG_T::n_particles][2][CONFIG_T::n_attention];
+    for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
+        for (int ii = 0; ii < 2; ii++) {
+            softmax<data_T, data_T, SOFTMAX_CONFIG_T>(energy_scaled[jj][ii], attention[jj][ii]);
+            nnet::print_full_result<data_T, CONFIG_T::n_attention>("attention[jj][ii]", attention[jj][ii], fout);
+        }
+    }
+
+    // TODO continue here, first flatten last 2 dims (2x2 -> 4)
 
     // 6 scaled attention - dense
     data_T scaled_attention[CONFIG_T::n_scaled_attention];
     data_T zero_bias2[CONFIG_T::n_scaled_attention];
     fill_zero<data_T,CONFIG_T::n_scaled_attention >(zero_bias2);
     dense<data_T, data_T, DENSE2_CONFIG_T>(attention, scaled_attention, values, zero_bias2);
-    fout << "scaled_attention ("<< CONFIG_T::n_scaled_attention << "):" << "\n";
-    print_result<data_T, CONFIG_T::n_scaled_attention>(scaled_attention, fout);
+    nnet::print_full_result<data_T, CONFIG_T::n_scaled_attention>("scaled_attention", scaled_attention, fout);
 
     // 7 reshape
     data_T scaled_attention_reshaped[CONFIG_T::n_scaled_attention];
@@ -194,14 +195,12 @@ void self_attention(
     Scaled_attention_reshape: for (int isa = 0; isa < CONFIG_T::n_scaled_attention; isa++) {
         scaled_attention_reshaped[isa] = scaled_attention[isa];
     }
-    fout << "scaled_attention_reshaped ("<< CONFIG_T::n_scaled_attention << "):" << "\n";
-    print_result<data_T, CONFIG_T::n_scaled_attention>(scaled_attention_reshaped, fout);
+    nnet::print_full_result<data_T, CONFIG_T::n_scaled_attention>("scaled_attention_reshaped", scaled_attention_reshaped, fout);
 
     // 8 dense
     data_T result[CONFIG_T::n_out];
     dense<data_T, data_T, DENSE3_CONFIG_T>(scaled_attention_reshaped, result, dense_weight, dense_bias);
-    fout << "result ("<< CONFIG_T::n_out << "):" << "\n";
-    print_result<data_T, CONFIG_T::n_out>(result, fout);
+    nnet::print_full_result<data_T, CONFIG_T::n_out>("result", result, fout);
 
     // 9 sum
     data_T sum_out[CONFIG_T::n_out];
@@ -211,8 +210,7 @@ void self_attention(
         }
         sum_out[iendsum] = result[iendsum] + data[iendsum];
     }
-    fout << "sum_out ("<< CONFIG_T::n_out << "):" << "\n";
-    print_result<data_T, CONFIG_T::n_out>(sum_out, fout);
+    nnet::print_full_result<data_T, CONFIG_T::n_out>("sum_out", sum_out, fout);
 
     // 10 Cast
     Result: for(int ires = 0; ires < CONFIG_T::n_out; ires++){
