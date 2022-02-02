@@ -42,6 +42,7 @@ obj/myproject.o: ../../../../firmware/myproject.cpp \
  ../../../../firmware/nnet_utils/nnet_transformer.h \
  ../../../../firmware/nnet_utils/nnet_activation_stream.h \
  ../../../../firmware/nnet_utils/nnet_self_attention.h \
+ ../../../../firmware/nnet_utils/nnet_merge.h \
  ../../../../firmware/nnet_utils/nnet_array.h \
  ../../../../firmware/nnet_utils/nnet_layernorm.h \
  ../../../../firmware/nnet_utils/nnet_merge.h \

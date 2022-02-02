@@ -354,7 +354,7 @@ struct softmax_config0 : nnet::activ_config {
 };
 
 struct sa_softmax_config0 : nnet::activ_config {
-    static const unsigned n_in = 8;
+    static const unsigned n_in = 2;
     static const unsigned table_size = 1024;
     static const unsigned io_type = nnet::io_parallel;
     static const unsigned reuse_factor = 1;
@@ -391,14 +391,18 @@ struct self_attention_config0 : nnet::self_attention_config {
     static const unsigned n_out = 256;
 
     static const unsigned n_particles = 2; // 1 particle + hidden clas input cls
+
+    static const unsigned n_norm_el = 128;
+
     static const unsigned n_qkv_in_el = 128;
     static const unsigned n_qkv_out_el = 384;
 
     static const unsigned n_qkv = 768;
-    static const unsigned n_q = 256;
-    static const unsigned n_k = 256;
-    static const unsigned n_v = 256;
-    static const unsigned n_energy = 8;
+    static const unsigned n_q = 128;
+    static const unsigned n_k = 128;
+    static const unsigned n_v = 128;
+    static const unsigned n_energy = 4;
+    static const unsigned n_attention = 2;
     static const unsigned n_scaled_attention = 256;
 
     // Resource reuse info
@@ -413,13 +417,18 @@ struct self_attention_config0 : nnet::self_attention_config {
     using product = nnet::product::mult<x_T, y_T, res_T>;
 };
 
+struct sa_transpose_config0 : nnet::transpose_config {
+    static const unsigned height = 2;
+    static const unsigned width = 64;
+};
+
 struct sa_norm_config0 : nnet::layernorm_config {
     // Internal data type definitions
     typedef model_default_t bias_t;
     typedef model_default_t scale_t;
 
     // Layer Sizes
-    static const unsigned n_in = 256;
+    static const unsigned n_in = 128;
     static const unsigned n_filt = -1;
     static const unsigned n_layers = 2;
     
@@ -451,13 +460,13 @@ struct sa_dense_config0 : nnet::dense_config {
 };
 
 struct sa_dense_config1 : nnet::dense_config {
-    static const unsigned n_in = 256;
-    static const unsigned n_out = 8;
+    static const unsigned n_in = 128;
+    static const unsigned n_out = 4;
     static const unsigned io_type = nnet::io_parallel;
     static const unsigned strategy = nnet::latency;
     static const unsigned reuse_factor = 1;
     static const unsigned n_zeros = 0;
-    static const unsigned n_nonzeros = 256;
+    static const unsigned n_nonzeros = 128;
     static const bool store_weights_in_bram = false;
     typedef model_default_t accum_t;
     typedef model_default_t bias_t;
