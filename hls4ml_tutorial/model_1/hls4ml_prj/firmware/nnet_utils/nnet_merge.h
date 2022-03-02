@@ -322,6 +322,21 @@ void join_equally(
     }
 }
 
+template<class input_T, class res_T, size_t r1, size_t c1, size_t r2, size_t c2>
+void matmul(
+    input_T a[r1 * c1],
+    input_T b[r2 * c2],
+    res_T res[r1 * c2]
+) {
+    for(int i = 0; i < c1; i++) {
+        for(int j = 0; j < c2; j++) {
+            for(int k = 0; k < r1; k++) {
+                res[j*r1 + k] += a[i*r1 + k] * b[j*r2 + i];
+            }
+        }
+    }
+}
+
 }
 
 #endif
