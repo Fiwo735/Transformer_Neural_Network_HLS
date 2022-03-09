@@ -55,10 +55,10 @@ void layer_normalize(
     data_T    data[CONFIG_T::n_in],
     res_T     res[CONFIG_T::n_in],
     typename CONFIG_T::scale_t  scale[CONFIG_T::n_in],
-    typename CONFIG_T::bias_t   bias[CONFIG_T::n_in],
-    typename CONFIG_T::scale_t  scale_1[CONFIG_T::n_in],
-    typename CONFIG_T::bias_t   bias_1[CONFIG_T::n_in],
-    data_T temp_fix
+    typename CONFIG_T::bias_t   bias[CONFIG_T::n_in]
+    // typename CONFIG_T::scale_t  scale_1[CONFIG_T::n_in],
+    // typename CONFIG_T::bias_t   bias_1[CONFIG_T::n_in],
+    // data_T temp_fix
 ){
     std::ofstream fout("tb_data/csim_layers.log", std::ios_base::app);
     data_T cache;
