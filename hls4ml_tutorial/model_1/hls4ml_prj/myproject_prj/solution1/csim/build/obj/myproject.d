@@ -46,6 +46,7 @@ obj/myproject.o: ../../../../firmware/myproject.cpp \
  ../../../../firmware/nnet_utils/nnet_array.h \
  ../../../../firmware/nnet_utils/nnet_layernorm.h \
  ../../../../firmware/nnet_utils/nnet_merge.h \
+ ../../../../firmware/nnet_utils/nnet_mult.h \
  ../../../../firmware/weights/cls_token.h \
  ../../../../firmware/weights/inp_layer_weight.h \
  ../../../../firmware/weights/inp_layer_bias.h \

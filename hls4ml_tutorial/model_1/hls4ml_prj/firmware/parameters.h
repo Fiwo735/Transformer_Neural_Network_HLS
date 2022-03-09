@@ -16,6 +16,7 @@
 #include "nnet_utils/nnet_transformer.h"
 
 #include "nnet_utils/nnet_merge.h"
+#include "nnet_utils/nnet_mult.h"
 
 
 //hls-fpga-machine-learning insert weights
@@ -107,8 +108,8 @@ struct embedded_config : nnet::dense_config {
 };
 
 struct transformer_dense_config0 : nnet::dense_config {
-    static const unsigned n_in = 256;
-    static const unsigned n_out = 512;
+    static const unsigned n_in = 128;
+    static const unsigned n_out = 256;
     static const unsigned io_type = nnet::io_parallel;
     static const unsigned strategy = nnet::latency;
     static const unsigned reuse_factor = 1;
@@ -124,8 +125,8 @@ struct transformer_dense_config0 : nnet::dense_config {
 };
 
 struct transformer_dense_config1 : nnet::dense_config {
-    static const unsigned n_in = 512;
-    static const unsigned n_out = 256;
+    static const unsigned n_in = 256;
+    static const unsigned n_out = 128;
     static const unsigned io_type = nnet::io_parallel;
     static const unsigned strategy = nnet::latency;
     static const unsigned reuse_factor = 1;
@@ -231,7 +232,7 @@ struct concat_config0 : nnet::concat_config {
 //     using product = nnet::product::mult<x_T, y_T, res_T>;
 // };
 
-struct normalize_config0 : nnet::batchnorm_config {
+struct normalize_config0 : nnet::layernorm_config {
     // Internal data type definitions
     typedef model_default_t bias_t;
     typedef model_default_t scale_t;
@@ -239,6 +240,7 @@ struct normalize_config0 : nnet::batchnorm_config {
     // Layer Sizes
     static const unsigned n_in = N_BATCH_SIZE;
     static const unsigned n_filt = -1;
+    static const unsigned n_layers = 2;
     
     // Resource reuse info
     static const unsigned io_type = nnet::io_parallel;
@@ -250,7 +252,27 @@ struct normalize_config0 : nnet::batchnorm_config {
     using product = nnet::product::mult<x_T, y_T, res_T>;
 };
 
-struct normalize_config1 : nnet::batchnorm_config {
+struct normalize_config1 : nnet::layernorm_config {
+    // Internal data type definitions
+    typedef model_default_t bias_t;
+    typedef model_default_t scale_t;
+
+    // Layer Sizes
+    static const unsigned n_in = 128;
+    static const unsigned n_filt = -1;
+    static const unsigned n_layers = 2;
+    
+    // Resource reuse info
+    static const unsigned io_type = nnet::io_parallel;
+    static const unsigned reuse_factor = 1;
+    static const bool store_weights_in_bram = false;
+    static const unsigned n_zeros = 0;
+    // partitioning arrays cyclically to go with roll factors?
+    template<class x_T, class y_T, class res_T>
+    using product = nnet::product::mult<x_T, y_T, res_T>;
+};
+
+struct normalize_config2 : nnet::layernorm_config {
     // Internal data type definitions
     typedef model_default_t bias_t;
     typedef model_default_t scale_t;
@@ -258,6 +280,7 @@ struct normalize_config1 : nnet::batchnorm_config {
     // Layer Sizes
     static const unsigned n_in = 256;
     static const unsigned n_filt = -1;
+    static const unsigned n_layers = 2;
     
     // Resource reuse info
     static const unsigned io_type = nnet::io_parallel;
@@ -269,28 +292,10 @@ struct normalize_config1 : nnet::batchnorm_config {
     using product = nnet::product::mult<x_T, y_T, res_T>;
 };
 
-struct normalize_config2 : nnet::batchnorm_config {
-    // Internal data type definitions
-    typedef model_default_t bias_t;
-    typedef model_default_t scale_t;
-
-    // Layer Sizes
-    static const unsigned n_in = 512;
-    static const unsigned n_filt = -1;
-    
-    // Resource reuse info
-    static const unsigned io_type = nnet::io_parallel;
-    static const unsigned reuse_factor = 1;
-    static const bool store_weights_in_bram = false;
-    static const unsigned n_zeros = 0;
-    // partitioning arrays cyclically to go with roll factors?
-    template<class x_T, class y_T, class res_T>
-    using product = nnet::product::mult<x_T, y_T, res_T>;
-};
-
+// TODO rename sigmoid0 config to silu0 config? or just activ0 config?
 struct sigmoid_config0 : nnet::activ_config {
     // IO size
-    static const unsigned n_in = 256;
+    static const unsigned n_in = 128;
 
     // Internal info
     static const unsigned table_size = 1024;
@@ -308,7 +313,7 @@ struct sigmoid_config0 : nnet::activ_config {
 
 struct sigmoid_config1 : nnet::activ_config {
     // IO size
-    static const unsigned n_in = 512;
+    static const unsigned n_in = 256;
 
     // Internal info
     static const unsigned table_size = 1024;
@@ -344,18 +349,19 @@ struct mlp_config : nnet::dense_config {
 // softmax
 struct softmax_config0 : nnet::activ_config {
     static const unsigned n_in = N_LABELS;
-    static const unsigned table_size = 1024;
+    static const unsigned table_size = 32768;
     static const unsigned io_type = nnet::io_parallel;
     static const unsigned reuse_factor = 1;
     static const unsigned axis = -1;
     static const nnet::softmax_implementation implementation = nnet::softmax_implementation::latency;
     typedef general_table_t exp_table_t;
     typedef general_table_t inv_table_t;
+    typedef general_table_t log_table_t;
 };
 
 struct sa_softmax_config0 : nnet::activ_config {
     static const unsigned n_in = 2;
-    static const unsigned table_size = 1024;
+    static const unsigned table_size = 32768;
     static const unsigned io_type = nnet::io_parallel;
     static const unsigned reuse_factor = 1;
     static const unsigned axis = -1;
@@ -521,6 +527,10 @@ struct transformer_config0 : nnet::transformer_config {
     static const unsigned n_nonzeros = 128;
     static const bool store_weights_in_bram = false;
     typedef model_default_t accum_t;
+
+    static const unsigned n_el = 128;
+    static const unsigned n_el_doubled = 256;
+    static const unsigned n_particles = 2; // 1 particle + hidden clas input cls
 
     static const unsigned n_SA_norm_weight = 128;
     static const unsigned n_SA_norm_bias = 128;
