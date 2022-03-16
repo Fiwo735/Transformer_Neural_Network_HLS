@@ -247,10 +247,11 @@ void init_log_table(typename CONFIG_T::log_table_t table_out[CONFIG_T::table_siz
     // The template data_T is the data type used to address the table
     for(unsigned i = 0; i < CONFIG_T::table_size; i++){
         // Slicing bits for address is going to round towards 0, so take the central value
+        // TODO: change obtaining x to not recieve negative values (log cannot take negatives)
         float x = softmax_real_val_from_idx<data_T, CONFIG_T>(i);
         typename CONFIG_T::log_table_t log_x = log_fcn_float(x);
         table_out[i] = log_x;
-        fout << "x: " << x << " log_fcn_float(x): " << log_fcn_float(x) << " log_x: " << log_x << " table_out[i]: " << table_out[i] << "\n";
+        // fout << "x: " << x << " log_fcn_float(x): " << log_fcn_float(x) << " log_x: " << log_x << " table_out[i]: " << table_out[i] << "\n";
     }
     fout.close(); //TODO removes
 }
