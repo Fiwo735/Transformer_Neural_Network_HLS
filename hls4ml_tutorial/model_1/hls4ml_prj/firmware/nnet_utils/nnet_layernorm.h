@@ -92,7 +92,7 @@ void layer_normalize(
     }
     // mean *= CONFIG_T::inverse_count;
     mean /= CONFIG_T::n_in;
-    fout << "mean: " << mean << " "; 
+    // fout << "mean: " << mean << " "; 
 
     // Calculate variance
     data_T var = (data_T) 0.0;
@@ -101,21 +101,21 @@ void layer_normalize(
         data_T squared = CONFIG_T::template product<data_T, data_T, data_T>::product(curr_diff, curr_diff);
         // if (squared < 0) squared = 0;
         if (squared < 0){
-            std::cout << "data[ivar]: " << data[ivar] << " mean: " << mean << " curr_diff: " << curr_diff << std::endl;
-            std::cout << "squared: " << squared << std::endl;
+            // std::cout << "data[ivar]: " << data[ivar] << " mean: " << mean << " curr_diff: " << curr_diff << std::endl;
+            // std::cout << "squared: " << squared << std::endl;
         }
         var += squared;
     }
     var /= (CONFIG_T::n_in);
-    fout << "variance: " << var << " "; 
+    // fout << "variance: " << var << " "; 
 
     // Calculate result
     data_T eps = (data_T) 0.00001;
     var += eps;
-    std::cout << "var: " << var << std::endl;
+    // std::cout << "var: " << var << std::endl;
     float float_var = (float) var;
     data_T denominator = (data_T) std::sqrt(float_var);
-    fout << "denominator: " << denominator << "\n"; 
+    // fout << "denominator: " << denominator << "\n"; 
 
     Result: for (int ires = 0; ires < CONFIG_T::n_in; ires++) {
         if (CONFIG_T::io_type == io_serial){
@@ -127,9 +127,9 @@ void layer_normalize(
         if (ires == 0) fout << "numerator: " << numerator << " "; 
         numerator /= denominator;
         if (ires == 0) {
-            fout << "num/denom: " << numerator << " ";
-            fout << "scale: " << scale[ires] << " ";
-            fout << "bias: " << bias[ires] << "\n";
+            // fout << "num/denom: " << numerator << " ";
+            // fout << "scale: " << scale[ires] << " ";
+            // fout << "bias: " << bias[ires] << "\n";
         }
         if (CONFIG_T::n_filt==-1) {
             res[ires] = CONFIG_T::template product<data_T, typename CONFIG_T::scale_t, res_T>::product(numerator, scale[ires]) + bias[ires];
@@ -138,7 +138,7 @@ void layer_normalize(
             res[ires] = CONFIG_T::template product<data_T, typename CONFIG_T::scale_t, res_T>::product(numerator, scale[norm_index]) + bias[norm_index];
         }
 
-        if (ires == 0) fout << "res: " << res[ires] << "\n"; 
+        // if (ires == 0) fout << "res: " << res[ires] << "\n"; 
         
 	}
     // Result: for (int ires = 0; ires < CONFIG_T::n_in; ires += CONFIG_T::n_layers) {
