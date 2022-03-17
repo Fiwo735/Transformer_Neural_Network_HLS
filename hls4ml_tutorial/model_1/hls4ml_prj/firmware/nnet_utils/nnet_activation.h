@@ -247,8 +247,8 @@ void init_log_table(typename CONFIG_T::log_table_t table_out[CONFIG_T::table_siz
     // The template data_T is the data type used to address the table
     for(unsigned i = 0; i < CONFIG_T::table_size; i++){
         // Slicing bits for address is going to round towards 0, so take the central value
-        // TODO: change obtaining x to not recieve negative values (log cannot take negatives)
         float x = softmax_real_val_from_idx<data_T, CONFIG_T>(i);
+        if (x < 0) x = -x; // TODO: change the val_from_idx function call so that this step is not needed
         typename CONFIG_T::log_table_t log_x = log_fcn_float(x);
         table_out[i] = log_x;
         // fout << "x: " << x << " log_fcn_float(x): " << log_fcn_float(x) << " log_x: " << log_x << " table_out[i]: " << table_out[i] << "\n";
@@ -347,12 +347,12 @@ void log_softmax_latency(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in])
         initialized = true;
     }
 
-    nnet::print_full_result<typename CONFIG_T::log_table_t, CONFIG_T::table_size>("log_table", log_table, fout);
+    // nnet::print_full_result<typename CONFIG_T::log_table_t, CONFIG_T::table_size>("log_table", log_table, fout);
 
     data_T softmax_res[CONFIG_T::n_in];
     softmax_latency<data_T, data_T, CONFIG_T>(data, softmax_res);
 
-    nnet::print_full_result<data_T, CONFIG_T::n_in>("softmax_latency", softmax_res, fout);
+    // nnet::print_full_result<data_T, CONFIG_T::n_in>("softmax_latency", softmax_res, fout);
 
     for(unsigned i = 0; i < CONFIG_T::n_in; i++){
         #pragma HLS unroll

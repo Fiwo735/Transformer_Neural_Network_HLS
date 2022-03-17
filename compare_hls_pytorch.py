@@ -69,7 +69,7 @@ def main(run_hls=False):
 
   if run_hls:
     clean_file(path=hls_dir_path+hls_layers_log_path)
-    run_vivado_hls(hls_dir_path=hls_dir_path, build_tcl_path=build_tcl_path)
+    run_vivado_hls(hls_dir_path=hls_dir_path, build_tcl_path=build_tcl_path, quiet=False)
 
   hls_results = get_csim_results(path=hls_dir_path+hls_results_log_path)
   pytorch_results = get_pytorch_results(path=pytorch_results_log_path)
