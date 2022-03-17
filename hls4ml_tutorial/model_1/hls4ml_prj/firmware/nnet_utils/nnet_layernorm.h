@@ -124,7 +124,7 @@ void layer_normalize(
         }
 
         data_T numerator = data[ires] - mean; // should use norm_index for n_filt != -1
-        if (ires == 0) fout << "numerator: " << numerator << " "; 
+        // if (ires == 0) fout << "numerator: " << numerator << " "; 
         numerator /= denominator;
         if (ires == 0) {
             // fout << "num/denom: " << numerator << " ";
