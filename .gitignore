@@ -33,7 +33,7 @@ thesis/*-converted-to*
 example_data
 
 # VSCode
-.vscode
+# .vscode
 
 # C++
 *.o
