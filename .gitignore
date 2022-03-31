@@ -38,14 +38,14 @@ example_data
 *.o
 
 # HLS
-/**/vivado_hls.log
+vivado_hls.log
 solution1.aps
 solution1.log
 .autopilot_exit
 autopilot.flow.log
 csim.exe
 csim_layers.log
-
+myproject_csim.log
 
 # hls4ml_tutorial/model_1/hls4ml_prj/vivado_hls.log
 # hls4ml_tutorial/model_1/hls4ml_prj/myproject_prj/solution1/solution1.aps
