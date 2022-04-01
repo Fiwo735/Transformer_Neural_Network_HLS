@@ -9,20 +9,18 @@
 
 //hls-fpga-machine-learning insert numbers
 
-// TODO JETS
-// #define N_COLLISIONS 5
-
-// TODO particle counter
-#define N_JET_COUNT 1
-
-// TODO 
-#define N_BATCH_SIZE 128
-
+// input of size (N_BATCH_SIZE, N_PARTICLES, N_FEATURES)
+// N_BATCH_SIZE not used currently 
+#define N_BATCH_SIZE 1
+#define N_PARTICLES 1
 #define N_FEATURES 16
 
-#define N_INPUT (N_JET_COUNT * N_FEATURES)
-#define N_EMBEDDED (N_JET_COUNT * N_BATCH_SIZE)
-#define N_TRANSFORMER ((N_JET_COUNT + 1) * N_BATCH_SIZE)
+#define N_EMBEDDED_DIM 128
+
+#define N_INPUT (N_PARTICLES * N_FEATURES)
+#define N_EMBEDDED (N_PARTICLES * N_EMBEDDED_DIM)
+// N_TRANSFORMER uses N_PARTICLES + 1 to account for the hidden class tokens
+#define N_TRANSFORMER ((N_PARTICLES + 1) * N_EMBEDDED_DIM)
 
 #define N_LABELS 5
 
