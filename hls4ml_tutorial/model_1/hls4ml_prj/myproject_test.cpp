@@ -75,6 +75,20 @@ int main(int argc, char **argv)
         current=strtok(NULL," ");
       }
 
+      size_t input_size = in.size();
+      size_t input_feature_dimensions = 16;
+      if (input_size % input_feature_dimensions == 0) {
+        std::cout << "Input data [" << input_size << "]:" << std::endl; 
+        for (size_t i = 0; i < input_size; i++) {
+          std::cout << in.at(i) << " ";
+        }
+        std::cout << std::endl;
+      } else {
+        std::cout << "Number of input data is not multiple of " << input_feature_dimensions << std::endl;
+        std::cout << "Halting the operation!" << std::endl;
+        break;
+      }
+
       //hls-fpga-machine-learning insert data
       input_t fc1_input[N_INPUT];
       nnet::copy_data<float, input_t, 0, N_INPUT>(in, fc1_input);

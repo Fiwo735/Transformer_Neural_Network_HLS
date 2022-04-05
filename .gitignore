@@ -10,7 +10,6 @@ hls4ml_tutorial/__pycache__
 hls4ml_tutorial/images
 hls4ml_tutorial/lost+found
 hls4ml_tutorial/hsperfdata_root
-
 *tar.gz
 *events.out*
 
@@ -35,3 +34,17 @@ example_data
 # VSCode
 .vscode
 
+# C++
+*.o
+
+# HLS
+vivado_hls.log
+solution1.aps
+solution1.log
+.autopilot_exit
+autopilot.flow.log
+csim.exe
+csim_layers.log
+myproject_csim.log
+hls4ml_tutorial/model_1/hls4ml_prj/myproject_prj/solution1/syn/*
+hls4ml_tutorial/model_1/hls4ml_prj/myproject_prj/solution1/.autopilot/*
