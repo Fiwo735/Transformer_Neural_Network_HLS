@@ -238,9 +238,9 @@ struct normalize_config0 : nnet::layernorm_config {
     typedef model_default_t scale_t;
 
     // Layer Sizes
-    static const unsigned n_in = N_BATCH_SIZE;
+    static const unsigned n_in = N_EMBEDDED_DIM;
     static const unsigned n_filt = -1;
-    static const unsigned n_layers = 2;
+    static const unsigned n_layers = 1;
     
     // Resource reuse info
     static const unsigned io_type = nnet::io_parallel;
@@ -330,7 +330,7 @@ struct sigmoid_config1 : nnet::activ_config {
 };
 
 struct mlp_config : nnet::dense_config {
-    static const unsigned n_in = N_BATCH_SIZE;
+    static const unsigned n_in = N_EMBEDDED_DIM;
     static const unsigned n_out = N_LABELS;
     static const unsigned io_type = nnet::io_parallel;
     static const unsigned strategy = nnet::latency;

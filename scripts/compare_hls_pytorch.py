@@ -7,8 +7,9 @@ def run_vivado_hls(hls_dir_path, build_tcl_path, quiet=True):
   hls_command = 'vivado_hls -f ' + build_tcl_path
   FNULL = open(os.devnull, 'w')
   stdout = FNULL if quiet else subprocess.PIPE
-  print 'Running vivado_hls, this might take a few minutes'
-  subprocess.call(hls_command, shell=True, stdout=stdout, stderr=subprocess.STDOUT, cwd=hls_dir_path)
+  print 'Running Vivado HLS CSimulation, this might take a few minutes'
+  subprocess.call(hls_command, shell=True, cwd=hls_dir_path)
+  # subprocess.call(hls_command, shell=True, stdout=stdout, stderr=subprocess.STDOUT, cwd=hls_dir_path)
 
 
 def get_csim_results(path):
@@ -64,7 +65,7 @@ def main(run_hls=False):
   hls_dir_path = 'hls4ml_tutorial/model_1/hls4ml_prj/'
   build_tcl_path = 'build_prj.tcl'
   hls_results_log_path = 'tb_data/csim_results.log'
-  pytorch_results_log_path = 'pytorch_results.log'
+  pytorch_results_log_path = 'logs/pytorch_results.log'
   hls_layers_log_path = 'tb_data/csim_layers.log'
 
   if run_hls:

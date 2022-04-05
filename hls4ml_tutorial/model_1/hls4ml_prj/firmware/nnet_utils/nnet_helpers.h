@@ -343,7 +343,7 @@ void print_result(hls::stream<res_T> &result, std::ostream &out, bool keep = fal
 // TODO maybe make this inline so that when SKIP_PRINT_FULL_RESULT=1, nothing is generated
 template<class data_T, size_t size>
 void print_full_result(const std::string& name, data_T data[size], std::ofstream& fout) {
-#ifndef SKIP_PRINT_FULL_RESULT
+#ifndef __HLS_SYN__
     fout << name << "["<< size << "]:" << "\n";
     nnet::print_result<data_T, size>(data, fout);
     fout << "\n";

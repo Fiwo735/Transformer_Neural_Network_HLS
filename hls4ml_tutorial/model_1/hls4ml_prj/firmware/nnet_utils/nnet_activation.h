@@ -243,7 +243,7 @@ void init_exp_table(typename CONFIG_T::exp_table_t table_out[CONFIG_T::table_siz
 
 template<class data_T, typename CONFIG_T>
 void init_log_table(typename CONFIG_T::log_table_t table_out[CONFIG_T::table_size]){
-    std::ofstream fout("tb_data/csim_layers.log", std::ios_base::app); //TODO remove
+    // std::ofstream fout("tb_data/csim_layers.log", std::ios_base::app); //TODO remove
     // The template data_T is the data type used to address the table
     for(unsigned i = 0; i < CONFIG_T::table_size; i++){
         // Slicing bits for address is going to round towards 0, so take the central value
@@ -253,7 +253,7 @@ void init_log_table(typename CONFIG_T::log_table_t table_out[CONFIG_T::table_siz
         table_out[i] = log_x;
         // fout << "x: " << x << " log_fcn_float(x): " << log_fcn_float(x) << " log_x: " << log_x << " table_out[i]: " << table_out[i] << "\n";
     }
-    fout.close(); //TODO removes
+    // fout.close(); //TODO removes
 }
 
 template<class data_T, typename CONFIG_T>
@@ -272,7 +272,10 @@ void init_invert_table(typename CONFIG_T::inv_table_t table_out[CONFIG_T::table_
 template <class data_T, class res_T, typename CONFIG_T>
 void softmax_latency(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in]){
     // std::ofstream fout("tb_data/csim_layers.log", std::ios_base::app); //TODO remove
-    #pragma HLS pipeline
+    // #pragma HLS pipeline
+    //TODO: the above pragma is removed for now as it causes init_invert_table to unroll,
+    // which breaks synthesis due to 'large runtime and excessive memory usage due to increase in code size'
+
     // Initialize the lookup tables
 #ifdef __HLS_SYN__
     bool initialized = false;
@@ -331,8 +334,11 @@ void softmax_latency(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in]){
 
 template <class data_T, class res_T, typename CONFIG_T>
 void log_softmax_latency(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in]){
-    std::ofstream fout("tb_data/csim_layers.log", std::ios_base::app); //TODO remove
-    #pragma HLS pipeline
+    // std::ofstream fout("tb_data/csim_layers.log", std::ios_base::app); //TODO remove
+    // #pragma HLS pipeline
+    //TODO: the above pragma is removed for now as it causes init_invert_table to unroll,
+    // which breaks synthesis due to 'large runtime and excessive memory usage due to increase in code size'
+
     // Initialize the lookup tables
 #ifdef __HLS_SYN__
     bool initialized = false;
@@ -360,12 +366,15 @@ void log_softmax_latency(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in])
         res[i] = log_table[x];
     }
 
-    fout.close(); //TODO removes
+    // fout.close(); //TODO removes
 }
 
 template <class data_T, class res_T, typename CONFIG_T>
 void softmax_stable(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in]){
-    #pragma HLS pipeline
+    // #pragma HLS pipeline
+    //TODO: the above pragma is removed for now as it causes init_invert_table to unroll,
+    // which breaks synthesis due to 'large runtime and excessive memory usage due to increase in code size'
+
     // Initialize the lookup tables
 #ifdef __HLS_SYN__
     bool initialized = false;

@@ -60,7 +60,7 @@ void layer_normalize(
     // typename CONFIG_T::bias_t   bias_1[CONFIG_T::n_in],
     // data_T temp_fix
 ){
-    std::ofstream fout("tb_data/csim_layers.log", std::ios_base::app);
+    // std::ofstream fout("tb_data/csim_layers.log", std::ios_base::app);
     data_T cache;
    
     // Use a function_instantiate in case it helps to explicitly optimize unchanging weights/biases
@@ -171,7 +171,7 @@ void layer_normalize(
     //     }
         
 	// }
-    fout.close();
+    // fout.close();
 }
 
 }
