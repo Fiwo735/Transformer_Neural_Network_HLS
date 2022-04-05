@@ -35,7 +35,7 @@ void dense_latency(
     typename CONFIG_T::weight_t  weights[CONFIG_T::n_in*CONFIG_T::n_out],
     typename CONFIG_T::bias_t    biases[CONFIG_T::n_out])
 {
-    std::ofstream fout("tb_data/csim_layers.log", std::ios_base::app);
+    // std::ofstream fout("tb_data/csim_layers.log", std::ios_base::app);
     // fout << "in dense_latency" << "\n";
 
     data_T cache;
@@ -132,7 +132,7 @@ void dense_latency(
         res[ires] = cast<data_T, res_T, CONFIG_T>(acc[ires]);
     }
 
-    fout.close();
+    // fout.close();
 }
 
 }
