@@ -7,6 +7,7 @@
 #include "nnet_dense_latency.h"
 #include "nnet_dense_resource.h"
 #include "nnet_helpers.h"
+#include "nnet_merge.h"
 #include "nnet_array.h"
 #include "hls_stream.h"
 #include <math.h>
@@ -58,10 +59,12 @@ struct self_attention_config
     // partitioning arrays cyclically to go with roll factors?
     // Product function to use
     template<class x_T, class y_T, class res_T>
-    using product = nnet::product::mult<x_T, y_T, res_T>;
+    using product = product::mult<x_T, y_T, res_T>;
 };
 
-template<class data_T, class res_T, typename CONFIG_T, typename NORM_CONFIG_T, typename DENSE0_CONFIG_T, typename DENSE1_CONFIG_T, typename SOFTMAX_CONFIG_T, typename DENSE2_CONFIG_T, typename DENSE3_CONFIG_T>
+// TODO ensure no nnet:: are used
+
+template<class data_T, class res_T, typename CONFIG_T, typename NORM_CONFIG_T, typename DENSE0_CONFIG_T, typename SA_TRANSPOSE0_CONFIG_T, typename DENSE1_CONFIG_T, typename SOFTMAX_CONFIG_T, typename DENSE2_CONFIG_T, typename DENSE3_CONFIG_T>
 void self_attention(
     data_T    data[CONFIG_T::n_in],
     res_T     res[CONFIG_T::n_out],
@@ -70,173 +73,298 @@ void self_attention(
 
     typename CONFIG_T::norm_weight_t  norm_weight[CONFIG_T::n_norm_weight],
     typename CONFIG_T::norm_bias_t    norm_bias[CONFIG_T::n_norm_bias],
+    typename CONFIG_T::norm_weight_t  norm_weight_1[CONFIG_T::n_norm_weight],
+    typename CONFIG_T::norm_bias_t    norm_bias_1[CONFIG_T::n_norm_bias],
     typename CONFIG_T::QKV_weight_t   QKV_weight[CONFIG_T::n_QKV_weight],
     typename CONFIG_T::dense_weight_t dense_weight[CONFIG_T::n_dense_weight],
     typename CONFIG_T::dense_bias_t   dense_bias[CONFIG_T::n_dense_bias]
 ){
-    std::ofstream fout("tb_data/csim_layers.log", std::ios_base::app);
+    // std::ofstream fout("tb_data/csim_layers.log", std::ios_base::app);
 
     // 1 norm
+    // data_T temp_fix = (data_T) 0.215424;
     data_T input_norm[CONFIG_T::n_in];
-    nnet::normalize<data_T, data_T, NORM_CONFIG_T>(data, input_norm, norm_weight, norm_bias);
-    fout << "input_norm ("<< CONFIG_T::n_in << "):" << "\n";
-    nnet::print_result<data_T, CONFIG_T::n_in>(input_norm, fout);
-    // fout << "after printing input_norm" << "\n";
+    data_T input_norm_in_el[CONFIG_T::n_particles][CONFIG_T::n_norm_el];
+    data_T input_norm_out_el[CONFIG_T::n_particles][CONFIG_T::n_norm_el];
+
+    nnet::split_equally<data_T, CONFIG_T::n_particles, CONFIG_T::n_norm_el>(data, input_norm_in_el);
+    Layer_normalize: for (int inorm = 0; inorm < CONFIG_T::n_particles; inorm++) {
+        layer_normalize<data_T, data_T, NORM_CONFIG_T>(input_norm_in_el[inorm], input_norm_out_el[inorm], norm_weight, norm_bias);//, norm_weight_1, norm_bias_1, temp_fix);
+    }
+    // TODO the join is probably not needed as the variables keep taking format [n_particles][n_xxx]
+    nnet::join_equally<data_T, CONFIG_T::n_particles, CONFIG_T::n_norm_el>(input_norm_out_el, input_norm);
+    // nnet::print_full_result<data_T, CONFIG_T::n_in>("input_norm", input_norm, fout);
     
     // 2.1 qkv (dense)
     data_T qkv_out[CONFIG_T::n_qkv];
-    data_T zero_bias0[CONFIG_T::n_qkv];
-    nnet::fill_zero<data_T,CONFIG_T::n_qkv >(zero_bias0);
-    nnet::dense<data_T, data_T, DENSE0_CONFIG_T>(input_norm, qkv_out, QKV_weight, zero_bias0);
-    fout << "qkv_out ("<< CONFIG_T::n_qkv << "):" << "\n";
-    nnet::print_result<data_T, CONFIG_T::n_qkv>(qkv_out, fout);
+    data_T zero_bias0[CONFIG_T::n_qkv_out_el];
+    fill_zero<data_T,CONFIG_T::n_qkv_out_el>(zero_bias0);
+    data_T qkv_in_el[CONFIG_T::n_particles][CONFIG_T::n_qkv_in_el];
+    data_T qkv_out_el[CONFIG_T::n_particles][CONFIG_T::n_qkv_out_el];
+
+    nnet::split_equally<data_T, CONFIG_T::n_particles, CONFIG_T::n_qkv_in_el>(input_norm, qkv_in_el);
+    QKV: for (int iqkv = 0; iqkv < CONFIG_T::n_particles; iqkv++) {
+        dense<data_T, data_T, DENSE0_CONFIG_T>(qkv_in_el[iqkv], qkv_out_el[iqkv], QKV_weight, zero_bias0);
+    }
+    nnet::join_equally<data_T, CONFIG_T::n_particles, CONFIG_T::n_qkv_out_el>(qkv_out_el, qkv_out);
+    // nnet::print_full_result<data_T, CONFIG_T::n_qkv>("qkv_out", qkv_out, fout);
 
     // 2.2 reshape
-    data_T qkv_reshaped[CONFIG_T::n_qkv];
+    data_T qkv_reshaped[CONFIG_T::n_particles][CONFIG_T::n_qkv_out_el];
     //TODO: implement this properly 384 (3*128) -> 2x192
-    QKV_reshape: for (int iqkv = 0; iqkv < CONFIG_T::n_qkv; iqkv++) {
-        qkv_reshaped[iqkv] = qkv_out[iqkv];
+    QKV_reshape: for (int ii = 0; ii < CONFIG_T::n_particles; ii++) {
+        for (int jj = 0; jj < CONFIG_T::n_qkv_out_el; jj += 2) {
+            qkv_reshaped[ii][jj] = qkv_out[ii + jj];
+            qkv_reshaped[ii][jj+1] = qkv_out[ii + jj + CONFIG_T::n_qkv_out_el];
+        }
+        // nnet::print_full_result<data_T, CONFIG_T::n_qkv_out_el>("qkv_reshaped[ii]", qkv_reshaped[ii], fout);
     }
-    fout << "qkv_reshaped ("<< CONFIG_T::n_qkv << "):" << "\n";
-    nnet::print_result<data_T, CONFIG_T::n_qkv>(qkv_reshaped, fout);
 
-    // 3 split
-    data_T queries[CONFIG_T::n_q];
-    data_T keys[CONFIG_T::n_k];
-    data_T values[CONFIG_T::n_v];
+    // 3 QKV split
+    data_T queries[CONFIG_T::n_particles][CONFIG_T::n_q];
+    data_T keys[CONFIG_T::n_particles][CONFIG_T::n_k];
+    data_T values[CONFIG_T::n_particles][CONFIG_T::n_v];
 
-    Queries_split: for (int iq = 0; iq < CONFIG_T::n_q; iq++) {
-        queries[iq] = qkv_reshaped[iq];
+    Queries_split: for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
+        for (int iq = 0; iq < CONFIG_T::n_q; iq++) {
+            queries[jj][iq] = qkv_reshaped[jj][iq];
+        }
+        // nnet::print_full_result<data_T, CONFIG_T::n_q>("queries[jj]", queries[jj], fout);
     }
-    fout << "queries ("<< CONFIG_T::n_q << "):" << "\n";
-    nnet::print_result<data_T, CONFIG_T::n_q>(queries, fout);
-    Keys_split: for (int ik = 0; ik < CONFIG_T::n_k; ik++) {
-        keys[ik] = qkv_reshaped[CONFIG_T::n_q + ik];
+
+    Keys_split: for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
+        for (int ik = 0; ik < CONFIG_T::n_k; ik++) {
+            keys[jj][ik] = qkv_reshaped[jj][CONFIG_T::n_q + ik];
+        }
+        // nnet::print_full_result<data_T, CONFIG_T::n_k>("keys[jj]", keys[jj], fout);
     }
-    fout << "keys ("<< CONFIG_T::n_k << "):" << "\n";
-    nnet::print_result<data_T, CONFIG_T::n_k>(keys, fout);
-    Values_split: for (int iv = 0; iv < CONFIG_T::n_v; iv++) {
-        values[iv] = qkv_reshaped[CONFIG_T::n_q + CONFIG_T::n_k + iv];
+
+    Values_split: for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
+        for (int iv = 0; iv < CONFIG_T::n_v; iv++) {
+            values[jj][iv] = qkv_reshaped[jj][CONFIG_T::n_q + CONFIG_T::n_k + iv];
+        }
+        // nnet::print_full_result<data_T, CONFIG_T::n_v>("values[jj]", values[jj], fout);
     }
-    fout << "values ("<< CONFIG_T::n_v << "):" << "\n";
-    nnet::print_result<data_T, CONFIG_T::n_v>(values, fout);
+
+    // TODO make the dimensions nicer (improve parameters.h)
+    data_T queries_outer_transposed[2][CONFIG_T::n_particles*CONFIG_T::n_q/2];
+    for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
+        for (int iv = 0; iv < CONFIG_T::n_q; iv++) {
+            queries_outer_transposed[iv % 2][((iv >> 1) << 1) + jj] = queries[jj][iv];
+        }
+    }
+    for (int jj = 0; jj < 2; jj++) {
+        // nnet::print_full_result<data_T, CONFIG_T::n_particles*CONFIG_T::n_q/2>("queries_outer_transposed[jj]", queries_outer_transposed[jj], fout);
+    }
+
+    data_T keys_outer_transposed[2][CONFIG_T::n_particles*CONFIG_T::n_k/2];
+    for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
+        for (int iv = 0; iv < CONFIG_T::n_k; iv++) {
+            keys_outer_transposed[iv % 2][((int) (iv / 2)) * 2 + jj] = keys[jj][iv];
+        }
+    }
+    for (int jj = 0; jj < 2; jj++) {
+        // nnet::print_full_result<data_T, CONFIG_T::n_particles*CONFIG_T::n_k/2>("keys_outer_transposed[jj]", keys_outer_transposed[jj], fout);
+    }
+    
+
+    data_T keys_transposed[2][CONFIG_T::n_particles*CONFIG_T::n_k/2];
+    for (int jj = 0; jj < 2; jj++) {
+        transpose_2d<data_T, SA_TRANSPOSE0_CONFIG_T>(keys_outer_transposed[jj], keys_transposed[jj]);
+        // nnet::print_full_result<data_T, CONFIG_T::n_particles*CONFIG_T::n_k/2>("keys_transposed[jj]", keys_transposed[jj], fout);
+    }
 
     // 4.1 energy - dense
-    data_T energy[CONFIG_T::n_energy];
-    // nnet::transpose_2d<data_T, CONFIG_T>(); //TODO: might need to transpose keys
+    data_T energy[CONFIG_T::n_particles][CONFIG_T::n_energy];
     data_T zero_bias1[CONFIG_T::n_energy];
-    nnet::fill_zero<data_T,CONFIG_T::n_energy >(zero_bias1);
-    nnet::dense<data_T, data_T, DENSE1_CONFIG_T>(queries, energy, keys, zero_bias1);
-    fout << "energy ("<< CONFIG_T::n_energy << "):" << "\n";
-    nnet::print_result<data_T, CONFIG_T::n_energy>(energy, fout);
+    fill_zero<data_T,CONFIG_T::n_energy>(zero_bias1);
+
+    for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
+        matmul<data_T, data_T, 2, 64, 64, 2>(queries_outer_transposed[jj], keys_transposed[jj], energy[jj]);
+        // dense<data_T, data_T, DENSE1_CONFIG_T>(queries_outer_transposed[jj], energy[jj], keys_transposed[jj], zero_bias1);
+        // nnet::print_full_result<data_T, CONFIG_T::n_energy>("energy[jj]", energy[jj], fout);
+    }
 
     // 4.2 scale
-    data_T energy_scaled[CONFIG_T::n_energy];
+    data_T energy_scaled[CONFIG_T::n_particles][2][CONFIG_T::n_attention];
     // model_default_t inv_sqrt_d_k = INVERSE; //TODO: implement properly using config
-    Scale: for (int iscale = 0; iscale < CONFIG_T::n_energy; iscale++) {
-        energy_scaled[iscale] = CONFIG_T::template product<data_T, data_T, data_T>::product(energy[iscale], inv_sqrt_d_k);//TODO: CONFIG_T::inv_sqrt_d_k);
+    Scale: for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
+        for (int ii = 0; ii < 2; ii++) {
+            for (int iscale = 0; iscale < CONFIG_T::n_attention; iscale++) {
+                energy_scaled[jj][ii][iscale] = CONFIG_T::template product<data_T, data_T, data_T>::product(energy[jj][ii + iscale * 2], inv_sqrt_d_k);//TODO: CONFIG_T::inv_sqrt_d_k);
+            }
+            // nnet::print_full_result<data_T, CONFIG_T::n_attention>("energy_scaled[jj][ii]", energy_scaled[jj][ii], fout);
+        }
     }
-    fout << "energy_scaled ("<< CONFIG_T::n_energy << "):" << "\n";
-    nnet::print_result<data_T, CONFIG_T::n_energy>(energy_scaled, fout);
+
+    // reduce precision for more accurate results of softmax
+    data_T_red energy_scaled_red[CONFIG_T::n_particles][2][CONFIG_T::n_attention];
+    for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
+        for (int ii = 0; ii < 2; ii++) {
+            for (int kk = 0; kk < CONFIG_T::n_attention; kk++) {
+                if (CONFIG_T::io_type == io_serial){
+                    #pragma HLS UNROLL
+                }
+                energy_scaled_red[jj][ii][kk] = cast<data_T, data_T_red, CONFIG_T>(energy_scaled[jj][ii][kk]);
+            }
+        }
+    }
+
+
 
     // 5 attention - softmax
-    data_T attention[CONFIG_T::n_energy];
-    nnet::softmax<data_T, data_T, SOFTMAX_CONFIG_T>(energy_scaled, attention); // softmax
-    fout << "attention ("<< CONFIG_T::n_energy << "):" << "\n";
-    nnet::print_result<data_T, CONFIG_T::n_energy>(attention, fout);
+    data_T attention[CONFIG_T::n_particles][2][CONFIG_T::n_attention];
+    for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
+        for (int ii = 0; ii < 2; ii++) {
+            // softmax<data_T, data_T, SOFTMAX_CONFIG_T>(energy_scaled[jj][ii], attention[jj][ii]);
+            softmax<data_T_red, data_T, SOFTMAX_CONFIG_T>(energy_scaled_red[jj][ii], attention[jj][ii]);
+            // nnet::print_full_result<data_T, CONFIG_T::n_attention>("attention[jj][ii]", attention[jj][ii], fout);
+        }
+    }
+    // TODO maybe manually recast the type into full precision? as currently it happens implicitly in softmax
+
+    // flatten last two dims
+    data_T attention_flat[CONFIG_T::n_particles][2 * CONFIG_T::n_attention];
+    for (int kk = 0; kk < CONFIG_T::n_particles; kk++) {
+        for (int jj = 0; jj < CONFIG_T::n_attention; jj++) {
+            for (int ii = 0; ii < 2; ii++) {
+                attention_flat[kk][jj + ii * 2] = attention[kk][jj][ii];
+            }
+        }
+    }
+    for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
+        // nnet::print_full_result<data_T, 2*CONFIG_T::n_attention>("attention_flat[jj]", attention_flat[jj], fout);
+    }
+
+    data_T values_transposed[2][CONFIG_T::n_particles*CONFIG_T::n_v/2];
+    for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
+        for (int iv = 0; iv < CONFIG_T::n_v; iv++) {
+            values_transposed[iv % 2][((iv >> 1) << 1) + jj] = values[jj][iv];
+        }
+    }
+    for (int jj = 0; jj < 2; jj++) {
+        // nnet::print_full_result<data_T, CONFIG_T::n_particles*CONFIG_T::n_v/2>("values_transposed[jj]", values_transposed[jj], fout);
+    }
 
     // 6 scaled attention - dense
-    data_T scaled_attention[CONFIG_T::n_scaled_attention];
+    data_T scaled_attention[CONFIG_T::n_particles][CONFIG_T::n_scaled_attention];
     data_T zero_bias2[CONFIG_T::n_scaled_attention];
-    nnet::fill_zero<data_T,CONFIG_T::n_scaled_attention >(zero_bias2);
-    nnet::dense<data_T, data_T, DENSE2_CONFIG_T>(attention, scaled_attention, values, zero_bias2);
-    fout << "scaled_attention ("<< CONFIG_T::n_scaled_attention << "):" << "\n";
-    nnet::print_result<data_T, CONFIG_T::n_scaled_attention>(scaled_attention, fout);
+    fill_zero<data_T,CONFIG_T::n_scaled_attention >(zero_bias2);
+    for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
+        matmul<data_T, data_T, 2, 2, 2, 64>(attention_flat[jj], values_transposed[jj], scaled_attention[jj]);
+        // dense<data_T, data_T, DENSE2_CONFIG_T>(attention_flat[jj], scaled_attention[jj], values[jj], zero_bias2);
+        // nnet::print_full_result<data_T, CONFIG_T::n_scaled_attention>("scaled_attention[jj]", scaled_attention[jj], fout);
+    }
+
+    data_T scaled_attention_transposed[2][CONFIG_T::n_particles*CONFIG_T::n_scaled_attention/2];
+    for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
+        for (int iv = 0; iv < CONFIG_T::n_scaled_attention; iv++) {
+            scaled_attention_transposed[iv % 2][((iv >> 1) << 1) + jj] = scaled_attention[jj][iv];
+        }
+    }
+    for (int jj = 0; jj < 2; jj++) {
+        // nnet::print_full_result<data_T, CONFIG_T::n_particles*CONFIG_T::n_scaled_attention/2>("scaled_attention_transposed[jj]", scaled_attention_transposed[jj], fout);
+    }
 
     // 7 reshape
-    data_T scaled_attention_reshaped[CONFIG_T::n_scaled_attention];
-    //TODO: implement this properly
-    Scaled_attention_reshape: for (int isa = 0; isa < CONFIG_T::n_scaled_attention; isa++) {
-        scaled_attention_reshaped[isa] = scaled_attention[isa];
+    data_T scaled_attention_reshaped[CONFIG_T::n_particles][CONFIG_T::n_scaled_attention];
+    for (int jj = 0; jj < 2; jj++) {
+        for (int kk = 0; kk < CONFIG_T::n_particles; kk++) {
+            for (int ii = 0; ii < CONFIG_T::n_scaled_attention/2; ii++) {
+                // fout << "jj:" << jj << ", kk:" << kk << ", ii:" << ii << " -> out[" << jj << "][" << ii + kk * CONFIG_T::n_scaled_attention/2 << "] = in[" << jj << "][" << ii * CONFIG_T::n_particles + kk << "] = " << scaled_attention_transposed[jj][ii * CONFIG_T::n_particles + kk] << "\n";
+                scaled_attention_reshaped[jj][ii + kk * CONFIG_T::n_scaled_attention/2] = scaled_attention_transposed[jj][ii * CONFIG_T::n_particles + kk];
+            }
+        }
     }
-    fout << "scaled_attention_reshaped ("<< CONFIG_T::n_scaled_attention << "):" << "\n";
-    nnet::print_result<data_T, CONFIG_T::n_scaled_attention>(scaled_attention_reshaped, fout);
+    for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
+        // nnet::print_full_result<data_T, CONFIG_T::n_scaled_attention>("scaled_attention_reshaped[jj]", scaled_attention_reshaped[jj], fout);
+    }
 
     // 8 dense
-    data_T result[CONFIG_T::n_out];
-    nnet::dense<data_T, data_T, DENSE3_CONFIG_T>(scaled_attention_reshaped, result, dense_weight, dense_bias);
-    fout << "result ("<< CONFIG_T::n_out << "):" << "\n";
-    nnet::print_result<data_T, CONFIG_T::n_out>(result, fout);
+    data_T result[CONFIG_T::n_particles][CONFIG_T::n_scaled_attention];
+    for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
+        dense<data_T, data_T, DENSE3_CONFIG_T>(scaled_attention_reshaped[jj], result[jj], dense_weight, dense_bias);
+        // nnet::print_full_result<data_T, CONFIG_T::n_scaled_attention>("result[jj]", result[jj], fout);
+    }
 
     // 9 sum
-    data_T sum_out[CONFIG_T::n_out];
-    Final_sum: for (int iendsum = 0; iendsum < CONFIG_T::n_out; iendsum++) {
-        if (CONFIG_T::io_type == io_serial){
-            #pragma HLS PIPELINE
+    data_T sum_out[CONFIG_T::n_particles][CONFIG_T::n_scaled_attention];
+    Final_sum: for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
+        for (int iendsum = 0; iendsum < CONFIG_T::n_scaled_attention; iendsum++) {
+            if (CONFIG_T::io_type == io_serial){
+                #pragma HLS PIPELINE
+            }
+            sum_out[jj][iendsum] = result[jj][iendsum] + data[jj + iendsum * CONFIG_T::n_particles];
         }
-        sum_out[iendsum] = result[iendsum] + data[iendsum];
+        // nnet::print_full_result<data_T, CONFIG_T::n_scaled_attention>("sum_out[jj]", sum_out[jj], fout);
     }
-    fout << "sum_out ("<< CONFIG_T::n_out << "):" << "\n";
-    nnet::print_result<data_T, CONFIG_T::n_out>(sum_out, fout);
+
+    data_T sum_out_flat[CONFIG_T::n_out];
+    for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
+        for (int ii = 0; ii < CONFIG_T::n_scaled_attention; ii++) {
+            sum_out_flat[jj + ii * CONFIG_T::n_particles] = sum_out[jj][ii];
+        }
+    }
+    // nnet::print_full_result<data_T, CONFIG_T::n_out>("sum_out_flat", sum_out_flat, fout);
 
     // 10 Cast
     Result: for(int ires = 0; ires < CONFIG_T::n_out; ires++){
         if (CONFIG_T::io_type == io_serial){
             #pragma HLS UNROLL
         }
-        res[ires] = cast<data_T, res_T, CONFIG_T>(sum_out[ires]);
+        res[ires] = cast<data_T, res_T, CONFIG_T>(sum_out_flat[ires]);
     }
 
 
 
     // data_T zero_biases_qk[CONFIG_T::d_k];
-    // nnet::fill_zero<data_T, CONFIG_T::d_k>(zero_biases_qk);
+    // fill_zero<data_T, CONFIG_T::d_k>(zero_biases_qk);
     // data_T zero_biases_v[CONFIG_T::d_v];
-    // nnet::fill_zero<data_T, CONFIG_T::d_v>(zero_biases_v);
+    // fill_zero<data_T, CONFIG_T::d_v>(zero_biases_v);
     // data_T zero_biases_kk[CONFIG_T::d_k*CONFIG_T::d_k];
-    // nnet::fill_zero<data_T, CONFIG_T::d_k*CONFIG_T::d_k>(zero_biases_kk);
+    // fill_zero<data_T, CONFIG_T::d_k*CONFIG_T::d_k>(zero_biases_kk);
 
     // // 2.1 Q - queries, d_k entries
     // // matrix: n_q x d_k
     // data_T Q_out[CONFIG_T::d_k];
     // // #pragma HLS ARRAY_PARTITION variable=Q_out complete dim=0
-    // nnet::dense<data_T, data_T, CONFIG_T>(data, Q_out, weights_Q, zero_biases_qk);
+    // dense<data_T, data_T, CONFIG_T>(data, Q_out, weights_Q, zero_biases_qk);
 
     // // 2.2 K - keys, d_k entries
     // // matrix: n_k x d_k
     // data_T K_out[CONFIG_T::d_k];
     // // #pragma HLS ARRAY_PARTITION variable=K_out complete dim=0
-    // nnet::dense<data_T, data_T, CONFIG_T>(data, K_out, weights_K, zero_biases_qk);
+    // dense<data_T, data_T, CONFIG_T>(data, K_out, weights_K, zero_biases_qk);
 
     // // 2.3 V - values, d_v entries
     // // matrix: n_k x d_v
     // data_T V_out[CONFIG_T::d_v];
     // // #pragma HLS ARRAY_PARTITION variable=V_out complete dim=0
-    // nnet::dense<data_T, data_T, CONFIG_T>(data, V_out, weights_V, zero_biases_v);
+    // dense<data_T, data_T, CONFIG_T>(data, V_out, weights_V, zero_biases_v);
 
     // // 3   MatMul
     // // Q * K^T
     // data_T K_T_out[CONFIG_T::d_k];
-    // nnet::transpose_2d<data_T, CONFIG_T>(K_out, K_T_out);
+    // transpose_2d<data_T, CONFIG_T>(K_out, K_T_out);
     // data_T QK_out[CONFIG_T::d_k];
     // // #pragma HLS ARRAY_PARTITION variable=QK_out complete dim=0
-    // nnet::dense<data_T, data_T, CONFIG_T>(Q_out, QK_out, K_T_out, zero_biases_qk);
+    // dense<data_T, data_T, CONFIG_T>(Q_out, QK_out, K_T_out, zero_biases_qk);
 
     // // 4   Scale (element-wise)
     // // ... * sqrt(d_k)
     // data_T scale_out[CONFIG_T::d_k];
-    // nnet::dense<data_T, data_T, CONFIG_T>(QK_out, scale_out, inv_sqrt_d_k, zero_biases_qk);
+    // dense<data_T, data_T, CONFIG_T>(QK_out, scale_out, inv_sqrt_d_k, zero_biases_qk);
 
     // // 5   Softmax
     // // softmax(...)
     // data_T softmax_out[CONFIG_T::d_k];
-    // nnet::softmax<data_T, data_T, CONFIG_T>(scale_out, softmax_out);
+    // softmax<data_T, data_T, CONFIG_T>(scale_out, softmax_out);
     
 
     // // 6   MatMul
     // // ... * V
     // data_T softmax_V_out[CONFIG_T::n_out];
-    // nnet::dense<data_T, data_T, CONFIG_T>(softmax_out, softmax_V_out, V_out, zero_biases_qk);
+    // dense<data_T, data_T, CONFIG_T>(softmax_out, softmax_V_out, V_out, zero_biases_qk);
 
     // // 7   Cast
     // Result: for(int ires = 0; ires < CONFIG_T::n_out; ires++){
@@ -247,7 +375,7 @@ void self_attention(
     //     res[ires] = cast<data_T, res_T, CONFIG_T>(softmax_V_out[ires]);
     // }
 
-    fout.close();
+    // fout.close();
 }
 
 }

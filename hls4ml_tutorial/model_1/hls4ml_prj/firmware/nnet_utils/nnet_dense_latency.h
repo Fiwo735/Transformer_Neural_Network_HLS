@@ -35,7 +35,7 @@ void dense_latency(
     typename CONFIG_T::weight_t  weights[CONFIG_T::n_in*CONFIG_T::n_out],
     typename CONFIG_T::bias_t    biases[CONFIG_T::n_out])
 {
-    std::ofstream fout("tb_data/csim_layers.log", std::ios_base::app);
+    // std::ofstream fout("tb_data/csim_layers.log", std::ios_base::app);
     // fout << "in dense_latency" << "\n";
 
     data_T cache;
@@ -95,9 +95,10 @@ void dense_latency(
                 int multiplier_limit  = ceil(float(CONFIG_T::n_out) / float(CONFIG_T::reuse_factor));
                 CONFIG_T::template product<data_T, typename CONFIG_T::weight_t, typename CONFIG_T::accum_t>::limit(multiplier_limit);
             }
-        int index = ii*CONFIG_T::n_out+jj;
-        mult[index] = CONFIG_T::template product<data_T, typename CONFIG_T::weight_t, typename CONFIG_T::accum_t>::product(cache, weights[index]);
-        // fout << "ii=" << ii << ", jj=" << jj << ", index=" << index << ", cache=" << cache << ", weights[index]=" << weights[index] << ", mult[index]=" << mult[index] << "\n";
+            int index = ii*CONFIG_T::n_out+jj;
+            int index2 = ii + jj * CONFIG_T::n_in;
+            mult[index] = CONFIG_T::template product<data_T, typename CONFIG_T::weight_t, typename CONFIG_T::accum_t>::product(cache, weights[index]);
+            // fout << "ii=" << ii << ", jj=" << jj << ", index=" << index << ", cache=" << cache << ", weights[index]=" << weights[index] << ", mult[index]=" << mult[index] << "\n";
         }
     }
 
@@ -131,7 +132,7 @@ void dense_latency(
         res[ires] = cast<data_T, res_T, CONFIG_T>(acc[ires]);
     }
 
-    fout.close();
+    // fout.close();
 }
 
 }

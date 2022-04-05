@@ -39,7 +39,7 @@ struct dot_config {
     typedef float accum_t;
     // Product function to use
     template<class x_T, class y_T, class res_T>
-    using product = nnet::product::mult<x_T, y_T, res_T>;
+    using product = product::mult<x_T, y_T, res_T>;
 };
 
 struct concat_config {
@@ -294,6 +294,46 @@ void concatenate3d(
         concatenate3d_1<input1_T, input2_T, res_T, CONFIG_T>(data1, data2, res);
     } else {
         concatenate3d_0<input1_T, input2_T, res_T, CONFIG_T>(data1, data2, res);
+    }
+}
+
+// TODO
+template<class input_T, size_t split_count, size_t output_size>
+void split_equally(
+    input_T data[split_count * output_size],
+    input_T res[split_count][output_size]
+) {
+    for (int ii = 0; ii < output_size; ii++) {
+        for (int jj = 0; jj < split_count; jj++) {
+            res[jj][ii] = data[ii * split_count + jj];
+        }
+    }
+}
+
+template<class input_T, size_t split_count, size_t input_size>
+void join_equally(
+    input_T data[split_count][input_size],
+    input_T res[split_count * input_size]
+) {
+    for (int ii = 0; ii < input_size; ii++) {
+        for (int jj = 0; jj < split_count; jj++) {
+            res[ii * split_count + jj] = data[jj][ii];
+        }
+    }
+}
+
+template<class input_T, class res_T, size_t r1, size_t c1, size_t r2, size_t c2>
+void matmul(
+    input_T a[r1 * c1],
+    input_T b[r2 * c2],
+    res_T res[r1 * c2]
+) {
+    for(int i = 0; i < c1; i++) {
+        for(int j = 0; j < c2; j++) {
+            for(int k = 0; k < r1; k++) {
+                res[j*r1 + k] += a[i*r1 + k] * b[j*r2 + i];
+            }
+        }
     }
 }
 
