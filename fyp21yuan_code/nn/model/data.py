@@ -6,7 +6,7 @@ from pathlib import Path
 
 import tables #register blosc
 import h5py
-import h5py_cache as h5c
+# import h5py_cache as h5c
 import numpy as np
 import torch
 from torch.utils.data import Dataset, DataLoader
@@ -32,14 +32,14 @@ class Sample(typing.NamedTuple):
     """
     
     input_seq : np.ndarray          # (100, 16) - the first 100 highest-$p_T$ particles are considered for each jet
-    input_1d : np.ndarray           # (59-6, )
-    input_2d : np.ndarray           # (100, 100, 3) - merge of three jet images
+    # input_1d : np.ndarray           # (59-6, )
+    # input_2d : np.ndarray           # (100, 100, 3) - merge of three jet images
     target : int                    # int, [0, 5] -> ['j_g', 'j_q', 'j_w', 'j_z', 'j_t] 
-    jet : np.ndarray                # (59)
-    jetImage : np.ndarray           # (100, 100)
-    jetImageECAL : np.ndarray       # (100, 100)
-    jetImageHCAL : np.ndarray       # (100, 100)
-    jetConstituentList : np.ndarray # (100, 16)
+    # jet : np.ndarray                # (59)
+    # jetImage : np.ndarray           # (100, 100)
+    # jetImageECAL : np.ndarray       # (100, 100)
+    # jetImageHCAL : np.ndarray       # (100, 100)
+    # jetConstituentList : np.ndarray # (100, 16)
 
 
 class Cache(collections.OrderedDict): 
@@ -135,30 +135,31 @@ class JetDataset(Dataset):
         
         # get corresponding training example
         jet = features['jets'][idx % 10000]
-        jetImage = features['jetImage'][idx % 10000]
-        jetImageECAL = features['jetImageECAL'][idx % 10000]    
-        jetImageHCAL = features['jetImageHCAL'][idx % 10000]
+        # jetImage = features['jetImage'][idx % 10000] # FILIP - not used
+        # jetImageECAL = features['jetImageECAL'][idx % 10000] # FILIP - not used
+        # jetImageHCAL = features['jetImageHCAL'][idx % 10000] # FILIP - not used
         jetConstituentList = features['jetConstituentList'][idx % 10000]
 
         # get inputs
         target = int(np.argmax(jet[-6:-1])) # int
+        # target = jet[-6:-1] # (5)
         input_seq = jetConstituentList      # (100, 16)
-        input_1d = jet[:-6]                 # (53, )
-        input_2d = np.dstack(
-            [jetImage, jetImageECAL, jetImageHCAL]
-        )                              # (100, 100, 3)
+        # input_1d = jet[:-6]                 # (53, ) # FILIP - not used
+        # input_2d = np.dstack( # FILIP - not used
+        #     [jetImage, jetImageECAL, jetImageHCAL]
+        # )                              # (100, 100, 3)
         
         # sample tuple
         sample = Sample(
             input_seq = input_seq,         # (100, 16) - the first 100 highest-$p_T$ particles are considered for each jet
-            input_1d = input_1d,           # (59-6, )
-            input_2d = input_2d,           # (100, 100, 3) - merge of three jet images
+            # input_1d = input_1d,           # (59-6, )
+            # input_2d = input_2d,           # (100, 100, 3) - merge of three jet images
             target = target,               # int
-            jet = jet,                     # (59)
-            jetImage = jetImage,           # (100, 100)
-            jetImageECAL = jetImageECAL,   # (100, 100)
-            jetImageHCAL = jetImageHCAL,   # (100, 100)
-            jetConstituentList = jetConstituentList  # (100, 16)
+            # jet = jet,                     # (59)
+            # jetImage = jetImage,           # (100, 100)
+            # jetImageECAL = jetImageECAL,   # (100, 100)
+            # jetImageHCAL = jetImageHCAL,   # (100, 100)
+            # jetConstituentList = jetConstituentList  # (100, 16)
         )
 
         # apply transformation (torch-vision transform-like)
@@ -217,9 +218,13 @@ class JetDataset(Dataset):
 
         data = dict()
 
+        # print('in load_hdf5_file(file_path)')
+
         with h5py.File(file_path) as file:
             for feature_name, feature in file.items():
-                if feature_name not in ['jetFeatureNames', 'particleFeatureNames']:
+                # if feature_name not in ['jetFeatureNames', 'particleFeatureNames']: # original
+                if feature_name not in ['jetFeatureNames', 'jetImage', 'jetImageECAL', 'jetImageHCAL', 'particleFeatureNames']: # FILIP - only load jetConstituentList and jets (for target)
+                    # print(f'{feature_name=}, {feature=}')
                     data[feature_name]= np.array(feature) #.setflags(write=False)
         
         # print(f"path: {str(file_path.absolute())}")
@@ -308,14 +313,14 @@ class RandomPermute(object):
 
         return Sample(
             input_seq = input_seq,                # (100, 16) - the first 100 highest-$p_T$ particles are considered for each jet
-            input_1d = sample.input_1d,           # (59-6, )
-            input_2d = sample.input_2d,           # (100, 100, 3) - merge of three jet images
+            # input_1d = sample.input_1d,           # (59-6, )
+            # input_2d = sample.input_2d,           # (100, 100, 3) - merge of three jet images
             target = sample.target,               # int
-            jet = sample.jet,                     # (59)
-            jetImage = sample.jetImage,           # (100, 100)
-            jetImageECAL = sample.jetImageECAL,   # (100, 100)
-            jetImageHCAL = sample.jetImageHCAL,   # (100, 100)
-            jetConstituentList = sample.jetConstituentList  # (100, 16)
+            # jet = sample.jet,                     # (59)
+            # jetImage = sample.jetImage,           # (100, 100)
+            # jetImageECAL = sample.jetImageECAL,   # (100, 100)
+            # jetImageHCAL = sample.jetImageHCAL,   # (100, 100)
+            # jetConstituentList = sample.jetConstituentList  # (100, 16)
         )
 
 
@@ -344,24 +349,25 @@ def get_collate_fn(stage="train", params=None):
         """
 
         # Unpack Samples[]
-        input_seqs, input_1ds, input_2ds, targets, jets, jetImages, jetImageECALs, jetImageHCALs, jetConstituentLists = zip(*batch)
+        # input_seqs, input_1ds, input_2ds, targets, jets, jetImages, jetImageECALs, jetImageHCALs, jetConstituentLists = zip(*batch)
+        input_seqs, targets = zip(*batch)
       
         # create torch tensors: inputs, input_0ds, targets
         input_seqs = torch.tensor(input_seqs, dtype=torch.float32)
-        input_1ds = torch.tensor(input_1ds, dtype=torch.float32)[:,[12, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 48, 52]]
-        input_2ds = torch.tensor(input_2ds, dtype=torch.float32)
+        # input_1ds = torch.tensor(input_1ds, dtype=torch.float32)[:,[12, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 48, 52]]
+        # input_2ds = torch.tensor(input_2ds, dtype=torch.float32)
         targets = torch.tensor(targets, dtype=torch.long) # float64 (n, )  
 
         return {
             'input_seqs' : input_seqs,         # torch.tensor (n, 100, 16) - the first 100 highest-$p_T$ particles are considered for each jet
-            'input_1ds' : input_1ds,           # torch.tensor (n, 16)
-            'input_2ds' : input_2ds,           # torch.tensor (n, 100, 100, 3) - merge of three jet images
+            # 'input_1ds' : input_1ds,           # torch.tensor (n, 16)
+            # 'input_2ds' : input_2ds,           # torch.tensor (n, 100, 100, 3) - merge of three jet images
             'targets' : targets,               # torch.tensor (n, )
-            'jets' : jets,                     # List[int] (59)
-            'jetImages' : jetImages,           # List[np.ndarray] (n, (100, 100))
-            'jetImageECALs' : jetImageECALs,   # List[np.ndarray] (n, (100, 100))
-            'jetImageHCALs' : jetImageHCALs,   # List[np.ndarray] (n, (100, 100))
-            'jetConstituentLists' : jetConstituentLists  # List[np.ndarray] (n, (100, 16))
+            # 'jets' : jets,                     # List[int] (59)
+            # 'jetImages' : jetImages,           # List[np.ndarray] (n, (100, 100))
+            # 'jetImageECALs' : jetImageECALs,   # List[np.ndarray] (n, (100, 100))
+            # 'jetImageHCALs' : jetImageHCALs,   # List[np.ndarray] (n, (100, 100))
+            # 'jetConstituentLists' : jetConstituentLists  # List[np.ndarray] (n, (100, 16))
         }
 
     return collate_fn

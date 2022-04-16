@@ -62,11 +62,11 @@ def train_loop(model, optimizer, scheduler, criterion, metrics, params, model_di
 
         # Train for one epoch (one full pass over the training set)
         train_metrics = train(model, optimizer, scheduler, criterion, train_dataloader, metrics, writer, params, train_set)
-        print('Train done')
+        # print('Train done')
 
         # Evaluate for one epoch on validation set
         if val_dataloader is not None:
-            print('val_data is not None')
+            # print('val_data is not None')
             # validation set metrics
             val_metrics = evaluate(model, criterion, val_dataloader, metrics, params)
             val_acc = val_metrics['accuracy']
@@ -77,11 +77,11 @@ def train_loop(model, optimizer, scheduler, criterion, metrics, params, model_di
             writer.add_scalar('Validation acc', val_metrics['accuracy'], epoch * len(train_dataloader))
 
         else:
-            print('val_data is None')
+            # print('val_data is None')
             train_acc = train_metrics['accuracy']
             is_best = train_acc >= best_acc
         
-        print('Evaluate done')
+        # print('Evaluate done')
         # Save latest val metrics in a json file in the model directory
         metrics_to_save = val_metrics if val_dataloader is not None else train_metrics
         metrics_type = "val" if val_dataloader is not None else "train"
@@ -195,18 +195,18 @@ def train(model, optimizer, scheduler, criterion, dataloader, metrics, writer, p
     # Use tqdm for progress bar
     BATCH_SIZE = 128
     with tqdm(total=len(train_set), unit="sample") as t:
-        batch_input_seqs = np.empty((BATCH_SIZE, 100, 16))
+        batch_input_seqs = np.empty((BATCH_SIZE, 30, 16)) # change 2nd dim for number of particles
         batch_input_1ds = np.empty((BATCH_SIZE, 53))
         batch_targets = np.empty((BATCH_SIZE,))
         for i, sample in enumerate(train_set):
             # print(f"i:{i}")
-            if i > 700:
-                break
+            # if i > 9999:
+            #     break
 
             # Unpack batch, move to device
             input_seqs = sample.input_seq  # torch.tensor (n, 100, 16) - the first 100 highest-$p_T$ particles are considered for each jet
-            input_1ds = sample.input_1d    # torch.tensor (n, 59-6)
-            input_2ds = sample.input_2d    # torch.tensor (n, 100, 100, 3) - merge of three jet images
+            # input_1ds = sample.input_1d    # torch.tensor (n, 59-6)
+            # input_2ds = sample.input_2d    # torch.tensor (n, 100, 100, 3) - merge of three jet images
             targets = sample.target        # torch.tensor (n, )
 
             # Forward pass
@@ -215,7 +215,7 @@ def train(model, optimizer, scheduler, criterion, dataloader, metrics, writer, p
             # input_1ds = np.expand_dims(input_1ds, axis=0)
             # print(f"input_1ds shape: {input_1ds.shape}")
             batch_input_seqs[i % 128] = input_seqs
-            batch_input_1ds[i % 128] = input_1ds
+            # batch_input_1ds[i % 128] = input_1ds
             batch_targets[i % 128] = targets
 
             # input_1ds = torch.from_numpy(input_1ds)
@@ -228,7 +228,7 @@ def train(model, optimizer, scheduler, criterion, dataloader, metrics, writer, p
                 # print(f"batch_input_1ds shape: {batch_input_1ds.shape}")
                 # print(f"batch_targets shape: {batch_targets.shape}")
                 tensor_input_seqs = (torch.from_numpy(batch_input_seqs)).to(params.device)
-                tensor_input_1ds = (torch.from_numpy(batch_input_1ds)).to(params.device)
+                # tensor_input_1ds = (torch.from_numpy(batch_input_1ds)).to(params.device)
                 tensor_targets = (torch.from_numpy(batch_targets)).to(params.device)
 
                 # print(tensor_targets.shape)
@@ -295,8 +295,8 @@ def train(model, optimizer, scheduler, criterion, dataloader, metrics, writer, p
             # print(process.memory_info().rss)
 
     # Compute mean of all metrics in summary
-    print(len(summ))
-    print(summ[0])
+    # print(len(summ))
+    # print(summ[0])
     metrics_mean = {metric: np.mean([x[metric] for x in summ]) for metric in summ[0]}
     metrics_string = " ; ".join("{}: {:05.3f}".format(k, v) for k, v in metrics_mean.items())
     logging.info("- Train metrics: " + metrics_string)
