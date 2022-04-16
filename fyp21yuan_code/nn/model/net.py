@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import numpy as np
 
 from .layer import Perceiver, PerceiverDynamicQuery, Transformer, FourierMixer, CrossTransformer
 
@@ -419,7 +420,18 @@ def accuracy(outputs, targets) -> float:
 
     preds = outputs.argmax(dim=1).view(-1)
 
+    # FILIP experimenting with changed targets from data.py line 144
+    # print(preds)
+    # print(preds.shape)
+
+    # print(targets)
+    # print(targets.shape)
+    # targets = np.argmax(targets, axis=-1)
+    # print(targets)
+    # print(targets.shape)
+
     return (torch.sum(preds == targets).float() / len(targets)).item()
+    # return (torch.sum(preds == targets).float() / len(targets)).item()
 
 
 def accuracy_top_k(outputs:torch.Tensor, targets:torch.Tensor, topk:int=5) -> float:

@@ -1,0 +1,1 @@
+python3 fyp21yuan_code/nn/train_old.py --model_dir fyp21yuan_code/experiments/constituent_base/ --data_dir fyp21yuan_code/data/processed/
