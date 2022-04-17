@@ -72,37 +72,34 @@ class ConstituentNet(nn.Module):
     def get_counter(self):
         return self.counter
 
-    # def debug_print(self, name: str, t=None):
-    #     if self.is_debug and not self.training:
-    #         if t is None:
-    #             print(f'{name}')
-    #         else:
-    #             print(f"{name} -> {t.size()}")
-    #             print(t)
+    def debug_print(self, name: str, t):
+        if self.is_debug and not self.training:
+            print(f"{name} -> {t.size()}")
+            print(t)
 
     def forward(self, x):
 
         m_batch, seq_len, _ = x.size() # (m_batch, seq_len=100, input_dim=16)
-        # self.debug_print('input', x)
+        self.debug_print('input', x)
 
         # Input layer
         out = self.inp_layer(x) # (m_batch, seq_len, C)
-        # self.debug_print('out (after input layer)', out)
+        self.debug_print('out (after input layer)', out)
 
         # Append class tokens to input
         cls_tokens = self.cls_token.repeat(m_batch, 1, 1)
         out = torch.cat((cls_tokens, out), dim=1) # (m_batch, seq_len + 1, C)
-        # self.debug_print('cls_tokens', cls_tokens)
-        # self.debug_print('out (after class tokens)', out)
+        self.debug_print('cls_tokens', cls_tokens)
+        self.debug_print('out (after class tokens)', out)
 
         # Transformer layers
         for transformer in self.transformers:
             out = transformer(out)       # (m_batch, seq_len + 1, C)
-            # self.debug_print('out (after transformer layer)', out)
+            self.debug_print('out (after transformer layer)', out)
 
         # Output layer
         out = out[:, 0]                           # (m_batch, 1, C
-        # self.debug_print('out (after out[:, 0])', out)
+        self.debug_print('out (after out[:, 0])', out)
 
         # For normalization calculation embedding
         with torch.no_grad():
@@ -114,13 +111,13 @@ class ConstituentNet(nn.Module):
                 self.counter += 1
 
         out = self.out_layer_0(out)
-        # self.debug_print('out (after out layer 0)', out)
+        self.debug_print('out (after out layer 0)', out)
 
         out = self.out_layer_1(out)
-        # self.debug_print('out (after out layer 1)', out)
+        self.debug_print('out (after out layer 1)', out)
 
         out = out.squeeze(1)
-        # self.debug_print('out (after squeeze())', out)
+        self.debug_print('out (after squeeze())', out)
             
         # out = self.out_layer(out).squeeze(1)      # (m_batch, 1, C) -> (batch_m, num_classes)
         # if not self.training:
@@ -128,7 +125,7 @@ class ConstituentNet(nn.Module):
         #     print(out)
 
         final_result = F.log_softmax(out, dim=-1)
-        # self.debug_print('final_result (softmax)', final_result)
+        self.debug_print('final_result (softmax)', final_result)
 
         return final_result
 

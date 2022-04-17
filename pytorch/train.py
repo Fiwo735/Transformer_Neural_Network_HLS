@@ -26,42 +26,6 @@ def set_seed(seed=0):
   torch.manual_seed(seed)
 
 
-def mean_var_info(
-  name: str,
-  index: int,
-  mean: torch.Tensor,
-  var: torch.Tensor,
-  ctr: int,
-  sub_index:
-  str=''
-) -> str:
-
-  result = f"{name}{index}\n"
-  result += f"mean{sub_index}: {mean.size()}\n\t"
-
-  curr_mean = torch.mean(mean, dim=0)
-  if len(mean.size()) > 1:
-      result += f"[0]: {curr_mean[0]}\n\t"
-      result += f"[1:]: {torch.mean(curr_mean[1:])}\n"
-  else:
-      result += f"{curr_mean}\n"
-
-  result += f"var{sub_index}: {var.size()}\n\t"
-
-  curr_var = torch.mean(var, dim=0)
-  if len(var.size()) > 1:
-      result += f"[0]: {curr_var[0]}\n\t"
-      result += f"[1:]: {torch.mean(curr_var[1:])}\n"
-      print(f"[({curr_mean[0]}, {curr_var[0]}), ({torch.mean(curr_mean[1:])}, {torch.mean(curr_var[1:])})],")
-  else:
-      result += f"{curr_var}\n"
-      print(f"[({curr_mean}, {curr_var})],")
-
-  result += f"ctr{sub_index}: {ctr}\n"
-
-  return result
-
-
 def fetch_dataset(multiple_of: int = 128):
   X, y = fetch_openml('hls4ml_lhc_jets_hlf', cache=True, return_X_y=True)
 
@@ -95,7 +59,7 @@ def fetch_dataset(multiple_of: int = 128):
   np.save('classes.npy', le.classes_)
 
 
-def load_dataset() -> Tuple[DataLoader, DataLoader]:
+def load_dataset() -> Tuple[DataLoader, DataLoader, DataLoader]:
   X_train_val = np.load('X_train_val.npy')
   X_test = np.ascontiguousarray(np.load('X_test.npy'))
   y_train_val = np.load('y_train_val.npy')
@@ -122,7 +86,13 @@ def load_dataset() -> Tuple[DataLoader, DataLoader]:
     batch_size=batch_size
   )
 
-  return train_loader, test_loader
+  # Dataloader for printing layer-by-layer evaluation of (1, 1, 16)
+  tiny_loader = DataLoader(
+    TensorDataset(tensor_X_test[:1], tensor_y_test[:1]),
+    batch_size=1
+  )
+
+  return train_loader, test_loader, tiny_loader
 
 
 def get_GPU_memory_usage(is_brief: bool = True) -> str:
@@ -186,40 +156,48 @@ def train_test_loop(
   return correct_predictions / loader_length / batch_size
 
 
-def save_model(model: nn.Module, path: str) -> None:
+def save_model(model: nn.Module, script_path: str, state_path: str) -> None:
   model.eval()
   model_script = torch.jit.script(model)
-  model_script.save(path)
+  model_script.save(script_path)
+
+  torch.save(
+    {'state_dict': model.state_dict()},
+    state_path,
+  )
 
 
 def evaluate(
   test_loader: DataLoader,
   model: nn.Module,
-  criterion: nn.Module
+  criterion: nn.Module,
+  filepath: Optional[str] = None,
 ) -> float:
 
   with torch.no_grad():
-    accuracy = train_test_loop(
-      loader=test_loader,
-      model=model,
-      criterion=criterion,
-      is_train=False,
-      num_particles=1,
-    )
-  
-  return accuracy
+    if filepath is None:
+      accuracy = accuracy = train_test_loop(
+        loader=test_loader,
+        model=model,
+        criterion=criterion,
+        is_train=False,
+        num_particles=1,
+      )
+    
+    else:
+      with open(filepath, 'w') as f:
+        with contextlib.redirect_stdout(f):
+          # Write input data in HLS format
+          f.write(' '.join([str(el) for el in next(iter(test_loader))[0][0].tolist()]) + '\n')
 
+          accuracy = accuracy = train_test_loop(
+            loader=test_loader,
+            model=model,
+            criterion=criterion,
+            is_train=False,
+            num_particles=1,
+          )
 
-def quiet_evaluate(
-  test_loader: DataLoader,
-  model: nn.Module,
-  criterion: nn.Module
-) -> float:
-
-  with open(os.devnull, 'w') as devnull:
-    with contextlib.redirect_stdout(devnull):
-      accuracy = evaluate(test_loader=test_loader, model=model, criterion=criterion)
-  
   return accuracy
 
 
@@ -247,15 +225,18 @@ def time_evaluate(
 
 def main(
   do_train: bool = True,
-  best_path: Optional[str] = None,
+  script_path: Optional[str] = None,
+  state_path: Optional[str] = None,
   is_debug: bool = False,
   is_timing: bool = False,
 ) -> None:
  
   # fetch_dataset()
-  train_loader, test_loader = load_dataset()
+  train_loader, test_loader, tiny_loader = load_dataset()
 
   criterion = torch.nn.NLLLoss()
+  num_epochs = 1
+  num_transformers = 1
 
   if do_train:
     # Instantiate model
@@ -264,7 +245,7 @@ def main(
       embbed_dim=128,
       num_heads=2,
       num_classes=5,
-      num_transformers=3,
+      num_transformers=num_transformers,
       dropout=0.0,
       is_debug=is_debug,
     ).to(DEVICE)
@@ -272,6 +253,7 @@ def main(
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
 
     # Train model
+    start_time = time()
     _ = train_test_loop(
       loader=train_loader,
       model=model,
@@ -279,24 +261,37 @@ def main(
       optimizer=optimizer,
       is_train=True,
       num_particles=1,
-      num_epochs=1,
+      num_epochs=num_epochs,
     )
+    print(f'Training took {time() - start_time:.2f} s')
 
-    save_model(model=model, path=best_path)
+    save_model(model=model, script_path=script_path, state_path=state_path)
   
   else:
-    model = torch.jit.load(best_path, map_location='cuda')
+    model = torch.jit.load(script_path, map_location='cuda')
+
+  print(f'Model parameters: {sum(p.numel() for p in model.parameters() if p.requires_grad)}')
   
   # Test model
-  accuracy = evaluate(test_loader=test_loader, model=model, criterion=criterion)
+  filepath = 'layers_output.txt' if is_debug else None
+  accuracy = evaluate(test_loader=tiny_loader, model=model, criterion=criterion, filepath=filepath)
   print(f'Test accuracy: {accuracy*100:.2f}%')
 
   # Time evaluation of model
   if is_timing:
+    assert not is_debug, 'Timing debug model is not accurate as printing greatly slows evaluation'
     average_time = time_evaluate(test_loader=test_loader, model=model, criterion=criterion, num_epochs=5)
-    print(f'Average evaluation time: {average_time:.2f}s')
+    print(f'Average evaluation time: {average_time:.2f} s')
+
 
 if __name__ == "__main__":
   print(f'{DEVICE=}')
   set_seed()
-  main(do_train=False, best_path='best.script.pth', is_debug=False, is_timing=True)
+
+  main(
+    do_train=False,
+    script_path='best.script.pth',
+    state_path='best.pth.tar',
+    is_debug=True,
+    is_timing=False
+  )

@@ -78,13 +78,13 @@ def prepare_files(
   # print(layer_name)
   # print(values.shape)
 
-  if layer_name == 'transformers.0.self_attention.qkv.weight':
-    print('-'*10 + 'transformers.0.self_attention.qkv.weight' + '-'*10)
-    print(values.shape)
-    print(values)
-    print(values[0][0])
-    print(values[0][1])
-    print(values[1][0])
+  # if layer_name == 'transformers.0.self_attention.qkv.weight':
+  #   print('-'*10 + 'transformers.0.self_attention.qkv.weight' + '-'*10)
+  #   print(values.shape)
+  #   print(values)
+  #   print(values[0][0])
+  #   print(values[0][1])
+  #   print(values[1][0])
   if len(values.shape) > 1:
     # print(values.shape[-2:])
     # print(values)
@@ -236,7 +236,7 @@ def extract_weights_biases(
 
   # print summary
   print("Model taken from {}".format(model_path))
-  print("Weights/biases saved to {}".format(result_path))
+  print("Weights and biases saved to {}".format(result_path))
 
   print('\n' + '-'*20 + "Layers summary" + '-'*20 + '\n')
   for shape, name in overview:
@@ -252,7 +252,7 @@ def extract_weights_biases(
 
 
 if __name__ == "__main__":
-  model_path = "fyp21yuan_code/experiments/constituent_base/best.pth.tar"
+  model_path = "pytorch/best.pth.tar"
   result_path = "extracted_weights_biases/"
   norm_layer_base_names = {
     # 'out_layer_0':

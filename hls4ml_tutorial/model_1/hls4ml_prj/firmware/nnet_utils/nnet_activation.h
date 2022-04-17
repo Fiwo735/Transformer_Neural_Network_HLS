@@ -271,7 +271,7 @@ void init_invert_table(typename CONFIG_T::inv_table_t table_out[CONFIG_T::table_
 
 template <class data_T, class res_T, typename CONFIG_T>
 void softmax_latency(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in]){
-    // std::ofstream fout("tb_data/csim_layers.log", std::ios_base::app); //TODO remove
+    std::ofstream fout("tb_data/csim_layers.log", std::ios_base::app); //TODO remove
     // #pragma HLS pipeline
     //TODO: the above pragma is removed for now as it causes init_invert_table to unroll,
     // which breaks synthesis due to 'large runtime and excessive memory usage due to increase in code size'
@@ -295,9 +295,9 @@ void softmax_latency(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in]){
         initialized = true;
     }
 
-    // nnet::print_full_result<general_table_t, CONFIG_T::table_size>("exp_table", exp_table, fout);
-    // nnet::print_full_result<general_table_t, CONFIG_T::table_size>("invert_table:", invert_table, fout);
-    // nnet::print_full_result<data_T, CONFIG_T::n_in>("after table initialization, data:", data, fout);
+    nnet::print_full_result<general_table_t, CONFIG_T::table_size>("exp_table", exp_table, fout);
+    nnet::print_full_result<general_table_t, CONFIG_T::table_size>("invert_table:", invert_table, fout);
+    nnet::print_full_result<data_T, CONFIG_T::n_in>("after table initialization, data:", data, fout);
 
     // Calculate all the e^x's
     typename CONFIG_T::exp_table_t exp_res[CONFIG_T::n_in];
@@ -309,27 +309,27 @@ void softmax_latency(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in]){
         exp_res[i] = exp_table[x];
     }
 
-    // nnet::print_full_result<general_table_t, CONFIG_T::n_in>("exp_res", exp_res, fout);
+    nnet::print_full_result<general_table_t, CONFIG_T::n_in>("exp_res", exp_res, fout);
 
     // Explicitly sum the results with an adder tree.
     // Rounding & Saturation mode, which improve accuracy, prevent Vivado from expression balancing
     Op_add<typename CONFIG_T::exp_table_t> op_add;
     exp_sum = reduce<typename CONFIG_T::exp_table_t, CONFIG_T::n_in, Op_add<typename CONFIG_T::exp_table_t>>(exp_res, op_add);
 
-    // fout << "exp_sum: " << exp_sum << "\n";
+    fout << "exp_sum: " << exp_sum << "\n";
 
     typename CONFIG_T::inv_table_t inv_exp_sum = invert_table[softmax_idx_from_real_val<typename CONFIG_T::exp_table_t,CONFIG_T>(exp_sum)];
 
-    // fout << "inv_exp_sum: " << inv_exp_sum << "\n";
+    fout << "inv_exp_sum: " << inv_exp_sum << "\n";
 
     for(unsigned i = 0; i < CONFIG_T::n_in; i++){
         #pragma HLS unroll
         res[i] = exp_res[i] * inv_exp_sum;
     }
 
-    // nnet::print_full_result<res_T, CONFIG_T::n_in>("res", res, fout);
+    nnet::print_full_result<res_T, CONFIG_T::n_in>("res", res, fout);
 
-    // fout.close(); //TODO removes
+    fout.close(); //TODO removes
 }
 
 template <class data_T, class res_T, typename CONFIG_T>
