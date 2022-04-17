@@ -148,13 +148,10 @@ class SelfAttention(nn.Module):
     def get_counter(self):
         return self.counter
     
-    # def debug_print(self, name: str, t=None):
-    #     if self.is_debug and not self.training:
-    #         if t is None:
-    #             print(f'SA: {name}')
-    #         else:
-    #             print(f"SA: {name} -> {t.size()}")
-    #             print(t)
+    def debug_print(self, name: str, t):
+        if self.is_debug and not self.training:
+            print(f"SA: {name} -> {t.size()}")
+            print(t)
 
     def forward(self, x):
 
@@ -166,7 +163,7 @@ class SelfAttention(nn.Module):
         """
 
         m_batch, seq_len, C = x.size()
-        # self.debug_print('input', x)
+        self.debug_print('input', x)
 
         C_H = self.head_dim
         # self.debug_print(f'self.head_dim {C_H}')
@@ -197,40 +194,40 @@ class SelfAttention(nn.Module):
             
         # Normalization across channels
         out = self.norm(x)
-        # self.debug_print('out (after norm)', out)
+        self.debug_print('out (after norm)', out)
 
         # Queries, keys, and values
         out = self.qkv(out)
-        # self.debug_print('out (after qkv)', out)
+        self.debug_print('out (after qkv)', out)
         # self.debug_print(f'weight of qkv {self.qkv.weight.size()}')
 
         out = out.view(m_batch, seq_len, self.heads, -1)   # (batch_m, seq_len, num_heads, 2*C_head + C//num_head )
         # self.debug_print('out (after view)', out)
 
         queries, keys, values = torch.split(out, [C_H, C_H, C // self.heads], dim=-1)
-        # self.debug_print('queries', queries)
-        # self.debug_print('keys', keys)
-        # self.debug_print('values', values)
+        self.debug_print('queries', queries)
+        self.debug_print('keys', keys)
+        self.debug_print('values', values)
 
         # Attention softmax(Q^T*K)
         energy = torch.einsum("nqhc,nkhc->nhqk", [queries, keys])  # (batch_m, num_heads, seq_len, seq_len)
-        # self.debug_print('energy', energy)
+        self.debug_print('energy', energy)
 
         attention = torch.softmax(energy / (C ** (1 / 2)), dim=-1) # (batch_m, num_heads, seq_len, seq_len)
-        # self.debug_print('attention', attention)
+        self.debug_print('attention', attention)
 
         # Output
         out = torch.einsum("nhql,nlhc->nqhc", [attention, values]) # (batch_m, seq_len, num_heads, C//num_head)
-        # self.debug_print('out (after einsum)', out)
+        self.debug_print('out (after einsum)', out)
 
         out = out.reshape(m_batch, seq_len, -1) # (batch_m, seq_len, C)
-        # self.debug_print('out (after reshape)', out)
+        self.debug_print('out (after reshape)', out)
 
         out = self.out(out)
-        # self.debug_print('out (after out())', out)
+        self.debug_print('out (after out())', out)
 
         final_sum = out + x
-        # self.debug_print('final_sum (before returning)', final_sum)
+        self.debug_print('final_sum (before returning)', final_sum)
         
         return final_sum
 
@@ -392,13 +389,10 @@ class Transformer(nn.Module):
     def get_counter3(self):
         return self.counter3
 
-    # def debug_print(self, name: str, t=None):
-    #     if self.is_debug and not self.training:
-    #         if t is None:
-    #             print(f'T: {name}')
-    #         else:
-    #             print(f"T: {name} -> {t.size()}")
-    #             print(t)
+    def debug_print(self, name: str, t):
+        if self.is_debug and not self.training:
+            print(f"T: {name} -> {t.size()}")
+            print(t)
 
     def forward(self, x):
 
@@ -410,10 +404,10 @@ class Transformer(nn.Module):
             energy: self-attention energy (batch_m, seq_len, seq_len)
         """
 
-        # self.debug_print('input', x)
+        self.debug_print('input', x)
 
         x = self.self_attention(x)
-        # self.debug_print('x (after self-attention)', x)
+        self.debug_print('x (after self-attention)', x)
 
         # For normalization calculation embedding
         with torch.no_grad():
@@ -428,13 +422,13 @@ class Transformer(nn.Module):
                 self.counter0 += 1
 
         out0 = self.linear_0(x)
-        # self.debug_print('out0 (after linear_0)', out0)
+        self.debug_print('out0 (after linear_0)', out0)
 
         out1 = self.linear_1(out0)
-        # self.debug_print('out1 (after linear_1)', out1)
+        self.debug_print('out1 (after linear_1)', out1)
 
         out2 = self.linear_2(out1)
-        # self.debug_print('out2 (after linear_2)', out2)
+        self.debug_print('out2 (after linear_2)', out2)
 
         # For normalization calculation embedding
         with torch.no_grad():
@@ -450,19 +444,19 @@ class Transformer(nn.Module):
                 self.counter3 += 1
 
         out3 = self.linear_3(out2)
-        # self.debug_print('out3 (after linear_3)', out3)
+        self.debug_print('out3 (after linear_3)', out3)
 
         out4 = self.linear_4(out3)
-        # self.debug_print('out4 (after linear_4)', out4)
+        self.debug_print('out4 (after linear_4)', out4)
 
         out5 = self.linear_5(out4)
-        # self.debug_print('out5 (after linear_5)', out5)
+        self.debug_print('out5 (after linear_5)', out5)
 
         out = x + out5
-        # self.debug_print('out (after x + out)', out)
+        self.debug_print('out (after x + out)', out)
 
         out =  self.dropout(out)
-        # self.debug_print('out (after dropout)', out)
+        self.debug_print('out (after dropout)', out)
 
         return out
 
