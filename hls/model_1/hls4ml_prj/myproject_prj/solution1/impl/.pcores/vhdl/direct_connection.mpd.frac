@@ -1,0 +1,15 @@
+
+#####################Direct Connection##################
+## const_size_in_1
+PORT const_size_in_1 = "", DIR = O, VEC = [15:0]
+PORT const_size_in_1_ap_vld = "", DIR = O
+## const_size_out_1
+PORT const_size_out_1 = "", DIR = O, VEC = [15:0]
+PORT const_size_out_1_ap_vld = "", DIR = O
+## ap_ctrl
+PORT ap_start = "", DIR = I
+PORT ap_ready = "", DIR = O
+PORT ap_done = "", DIR = O
+PORT ap_idle = "", DIR = O
+########################################################
+

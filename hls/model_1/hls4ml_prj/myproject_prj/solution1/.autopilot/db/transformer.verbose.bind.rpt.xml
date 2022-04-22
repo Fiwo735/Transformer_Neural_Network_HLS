@@ -1,0 +1,52 @@
+<profile>
+
+<section name = "Vivado HLS Report for 'transformer'" level="0">
+<item name = "Date">Thu Apr 21 05:19:27 2022
+</item>
+<item name = "Version">2019.2 (Build 2704478 on Wed Nov 06 22:10:23 MST 2019)</item>
+<item name = "Project">myproject_prj</item>
+<item name = "Solution">solution1</item>
+<item name = "Product family">virtexuplus</item>
+<item name = "Target device">xcu250-figd2104-2L-e</item>
+</section>
+
+<section name = "Performance Estimates" level="0">
+<item name = "Timing">
+<section name = "" level="1">
+<item name = "Summary"><table name="" hasTotal="0">
+<keys size="4">Clock, Target, Estimated, Uncertainty</keys>
+<column name="ap_clk">5.00 ns, 4.286 ns, 0.62 ns</column>
+</table>
+</item>
+</section>
+</item>
+<item name = "Latency">
+<section name = "" level="1">
+<item name = "Summary"><table name="" hasTotal="0">
+<keys size="8">, min, max, min, max, min, max, Type</keys>
+<column name="">201, 201, 1.005 us, 1.005 us, 201, 201, none</column>
+</table>
+</item>
+<item name = "Detail">
+<section name = "" level="1">
+<item name = "Instance"><table name="" hasTotal="0">
+<keys size="9">Instance, Module, min, max, min, max, min, max, Type</keys>
+<column name="grp_self_attention_fu_513">self_attention, 174, 174, 0.870 us, 0.870 us, 174, 174, none</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553">dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s, 1, 1, 5.000 ns, 5.000 ns, 1, 1, function</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_fu_723">dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0, 1, 1, 5.000 ns, 5.000 ns, 1, 1, function</column>
+<column name="call_ret5_relu_ap_fixed_ap_fixed_35_15_5_3_0_sigmoid_config1_s_fu_861">relu_ap_fixed_ap_fixed_35_15_5_3_0_sigmoid_config1_s, 0, 0, 0 ns, 0 ns, 1, 1, function</column>
+<column name="call_ret6_relu_ap_fixed_ap_fixed_35_15_5_3_0_sigmoid_config1_s_fu_1061">relu_ap_fixed_ap_fixed_35_15_5_3_0_sigmoid_config1_s, 0, 0, 0 ns, 0 ns, 1, 1, function</column>
+<column name="call_ret1_relu_ap_fixed_ap_fixed_35_15_5_3_0_sigmoid_config0_s_fu_1197">relu_ap_fixed_ap_fixed_35_15_5_3_0_sigmoid_config0_s, 0, 0, 0 ns, 0 ns, 1, 1, function</column>
+<column name="call_ret2_relu_ap_fixed_ap_fixed_35_15_5_3_0_sigmoid_config0_s_fu_1301">relu_ap_fixed_ap_fixed_35_15_5_3_0_sigmoid_config0_s, 0, 0, 0 ns, 0 ns, 1, 1, function</column>
+</table>
+</item>
+<item name = "Loop"><table name="" hasTotal="0">
+<keys size="8">Loop Name, min, max, Latency, achieved, target, Count, Pipelined</keys>
+</table>
+</item>
+</section>
+</item>
+</section>
+</item>
+</section>
+</profile>

@@ -1,0 +1,186 @@
+
+
+================================================================
+== Vivado HLS Report for 'softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s'
+================================================================
+* Date:           Thu Apr 21 05:17:15 2022
+
+* Version:        2019.2 (Build 2704478 on Wed Nov 06 22:10:23 MST 2019)
+* Project:        myproject_prj
+* Solution:       solution1
+* Product family: virtexuplus
+* Target device:  xcu250-figd2104-2L-e
+
+
+================================================================
+== Performance Estimates
+================================================================
++ Timing: 
+    * Summary: 
+    +--------+---------+----------+------------+
+    |  Clock |  Target | Estimated| Uncertainty|
+    +--------+---------+----------+------------+
+    |ap_clk  | 5.00 ns | 4.285 ns |   0.62 ns  |
+    +--------+---------+----------+------------+
+
++ Latency: 
+    * Summary: 
+    +---------+---------+-----------+-----------+-----+-----+----------+
+    |  Latency (cycles) |   Latency (absolute)  |  Interval | Pipeline |
+    |   min   |   max   |    min    |    max    | min | max |   Type   |
+    +---------+---------+-----------+-----------+-----+-----+----------+
+    |        3|        3| 15.000 ns | 15.000 ns |    1|    1| function |
+    +---------+---------+-----------+-----------+-----+-----+----------+
+
+    + Detail: 
+        * Instance: 
+        N/A
+
+        * Loop: 
+        N/A
+
+============================================================
++ Verbose Summary: Synthesis Manager
+============================================================
+InlineROM: 1
+ExposeGlobal: 0
+============================================================
++ Verbose Summary: CDFG Model
+============================================================
+IsTopModel: 0
+ResetActiveHigh: 1
+IsCombinational: 0
+IsDatapathOnly: 0
+HasWiredReturn: 1
+HasMFsm: 2
+HasVarLatency: 0
+IsPipeline: 1
+IsRtlPipelined: 1
+IsInstanceOverlapped: 0
+IsDontTouch: 0
+HasImplIP: 0
+IsGatedGlobalClock: 0
+
++ Individual pipeline summary: 
+  * Pipeline-0: initiation interval (II) = 1, depth = 4
+
+
+============================================================
++ Verbose Summary: Schedule
+============================================================
+* Number of FSM states : 4
+* Pipeline : 1
+  Pipeline-0 : II = 1, D = 4, States = { 1 2 3 4 }
+* Dataflow Pipeline: 0
+
+* FSM state transitions: 
+1 --> 2 
+2 --> 3 
+3 --> 4 
+4 --> 
+
+* FSM state operations: 
+
+State 1 <SV = 0> <Delay = 0.59>
+ST_1 : Operation 5 [1/1] (0.00ns)   --->   "%res_V_offset3_read = call i1 @_ssdm_op_Read.ap_auto.i1(i1 %res_V_offset3)" [firmware/nnet_utils/nnet_activation.h:325]   --->   Operation 5 'read' 'res_V_offset3_read' <Predicate = true> <Delay = 0.00>
+ST_1 : Operation 6 [1/1] (0.00ns)   --->   "%res_V_offset_read = call i1 @_ssdm_op_Read.ap_auto.i1(i1 %res_V_offset)" [firmware/nnet_utils/nnet_activation.h:325]   --->   Operation 6 'read' 'res_V_offset_read' <Predicate = true> <Delay = 0.00>
+ST_1 : Operation 7 [1/1] (0.00ns)   --->   "%data_V_offset1_read = call i1 @_ssdm_op_Read.ap_auto.i1(i1 %data_V_offset1)" [firmware/nnet_utils/nnet_activation.h:325]   --->   Operation 7 'read' 'data_V_offset1_read' <Predicate = true> <Delay = 0.00>
+ST_1 : Operation 8 [1/1] (0.00ns)   --->   "%data_V_offset_read = call i1 @_ssdm_op_Read.ap_auto.i1(i1 %data_V_offset)" [firmware/nnet_utils/nnet_activation.h:325]   --->   Operation 8 'read' 'data_V_offset_read' <Predicate = true> <Delay = 0.00>
+ST_1 : Operation 9 [1/1] (0.00ns)   --->   "%tmp_2 = call i3 @_ssdm_op_BitConcatenate.i3.i1.i1.i1(i1 %data_V_offset_read, i1 %data_V_offset1_read, i1 false)" [firmware/nnet_utils/nnet_activation.h:306]   --->   Operation 9 'bitconcatenate' 'tmp_2' <Predicate = true> <Delay = 0.00>
+ST_1 : Operation 10 [1/1] (0.00ns)   --->   "%zext_ln306 = zext i3 %tmp_2 to i64" [firmware/nnet_utils/nnet_activation.h:306]   --->   Operation 10 'zext' 'zext_ln306' <Predicate = true> <Delay = 0.00>
+ST_1 : Operation 11 [1/1] (0.00ns)   --->   "%data_V_addr = getelementptr [8 x i16]* %data_V, i64 0, i64 %zext_ln306" [firmware/nnet_utils/nnet_activation.h:306]   --->   Operation 11 'getelementptr' 'data_V_addr' <Predicate = true> <Delay = 0.00>
+ST_1 : Operation 12 [1/1] (0.00ns)   --->   "%or_ln306 = or i3 %tmp_2, 1" [firmware/nnet_utils/nnet_activation.h:306]   --->   Operation 12 'or' 'or_ln306' <Predicate = true> <Delay = 0.00>
+ST_1 : Operation 13 [1/1] (0.00ns)   --->   "%tmp_3 = call i64 @_ssdm_op_BitConcatenate.i64.i61.i3(i61 0, i3 %or_ln306)" [firmware/nnet_utils/nnet_activation.h:306]   --->   Operation 13 'bitconcatenate' 'tmp_3' <Predicate = true> <Delay = 0.00>
+ST_1 : Operation 14 [1/1] (0.00ns)   --->   "%data_V_addr_1 = getelementptr [8 x i16]* %data_V, i64 0, i64 %tmp_3" [firmware/nnet_utils/nnet_activation.h:306]   --->   Operation 14 'getelementptr' 'data_V_addr_1' <Predicate = true> <Delay = 0.00>
+ST_1 : Operation 15 [2/2] (0.59ns)   --->   "%p_Val2_s = load i16* %data_V_addr, align 2" [firmware/nnet_utils/nnet_activation.h:306]   --->   Operation 15 'load' 'p_Val2_s' <Predicate = true> <Delay = 0.59> <Core = "RAM">   --->   Core 37 'RAM' <Latency = 1> <II = 1> <Delay = 0.59> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 32> <Depth = 8> <RAM>
+ST_1 : Operation 16 [2/2] (0.59ns)   --->   "%p_Val2_8 = load i16* %data_V_addr_1, align 2" [firmware/nnet_utils/nnet_activation.h:306]   --->   Operation 16 'load' 'p_Val2_8' <Predicate = true> <Delay = 0.59> <Core = "RAM">   --->   Core 37 'RAM' <Latency = 1> <II = 1> <Delay = 0.59> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 32> <Depth = 8> <RAM>
+
+State 2 <SV = 1> <Delay = 1.75>
+ST_2 : Operation 17 [1/2] (0.59ns)   --->   "%p_Val2_s = load i16* %data_V_addr, align 2" [firmware/nnet_utils/nnet_activation.h:306]   --->   Operation 17 'load' 'p_Val2_s' <Predicate = true> <Delay = 0.59> <Core = "RAM">   --->   Core 37 'RAM' <Latency = 1> <II = 1> <Delay = 0.59> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 32> <Depth = 8> <RAM>
+ST_2 : Operation 18 [1/1] (0.00ns)   --->   "%y_V = call i12 @_ssdm_op_PartSelect.i12.i16.i32.i32(i16 %p_Val2_s, i32 4, i32 15)" [firmware/nnet_utils/nnet_activation.h:226->firmware/nnet_utils/nnet_activation.h:306]   --->   Operation 18 'partselect' 'y_V' <Predicate = true> <Delay = 0.00>
+ST_2 : Operation 19 [1/1] (0.00ns)   --->   "%zext_ln307 = zext i12 %y_V to i64" [firmware/nnet_utils/nnet_activation.h:307]   --->   Operation 19 'zext' 'zext_ln307' <Predicate = true> <Delay = 0.00>
+ST_2 : Operation 20 [1/1] (0.00ns)   --->   "%exp_table13_addr = getelementptr [4096 x i16]* @exp_table13, i64 0, i64 %zext_ln307" [firmware/nnet_utils/nnet_activation.h:307]   --->   Operation 20 'getelementptr' 'exp_table13_addr' <Predicate = true> <Delay = 0.00>
+ST_2 : Operation 21 [2/2] (1.15ns)   --->   "%exp_res_0_V = load i16* %exp_table13_addr, align 2" [firmware/nnet_utils/nnet_activation.h:307]   --->   Operation 21 'load' 'exp_res_0_V' <Predicate = true> <Delay = 1.15> <Core = "ROM_nP">   --->   Core 52 'ROM_nP' <Latency = 1> <II = 1> <Delay = 1.15> <Storage> <Opcode : 'load'> <Ports = 0> <Width = 16> <Depth = 4096> <ROM>
+ST_2 : Operation 22 [1/2] (0.59ns)   --->   "%p_Val2_8 = load i16* %data_V_addr_1, align 2" [firmware/nnet_utils/nnet_activation.h:306]   --->   Operation 22 'load' 'p_Val2_8' <Predicate = true> <Delay = 0.59> <Core = "RAM">   --->   Core 37 'RAM' <Latency = 1> <II = 1> <Delay = 0.59> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 32> <Depth = 8> <RAM>
+ST_2 : Operation 23 [1/1] (0.00ns)   --->   "%y_V_6 = call i12 @_ssdm_op_PartSelect.i12.i16.i32.i32(i16 %p_Val2_8, i32 4, i32 15)" [firmware/nnet_utils/nnet_activation.h:226->firmware/nnet_utils/nnet_activation.h:306]   --->   Operation 23 'partselect' 'y_V_6' <Predicate = true> <Delay = 0.00>
+ST_2 : Operation 24 [1/1] (0.00ns)   --->   "%zext_ln307_1 = zext i12 %y_V_6 to i64" [firmware/nnet_utils/nnet_activation.h:307]   --->   Operation 24 'zext' 'zext_ln307_1' <Predicate = true> <Delay = 0.00>
+ST_2 : Operation 25 [1/1] (0.00ns)   --->   "%exp_table13_addr_1 = getelementptr [4096 x i16]* @exp_table13, i64 0, i64 %zext_ln307_1" [firmware/nnet_utils/nnet_activation.h:307]   --->   Operation 25 'getelementptr' 'exp_table13_addr_1' <Predicate = true> <Delay = 0.00>
+ST_2 : Operation 26 [2/2] (1.15ns)   --->   "%exp_res_1_V = load i16* %exp_table13_addr_1, align 2" [firmware/nnet_utils/nnet_activation.h:307]   --->   Operation 26 'load' 'exp_res_1_V' <Predicate = true> <Delay = 1.15> <Core = "ROM_nP">   --->   Core 52 'ROM_nP' <Latency = 1> <II = 1> <Delay = 1.15> <Storage> <Opcode : 'load'> <Ports = 0> <Width = 16> <Depth = 4096> <ROM>
+
+State 3 <SV = 2> <Delay = 2.92>
+ST_3 : Operation 27 [1/2] (1.15ns)   --->   "%exp_res_0_V = load i16* %exp_table13_addr, align 2" [firmware/nnet_utils/nnet_activation.h:307]   --->   Operation 27 'load' 'exp_res_0_V' <Predicate = true> <Delay = 1.15> <Core = "ROM_nP">   --->   Core 52 'ROM_nP' <Latency = 1> <II = 1> <Delay = 1.15> <Storage> <Opcode : 'load'> <Ports = 0> <Width = 16> <Depth = 4096> <ROM>
+ST_3 : Operation 28 [1/2] (1.15ns)   --->   "%exp_res_1_V = load i16* %exp_table13_addr_1, align 2" [firmware/nnet_utils/nnet_activation.h:307]   --->   Operation 28 'load' 'exp_res_1_V' <Predicate = true> <Delay = 1.15> <Core = "ROM_nP">   --->   Core 52 'ROM_nP' <Latency = 1> <II = 1> <Delay = 1.15> <Storage> <Opcode : 'load'> <Ports = 0> <Width = 16> <Depth = 4096> <ROM>
+ST_3 : Operation 29 [1/1] (0.60ns)   --->   "%exp_sum_V = add i16 %exp_res_1_V, %exp_res_0_V" [firmware/nnet_utils/nnet_common.h:62->firmware/nnet_utils/nnet_common.h:53->firmware/nnet_utils/nnet_activation.h:315]   --->   Operation 29 'add' 'exp_sum_V' <Predicate = true> <Delay = 0.60> <Core = "AddSub">   --->   Core 14 'AddSub' <Latency = 0> <II = 1> <Delay = 0.60> <FuncUnit> <Opcode : 'add' 'sub'> <InPorts = 2> <OutPorts = 1>
+ST_3 : Operation 30 [1/1] (0.00ns)   --->   "%y_V_7 = call i12 @_ssdm_op_PartSelect.i12.i16.i32.i32(i16 %exp_sum_V, i32 4, i32 15)" [firmware/nnet_utils/nnet_activation.h:226->firmware/nnet_utils/nnet_activation.h:319]   --->   Operation 30 'partselect' 'y_V_7' <Predicate = true> <Delay = 0.00>
+ST_3 : Operation 31 [1/1] (0.00ns)   --->   "%zext_ln319 = zext i12 %y_V_7 to i64" [firmware/nnet_utils/nnet_activation.h:319]   --->   Operation 31 'zext' 'zext_ln319' <Predicate = true> <Delay = 0.00>
+ST_3 : Operation 32 [1/1] (0.00ns)   --->   "%invert_table15_addr = getelementptr [4096 x i16]* @invert_table15, i64 0, i64 %zext_ln319" [firmware/nnet_utils/nnet_activation.h:319]   --->   Operation 32 'getelementptr' 'invert_table15_addr' <Predicate = true> <Delay = 0.00>
+ST_3 : Operation 33 [2/2] (1.15ns)   --->   "%inv_exp_sum_V = load i16* %invert_table15_addr, align 2" [firmware/nnet_utils/nnet_activation.h:319]   --->   Operation 33 'load' 'inv_exp_sum_V' <Predicate = true> <Delay = 1.15> <Core = "ROM_nP">   --->   Core 52 'ROM_nP' <Latency = 1> <II = 1> <Delay = 1.15> <Storage> <Opcode : 'load'> <Ports = 0> <Width = 16> <Depth = 4096> <ROM>
+
+State 4 <SV = 3> <Delay = 4.28>
+ST_4 : Operation 34 [1/1] (0.00ns)   --->   "%tmp = call i3 @_ssdm_op_BitConcatenate.i3.i1.i1.i1(i1 %res_V_offset_read, i1 %res_V_offset3_read, i1 false)" [firmware/nnet_utils/nnet_activation.h:325]   --->   Operation 34 'bitconcatenate' 'tmp' <Predicate = true> <Delay = 0.00>
+ST_4 : Operation 35 [1/1] (0.00ns)   --->   "%zext_ln203 = zext i3 %tmp to i64" [firmware/nnet_utils/nnet_activation.h:325]   --->   Operation 35 'zext' 'zext_ln203' <Predicate = true> <Delay = 0.00>
+ST_4 : Operation 36 [1/1] (0.00ns)   --->   "%res_V_addr = getelementptr [8 x i32]* %res_V, i64 0, i64 %zext_ln203" [firmware/nnet_utils/nnet_activation.h:325]   --->   Operation 36 'getelementptr' 'res_V_addr' <Predicate = true> <Delay = 0.00>
+ST_4 : Operation 37 [1/1] (0.00ns)   --->   "%or_ln203 = or i3 %tmp, 1" [firmware/nnet_utils/nnet_activation.h:325]   --->   Operation 37 'or' 'or_ln203' <Predicate = true> <Delay = 0.00>
+ST_4 : Operation 38 [1/1] (0.00ns)   --->   "%tmp_1 = call i64 @_ssdm_op_BitConcatenate.i64.i61.i3(i61 0, i3 %or_ln203)" [firmware/nnet_utils/nnet_activation.h:325]   --->   Operation 38 'bitconcatenate' 'tmp_1' <Predicate = true> <Delay = 0.00>
+ST_4 : Operation 39 [1/1] (0.00ns)   --->   "%res_V_addr_32 = getelementptr [8 x i32]* %res_V, i64 0, i64 %tmp_1" [firmware/nnet_utils/nnet_activation.h:325]   --->   Operation 39 'getelementptr' 'res_V_addr_32' <Predicate = true> <Delay = 0.00>
+ST_4 : Operation 40 [1/1] (0.00ns)   --->   "call void (...)* @_ssdm_op_SpecPipeline(i32 -1, i32 1, i32 1, i32 0, [1 x i8]* @p_str11) nounwind" [firmware/nnet_utils/nnet_activation.h:275]   --->   Operation 40 'specpipeline' <Predicate = true> <Delay = 0.00>
+ST_4 : Operation 41 [1/2] (1.15ns)   --->   "%inv_exp_sum_V = load i16* %invert_table15_addr, align 2" [firmware/nnet_utils/nnet_activation.h:319]   --->   Operation 41 'load' 'inv_exp_sum_V' <Predicate = true> <Delay = 1.15> <Core = "ROM_nP">   --->   Core 52 'ROM_nP' <Latency = 1> <II = 1> <Delay = 1.15> <Storage> <Opcode : 'load'> <Ports = 0> <Width = 16> <Depth = 4096> <ROM>
+ST_4 : Operation 42 [1/1] (0.00ns)   --->   "%sext_ln1118 = sext i16 %inv_exp_sum_V to i32" [firmware/nnet_utils/nnet_activation.h:325]   --->   Operation 42 'sext' 'sext_ln1118' <Predicate = true> <Delay = 0.00>
+ST_4 : Operation 43 [1/1] (0.00ns)   --->   "%sext_ln1116 = sext i16 %exp_res_0_V to i32" [firmware/nnet_utils/nnet_activation.h:325]   --->   Operation 43 'sext' 'sext_ln1116' <Predicate = true> <Delay = 0.00>
+ST_4 : Operation 44 [1/1] (2.53ns) (root node of the DSP)   --->   "%mul_ln1118 = mul nsw i32 %sext_ln1116, %sext_ln1118" [firmware/nnet_utils/nnet_activation.h:325]   --->   Operation 44 'mul' 'mul_ln1118' <Predicate = true> <Delay = 2.53> <Core = "DSP48">   --->   Core 88 'DSP48' <Latency = 0> <II = 1> <Delay = 2.53> <IPBlock> <Opcode : 'mul' 'add' 'sub' 'select'> <InPorts = 2> <OutPorts = 1> <Sync> <CReg>
+ST_4 : Operation 45 [1/1] (0.59ns)   --->   "store i32 %mul_ln1118, i32* %res_V_addr, align 4" [firmware/nnet_utils/nnet_activation.h:325]   --->   Operation 45 'store' <Predicate = true> <Delay = 0.59> <Core = "RAM">   --->   Core 37 'RAM' <Latency = 1> <II = 1> <Delay = 0.59> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 32> <Depth = 8> <RAM>
+ST_4 : Operation 46 [1/1] (0.00ns)   --->   "%sext_ln1116_1 = sext i16 %exp_res_1_V to i32" [firmware/nnet_utils/nnet_activation.h:325]   --->   Operation 46 'sext' 'sext_ln1116_1' <Predicate = true> <Delay = 0.00>
+ST_4 : Operation 47 [1/1] (2.53ns) (root node of the DSP)   --->   "%mul_ln1118_1 = mul nsw i32 %sext_ln1116_1, %sext_ln1118" [firmware/nnet_utils/nnet_activation.h:325]   --->   Operation 47 'mul' 'mul_ln1118_1' <Predicate = true> <Delay = 2.53> <Core = "DSP48">   --->   Core 88 'DSP48' <Latency = 0> <II = 1> <Delay = 2.53> <IPBlock> <Opcode : 'mul' 'add' 'sub' 'select'> <InPorts = 2> <OutPorts = 1> <Sync> <CReg>
+ST_4 : Operation 48 [1/1] (0.59ns)   --->   "store i32 %mul_ln1118_1, i32* %res_V_addr_32, align 4" [firmware/nnet_utils/nnet_activation.h:325]   --->   Operation 48 'store' <Predicate = true> <Delay = 0.59> <Core = "RAM">   --->   Core 37 'RAM' <Latency = 1> <II = 1> <Delay = 0.59> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 32> <Depth = 8> <RAM>
+ST_4 : Operation 49 [1/1] (0.00ns)   --->   "ret void" [firmware/nnet_utils/nnet_activation.h:331]   --->   Operation 49 'ret' <Predicate = true> <Delay = 0.00>
+
+
+============================================================
++ Verbose Summary: Timing violations
+============================================================
+Target clock period: 5ns, clock uncertainty: 0.625ns.
+
+ <State 1>: 0.594ns
+The critical path consists of the following:
+	wire read on port 'data_V_offset1' (firmware/nnet_utils/nnet_activation.h:325) [13]  (0 ns)
+	'getelementptr' operation ('data_V_addr', firmware/nnet_utils/nnet_activation.h:306) [23]  (0 ns)
+	'load' operation ('__Val2__', firmware/nnet_utils/nnet_activation.h:306) on array 'data_V' [28]  (0.594 ns)
+
+ <State 2>: 1.75ns
+The critical path consists of the following:
+	'load' operation ('__Val2__', firmware/nnet_utils/nnet_activation.h:306) on array 'data_V' [28]  (0.594 ns)
+	'getelementptr' operation ('exp_table13_addr', firmware/nnet_utils/nnet_activation.h:307) [31]  (0 ns)
+	'load' operation ('exp_res[0].V', firmware/nnet_utils/nnet_activation.h:307) on array 'exp_table13' [32]  (1.16 ns)
+
+ <State 3>: 2.92ns
+The critical path consists of the following:
+	'load' operation ('exp_res[0].V', firmware/nnet_utils/nnet_activation.h:307) on array 'exp_table13' [32]  (1.16 ns)
+	'add' operation ('exp_sum.V', firmware/nnet_utils/nnet_common.h:62->firmware/nnet_utils/nnet_common.h:53->firmware/nnet_utils/nnet_activation.h:315) [38]  (0.608 ns)
+	'getelementptr' operation ('invert_table15_addr', firmware/nnet_utils/nnet_activation.h:319) [41]  (0 ns)
+	'load' operation ('inv_exp_sum.V', firmware/nnet_utils/nnet_activation.h:319) on array 'invert_table15' [42]  (1.16 ns)
+
+ <State 4>: 4.29ns
+The critical path consists of the following:
+	'load' operation ('inv_exp_sum.V', firmware/nnet_utils/nnet_activation.h:319) on array 'invert_table15' [42]  (1.16 ns)
+	'mul' operation of DSP[45] ('mul_ln1118', firmware/nnet_utils/nnet_activation.h:325) [45]  (2.53 ns)
+	'store' operation ('store_ln325', firmware/nnet_utils/nnet_activation.h:325) of variable 'mul_ln1118', firmware/nnet_utils/nnet_activation.h:325 on array 'res_V' [46]  (0.594 ns)
+
+
+============================================================
++ Verbose Summary: Binding
+============================================================
+N/A
+* FSMD analyzer results:
+  - Output states:
+ - Input state : 
+  - Chain level:
+	State 1
+	State 2
+	State 3
+	State 4
+
+
+============================================================
++ Verbose Summary: Datapath Resource usage 
+============================================================
+N/A

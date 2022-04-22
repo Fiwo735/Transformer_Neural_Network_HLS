@@ -1,13 +1,13 @@
 import os
 import sys
 import subprocess
-from itertools import izip
+# from itertools import izip
 
 def run_vivado_hls(hls_dir_path, build_tcl_path, quiet=True):
   hls_command = 'vivado_hls -f ' + build_tcl_path
   FNULL = open(os.devnull, 'w')
   stdout = FNULL if quiet else subprocess.PIPE
-  print 'Running Vivado HLS CSimulation, this might take a few minutes'
+  print('Running Vivado HLS CSimulation, this might take a few minutes')
   subprocess.call(hls_command, shell=True, cwd=hls_dir_path)
   # subprocess.call(hls_command, shell=True, stdout=stdout, stderr=subprocess.STDOUT, cwd=hls_dir_path)
 
@@ -40,16 +40,16 @@ def compare_results(hls_results, pytorch_results, quiet=True):
   assert len(hls_results) == len(pytorch_results)
 
   if not quiet:
-    print 'Results:'
-    print 'HLS \t\t\t\t\t\t\t Pytorch'
+    print('Results:')
+    print('HLS \t\t\t\t\t\t\t Pytorch')
 
-  for hls_result, pytorch_result in izip(hls_results, pytorch_results):
+  for hls_result, pytorch_result in zip(hls_results, pytorch_results):
     assert len(hls_result) == len(pytorch_result)
     if not quiet:
-      print hls_result, pytorch_result
+      print(hls_result, pytorch_result)
 
-    for hls_val, pytorch_val in izip(hls_result, pytorch_result):
-      # print hls_val, pytorch_val
+    for hls_val, pytorch_val in zip(hls_result, pytorch_result):
+      # print(hls_val, pytorch_val)
       diff = hls_val - pytorch_val
       total_MSE += diff * diff
       elements_count += 1
@@ -76,7 +76,7 @@ def main(run_hls=False):
   pytorch_results = get_pytorch_results(path=pytorch_results_log_path)
   total_MSE = compare_results(hls_results=hls_results, pytorch_results=pytorch_results, quiet=False)
 
-  print '\nMSE:', total_MSE
+  print('\nMSE:', total_MSE)
 
 
 if __name__ == '__main__':

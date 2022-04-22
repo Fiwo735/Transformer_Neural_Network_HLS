@@ -123,7 +123,7 @@ class SelfAttention(nn.Module):
         self.heads = num_heads
         self.gamma = 1  # self.gamma = nn.Parameter(torch.zeros(1))
 
-        self.norm = nn.LayerNorm(in_dim)
+        # self.norm = nn.LayerNorm(in_dim)
         # self.norm = nn.BatchNorm1d(in_dim) 
         self.qkv = nn.Linear(in_dim, 2*self.latent_dim + in_dim, bias=False)
         self.out = nn.Linear(in_dim, in_dim)
@@ -193,11 +193,12 @@ class SelfAttention(nn.Module):
                 self.counter += 1
             
         # Normalization across channels
-        out = self.norm(x)
-        self.debug_print('out (after norm)', out)
+        # out = self.norm(x)
+        # self.debug_print('out (after norm)', out)
 
         # Queries, keys, and values
-        out = self.qkv(out)
+        # out = self.qkv(out)
+        out = self.qkv(x)
         self.debug_print('out (after qkv)', out)
         # self.debug_print(f'weight of qkv {self.qkv.weight.size()}')
 
@@ -345,13 +346,15 @@ class Transformer(nn.Module):
         #     nn.SiLU(),
         #     nn.Linear(in_dim*2, in_dim, bias=False),
         # )
-        self.linear_0 = nn.LayerNorm(in_dim)
+        # self.linear_0 = nn.LayerNorm(in_dim)
         # self.linear_0 = nn.BatchNorm1d(in_dim)
-        self.linear_1 = nn.SiLU()
+        # self.linear_1 = nn.SiLU()
+        self.linear_1 = nn.ReLU()
         self.linear_2 = nn.Linear(in_dim, in_dim*2, bias=False)
-        self.linear_3 = nn.LayerNorm(in_dim*2)
+        # self.linear_3 = nn.LayerNorm(in_dim*2)
         # self.linear_3 = nn.BatchNorm1d(in_dim*2)
-        self.linear_4 = nn.SiLU()
+        # self.linear_4 = nn.SiLU()
+        self.linear_4 = nn.ReLU()
         self.linear_5 = nn.Linear(in_dim*2, in_dim, bias=False)
 
         self.dropout = nn.Dropout(dropout)
@@ -421,10 +424,11 @@ class Transformer(nn.Module):
                 self.curr_mean0 = (self.curr_mean0 + cur_mean0) if self.curr_mean0 is not None else (cur_mean0)
                 self.counter0 += 1
 
-        out0 = self.linear_0(x)
-        self.debug_print('out0 (after linear_0)', out0)
+        # out0 = self.linear_0(x)
+        # self.debug_print('out0 (after linear_0)', out0)
 
-        out1 = self.linear_1(out0)
+        # out1 = self.linear_1(out0)
+        out1 = self.linear_1(x)
         self.debug_print('out1 (after linear_1)', out1)
 
         out2 = self.linear_2(out1)
@@ -443,10 +447,11 @@ class Transformer(nn.Module):
                 self.curr_mean3 = (self.curr_mean3 + cur_mean3) if self.curr_mean3 is not None else (cur_mean3)
                 self.counter3 += 1
 
-        out3 = self.linear_3(out2)
-        self.debug_print('out3 (after linear_3)', out3)
+        # out3 = self.linear_3(out2)
+        # self.debug_print('out3 (after linear_3)', out3)
 
-        out4 = self.linear_4(out3)
+        # out4 = self.linear_4(out3)
+        out4 = self.linear_4(out2)
         self.debug_print('out4 (after linear_4)', out4)
 
         out5 = self.linear_5(out4)

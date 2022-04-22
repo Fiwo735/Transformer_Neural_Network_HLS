@@ -52,3 +52,6 @@ hls4ml_tutorial/model_1/hls4ml_prj/myproject_prj/solution1/.autopilot/*
 # Python
 *.npy
 *.pyc
+
+# nohup - for long running jobs
+nohup.out
