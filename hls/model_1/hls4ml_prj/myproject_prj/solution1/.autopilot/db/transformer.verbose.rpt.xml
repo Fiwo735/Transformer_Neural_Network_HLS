@@ -1,0 +1,541 @@
+<profile>
+
+<section name = "Vivado HLS Report for 'transformer'" level="0">
+<item name = "Date">Thu Apr 21 05:26:33 2022
+</item>
+<item name = "Version">2019.2 (Build 2704478 on Wed Nov 06 22:10:23 MST 2019)</item>
+<item name = "Project">myproject_prj</item>
+<item name = "Solution">solution1</item>
+<item name = "Product family">virtexuplus</item>
+<item name = "Target device">xcu250-figd2104-2L-e</item>
+</section>
+
+<section name = "Performance Estimates" level="0">
+<item name = "Timing">
+<section name = "" level="1">
+<item name = "Summary"><table name="" hasTotal="0">
+<keys size="4">Clock, Target, Estimated, Uncertainty</keys>
+<column name="ap_clk">5.00 ns, 4.286 ns, 0.62 ns</column>
+</table>
+</item>
+</section>
+</item>
+<item name = "Latency">
+<section name = "" level="1">
+<item name = "Summary"><table name="" hasTotal="0">
+<keys size="8">, min, max, min, max, min, max, Type</keys>
+<column name="">201, 201, 1.005 us, 1.005 us, 201, 201, none</column>
+</table>
+</item>
+<item name = "Detail">
+<section name = "" level="1">
+<item name = "Instance"><table name="" hasTotal="0">
+<keys size="9">Instance, Module, min, max, min, max, min, max, Type</keys>
+<column name="grp_self_attention_fu_513">self_attention, 174, 174, 0.870 us, 0.870 us, 174, 174, none</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553">dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s, 1, 1, 5.000 ns, 5.000 ns, 1, 1, function</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_fu_723">dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0, 1, 1, 5.000 ns, 5.000 ns, 1, 1, function</column>
+<column name="call_ret5_relu_ap_fixed_ap_fixed_35_15_5_3_0_sigmoid_config1_s_fu_861">relu_ap_fixed_ap_fixed_35_15_5_3_0_sigmoid_config1_s, 0, 0, 0 ns, 0 ns, 1, 1, function</column>
+<column name="call_ret6_relu_ap_fixed_ap_fixed_35_15_5_3_0_sigmoid_config1_s_fu_1061">relu_ap_fixed_ap_fixed_35_15_5_3_0_sigmoid_config1_s, 0, 0, 0 ns, 0 ns, 1, 1, function</column>
+<column name="call_ret1_relu_ap_fixed_ap_fixed_35_15_5_3_0_sigmoid_config0_s_fu_1197">relu_ap_fixed_ap_fixed_35_15_5_3_0_sigmoid_config0_s, 0, 0, 0 ns, 0 ns, 1, 1, function</column>
+<column name="call_ret2_relu_ap_fixed_ap_fixed_35_15_5_3_0_sigmoid_config0_s_fu_1301">relu_ap_fixed_ap_fixed_35_15_5_3_0_sigmoid_config0_s, 0, 0, 0 ns, 0 ns, 1, 1, function</column>
+</table>
+</item>
+<item name = "Loop"><table name="" hasTotal="0">
+<keys size="8">Loop Name, min, max, Latency, achieved, target, Count, Pipelined</keys>
+</table>
+</item>
+</section>
+</item>
+</section>
+</item>
+</section>
+
+<section name = "Utilization Estimates" level="0">
+<item name = "Summary"><table name="" hasTotal="1">
+<keys size="6">Name, BRAM_18K, DSP48E, FF, LUT, URAM</keys>
+<column name="DSP">-, -, -, -, -</column>
+<column name="Expression">-, -, 0, 1120, -</column>
+<column name="FIFO">-, -, -, -, -</column>
+<column name="Instance">13, 4352, 86522, 143309, 0</column>
+<column name="Memory">-, -, -, -, -</column>
+<column name="Multiplexer">-, -, -, 1973, -</column>
+<column name="Register">-, -, 8989, -, -</column>
+<specialColumn name="Available SLR">1344, 3072, 864000, 432000, 320</specialColumn>
+<specialColumn name="Utilization SLR (%)">~0, 141, 11, 33, 0</specialColumn>
+<specialColumn name="Available">5376, 12288, 3456000, 1728000, 1280</specialColumn>
+<specialColumn name="Utilization (%)">~0, 35, 2, 8, 0</specialColumn>
+</table>
+</item>
+<item name = "Detail">
+<section name = "" level="1">
+<item name = "Instance"><table name="" hasTotal="1">
+<keys size="7">Instance, Module, BRAM_18K, DSP48E, FF, LUT, URAM</keys>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_fu_723">dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0, 0, 1024, 13201, 25900, 0</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553">dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s, 0, 1024, 16186, 25978, 0</column>
+<column name="call_ret1_relu_ap_fixed_ap_fixed_35_15_5_3_0_sigmoid_config0_s_fu_1197">relu_ap_fixed_ap_fixed_35_15_5_3_0_sigmoid_config0_s, 0, 0, 0, 2560, 0</column>
+<column name="call_ret2_relu_ap_fixed_ap_fixed_35_15_5_3_0_sigmoid_config0_s_fu_1301">relu_ap_fixed_ap_fixed_35_15_5_3_0_sigmoid_config0_s, 0, 0, 0, 2560, 0</column>
+<column name="call_ret5_relu_ap_fixed_ap_fixed_35_15_5_3_0_sigmoid_config1_s_fu_861">relu_ap_fixed_ap_fixed_35_15_5_3_0_sigmoid_config1_s, 0, 0, 0, 5120, 0</column>
+<column name="call_ret6_relu_ap_fixed_ap_fixed_35_15_5_3_0_sigmoid_config1_s_fu_1061">relu_ap_fixed_ap_fixed_35_15_5_3_0_sigmoid_config1_s, 0, 0, 0, 5120, 0</column>
+<column name="grp_self_attention_fu_513">self_attention, 13, 2304, 57135, 76071, 0</column>
+</table>
+</item>
+<item name = "DSP48E"><table name="" hasTotal="0">
+<keys size="3">Instance, Module, Expression</keys>
+</table>
+</item>
+<item name = "Memory"><table name="" hasTotal="1">
+<keys size="10">Memory, Module, BRAM_18K, FF, LUT, URAM, Words, Bits, Banks, W*Bits*Banks</keys>
+</table>
+</item>
+<item name = "FIFO"><table name="" hasTotal="1">
+<keys size="8">Name, BRAM_18K, FF, LUT, URAM, Depth, Bits, Size:D*B</keys>
+</table>
+</item>
+<item name = "Expression"><table name="" hasTotal="1">
+<keys size="7">Variable Name, Operation, DSP48E, FF, LUT, Bitwidth P0, Bitwidth P1</keys>
+<column name="add_ln703_fu_3325_p2">+, 0, 0, 35, 35, 35</column>
+<column name="sum_out_flat_10_V_fu_3350_p2">+, 0, 0, 35, 35, 35</column>
+<column name="sum_out_flat_11_V_fu_3430_p2">+, 0, 0, 35, 35, 35</column>
+<column name="sum_out_flat_12_V_fu_3355_p2">+, 0, 0, 35, 35, 35</column>
+<column name="sum_out_flat_13_V_fu_3435_p2">+, 0, 0, 35, 35, 35</column>
+<column name="sum_out_flat_14_V_fu_3360_p2">+, 0, 0, 35, 35, 35</column>
+<column name="sum_out_flat_15_V_fu_3440_p2">+, 0, 0, 35, 35, 35</column>
+<column name="sum_out_flat_16_V_fu_3365_p2">+, 0, 0, 35, 35, 35</column>
+<column name="sum_out_flat_17_V_fu_3445_p2">+, 0, 0, 35, 35, 35</column>
+<column name="sum_out_flat_18_V_fu_3370_p2">+, 0, 0, 35, 35, 35</column>
+<column name="sum_out_flat_19_V_fu_3450_p2">+, 0, 0, 35, 35, 35</column>
+<column name="sum_out_flat_1_V_fu_3405_p2">+, 0, 0, 35, 35, 35</column>
+<column name="sum_out_flat_20_V_fu_3375_p2">+, 0, 0, 35, 35, 35</column>
+<column name="sum_out_flat_21_V_fu_3455_p2">+, 0, 0, 35, 35, 35</column>
+<column name="sum_out_flat_22_V_fu_3380_p2">+, 0, 0, 35, 35, 35</column>
+<column name="sum_out_flat_23_V_fu_3460_p2">+, 0, 0, 35, 35, 35</column>
+<column name="sum_out_flat_24_V_fu_3385_p2">+, 0, 0, 35, 35, 35</column>
+<column name="sum_out_flat_25_V_fu_3465_p2">+, 0, 0, 35, 35, 35</column>
+<column name="sum_out_flat_26_V_fu_3390_p2">+, 0, 0, 35, 35, 35</column>
+<column name="sum_out_flat_27_V_fu_3470_p2">+, 0, 0, 35, 35, 35</column>
+<column name="sum_out_flat_28_V_fu_3395_p2">+, 0, 0, 35, 35, 35</column>
+<column name="sum_out_flat_29_V_fu_3475_p2">+, 0, 0, 35, 35, 35</column>
+<column name="sum_out_flat_2_V_fu_3330_p2">+, 0, 0, 35, 35, 35</column>
+<column name="sum_out_flat_30_V_fu_3400_p2">+, 0, 0, 35, 35, 35</column>
+<column name="sum_out_flat_31_V_fu_3480_p2">+, 0, 0, 35, 35, 35</column>
+<column name="sum_out_flat_3_V_fu_3410_p2">+, 0, 0, 35, 35, 35</column>
+<column name="sum_out_flat_4_V_fu_3335_p2">+, 0, 0, 35, 35, 35</column>
+<column name="sum_out_flat_5_V_fu_3415_p2">+, 0, 0, 35, 35, 35</column>
+<column name="sum_out_flat_6_V_fu_3340_p2">+, 0, 0, 35, 35, 35</column>
+<column name="sum_out_flat_7_V_fu_3420_p2">+, 0, 0, 35, 35, 35</column>
+<column name="sum_out_flat_8_V_fu_3345_p2">+, 0, 0, 35, 35, 35</column>
+<column name="sum_out_flat_9_V_fu_3425_p2">+, 0, 0, 35, 35, 35</column>
+</table>
+</item>
+<item name = "Multiplexer"><table name="" hasTotal="1">
+<keys size="5">Name, LUT, Input Size, Bits, Total Bits</keys>
+<column name="ap_NS_fsm">133, 29, 1, 29</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_data_V_offset">15, 3, 1, 3</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read32">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read33">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read34">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read35">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read36">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read37">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read38">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read39">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read40">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read41">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read42">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read43">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read44">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read45">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read46">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read47">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read48">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read49">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read50">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read51">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read52">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read53">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read54">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read55">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read56">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read57">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read58">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read59">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read60">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read61">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read62">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read63">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read64">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read65">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read66">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read67">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read68">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read69">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read70">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read71">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read72">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read73">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read74">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read75">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read76">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read77">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read78">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read79">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read80">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read81">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read82">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read83">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read84">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read85">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read86">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read87">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read88">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read89">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read90">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read91">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read92">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read93">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read94">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_p_read95">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553_res_V_offset">15, 3, 1, 3</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_fu_723_data_V_offset">15, 3, 1, 3</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_fu_723_p_read64">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_fu_723_p_read65">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_fu_723_p_read66">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_fu_723_p_read67">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_fu_723_p_read68">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_fu_723_p_read69">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_fu_723_p_read70">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_fu_723_p_read71">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_fu_723_p_read72">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_fu_723_p_read73">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_fu_723_p_read74">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_fu_723_p_read75">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_fu_723_p_read76">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_fu_723_p_read77">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_fu_723_p_read78">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_fu_723_p_read79">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_fu_723_p_read80">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_fu_723_p_read81">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_fu_723_p_read82">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_fu_723_p_read83">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_fu_723_p_read84">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_fu_723_p_read85">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_fu_723_p_read86">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_fu_723_p_read87">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_fu_723_p_read88">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_fu_723_p_read89">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_fu_723_p_read90">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_fu_723_p_read91">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_fu_723_p_read92">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_fu_723_p_read93">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_fu_723_p_read94">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_fu_723_p_read95">15, 3, 35, 105</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_fu_723_res_V_offset">15, 3, 1, 3</column>
+<column name="res_V_address0">85, 17, 5, 85</column>
+<column name="res_V_address1">85, 17, 5, 85</column>
+<column name="res_V_d0">85, 17, 35, 595</column>
+<column name="res_V_d1">85, 17, 35, 595</column>
+</table>
+</item>
+<item name = "Register"><table name="" hasTotal="1">
+<keys size="5">Name, FF, LUT, Bits, Const Bits</keys>
+<column name="SiLU0_out_0_0_V_1_reg_3789">35, 0, 35, 0</column>
+<column name="SiLU0_out_0_1_V_1_reg_3794">35, 0, 35, 0</column>
+<column name="SiLU0_out_10_0_V_1_reg_3889">35, 0, 35, 0</column>
+<column name="SiLU0_out_10_1_V_1_reg_3894">35, 0, 35, 0</column>
+<column name="SiLU0_out_11_0_V_1_reg_3899">35, 0, 35, 0</column>
+<column name="SiLU0_out_11_1_V_1_reg_3904">35, 0, 35, 0</column>
+<column name="SiLU0_out_12_0_V_1_reg_3909">35, 0, 35, 0</column>
+<column name="SiLU0_out_12_1_V_1_reg_3914">35, 0, 35, 0</column>
+<column name="SiLU0_out_13_0_V_1_reg_3919">35, 0, 35, 0</column>
+<column name="SiLU0_out_13_1_V_1_reg_3924">35, 0, 35, 0</column>
+<column name="SiLU0_out_14_0_V_1_reg_3929">35, 0, 35, 0</column>
+<column name="SiLU0_out_14_1_V_1_reg_3934">35, 0, 35, 0</column>
+<column name="SiLU0_out_15_0_V_1_reg_3939">35, 0, 35, 0</column>
+<column name="SiLU0_out_15_1_V_1_reg_3944">35, 0, 35, 0</column>
+<column name="SiLU0_out_1_0_V_1_reg_3799">35, 0, 35, 0</column>
+<column name="SiLU0_out_1_1_V_1_reg_3804">35, 0, 35, 0</column>
+<column name="SiLU0_out_2_0_V_1_reg_3809">35, 0, 35, 0</column>
+<column name="SiLU0_out_2_1_V_1_reg_3814">35, 0, 35, 0</column>
+<column name="SiLU0_out_3_0_V_1_reg_3819">35, 0, 35, 0</column>
+<column name="SiLU0_out_3_1_V_1_reg_3824">35, 0, 35, 0</column>
+<column name="SiLU0_out_4_0_V_1_reg_3829">35, 0, 35, 0</column>
+<column name="SiLU0_out_4_1_V_1_reg_3834">35, 0, 35, 0</column>
+<column name="SiLU0_out_5_0_V_1_reg_3839">35, 0, 35, 0</column>
+<column name="SiLU0_out_5_1_V_1_reg_3844">35, 0, 35, 0</column>
+<column name="SiLU0_out_6_0_V_1_reg_3849">35, 0, 35, 0</column>
+<column name="SiLU0_out_6_1_V_1_reg_3854">35, 0, 35, 0</column>
+<column name="SiLU0_out_7_0_V_1_reg_3859">35, 0, 35, 0</column>
+<column name="SiLU0_out_7_1_V_1_reg_3864">35, 0, 35, 0</column>
+<column name="SiLU0_out_8_0_V_1_reg_3869">35, 0, 35, 0</column>
+<column name="SiLU0_out_8_1_V_1_reg_3874">35, 0, 35, 0</column>
+<column name="SiLU0_out_9_0_V_1_reg_3879">35, 0, 35, 0</column>
+<column name="SiLU0_out_9_1_V_1_reg_3884">35, 0, 35, 0</column>
+<column name="SiLU1_out_0_0_V_1_reg_3949">35, 0, 35, 0</column>
+<column name="SiLU1_out_0_1_V_1_reg_3954">35, 0, 35, 0</column>
+<column name="SiLU1_out_10_0_V_1_reg_4049">35, 0, 35, 0</column>
+<column name="SiLU1_out_10_1_V_1_reg_4054">35, 0, 35, 0</column>
+<column name="SiLU1_out_11_0_V_1_reg_4059">35, 0, 35, 0</column>
+<column name="SiLU1_out_11_1_V_1_reg_4064">35, 0, 35, 0</column>
+<column name="SiLU1_out_12_0_V_1_reg_4069">35, 0, 35, 0</column>
+<column name="SiLU1_out_12_1_V_1_reg_4074">35, 0, 35, 0</column>
+<column name="SiLU1_out_13_0_V_1_reg_4079">35, 0, 35, 0</column>
+<column name="SiLU1_out_13_1_V_1_reg_4084">35, 0, 35, 0</column>
+<column name="SiLU1_out_14_0_V_1_reg_4089">35, 0, 35, 0</column>
+<column name="SiLU1_out_14_1_V_1_reg_4094">35, 0, 35, 0</column>
+<column name="SiLU1_out_15_0_V_1_reg_4099">35, 0, 35, 0</column>
+<column name="SiLU1_out_15_1_V_1_reg_4104">35, 0, 35, 0</column>
+<column name="SiLU1_out_16_0_V_1_reg_4109">35, 0, 35, 0</column>
+<column name="SiLU1_out_16_1_V_1_reg_4114">35, 0, 35, 0</column>
+<column name="SiLU1_out_17_0_V_1_reg_4119">35, 0, 35, 0</column>
+<column name="SiLU1_out_17_1_V_1_reg_4124">35, 0, 35, 0</column>
+<column name="SiLU1_out_18_0_V_1_reg_4129">35, 0, 35, 0</column>
+<column name="SiLU1_out_18_1_V_1_reg_4134">35, 0, 35, 0</column>
+<column name="SiLU1_out_19_0_V_1_reg_4139">35, 0, 35, 0</column>
+<column name="SiLU1_out_19_1_V_1_reg_4144">35, 0, 35, 0</column>
+<column name="SiLU1_out_1_0_V_1_reg_3959">35, 0, 35, 0</column>
+<column name="SiLU1_out_1_1_V_1_reg_3964">35, 0, 35, 0</column>
+<column name="SiLU1_out_20_0_V_1_reg_4149">35, 0, 35, 0</column>
+<column name="SiLU1_out_20_1_V_1_reg_4154">35, 0, 35, 0</column>
+<column name="SiLU1_out_21_0_V_1_reg_4159">35, 0, 35, 0</column>
+<column name="SiLU1_out_21_1_V_1_reg_4164">35, 0, 35, 0</column>
+<column name="SiLU1_out_22_0_V_1_reg_4169">35, 0, 35, 0</column>
+<column name="SiLU1_out_22_1_V_1_reg_4174">35, 0, 35, 0</column>
+<column name="SiLU1_out_23_0_V_1_reg_4179">35, 0, 35, 0</column>
+<column name="SiLU1_out_23_1_V_1_reg_4184">35, 0, 35, 0</column>
+<column name="SiLU1_out_24_0_V_1_reg_4189">35, 0, 35, 0</column>
+<column name="SiLU1_out_24_1_V_1_reg_4194">35, 0, 35, 0</column>
+<column name="SiLU1_out_25_0_V_1_reg_4199">35, 0, 35, 0</column>
+<column name="SiLU1_out_25_1_V_1_reg_4204">35, 0, 35, 0</column>
+<column name="SiLU1_out_26_0_V_1_reg_4209">35, 0, 35, 0</column>
+<column name="SiLU1_out_26_1_V_1_reg_4214">35, 0, 35, 0</column>
+<column name="SiLU1_out_27_0_V_1_reg_4219">35, 0, 35, 0</column>
+<column name="SiLU1_out_27_1_V_1_reg_4224">35, 0, 35, 0</column>
+<column name="SiLU1_out_28_0_V_1_reg_4229">35, 0, 35, 0</column>
+<column name="SiLU1_out_28_1_V_1_reg_4234">35, 0, 35, 0</column>
+<column name="SiLU1_out_29_0_V_1_reg_4239">35, 0, 35, 0</column>
+<column name="SiLU1_out_29_1_V_1_reg_4244">35, 0, 35, 0</column>
+<column name="SiLU1_out_2_0_V_1_reg_3969">35, 0, 35, 0</column>
+<column name="SiLU1_out_2_1_V_1_reg_3974">35, 0, 35, 0</column>
+<column name="SiLU1_out_30_0_V_1_reg_4249">35, 0, 35, 0</column>
+<column name="SiLU1_out_30_1_V_1_reg_4254">35, 0, 35, 0</column>
+<column name="SiLU1_out_31_0_V_1_reg_4259">35, 0, 35, 0</column>
+<column name="SiLU1_out_31_1_V_1_reg_4264">35, 0, 35, 0</column>
+<column name="SiLU1_out_3_0_V_1_reg_3979">35, 0, 35, 0</column>
+<column name="SiLU1_out_3_1_V_1_reg_3984">35, 0, 35, 0</column>
+<column name="SiLU1_out_4_0_V_1_reg_3989">35, 0, 35, 0</column>
+<column name="SiLU1_out_4_1_V_1_reg_3994">35, 0, 35, 0</column>
+<column name="SiLU1_out_5_0_V_1_reg_3999">35, 0, 35, 0</column>
+<column name="SiLU1_out_5_1_V_1_reg_4004">35, 0, 35, 0</column>
+<column name="SiLU1_out_6_0_V_1_reg_4009">35, 0, 35, 0</column>
+<column name="SiLU1_out_6_1_V_1_reg_4014">35, 0, 35, 0</column>
+<column name="SiLU1_out_7_0_V_1_reg_4019">35, 0, 35, 0</column>
+<column name="SiLU1_out_7_1_V_1_reg_4024">35, 0, 35, 0</column>
+<column name="SiLU1_out_8_0_V_1_reg_4029">35, 0, 35, 0</column>
+<column name="SiLU1_out_8_1_V_1_reg_4034">35, 0, 35, 0</column>
+<column name="SiLU1_out_9_0_V_1_reg_4039">35, 0, 35, 0</column>
+<column name="SiLU1_out_9_1_V_1_reg_4044">35, 0, 35, 0</column>
+<column name="add_ln703_reg_4429">35, 0, 35, 0</column>
+<column name="ap_CS_fsm">28, 0, 28, 0</column>
+<column name="dense1_out_0_1_reg_4274">35, 0, 35, 0</column>
+<column name="dense1_out_10_1_reg_4374">35, 0, 35, 0</column>
+<column name="dense1_out_10_reg_4379">35, 0, 35, 0</column>
+<column name="dense1_out_11_1_reg_4384">35, 0, 35, 0</column>
+<column name="dense1_out_11_reg_4389">35, 0, 35, 0</column>
+<column name="dense1_out_12_1_reg_4394">35, 0, 35, 0</column>
+<column name="dense1_out_12_reg_4399">35, 0, 35, 0</column>
+<column name="dense1_out_13_1_reg_4404">35, 0, 35, 0</column>
+<column name="dense1_out_13_reg_4409">35, 0, 35, 0</column>
+<column name="dense1_out_14_1_reg_4414">35, 0, 35, 0</column>
+<column name="dense1_out_14_reg_4419">35, 0, 35, 0</column>
+<column name="dense1_out_15_1_reg_4424">35, 0, 35, 0</column>
+<column name="dense1_out_1_1_reg_4284">35, 0, 35, 0</column>
+<column name="dense1_out_1_reg_4279">35, 0, 35, 0</column>
+<column name="dense1_out_2_1_reg_4294">35, 0, 35, 0</column>
+<column name="dense1_out_2_reg_4289">35, 0, 35, 0</column>
+<column name="dense1_out_3_1_reg_4304">35, 0, 35, 0</column>
+<column name="dense1_out_3_reg_4299">35, 0, 35, 0</column>
+<column name="dense1_out_4_1_reg_4314">35, 0, 35, 0</column>
+<column name="dense1_out_4_reg_4309">35, 0, 35, 0</column>
+<column name="dense1_out_5_1_reg_4324">35, 0, 35, 0</column>
+<column name="dense1_out_5_reg_4319">35, 0, 35, 0</column>
+<column name="dense1_out_6_1_reg_4334">35, 0, 35, 0</column>
+<column name="dense1_out_6_reg_4329">35, 0, 35, 0</column>
+<column name="dense1_out_7_1_reg_4344">35, 0, 35, 0</column>
+<column name="dense1_out_7_reg_4339">35, 0, 35, 0</column>
+<column name="dense1_out_8_1_reg_4354">35, 0, 35, 0</column>
+<column name="dense1_out_8_reg_4349">35, 0, 35, 0</column>
+<column name="dense1_out_9_1_reg_4364">35, 0, 35, 0</column>
+<column name="dense1_out_9_reg_4359">35, 0, 35, 0</column>
+<column name="dense1_out_reg_4269">35, 0, 35, 0</column>
+<column name="dense1_out_s_reg_4369">35, 0, 35, 0</column>
+<column name="grp_self_attention_fu_513_ap_start_reg">1, 0, 1, 0</column>
+<column name="reg_1629">35, 0, 35, 0</column>
+<column name="reg_1636">35, 0, 35, 0</column>
+<column name="reg_1643">35, 0, 35, 0</column>
+<column name="reg_1650">35, 0, 35, 0</column>
+<column name="reg_1657">35, 0, 35, 0</column>
+<column name="reg_1664">35, 0, 35, 0</column>
+<column name="reg_1671">35, 0, 35, 0</column>
+<column name="reg_1678">35, 0, 35, 0</column>
+<column name="reg_1685">35, 0, 35, 0</column>
+<column name="reg_1692">35, 0, 35, 0</column>
+<column name="reg_1699">35, 0, 35, 0</column>
+<column name="reg_1706">35, 0, 35, 0</column>
+<column name="reg_1713">35, 0, 35, 0</column>
+<column name="reg_1720">35, 0, 35, 0</column>
+<column name="reg_1727">35, 0, 35, 0</column>
+<column name="reg_1734">35, 0, 35, 0</column>
+<column name="reg_1741">35, 0, 35, 0</column>
+<column name="reg_1748">35, 0, 35, 0</column>
+<column name="reg_1755">35, 0, 35, 0</column>
+<column name="reg_1762">35, 0, 35, 0</column>
+<column name="reg_1769">35, 0, 35, 0</column>
+<column name="reg_1776">35, 0, 35, 0</column>
+<column name="reg_1783">35, 0, 35, 0</column>
+<column name="reg_1790">35, 0, 35, 0</column>
+<column name="reg_1797">35, 0, 35, 0</column>
+<column name="reg_1804">35, 0, 35, 0</column>
+<column name="reg_1811">35, 0, 35, 0</column>
+<column name="reg_1818">35, 0, 35, 0</column>
+<column name="reg_1825">35, 0, 35, 0</column>
+<column name="reg_1832">35, 0, 35, 0</column>
+<column name="reg_1839">35, 0, 35, 0</column>
+<column name="reg_1846">35, 0, 35, 0</column>
+<column name="reg_1853">35, 0, 35, 0</column>
+<column name="reg_1860">35, 0, 35, 0</column>
+<column name="reg_1867">35, 0, 35, 0</column>
+<column name="reg_1874">35, 0, 35, 0</column>
+<column name="reg_1881">35, 0, 35, 0</column>
+<column name="reg_1888">35, 0, 35, 0</column>
+<column name="reg_1895">35, 0, 35, 0</column>
+<column name="reg_1902">35, 0, 35, 0</column>
+<column name="reg_1909">35, 0, 35, 0</column>
+<column name="reg_1916">35, 0, 35, 0</column>
+<column name="reg_1923">35, 0, 35, 0</column>
+<column name="reg_1930">35, 0, 35, 0</column>
+<column name="reg_1937">35, 0, 35, 0</column>
+<column name="reg_1944">35, 0, 35, 0</column>
+<column name="reg_1951">35, 0, 35, 0</column>
+<column name="reg_1958">35, 0, 35, 0</column>
+<column name="reg_1965">35, 0, 35, 0</column>
+<column name="reg_1972">35, 0, 35, 0</column>
+<column name="reg_1979">35, 0, 35, 0</column>
+<column name="reg_1986">35, 0, 35, 0</column>
+<column name="reg_1993">35, 0, 35, 0</column>
+<column name="reg_2000">35, 0, 35, 0</column>
+<column name="reg_2007">35, 0, 35, 0</column>
+<column name="reg_2014">35, 0, 35, 0</column>
+<column name="reg_2021">35, 0, 35, 0</column>
+<column name="reg_2028">35, 0, 35, 0</column>
+<column name="reg_2035">35, 0, 35, 0</column>
+<column name="reg_2042">35, 0, 35, 0</column>
+<column name="reg_2049">35, 0, 35, 0</column>
+<column name="reg_2056">35, 0, 35, 0</column>
+<column name="reg_2063">35, 0, 35, 0</column>
+<column name="reg_2070">35, 0, 35, 0</column>
+<column name="self_attention_out_0_V_reg_3565">35, 0, 35, 0</column>
+<column name="self_attention_out_10_V_reg_3635">35, 0, 35, 0</column>
+<column name="self_attention_out_11_V_reg_3642">35, 0, 35, 0</column>
+<column name="self_attention_out_12_V_reg_3649">35, 0, 35, 0</column>
+<column name="self_attention_out_13_V_reg_3656">35, 0, 35, 0</column>
+<column name="self_attention_out_14_V_reg_3663">35, 0, 35, 0</column>
+<column name="self_attention_out_15_V_reg_3670">35, 0, 35, 0</column>
+<column name="self_attention_out_16_V_reg_3677">35, 0, 35, 0</column>
+<column name="self_attention_out_17_V_reg_3684">35, 0, 35, 0</column>
+<column name="self_attention_out_18_V_reg_3691">35, 0, 35, 0</column>
+<column name="self_attention_out_19_V_reg_3698">35, 0, 35, 0</column>
+<column name="self_attention_out_1_V_reg_3572">35, 0, 35, 0</column>
+<column name="self_attention_out_20_V_reg_3705">35, 0, 35, 0</column>
+<column name="self_attention_out_21_V_reg_3712">35, 0, 35, 0</column>
+<column name="self_attention_out_22_V_reg_3719">35, 0, 35, 0</column>
+<column name="self_attention_out_23_V_reg_3726">35, 0, 35, 0</column>
+<column name="self_attention_out_24_V_reg_3733">35, 0, 35, 0</column>
+<column name="self_attention_out_25_V_reg_3740">35, 0, 35, 0</column>
+<column name="self_attention_out_26_V_reg_3747">35, 0, 35, 0</column>
+<column name="self_attention_out_27_V_reg_3754">35, 0, 35, 0</column>
+<column name="self_attention_out_28_V_reg_3761">35, 0, 35, 0</column>
+<column name="self_attention_out_29_V_reg_3768">35, 0, 35, 0</column>
+<column name="self_attention_out_2_V_reg_3579">35, 0, 35, 0</column>
+<column name="self_attention_out_30_V_reg_3775">35, 0, 35, 0</column>
+<column name="self_attention_out_31_V_reg_3782">35, 0, 35, 0</column>
+<column name="self_attention_out_3_V_reg_3586">35, 0, 35, 0</column>
+<column name="self_attention_out_4_V_reg_3593">35, 0, 35, 0</column>
+<column name="self_attention_out_5_V_reg_3600">35, 0, 35, 0</column>
+<column name="self_attention_out_6_V_reg_3607">35, 0, 35, 0</column>
+<column name="self_attention_out_7_V_reg_3614">35, 0, 35, 0</column>
+<column name="self_attention_out_8_V_reg_3621">35, 0, 35, 0</column>
+<column name="self_attention_out_9_V_reg_3628">35, 0, 35, 0</column>
+<column name="sum_out_flat_10_V_reg_4454">35, 0, 35, 0</column>
+<column name="sum_out_flat_11_V_reg_4534">35, 0, 35, 0</column>
+<column name="sum_out_flat_12_V_reg_4459">35, 0, 35, 0</column>
+<column name="sum_out_flat_13_V_reg_4539">35, 0, 35, 0</column>
+<column name="sum_out_flat_14_V_reg_4464">35, 0, 35, 0</column>
+<column name="sum_out_flat_15_V_reg_4544">35, 0, 35, 0</column>
+<column name="sum_out_flat_16_V_reg_4469">35, 0, 35, 0</column>
+<column name="sum_out_flat_17_V_reg_4549">35, 0, 35, 0</column>
+<column name="sum_out_flat_18_V_reg_4474">35, 0, 35, 0</column>
+<column name="sum_out_flat_19_V_reg_4554">35, 0, 35, 0</column>
+<column name="sum_out_flat_1_V_reg_4509">35, 0, 35, 0</column>
+<column name="sum_out_flat_20_V_reg_4479">35, 0, 35, 0</column>
+<column name="sum_out_flat_21_V_reg_4559">35, 0, 35, 0</column>
+<column name="sum_out_flat_22_V_reg_4484">35, 0, 35, 0</column>
+<column name="sum_out_flat_23_V_reg_4564">35, 0, 35, 0</column>
+<column name="sum_out_flat_24_V_reg_4489">35, 0, 35, 0</column>
+<column name="sum_out_flat_25_V_reg_4569">35, 0, 35, 0</column>
+<column name="sum_out_flat_26_V_reg_4494">35, 0, 35, 0</column>
+<column name="sum_out_flat_27_V_reg_4574">35, 0, 35, 0</column>
+<column name="sum_out_flat_28_V_reg_4499">35, 0, 35, 0</column>
+<column name="sum_out_flat_29_V_reg_4579">35, 0, 35, 0</column>
+<column name="sum_out_flat_2_V_reg_4434">35, 0, 35, 0</column>
+<column name="sum_out_flat_30_V_reg_4504">35, 0, 35, 0</column>
+<column name="sum_out_flat_31_V_reg_4584">35, 0, 35, 0</column>
+<column name="sum_out_flat_3_V_reg_4514">35, 0, 35, 0</column>
+<column name="sum_out_flat_4_V_reg_4439">35, 0, 35, 0</column>
+<column name="sum_out_flat_5_V_reg_4519">35, 0, 35, 0</column>
+<column name="sum_out_flat_6_V_reg_4444">35, 0, 35, 0</column>
+<column name="sum_out_flat_7_V_reg_4524">35, 0, 35, 0</column>
+<column name="sum_out_flat_8_V_reg_4449">35, 0, 35, 0</column>
+<column name="sum_out_flat_9_V_reg_4529">35, 0, 35, 0</column>
+</table>
+</item>
+</section>
+</item>
+</section>
+
+<section name = "Interface" level="0">
+<item name = "Summary"><table name="" hasTotal="0">
+<keys size="6">RTL Ports, Dir, Bits, Protocol, Source Object, C Type</keys>
+<column name="ap_clk">in, 1, ap_ctrl_hs, transformer, return value</column>
+<column name="ap_rst">in, 1, ap_ctrl_hs, transformer, return value</column>
+<column name="ap_start">in, 1, ap_ctrl_hs, transformer, return value</column>
+<column name="ap_done">out, 1, ap_ctrl_hs, transformer, return value</column>
+<column name="ap_idle">out, 1, ap_ctrl_hs, transformer, return value</column>
+<column name="ap_ready">out, 1, ap_ctrl_hs, transformer, return value</column>
+<column name="data_1_V_read">in, 35, ap_none, data_1_V_read, scalar</column>
+<column name="data_3_V_read">in, 35, ap_none, data_3_V_read, scalar</column>
+<column name="data_5_V_read">in, 35, ap_none, data_5_V_read, scalar</column>
+<column name="data_7_V_read">in, 35, ap_none, data_7_V_read, scalar</column>
+<column name="data_9_V_read">in, 35, ap_none, data_9_V_read, scalar</column>
+<column name="data_11_V_read">in, 35, ap_none, data_11_V_read, scalar</column>
+<column name="data_13_V_read">in, 35, ap_none, data_13_V_read, scalar</column>
+<column name="data_15_V_read">in, 35, ap_none, data_15_V_read, scalar</column>
+<column name="data_17_V_read">in, 35, ap_none, data_17_V_read, scalar</column>
+<column name="data_19_V_read">in, 35, ap_none, data_19_V_read, scalar</column>
+<column name="data_21_V_read">in, 35, ap_none, data_21_V_read, scalar</column>
+<column name="data_23_V_read">in, 35, ap_none, data_23_V_read, scalar</column>
+<column name="data_25_V_read">in, 35, ap_none, data_25_V_read, scalar</column>
+<column name="data_27_V_read">in, 35, ap_none, data_27_V_read, scalar</column>
+<column name="data_29_V_read">in, 35, ap_none, data_29_V_read, scalar</column>
+<column name="data_31_V_read">in, 35, ap_none, data_31_V_read, scalar</column>
+<column name="res_V_address0">out, 5, ap_memory, res_V, array</column>
+<column name="res_V_ce0">out, 1, ap_memory, res_V, array</column>
+<column name="res_V_we0">out, 1, ap_memory, res_V, array</column>
+<column name="res_V_d0">out, 35, ap_memory, res_V, array</column>
+<column name="res_V_address1">out, 5, ap_memory, res_V, array</column>
+<column name="res_V_ce1">out, 1, ap_memory, res_V, array</column>
+<column name="res_V_we1">out, 1, ap_memory, res_V, array</column>
+<column name="res_V_d1">out, 35, ap_memory, res_V, array</column>
+</table>
+</item>
+</section>
+</profile>

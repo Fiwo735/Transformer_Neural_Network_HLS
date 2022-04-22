@@ -1,0 +1,249 @@
+<profile>
+
+<section name = "Vivado HLS Report for 'transpose_2d_ap_fixed_sa_transpose_config0_s'" level="0">
+<item name = "Date">Thu Apr 21 05:24:42 2022
+</item>
+<item name = "Version">2019.2 (Build 2704478 on Wed Nov 06 22:10:23 MST 2019)</item>
+<item name = "Project">myproject_prj</item>
+<item name = "Solution">solution1</item>
+<item name = "Product family">virtexuplus</item>
+<item name = "Target device">xcu250-figd2104-2L-e</item>
+</section>
+
+<section name = "Performance Estimates" level="0">
+<item name = "Timing">
+<section name = "" level="1">
+<item name = "Summary"><table name="" hasTotal="0">
+<keys size="4">Clock, Target, Estimated, Uncertainty</keys>
+<column name="ap_clk">5.00 ns, 0.456 ns, 0.62 ns</column>
+</table>
+</item>
+</section>
+</item>
+<item name = "Latency">
+<section name = "" level="1">
+<item name = "Summary"><table name="" hasTotal="0">
+<keys size="8">, min, max, min, max, min, max, Type</keys>
+<column name="">0, 0, 0 ns, 0 ns, 1, 1, function</column>
+</table>
+</item>
+<item name = "Detail">
+<section name = "" level="1">
+<item name = "Instance"><table name="" hasTotal="0">
+<keys size="9">Instance, Module, min, max, min, max, min, max, Type</keys>
+</table>
+</item>
+<item name = "Loop"><table name="" hasTotal="0">
+<keys size="8">Loop Name, min, max, Latency, achieved, target, Count, Pipelined</keys>
+</table>
+</item>
+</section>
+</item>
+</section>
+</item>
+</section>
+
+<section name = "Utilization Estimates" level="0">
+<item name = "Summary"><table name="" hasTotal="1">
+<keys size="6">Name, BRAM_18K, DSP48E, FF, LUT, URAM</keys>
+<column name="DSP">-, -, -, -, -</column>
+<column name="Expression">-, -, 0, 1680, -</column>
+<column name="FIFO">-, -, -, -, -</column>
+<column name="Instance">-, -, -, -, -</column>
+<column name="Memory">-, -, -, -, -</column>
+<column name="Multiplexer">-, -, -, -, -</column>
+<column name="Register">-, -, -, -, -</column>
+<specialColumn name="Available SLR">1344, 3072, 864000, 432000, 320</specialColumn>
+<specialColumn name="Utilization SLR (%)">0, 0, 0, ~0, 0</specialColumn>
+<specialColumn name="Available">5376, 12288, 3456000, 1728000, 1280</specialColumn>
+<specialColumn name="Utilization (%)">0, 0, 0, ~0, 0</specialColumn>
+</table>
+</item>
+<item name = "Detail">
+<section name = "" level="1">
+<item name = "Instance"><table name="" hasTotal="1">
+<keys size="7">Instance, Module, BRAM_18K, DSP48E, FF, LUT, URAM</keys>
+</table>
+</item>
+<item name = "DSP48E"><table name="" hasTotal="0">
+<keys size="3">Instance, Module, Expression</keys>
+</table>
+</item>
+<item name = "Memory"><table name="" hasTotal="1">
+<keys size="10">Memory, Module, BRAM_18K, FF, LUT, URAM, Words, Bits, Banks, W*Bits*Banks</keys>
+</table>
+</item>
+<item name = "FIFO"><table name="" hasTotal="1">
+<keys size="8">Name, BRAM_18K, FF, LUT, URAM, Depth, Bits, Size:D*B</keys>
+</table>
+</item>
+<item name = "Expression"><table name="" hasTotal="1">
+<keys size="7">Variable Name, Operation, DSP48E, FF, LUT, Bitwidth P0, Bitwidth P1</keys>
+<column name="select_ln203_10_fu_624_p3">select, 0, 0, 35, 1, 35</column>
+<column name="select_ln203_11_fu_632_p3">select, 0, 0, 35, 1, 35</column>
+<column name="select_ln203_12_fu_640_p3">select, 0, 0, 35, 1, 35</column>
+<column name="select_ln203_13_fu_648_p3">select, 0, 0, 35, 1, 35</column>
+<column name="select_ln203_14_fu_656_p3">select, 0, 0, 35, 1, 35</column>
+<column name="select_ln203_15_fu_664_p3">select, 0, 0, 35, 1, 35</column>
+<column name="select_ln203_16_fu_672_p3">select, 0, 0, 35, 1, 35</column>
+<column name="select_ln203_17_fu_680_p3">select, 0, 0, 35, 1, 35</column>
+<column name="select_ln203_1_fu_552_p3">select, 0, 0, 35, 1, 35</column>
+<column name="select_ln203_2_fu_560_p3">select, 0, 0, 35, 1, 35</column>
+<column name="select_ln203_3_fu_568_p3">select, 0, 0, 35, 1, 35</column>
+<column name="select_ln203_4_fu_576_p3">select, 0, 0, 35, 1, 35</column>
+<column name="select_ln203_5_fu_584_p3">select, 0, 0, 35, 1, 35</column>
+<column name="select_ln203_6_fu_592_p3">select, 0, 0, 35, 1, 35</column>
+<column name="select_ln203_7_fu_600_p3">select, 0, 0, 35, 1, 35</column>
+<column name="select_ln203_8_fu_608_p3">select, 0, 0, 35, 1, 35</column>
+<column name="select_ln203_9_fu_616_p3">select, 0, 0, 35, 1, 35</column>
+<column name="select_ln203_fu_544_p3">select, 0, 0, 35, 1, 35</column>
+<column name="select_ln27_10_fu_768_p3">select, 0, 0, 35, 1, 35</column>
+<column name="select_ln27_11_fu_776_p3">select, 0, 0, 35, 1, 35</column>
+<column name="select_ln27_12_fu_784_p3">select, 0, 0, 35, 1, 35</column>
+<column name="select_ln27_13_fu_792_p3">select, 0, 0, 35, 1, 35</column>
+<column name="select_ln27_14_fu_800_p3">select, 0, 0, 35, 1, 35</column>
+<column name="select_ln27_15_fu_808_p3">select, 0, 0, 35, 1, 35</column>
+<column name="select_ln27_16_fu_816_p3">select, 0, 0, 35, 1, 35</column>
+<column name="select_ln27_17_fu_824_p3">select, 0, 0, 35, 1, 35</column>
+<column name="select_ln27_18_fu_832_p3">select, 0, 0, 35, 1, 35</column>
+<column name="select_ln27_19_fu_840_p3">select, 0, 0, 35, 1, 35</column>
+<column name="select_ln27_1_fu_696_p3">select, 0, 0, 35, 1, 35</column>
+<column name="select_ln27_20_fu_848_p3">select, 0, 0, 35, 1, 35</column>
+<column name="select_ln27_21_fu_856_p3">select, 0, 0, 35, 1, 35</column>
+<column name="select_ln27_22_fu_864_p3">select, 0, 0, 35, 1, 35</column>
+<column name="select_ln27_23_fu_872_p3">select, 0, 0, 35, 1, 35</column>
+<column name="select_ln27_24_fu_880_p3">select, 0, 0, 35, 1, 35</column>
+<column name="select_ln27_25_fu_888_p3">select, 0, 0, 35, 1, 35</column>
+<column name="select_ln27_26_fu_896_p3">select, 0, 0, 35, 1, 35</column>
+<column name="select_ln27_27_fu_904_p3">select, 0, 0, 35, 1, 35</column>
+<column name="select_ln27_28_fu_912_p3">select, 0, 0, 35, 1, 35</column>
+<column name="select_ln27_29_fu_920_p3">select, 0, 0, 35, 1, 35</column>
+<column name="select_ln27_2_fu_704_p3">select, 0, 0, 35, 1, 35</column>
+<column name="select_ln27_3_fu_712_p3">select, 0, 0, 35, 1, 35</column>
+<column name="select_ln27_4_fu_720_p3">select, 0, 0, 35, 1, 35</column>
+<column name="select_ln27_5_fu_728_p3">select, 0, 0, 35, 1, 35</column>
+<column name="select_ln27_6_fu_736_p3">select, 0, 0, 35, 1, 35</column>
+<column name="select_ln27_7_fu_744_p3">select, 0, 0, 35, 1, 35</column>
+<column name="select_ln27_8_fu_752_p3">select, 0, 0, 35, 1, 35</column>
+<column name="select_ln27_9_fu_760_p3">select, 0, 0, 35, 1, 35</column>
+<column name="select_ln27_fu_688_p3">select, 0, 0, 35, 1, 35</column>
+</table>
+</item>
+<item name = "Multiplexer"><table name="" hasTotal="1">
+<keys size="5">Name, LUT, Input Size, Bits, Total Bits</keys>
+</table>
+</item>
+<item name = "Register"><table name="" hasTotal="1">
+<keys size="5">Name, FF, LUT, Bits, Const Bits</keys>
+</table>
+</item>
+</section>
+</item>
+</section>
+
+<section name = "Interface" level="0">
+<item name = "Summary"><table name="" hasTotal="0">
+<keys size="6">RTL Ports, Dir, Bits, Protocol, Source Object, C Type</keys>
+<column name="ap_ready">out, 1, ap_ctrl_hs, transpose_2d&lt;ap_fixed,sa_transpose_config0&gt;, return value</column>
+<column name="ap_return_0">out, 35, ap_ctrl_hs, transpose_2d&lt;ap_fixed,sa_transpose_config0&gt;, return value</column>
+<column name="ap_return_1">out, 35, ap_ctrl_hs, transpose_2d&lt;ap_fixed,sa_transpose_config0&gt;, return value</column>
+<column name="ap_return_2">out, 35, ap_ctrl_hs, transpose_2d&lt;ap_fixed,sa_transpose_config0&gt;, return value</column>
+<column name="ap_return_3">out, 35, ap_ctrl_hs, transpose_2d&lt;ap_fixed,sa_transpose_config0&gt;, return value</column>
+<column name="ap_return_4">out, 35, ap_ctrl_hs, transpose_2d&lt;ap_fixed,sa_transpose_config0&gt;, return value</column>
+<column name="ap_return_5">out, 35, ap_ctrl_hs, transpose_2d&lt;ap_fixed,sa_transpose_config0&gt;, return value</column>
+<column name="ap_return_6">out, 35, ap_ctrl_hs, transpose_2d&lt;ap_fixed,sa_transpose_config0&gt;, return value</column>
+<column name="ap_return_7">out, 35, ap_ctrl_hs, transpose_2d&lt;ap_fixed,sa_transpose_config0&gt;, return value</column>
+<column name="ap_return_8">out, 35, ap_ctrl_hs, transpose_2d&lt;ap_fixed,sa_transpose_config0&gt;, return value</column>
+<column name="ap_return_9">out, 35, ap_ctrl_hs, transpose_2d&lt;ap_fixed,sa_transpose_config0&gt;, return value</column>
+<column name="ap_return_10">out, 35, ap_ctrl_hs, transpose_2d&lt;ap_fixed,sa_transpose_config0&gt;, return value</column>
+<column name="ap_return_11">out, 35, ap_ctrl_hs, transpose_2d&lt;ap_fixed,sa_transpose_config0&gt;, return value</column>
+<column name="ap_return_12">out, 35, ap_ctrl_hs, transpose_2d&lt;ap_fixed,sa_transpose_config0&gt;, return value</column>
+<column name="ap_return_13">out, 35, ap_ctrl_hs, transpose_2d&lt;ap_fixed,sa_transpose_config0&gt;, return value</column>
+<column name="ap_return_14">out, 35, ap_ctrl_hs, transpose_2d&lt;ap_fixed,sa_transpose_config0&gt;, return value</column>
+<column name="ap_return_15">out, 35, ap_ctrl_hs, transpose_2d&lt;ap_fixed,sa_transpose_config0&gt;, return value</column>
+<column name="ap_return_16">out, 35, ap_ctrl_hs, transpose_2d&lt;ap_fixed,sa_transpose_config0&gt;, return value</column>
+<column name="ap_return_17">out, 35, ap_ctrl_hs, transpose_2d&lt;ap_fixed,sa_transpose_config0&gt;, return value</column>
+<column name="ap_return_18">out, 35, ap_ctrl_hs, transpose_2d&lt;ap_fixed,sa_transpose_config0&gt;, return value</column>
+<column name="ap_return_19">out, 35, ap_ctrl_hs, transpose_2d&lt;ap_fixed,sa_transpose_config0&gt;, return value</column>
+<column name="ap_return_20">out, 35, ap_ctrl_hs, transpose_2d&lt;ap_fixed,sa_transpose_config0&gt;, return value</column>
+<column name="ap_return_21">out, 35, ap_ctrl_hs, transpose_2d&lt;ap_fixed,sa_transpose_config0&gt;, return value</column>
+<column name="ap_return_22">out, 35, ap_ctrl_hs, transpose_2d&lt;ap_fixed,sa_transpose_config0&gt;, return value</column>
+<column name="ap_return_23">out, 35, ap_ctrl_hs, transpose_2d&lt;ap_fixed,sa_transpose_config0&gt;, return value</column>
+<column name="ap_return_24">out, 35, ap_ctrl_hs, transpose_2d&lt;ap_fixed,sa_transpose_config0&gt;, return value</column>
+<column name="ap_return_25">out, 35, ap_ctrl_hs, transpose_2d&lt;ap_fixed,sa_transpose_config0&gt;, return value</column>
+<column name="ap_return_26">out, 35, ap_ctrl_hs, transpose_2d&lt;ap_fixed,sa_transpose_config0&gt;, return value</column>
+<column name="ap_return_27">out, 35, ap_ctrl_hs, transpose_2d&lt;ap_fixed,sa_transpose_config0&gt;, return value</column>
+<column name="ap_return_28">out, 35, ap_ctrl_hs, transpose_2d&lt;ap_fixed,sa_transpose_config0&gt;, return value</column>
+<column name="ap_return_29">out, 35, ap_ctrl_hs, transpose_2d&lt;ap_fixed,sa_transpose_config0&gt;, return value</column>
+<column name="ap_return_30">out, 35, ap_ctrl_hs, transpose_2d&lt;ap_fixed,sa_transpose_config0&gt;, return value</column>
+<column name="ap_return_31">out, 35, ap_ctrl_hs, transpose_2d&lt;ap_fixed,sa_transpose_config0&gt;, return value</column>
+<column name="data_0_0_V_read">in, 35, ap_none, data_0_0_V_read, scalar</column>
+<column name="data_0_1_V_read">in, 35, ap_none, data_0_1_V_read, scalar</column>
+<column name="data_1_0_V_read">in, 35, ap_none, data_1_0_V_read, scalar</column>
+<column name="data_1_1_V_read">in, 35, ap_none, data_1_1_V_read, scalar</column>
+<column name="data_2_0_V_read">in, 35, ap_none, data_2_0_V_read, scalar</column>
+<column name="data_2_1_V_read">in, 35, ap_none, data_2_1_V_read, scalar</column>
+<column name="data_3_0_V_read">in, 35, ap_none, data_3_0_V_read, scalar</column>
+<column name="data_3_1_V_read">in, 35, ap_none, data_3_1_V_read, scalar</column>
+<column name="data_4_0_V_read">in, 35, ap_none, data_4_0_V_read, scalar</column>
+<column name="data_4_1_V_read">in, 35, ap_none, data_4_1_V_read, scalar</column>
+<column name="data_5_0_V_read">in, 35, ap_none, data_5_0_V_read, scalar</column>
+<column name="data_5_1_V_read">in, 35, ap_none, data_5_1_V_read, scalar</column>
+<column name="data_6_0_V_read">in, 35, ap_none, data_6_0_V_read, scalar</column>
+<column name="data_6_1_V_read">in, 35, ap_none, data_6_1_V_read, scalar</column>
+<column name="data_7_0_V_read">in, 35, ap_none, data_7_0_V_read, scalar</column>
+<column name="data_7_1_V_read">in, 35, ap_none, data_7_1_V_read, scalar</column>
+<column name="data_8_0_V_read">in, 35, ap_none, data_8_0_V_read, scalar</column>
+<column name="data_8_1_V_read">in, 35, ap_none, data_8_1_V_read, scalar</column>
+<column name="data_9_0_V_read">in, 35, ap_none, data_9_0_V_read, scalar</column>
+<column name="data_9_1_V_read">in, 35, ap_none, data_9_1_V_read, scalar</column>
+<column name="data_10_0_V_read">in, 35, ap_none, data_10_0_V_read, scalar</column>
+<column name="data_10_1_V_read">in, 35, ap_none, data_10_1_V_read, scalar</column>
+<column name="data_11_0_V_read">in, 35, ap_none, data_11_0_V_read, scalar</column>
+<column name="data_11_1_V_read">in, 35, ap_none, data_11_1_V_read, scalar</column>
+<column name="data_12_0_V_read">in, 35, ap_none, data_12_0_V_read, scalar</column>
+<column name="data_12_1_V_read">in, 35, ap_none, data_12_1_V_read, scalar</column>
+<column name="data_13_0_V_read">in, 35, ap_none, data_13_0_V_read, scalar</column>
+<column name="data_13_1_V_read">in, 35, ap_none, data_13_1_V_read, scalar</column>
+<column name="data_14_0_V_read">in, 35, ap_none, data_14_0_V_read, scalar</column>
+<column name="data_14_1_V_read">in, 35, ap_none, data_14_1_V_read, scalar</column>
+<column name="data_15_0_V_read">in, 35, ap_none, data_15_0_V_read, scalar</column>
+<column name="data_15_1_V_read">in, 35, ap_none, data_15_1_V_read, scalar</column>
+<column name="data_V_offset">in, 1, ap_none, data_V_offset, scalar</column>
+<column name="data_t_0_0_V_read">in, 35, ap_none, data_t_0_0_V_read, scalar</column>
+<column name="data_t_0_1_V_read">in, 35, ap_none, data_t_0_1_V_read, scalar</column>
+<column name="data_t_1_0_V_read">in, 35, ap_none, data_t_1_0_V_read, scalar</column>
+<column name="data_t_1_1_V_read">in, 35, ap_none, data_t_1_1_V_read, scalar</column>
+<column name="data_t_2_0_V_read">in, 35, ap_none, data_t_2_0_V_read, scalar</column>
+<column name="data_t_2_1_V_read">in, 35, ap_none, data_t_2_1_V_read, scalar</column>
+<column name="data_t_3_0_V_read">in, 35, ap_none, data_t_3_0_V_read, scalar</column>
+<column name="data_t_3_1_V_read">in, 35, ap_none, data_t_3_1_V_read, scalar</column>
+<column name="data_t_4_0_V_read">in, 35, ap_none, data_t_4_0_V_read, scalar</column>
+<column name="data_t_4_1_V_read">in, 35, ap_none, data_t_4_1_V_read, scalar</column>
+<column name="data_t_5_0_V_read">in, 35, ap_none, data_t_5_0_V_read, scalar</column>
+<column name="data_t_5_1_V_read">in, 35, ap_none, data_t_5_1_V_read, scalar</column>
+<column name="data_t_6_0_V_read">in, 35, ap_none, data_t_6_0_V_read, scalar</column>
+<column name="data_t_6_1_V_read">in, 35, ap_none, data_t_6_1_V_read, scalar</column>
+<column name="data_t_7_0_V_read">in, 35, ap_none, data_t_7_0_V_read, scalar</column>
+<column name="data_t_7_1_V_read">in, 35, ap_none, data_t_7_1_V_read, scalar</column>
+<column name="data_t_8_0_V_read">in, 35, ap_none, data_t_8_0_V_read, scalar</column>
+<column name="data_t_8_1_V_read">in, 35, ap_none, data_t_8_1_V_read, scalar</column>
+<column name="data_t_9_0_V_read">in, 35, ap_none, data_t_9_0_V_read, scalar</column>
+<column name="data_t_9_1_V_read">in, 35, ap_none, data_t_9_1_V_read, scalar</column>
+<column name="data_t_10_0_V_read">in, 35, ap_none, data_t_10_0_V_read, scalar</column>
+<column name="data_t_10_1_V_read">in, 35, ap_none, data_t_10_1_V_read, scalar</column>
+<column name="data_t_11_0_V_read">in, 35, ap_none, data_t_11_0_V_read, scalar</column>
+<column name="data_t_11_1_V_read">in, 35, ap_none, data_t_11_1_V_read, scalar</column>
+<column name="data_t_12_0_V_read">in, 35, ap_none, data_t_12_0_V_read, scalar</column>
+<column name="data_t_12_1_V_read">in, 35, ap_none, data_t_12_1_V_read, scalar</column>
+<column name="data_t_13_0_V_read">in, 35, ap_none, data_t_13_0_V_read, scalar</column>
+<column name="data_t_13_1_V_read">in, 35, ap_none, data_t_13_1_V_read, scalar</column>
+<column name="data_t_14_0_V_read">in, 35, ap_none, data_t_14_0_V_read, scalar</column>
+<column name="data_t_14_1_V_read">in, 35, ap_none, data_t_14_1_V_read, scalar</column>
+<column name="data_t_15_0_V_read">in, 35, ap_none, data_t_15_0_V_read, scalar</column>
+<column name="data_t_15_1_V_read">in, 35, ap_none, data_t_15_1_V_read, scalar</column>
+<column name="data_t_V_offset">in, 1, ap_none, data_t_V_offset, scalar</column>
+</table>
+</item>
+</section>
+</profile>
