@@ -62,7 +62,7 @@ def clean_file(path):
 
 
 def main(run_hls=False):
-  hls_dir_path = 'hls4ml_tutorial/model_1/hls4ml_prj/'
+  hls_dir_path = 'hls/'
   build_tcl_path = 'build_prj.tcl'
   hls_results_log_path = 'tb_data/csim_results.log'
   pytorch_results_log_path = 'logs/pytorch_results.log'

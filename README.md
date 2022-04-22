@@ -1,4 +1,35 @@
 # Reconfigurable Acceleration of Transformer Neural Networks with Meta-Programming Strategies for Particle Physics Experiments
+## How to run
+Train or evaluate the Pytorch model:
+
+`python3 pytorch/train_evaluate.py [-h] [--train] [--debug] [--timing] [--rng_seed] [--use_cpu]`
+
+`--train`: train before evaluating
+
+`--debug`: train/evaluate debug (prints each layer output) model
+
+`--timing`: time evaluation
+
+`--rng_seed`: randomize all seeds
+
+`--use_cpu`: force CPU usage, even if GPU available
+
+<br>
+Extract weights and biases from a trained model:
+
+`python3 scripts/extract_weights_biases.py`
+
+For now no options, hard-coded to the existings paths.
+
+<br>
+Run Vivado HLS:
+
+`python3 scripts/compare_hls_pytorch.py --run_hls`
+
+For now no actual options, hard-coded to existing paths.
+
+<br>
+
 ## TODO plan
 - Scale HLS implementation to multiple particles data:
   - currently: batch size of 1 with 1 particle with 16 dimensions, (1, 1, 16) → (1, 5)
@@ -14,15 +45,13 @@
 
 - Instantiate ConstituentNetBase in HLS directly from Pytorch using hls4ml
 
-
+<br>
 
 ## Repo structure
 ```
-├─ extracted_weights_biases/                   # Weights and biases extracted from Pytorch in HLS format
-│
 ├─ fyp21yuan_code/                             # Yuan MSc code
 │
-├─ hls4ml_tutorial/model_1/hls4ml_prj/
+├─ hls/
 │   ├─ firmware/
 │   │   ├─ nnet_utils/
 │   │   │   ├─ nnet_activation.h               # SiLU, init_log_table, Log_softmax_latency
@@ -47,17 +76,23 @@
 │   ├─ build_prj.tcl                           # Script for running CSimulation/Synthesis
 │   └─ myproject_test.cpp                      # TB program for CSimulation
 │
+├─ pytorch/
+│   ├─ data/                                   # Particles data
+│   ├─ model/                                  # Modified ConstituentNet model files
+│   └─ train_evaluate.py                       # Used to train and/or evaluate Pytorch model
+│
 ├─ scripts/
 │   ├─ compare_hls_pytorch.py                  # Runs and compares HLS vs Pytorch implementation
 │   ├─ extract_weights_biases.py               # Extracts weights and biases from a Pytorch model
-│   ├─ playground.py                           # Used for testing and debugging Pytorch implementation
-│   └─ update_weight_biases.sh                 # Move extracted weights and biases to HLS directory
+│   └─ playground.py                           # Used for testing and debugging Pytorch implementation
 │
 ├─ thesis/                                     # Directory used for generating the LaTeX thesis
 │
 ├─ .gitignore                                  # gitignore
 └─ README.md                                   # This file
 ```
+
+<br>
 
 ## Helpful links
 https://fastmachinelearning.org/hls4ml/

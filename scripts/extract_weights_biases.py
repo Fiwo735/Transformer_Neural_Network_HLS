@@ -254,7 +254,7 @@ def extract_weights_biases(
 if __name__ == "__main__":
   model_path = "pytorch/best.pth.tar"
   # result_path = "extracted_weights_biases/"
-  result_path = "hls/model_1/hls4ml_prj/firmware/weights/"
+  result_path = "hls/firmware/weights/"
   norm_layer_base_names = {
     # 'out_layer_0':
     #   [(-0.04077378660440445, 1.673102617263794)],
