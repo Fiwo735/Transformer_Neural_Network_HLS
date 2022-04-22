@@ -40,6 +40,8 @@ namespace nnet {
 
 int main(int argc, char **argv)
 {
+  std::cout << "Running myproject_test.cpp" << std::endl;
+
   //load input data from text file
   std::ifstream fin("tb_data/tb_input_features.dat");
   //load predictions from text file
