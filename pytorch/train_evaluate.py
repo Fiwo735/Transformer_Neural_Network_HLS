@@ -1,14 +1,14 @@
 import os
 import sys
 import contextlib
-from tracemalloc import start
 import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import argparse
 
-import gc
-
+from tracemalloc import start
+from pathlib import Path
 from typing import Tuple, Optional, List
 from torch.utils.data import TensorDataset, DataLoader
 from sklearn.datasets import fetch_openml
@@ -21,53 +21,52 @@ from model.net import ConstituentNet
 
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
+DIR_NAME = os.path.dirname(__file__)
+DATA_DIR = os.path.join(DIR_NAME, 'data/1/')
+X_TRAIN_VAL_FILENAME = os.path.join(DATA_DIR, 'X_train_val.npy')
+Y_TRAIN_VAL_FILENAME = os.path.join(DATA_DIR, 'y_train_val.npy')
+X_TEST_FILENAME = os.path.join(DATA_DIR, 'X_test.npy')
+Y_TEST_FILENAME = os.path.join(DATA_DIR, 'y_test.npy')
+CLASSES_FILENAME = os.path.join(DATA_DIR, 'classes.npy')
+
 def set_seed(seed=0):
   np.random.seed(seed)
   torch.manual_seed(seed)
 
 
-def fetch_dataset(multiple_of: int = 128):
+def fetch_dataset():
   X, y = fetch_openml('hls4ml_lhc_jets_hlf', cache=True, return_X_y=True)
 
   length = len(X)
   assert length == len(y)
 
-  # truncate to multiples of given number, as otherwise issue with ConstituentNet
-  # truncated_length = (-1 ^ (multiple_of - 1)) & length
-  # X, y = X[:truncated_length], y[:truncated_length]
-  # print(f'{length=}, {truncated_length=}, {(length % multiple_of)=}, {(truncated_length % multiple_of)=}')
-
-  print(X.shape, y.shape)
-  print(X[:5])
-  print(y[:5])
-
   le = LabelEncoder()
   y = le.fit_transform(y)
   y = torch.from_numpy(y)
-  # y = F.one_hot(y, num_classes=5)
   X_train_val, X_test, y_train_val, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-  print(y[:5])
 
   scaler = StandardScaler()
   X_train_val = scaler.fit_transform(X_train_val)
   X_test = scaler.transform(X_test)
 
-  np.save('X_train_val.npy', X_train_val)
-  np.save('X_test.npy', X_test)
-  np.save('y_train_val.npy', y_train_val)
-  np.save('y_test.npy', y_test)
-  np.save('classes.npy', le.classes_)
+  np.save(X_TRAIN_VAL_FILENAME, X_train_val)
+  np.save(X_TEST_FILENAME, X_test)
+  np.save(Y_TRAIN_VAL_FILENAME, y_train_val)
+  np.save(Y_TEST_FILENAME, y_test)
+  np.save(CLASSES_FILENAME, le.classes_)
+
+  print('Fetched 1-particle dataset')
 
 
 def load_dataset(
   batch_size: int = 128
 ) -> Tuple[DataLoader, DataLoader, DataLoader, List[str]]:
 
-  X_train_val = np.load('X_train_val.npy')
-  X_test = np.ascontiguousarray(np.load('X_test.npy'))
-  y_train_val = np.load('y_train_val.npy')
-  y_test = np.load('y_test.npy', allow_pickle=True)
-  classes = np.load('classes.npy', allow_pickle=True)
+  X_train_val = np.load(X_TRAIN_VAL_FILENAME)
+  X_test = np.ascontiguousarray(np.load(X_TEST_FILENAME))
+  y_train_val = np.load(Y_TRAIN_VAL_FILENAME)
+  y_test = np.load(Y_TEST_FILENAME, allow_pickle=True)
+  classes = np.load(CLASSES_FILENAME, allow_pickle=True)
 
   tensor_X_train_val = torch.Tensor(X_train_val)
   tensor_X_test = torch.Tensor(X_test)
@@ -258,7 +257,6 @@ def main(
   num_heads = 2
   dropout = 0.0
 
-  # fetch_dataset()
   train_loader, test_loader, tiny_loader, classes = load_dataset(batch_size=batch_size)
 
   if do_train:
@@ -311,16 +309,38 @@ def main(
     print(f'Test accuracy: {accuracy*100:.2f}% in {total_time:.2f} s')
 
 
+def parse():
+  parser = argparse.ArgumentParser(description='Train and/or evaluate Pytorch model')
+  parser.add_argument('--train', action='store_true')
+  parser.add_argument('--debug', action='store_true')
+  parser.add_argument('--timing', action='store_true')
+  parser.add_argument('--rng_seed', action='store_true')
+  parser.add_argument('--use_cpu', action='store_true')
+
+  return parser.parse_args()
+
+
 if __name__ == "__main__":
-  # DEVICE = torch.device('cpu')
+
+  args = parse()
+
+  if args.use_cpu:
+    DEVICE = torch.device('cpu')
   print(f'{DEVICE=}')
-  # set_seed(123)
+
+  if not args.rng_seed:
+    set_seed(123)
+
+  # Fetch data if needed
+  Path(DATA_DIR).mkdir(parents=True, exist_ok=True)
+  if not Path(X_TRAIN_VAL_FILENAME).is_file():
+    fetch_dataset()
 
   main(
-    do_train=False,
-    script_path='best.script.pth',
-    state_path='best.pth.tar',
-    debug_path='layers_output.txt',
-    is_debug=True,
-    is_timing=False
+    do_train=args.train,
+    script_path=os.path.join(DIR_NAME, 'best.script.pth'),
+    state_path=os.path.join(DIR_NAME, 'best.pth.tar'),
+    debug_path=os.path.join(DIR_NAME, 'layers_output.txt'),
+    is_debug=args.debug,
+    is_timing=args.timing
   )
