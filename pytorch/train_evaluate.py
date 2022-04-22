@@ -112,6 +112,7 @@ def train_test_loop(
   is_train: bool = True,
   num_particles: int = 1,
   num_epochs: int = 5,
+  print_predictions: bool = False,
 ) -> Tuple[Optional[float], float]:
 
   is_eval = not is_train
@@ -164,9 +165,13 @@ def train_test_loop(
   if is_eval:
     all_labels = torch.stack(all_labels) if len(all_labels) == 1 else torch.stack(all_labels[:-1])
     all_predicted = torch.stack(all_predicted) if len(all_predicted) == 1 else torch.stack(all_predicted[:-1])
+    if print_predictions:
+      print(f'Predictions: {all_predicted.squeeze().tolist()}')
+
     all_predicted = torch.argmax(all_predicted, dim=2)
     correct_predictions = (all_predicted == all_labels).sum()
     accuracy = correct_predictions / torch.numel(all_predicted)
+
 
   return (accuracy, end_time - start_time)
 
@@ -189,6 +194,7 @@ def evaluate(
   model: nn.Module,
   criterion: nn.Module,
   filepath: Optional[str] = None,
+  print_predictions: bool = False,
 ) -> Tuple[float, float]:
 
   with torch.inference_mode():
@@ -199,6 +205,7 @@ def evaluate(
         criterion=criterion,
         is_train=False,
         num_particles=1,
+        print_predictions=print_predictions,
       )
     
     else:
@@ -305,6 +312,7 @@ def main(
     print(f'{average_time_batch * 1000:.2f} ms per batch')
     print(f'{average_time_batch / batch_size * 1000000:.2f} us per sample')
   else:
+    _, _ = evaluate(test_loader=tiny_loader, model=model, criterion=criterion, print_predictions=True)
     accuracy, total_time = evaluate(test_loader=test_loader, model=model, criterion=criterion)
     print(f'Test accuracy: {accuracy*100:.2f}% in {total_time:.2f} s')
 
