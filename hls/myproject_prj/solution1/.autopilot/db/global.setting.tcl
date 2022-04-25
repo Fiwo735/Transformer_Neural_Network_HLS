@@ -42,7 +42,7 @@ set SCTraceOption all
 set TargetInfo xcu250:-figd2104:-2L-e
 set SourceFiles {sc {} c ../../firmware/myproject.cpp}
 set SourceFlags {sc {} c {{ -std=c++0x} {}}}
-set DirectiveFile /homes/faw18/Documents/FYP/hls4ml_tutorial/model_1/hls4ml_prj/myproject_prj/solution1/solution1.directive
+set DirectiveFile /mnt/ccnas2/bdp/faw18/FYP/hls/myproject_prj/solution1/solution1.directive
 set TBFiles {verilog {../../tb_data ../../firmware/weights ../../myproject_test.cpp} bc {../../tb_data ../../firmware/weights ../../myproject_test.cpp} sc {../../tb_data ../../firmware/weights ../../myproject_test.cpp} vhdl {../../tb_data ../../firmware/weights ../../myproject_test.cpp} c {} cas {../../tb_data ../../firmware/weights ../../myproject_test.cpp}}
 set SpecLanguage C
 set TVInFiles {bc {} c {} sc {} cas {} vhdl {} verilog {}}

@@ -1,7 +1,7 @@
 <profile>
 
 <section name = "Vivado HLS Report for 'myproject'" level="0">
-<item name = "Date">Thu Apr 21 05:28:52 2022
+<item name = "Date">Sat Apr 23 08:39:54 2022
 </item>
 <item name = "Version">2019.2 (Build 2704478 on Wed Nov 06 22:10:23 MST 2019)</item>
 <item name = "Project">myproject_prj</item>
@@ -24,18 +24,18 @@
 <section name = "" level="1">
 <item name = "Summary"><table name="" hasTotal="0">
 <keys size="8">, min, max, min, max, min, max, Type</keys>
-<column name="">2094, 2094, 10.470 us, 10.470 us, 2094, 2094, none</column>
+<column name="">2086, 2086, 10.430 us, 10.430 us, 2086, 2086, none</column>
 </table>
 </item>
 <item name = "Detail">
 <section name = "" level="1">
 <item name = "Instance"><table name="" hasTotal="0">
 <keys size="9">Instance, Module, min, max, min, max, min, max, Type</keys>
-<column name="grp_transformer_fu_822">transformer, 201, 201, 1.005 us, 1.005 us, 201, 201, none</column>
-<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_2_fu_847">dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_2, 9, 9, 45.000 ns, 45.000 ns, 8, 8, function</column>
-<column name="grp_init_log_table_ap_fixed_16_6_5_3_0_softmax_config0_s_fu_853">init_log_table_ap_fixed_16_6_5_3_0_softmax_config0_s, 2047, 2047, 10.235 us, 10.235 us, 2047, 2047, none</column>
-<column name="grp_dense_latency_ap_fixed_ap_fixed_mlp_config_0_0_0_0_0_0_fu_858">dense_latency_ap_fixed_ap_fixed_mlp_config_0_0_0_0_0_0, 9, 9, 45.000 ns, 45.000 ns, 8, 8, function</column>
-<column name="grp_softmax_latency_ap_fixed_ap_fixed_softmax_config0_s_fu_863">softmax_latency_ap_fixed_ap_fixed_softmax_config0_s, 2, 2, 10.000 ns, 10.000 ns, 1, 1, function</column>
+<column name="grp_transformer_fu_821">transformer, 201, 201, 1.005 us, 1.005 us, 201, 201, none</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_2_fu_846">dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_2, 1, 1, 5.000 ns, 5.000 ns, 1, 1, function</column>
+<column name="grp_init_log_table_ap_fixed_16_6_5_3_0_softmax_config0_s_fu_852">init_log_table_ap_fixed_16_6_5_3_0_softmax_config0_s, 2047, 2047, 10.235 us, 10.235 us, 2047, 2047, none</column>
+<column name="grp_dense_latency_ap_fixed_ap_fixed_mlp_config_0_0_0_0_0_0_fu_857">dense_latency_ap_fixed_ap_fixed_mlp_config_0_0_0_0_0_0, 9, 9, 45.000 ns, 45.000 ns, 8, 8, function</column>
+<column name="grp_softmax_latency_ap_fixed_ap_fixed_softmax_config0_s_fu_862">softmax_latency_ap_fixed_ap_fixed_softmax_config0_s, 2, 2, 10.000 ns, 10.000 ns, 1, 1, function</column>
 </table>
 </item>
 <item name = "Loop"><table name="" hasTotal="0">
@@ -54,10 +54,10 @@
 <column name="DSP">-, -, -, -, -</column>
 <column name="Expression">-, -, 0, 2, -</column>
 <column name="FIFO">-, -, -, -, -</column>
-<column name="Instance">29, 5042, 108015, 174325, 0</column>
+<column name="Instance">29, 5040, 105499, 174791, 0</column>
 <column name="Memory">8, -, 0, 0, 0</column>
-<column name="Multiplexer">-, -, -, 815, -</column>
-<column name="Register">-, -, 673, -, -</column>
+<column name="Multiplexer">-, -, -, 747, -</column>
+<column name="Register">-, -, 1225, -, -</column>
 <specialColumn name="Available SLR">1344, 3072, 864000, 432000, 320</specialColumn>
 <specialColumn name="Utilization SLR (%)">2, 164, 12, 40, 0</specialColumn>
 <specialColumn name="Available">5376, 12288, 3456000, 1728000, 1280</specialColumn>
@@ -68,11 +68,11 @@
 <section name = "" level="1">
 <item name = "Instance"><table name="" hasTotal="1">
 <keys size="7">Instance, Module, BRAM_18K, DSP48E, FF, LUT, URAM</keys>
-<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_2_fu_847">dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_2, 0, 512, 7308, 12105, 0</column>
-<column name="grp_dense_latency_ap_fixed_ap_fixed_mlp_config_0_0_0_0_0_0_fu_858">dense_latency_ap_fixed_ap_fixed_mlp_config_0_0_0_0_0_0, 0, 160, 2448, 3781, 0</column>
-<column name="grp_init_log_table_ap_fixed_16_6_5_3_0_softmax_config0_s_fu_853">init_log_table_ap_fixed_16_6_5_3_0_softmax_config0_s, 0, 13, 2665, 11969, 0</column>
-<column name="grp_softmax_latency_ap_fixed_ap_fixed_softmax_config0_s_fu_863">softmax_latency_ap_fixed_ap_fixed_softmax_config0_s, 16, 5, 83, 68, 0</column>
-<column name="grp_transformer_fu_822">transformer, 13, 4352, 95511, 146402, 0</column>
+<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_2_fu_846">dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_2, 0, 512, 5686, 11982, 0</column>
+<column name="grp_dense_latency_ap_fixed_ap_fixed_mlp_config_0_0_0_0_0_0_fu_857">dense_latency_ap_fixed_ap_fixed_mlp_config_0_0_0_0_0_0, 0, 160, 2375, 3822, 0</column>
+<column name="grp_init_log_table_ap_fixed_16_6_5_3_0_softmax_config0_s_fu_852">init_log_table_ap_fixed_16_6_5_3_0_softmax_config0_s, 0, 13, 2665, 11969, 0</column>
+<column name="grp_softmax_latency_ap_fixed_ap_fixed_softmax_config0_s_fu_862">softmax_latency_ap_fixed_ap_fixed_softmax_config0_s, 16, 5, 83, 68, 0</column>
+<column name="grp_transformer_fu_821">transformer, 13, 4350, 94690, 146950, 0</column>
 </table>
 </item>
 <item name = "DSP48E"><table name="" hasTotal="0">
@@ -92,16 +92,16 @@
 </item>
 <item name = "Expression"><table name="" hasTotal="1">
 <keys size="7">Variable Name, Operation, DSP48E, FF, LUT, Bitwidth P0, Bitwidth P1</keys>
-<column name="ap_block_state15_on_subcall_done">or, 0, 0, 2, 1, 1</column>
+<column name="ap_block_state7_on_subcall_done">or, 0, 0, 2, 1, 1</column>
 </table>
 </item>
 <item name = "Multiplexer"><table name="" hasTotal="1">
 <keys size="5">Name, LUT, Input Size, Bits, Total Bits</keys>
-<column name="ap_NS_fsm">213, 49, 1, 49</column>
-<column name="data_out_V_address0">21, 4, 3, 12</column>
-<column name="data_out_V_address1">15, 3, 3, 9</column>
-<column name="data_out_V_d0">21, 4, 35, 140</column>
-<column name="data_out_V_d1">15, 3, 35, 105</column>
+<column name="ap_NS_fsm">181, 41, 1, 41</column>
+<column name="data_in_V_ap_vld_in_sig">9, 2, 1, 2</column>
+<column name="data_in_V_ap_vld_preg">9, 2, 1, 2</column>
+<column name="data_in_V_blk_n">9, 2, 1, 2</column>
+<column name="data_in_V_in_sig">9, 2, 560, 1120</column>
 <column name="log_table_i_address0">27, 5, 12, 60</column>
 <column name="log_table_i_address1">21, 4, 12, 48</column>
 <column name="log_table_i_ce0">15, 3, 1, 3</column>
@@ -122,33 +122,34 @@
 </item>
 <item name = "Register"><table name="" hasTotal="1">
 <keys size="5">Name, FF, LUT, Bits, Const Bits</keys>
-<column name="ap_CS_fsm">48, 0, 48, 0</column>
-<column name="embedded_with_cls_11_V_reg_1195">35, 0, 35, 0</column>
-<column name="embedded_with_cls_13_V_reg_1200">35, 0, 35, 0</column>
-<column name="embedded_with_cls_15_V_reg_1205">35, 0, 35, 0</column>
-<column name="embedded_with_cls_17_V_reg_1210">35, 0, 35, 0</column>
-<column name="embedded_with_cls_19_V_reg_1215">35, 0, 35, 0</column>
-<column name="embedded_with_cls_1_V_reg_1170">35, 0, 35, 0</column>
-<column name="embedded_with_cls_21_V_reg_1220">35, 0, 35, 0</column>
-<column name="embedded_with_cls_23_V_reg_1225">35, 0, 35, 0</column>
-<column name="embedded_with_cls_25_V_reg_1230">35, 0, 35, 0</column>
-<column name="embedded_with_cls_27_V_reg_1235">35, 0, 35, 0</column>
-<column name="embedded_with_cls_29_V_reg_1240">35, 0, 35, 0</column>
-<column name="embedded_with_cls_31_V_reg_1245">35, 0, 35, 0</column>
-<column name="embedded_with_cls_3_V_reg_1175">35, 0, 35, 0</column>
-<column name="embedded_with_cls_5_V_reg_1180">35, 0, 35, 0</column>
-<column name="embedded_with_cls_7_V_reg_1185">35, 0, 35, 0</column>
-<column name="embedded_with_cls_9_V_reg_1190">35, 0, 35, 0</column>
-<column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_2_fu_847_ap_start_reg">1, 0, 1, 0</column>
-<column name="grp_dense_latency_ap_fixed_ap_fixed_mlp_config_0_0_0_0_0_0_fu_858_ap_start_reg">1, 0, 1, 0</column>
-<column name="grp_init_log_table_ap_fixed_16_6_5_3_0_softmax_config0_s_fu_853_ap_start_reg">1, 0, 1, 0</column>
-<column name="grp_softmax_latency_ap_fixed_ap_fixed_softmax_config0_s_fu_863_ap_start_reg">1, 0, 1, 0</column>
-<column name="grp_transformer_fu_822_ap_start_reg">1, 0, 1, 0</column>
-<column name="y_V_10_reg_1425">12, 0, 12, 0</column>
-<column name="y_V_11_reg_1430">12, 0, 12, 0</column>
-<column name="y_V_8_reg_1415">12, 0, 12, 0</column>
-<column name="y_V_9_reg_1420">12, 0, 12, 0</column>
-<column name="y_V_reg_1410">12, 0, 12, 0</column>
+<column name="ap_CS_fsm">40, 0, 40, 0</column>
+<column name="data_in_V_ap_vld_preg">1, 0, 1, 0</column>
+<column name="data_in_V_preg">560, 0, 560, 0</column>
+<column name="embedded_with_cls_11_V_reg_1194">35, 0, 35, 0</column>
+<column name="embedded_with_cls_13_V_reg_1199">35, 0, 35, 0</column>
+<column name="embedded_with_cls_15_V_reg_1204">35, 0, 35, 0</column>
+<column name="embedded_with_cls_17_V_reg_1209">35, 0, 35, 0</column>
+<column name="embedded_with_cls_19_V_reg_1214">35, 0, 35, 0</column>
+<column name="embedded_with_cls_1_V_reg_1169">35, 0, 35, 0</column>
+<column name="embedded_with_cls_21_V_reg_1219">35, 0, 35, 0</column>
+<column name="embedded_with_cls_23_V_reg_1224">35, 0, 35, 0</column>
+<column name="embedded_with_cls_25_V_reg_1229">35, 0, 35, 0</column>
+<column name="embedded_with_cls_27_V_reg_1234">35, 0, 35, 0</column>
+<column name="embedded_with_cls_29_V_reg_1239">35, 0, 35, 0</column>
+<column name="embedded_with_cls_31_V_reg_1244">35, 0, 35, 0</column>
+<column name="embedded_with_cls_3_V_reg_1174">35, 0, 35, 0</column>
+<column name="embedded_with_cls_5_V_reg_1179">35, 0, 35, 0</column>
+<column name="embedded_with_cls_7_V_reg_1184">35, 0, 35, 0</column>
+<column name="embedded_with_cls_9_V_reg_1189">35, 0, 35, 0</column>
+<column name="grp_dense_latency_ap_fixed_ap_fixed_mlp_config_0_0_0_0_0_0_fu_857_ap_start_reg">1, 0, 1, 0</column>
+<column name="grp_init_log_table_ap_fixed_16_6_5_3_0_softmax_config0_s_fu_852_ap_start_reg">1, 0, 1, 0</column>
+<column name="grp_softmax_latency_ap_fixed_ap_fixed_softmax_config0_s_fu_862_ap_start_reg">1, 0, 1, 0</column>
+<column name="grp_transformer_fu_821_ap_start_reg">1, 0, 1, 0</column>
+<column name="y_V_10_reg_1424">12, 0, 12, 0</column>
+<column name="y_V_11_reg_1429">12, 0, 12, 0</column>
+<column name="y_V_8_reg_1414">12, 0, 12, 0</column>
+<column name="y_V_9_reg_1419">12, 0, 12, 0</column>
+<column name="y_V_reg_1409">12, 0, 12, 0</column>
 </table>
 </item>
 </section>
@@ -164,20 +165,18 @@
 <column name="ap_done">out, 1, ap_ctrl_hs, myproject, return value</column>
 <column name="ap_idle">out, 1, ap_ctrl_hs, myproject, return value</column>
 <column name="ap_ready">out, 1, ap_ctrl_hs, myproject, return value</column>
-<column name="data_in_V_address0">out, 4, ap_memory, data_in_V, array</column>
-<column name="data_in_V_ce0">out, 1, ap_memory, data_in_V, array</column>
-<column name="data_in_V_q0">in, 35, ap_memory, data_in_V, array</column>
-<column name="data_in_V_address1">out, 4, ap_memory, data_in_V, array</column>
-<column name="data_in_V_ce1">out, 1, ap_memory, data_in_V, array</column>
-<column name="data_in_V_q1">in, 35, ap_memory, data_in_V, array</column>
-<column name="data_out_V_address0">out, 3, ap_memory, data_out_V, array</column>
-<column name="data_out_V_ce0">out, 1, ap_memory, data_out_V, array</column>
-<column name="data_out_V_we0">out, 1, ap_memory, data_out_V, array</column>
-<column name="data_out_V_d0">out, 35, ap_memory, data_out_V, array</column>
-<column name="data_out_V_address1">out, 3, ap_memory, data_out_V, array</column>
-<column name="data_out_V_ce1">out, 1, ap_memory, data_out_V, array</column>
-<column name="data_out_V_we1">out, 1, ap_memory, data_out_V, array</column>
-<column name="data_out_V_d1">out, 35, ap_memory, data_out_V, array</column>
+<column name="data_in_V">in, 560, ap_vld, data_in_V, pointer</column>
+<column name="data_in_V_ap_vld">in, 1, ap_vld, data_in_V, pointer</column>
+<column name="data_out_0_V">out, 35, ap_vld, data_out_0_V, pointer</column>
+<column name="data_out_0_V_ap_vld">out, 1, ap_vld, data_out_0_V, pointer</column>
+<column name="data_out_1_V">out, 35, ap_vld, data_out_1_V, pointer</column>
+<column name="data_out_1_V_ap_vld">out, 1, ap_vld, data_out_1_V, pointer</column>
+<column name="data_out_2_V">out, 35, ap_vld, data_out_2_V, pointer</column>
+<column name="data_out_2_V_ap_vld">out, 1, ap_vld, data_out_2_V, pointer</column>
+<column name="data_out_3_V">out, 35, ap_vld, data_out_3_V, pointer</column>
+<column name="data_out_3_V_ap_vld">out, 1, ap_vld, data_out_3_V, pointer</column>
+<column name="data_out_4_V">out, 35, ap_vld, data_out_4_V, pointer</column>
+<column name="data_out_4_V_ap_vld">out, 1, ap_vld, data_out_4_V, pointer</column>
 <column name="const_size_in_1">out, 16, ap_vld, const_size_in_1, pointer</column>
 <column name="const_size_in_1_ap_vld">out, 1, ap_vld, const_size_in_1, pointer</column>
 <column name="const_size_out_1">out, 16, ap_vld, const_size_out_1, pointer</column>

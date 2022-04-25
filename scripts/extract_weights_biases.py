@@ -2,6 +2,8 @@ import torch
 import numpy as np
 from typing import Optional, List, Dict, Tuple
 
+DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
 def transform_norm_weights_biases(
   arr: np.array,
   is_weight: bool,
@@ -168,7 +170,7 @@ def extract_weights_biases(
   flatten_order: str = "C",
 ) -> None:
 
-  model = torch.load(model_path)
+  model = torch.load(model_path, map_location=DEVICE)
   overview = []
   parameters_include = []
   load_weights_from_txt = []

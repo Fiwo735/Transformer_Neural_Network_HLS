@@ -91,23 +91,12 @@ struct transformer_config
 
 template<class data_T, class res_T, typename CONFIG_T, typename SA_CONFIG_T, typename SA_NORM_CONFIG_T, typename SA_DENSE0_CONFIG_T, typename SA_TRANSPOSE0_CONFIG_T, typename SA_DENSE1_CONFIG_T, typename SA_SOFTMAX_CONFIG_T, typename SA_DENSE2_CONFIG_T, typename SA_DENSE3_CONFIG_T, typename NORM0_CONFIG_T, typename SIG0_CONFIG_T, typename DENSE0_CONFIG_T, typename NORM1_CONFIG_T, typename SIG1_CONFIG_T, typename DENSE1_CONFIG_T>
 void transformer(
-    data_T    data[CONFIG_T::n_in],
-    res_T     res[CONFIG_T::n_out],
-
-    typename SA_CONFIG_T::inv_sqrt_d_k_t SA_inv_sqrt_d_k,
-    // typename CONFIG_T::SA_norm_weight_t  SA_norm_weight[CONFIG_T::n_SA_norm_weight],
-    // typename CONFIG_T::SA_norm_bias_t    SA_norm_bias[CONFIG_T::n_SA_norm_bias],
-    // typename CONFIG_T::SA_norm_weight_t  SA_norm_weight_1[CONFIG_T::n_SA_norm_weight],
-    // typename CONFIG_T::SA_norm_bias_t    SA_norm_bias_1[CONFIG_T::n_SA_norm_bias],
+    data_T                               data[CONFIG_T::n_in],
+    res_T                                res[CONFIG_T::n_out],
     typename CONFIG_T::SA_QKV_weight_t   SA_QKV_weight[CONFIG_T::n_SA_QKV_weight],
     typename CONFIG_T::SA_dense_weight_t SA_dense_weight[CONFIG_T::n_SA_dense_weight],
     typename CONFIG_T::SA_dense_bias_t   SA_dense_bias[CONFIG_T::n_SA_dense_bias],
-
-    // typename CONFIG_T::norm0_weight_t    norm0_weight[CONFIG_T::n_norm0_weight],
-    // typename CONFIG_T::norm0_bias_t      norm0_bias[CONFIG_T::n_norm0_bias],
     typename CONFIG_T::dense0_weight_t   dense0_weight[CONFIG_T::n_dense0_weight],
-    // typename CONFIG_T::norm1_weight_t    norm1_weight[CONFIG_T::n_norm1_weight],
-    // typename CONFIG_T::norm1_bias_t      norm1_bias[CONFIG_T::n_norm1_bias],
     typename CONFIG_T::dense1_weight_t   dense1_weight[CONFIG_T::n_dense1_weight]
 ){
 
@@ -115,52 +104,33 @@ void transformer(
     std::ofstream fout("tb_data/csim_layers.log", std::ios_base::app);
 #endif
 
-    // 1 Self-attention
+    // Self-attention
     data_T self_attention_out[CONFIG_T::n_in];
     self_attention<data_T, data_T, SA_CONFIG_T, SA_NORM_CONFIG_T, SA_DENSE0_CONFIG_T, SA_TRANSPOSE0_CONFIG_T, SA_DENSE1_CONFIG_T, SA_SOFTMAX_CONFIG_T, SA_DENSE2_CONFIG_T, SA_DENSE3_CONFIG_T>(
         data,
         self_attention_out,
-
-        SA_inv_sqrt_d_k,
-        
-        // SA_norm_weight,
-        // SA_norm_bias,
-        // SA_norm_weight_1,
-        // SA_norm_bias_1,
         SA_QKV_weight,
         SA_dense_weight,
         SA_dense_bias
     );
+
 #ifndef __SYNTHESIS__
     print_full_result<input_t, CONFIG_T::n_in>("self_attention_out", self_attention_out, fout);
 #endif
 
-    // 2.1 norm
-    // data_T norm0_out[CONFIG_T::n_particles][CONFIG_T::n_el];
-    // layer_normalize<data_T, data_T, NORM0_CONFIG_T>(self_attention_out, norm0_out, norm0_weight, norm0_bias);
-    // print_full_result<input_t, CONFIG_T::n_in>("norm0_out", norm0_out, fout);
-
     data_T norm0_in_el[CONFIG_T::n_particles][CONFIG_T::n_el];
-
     nnet::split_equally<data_T, CONFIG_T::n_particles, CONFIG_T::n_el>(self_attention_out, norm0_in_el);
-    // Layer_normalize: for (int inorm = 0; inorm < CONFIG_T::n_particles; inorm++) {
-    //     layer_normalize<data_T, data_T, NORM0_CONFIG_T>(norm0_in_el[inorm], norm0_out[inorm], norm0_weight, norm0_bias);//, norm_weight_1, norm_bias_1, temp_fix);
-    //     // print_full_result<data_T, CONFIG_T::n_el>("norm0_out[inorm]", norm0_out[inorm], fout);
-    // }
-    // // nnet::join_equally<data_T, CONFIG_T::n_particles, CONFIG_T::n_el>(input_norm_out_el, input_norm);
 
-    // 2.2 SiLU
+    // ReLU
     data_T SiLU0_out[CONFIG_T::n_particles][CONFIG_T::n_el];
     for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
-        // silu<data_T, data_T, SIG0_CONFIG_T>(norm0_out[jj], SiLU0_out[jj]);
-        // silu<data_T, data_T, SIG0_CONFIG_T>(norm0_in_el[jj], SiLU0_out[jj]);
         relu<data_T, data_T, SIG0_CONFIG_T>(norm0_in_el[jj], SiLU0_out[jj]);
 #ifndef __SYNTHESIS__
-        print_full_result<data_T, CONFIG_T::n_el>("SiLU0_out[jj]", SiLU0_out[jj], fout);
+        print_full_result<data_T, CONFIG_T::n_el>("ReLU0_out[jj]", SiLU0_out[jj], fout);
 #endif
     }
 
-    // 2.3 dense
+    // Dense
     data_T dense0_out[CONFIG_T::n_particles][CONFIG_T::n_el_doubled];
     data_T zero_bias0[CONFIG_T::n_el_doubled];
     fill_zero<data_T,CONFIG_T::n_el_doubled >(zero_bias0);
@@ -171,25 +141,16 @@ void transformer(
 #endif
     }
 
-    // 2.4 norm
-    // data_T norm1_out[CONFIG_T::n_particles][CONFIG_T::n_el_doubled];
-    // for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
-    //     layer_normalize<data_T, data_T, NORM1_CONFIG_T>(dense0_out[jj], norm1_out[jj], norm1_weight, norm1_bias);
-    //     // print_full_result<input_t, CONFIG_T::n_el_doubled>("norm1_out[jj]", norm1_out[jj], fout);
-    // }
-
-    // 2.5 SiLU
+    // ReLU
     data_T SiLU1_out[CONFIG_T::n_particles][CONFIG_T::n_el_doubled];
     for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
-        // silu<data_T, data_T, SIG1_CONFIG_T>(norm1_out[jj], SiLU1_out[jj]);
-        // silu<data_T, data_T, SIG1_CONFIG_T>(dense0_out[jj], SiLU1_out[jj]);
         relu<data_T, data_T, SIG1_CONFIG_T>(dense0_out[jj], SiLU1_out[jj]);
 #ifndef __SYNTHESIS__
-        print_full_result<input_t, CONFIG_T::n_el_doubled>("SiLU1_out[jj]", SiLU1_out[jj], fout);
+        print_full_result<input_t, CONFIG_T::n_el_doubled>("ReLU1_out[jj]", SiLU1_out[jj], fout);
 #endif
     }
 
-    // 2.6 dense
+    // Dense
     data_T dense1_out[CONFIG_T::n_particles][CONFIG_T::n_el];
     data_T zero_bias1[CONFIG_T::n_el];
     fill_zero<data_T,CONFIG_T::n_el >(zero_bias1);
@@ -200,7 +161,7 @@ void transformer(
 #endif
     }
 
-    // 3 Sum (1) + (2)
+    // Sum
     // TODO maybe self-attention shouldnt return flattened thing, given we need it as [][] for transformer
     data_T sum_out[CONFIG_T::n_particles][CONFIG_T::n_el];
     Final_sum: for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
@@ -215,24 +176,26 @@ void transformer(
 #endif
     }
 
-    // flatten
+    // Flatten
     data_T sum_out_flat[CONFIG_T::n_out];
     for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
         for (int ii = 0; ii < CONFIG_T::n_el; ii++) {
             sum_out_flat[jj + ii * CONFIG_T::n_particles] = sum_out[jj][ii];
         }
     }
+
 #ifndef __SYNTHESIS__
     print_full_result<data_T, CONFIG_T::n_out>("sum_out_flat", sum_out_flat, fout);
 #endif
 
-    // 4
+    // Cast
     Result: for(int ires = 0; ires < CONFIG_T::n_out; ires++){
         if (CONFIG_T::io_type == io_serial){
             #pragma HLS UNROLL
         }
         res[ires] = cast<data_T, res_T, CONFIG_T>(sum_out_flat[ires]);
     }
+
 #ifndef __SYNTHESIS__
     print_full_result<input_t, CONFIG_T::n_out>("res", res, fout);
     fout.close();

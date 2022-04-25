@@ -4,7 +4,8 @@ import typing
 import torch
 import torch.nn as nn
 
-torch.set_printoptions(profile='full', sci_mode=False, threshold=2097152)
+# torch.set_printoptions(profile='full', sci_mode=False, threshold=2097152)
+torch.set_printoptions(precision=5, threshold=2097152, linewidth=1000, sci_mode=False)
 
 
 class FeedForward(nn.Module):
