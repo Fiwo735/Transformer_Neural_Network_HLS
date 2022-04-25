@@ -50,36 +50,36 @@ void collect_trace_output(struct trace_data *c_trace_outputs) {
 
 // Wrapper of top level function for Python bridge
 void myproject_float(
-    float fc1_input[N_INPUT_1_1],
-    float layer13_out[N_LAYER_11],
+    float data_in[N_INPUT_1_1],
+    float data_out[N_LAYER_11],
     unsigned short &const_size_in_1,
     unsigned short &const_size_out_1
 ) {
     
-    input_t fc1_input_ap[N_INPUT_1_1];
-    nnet::convert_data<float, input_t, N_INPUT_1_1>(fc1_input, fc1_input_ap);
+    input_t data_in_ap[N_INPUT_1_1];
+    nnet::convert_data<float, input_t, N_INPUT_1_1>(data_in, data_in_ap);
 
-    result_t layer13_out_ap[N_LAYER_11];
+    result_t data_out_ap[N_LAYER_11];
 
-    myproject(fc1_input_ap,layer13_out_ap,const_size_in_1,const_size_out_1);
+    myproject(data_in_ap,data_out_ap,const_size_in_1,const_size_out_1);
 
-    nnet::convert_data<result_t, float, N_LAYER_11>(layer13_out_ap, layer13_out);
+    nnet::convert_data<result_t, float, N_LAYER_11>(data_out_ap, data_out);
 }
 
 void myproject_double(
-    double fc1_input[N_INPUT_1_1],
-    double layer13_out[N_LAYER_11],
+    double data_in[N_INPUT_1_1],
+    double data_out[N_LAYER_11],
     unsigned short &const_size_in_1,
     unsigned short &const_size_out_1
 ) {
-    input_t fc1_input_ap[N_INPUT_1_1];
-    nnet::convert_data<double, input_t, N_INPUT_1_1>(fc1_input, fc1_input_ap);
+    input_t data_in_ap[N_INPUT_1_1];
+    nnet::convert_data<double, input_t, N_INPUT_1_1>(data_in, data_in_ap);
 
-    result_t layer13_out_ap[N_LAYER_11];
+    result_t data_out_ap[N_LAYER_11];
 
-    myproject(fc1_input_ap,layer13_out_ap,const_size_in_1,const_size_out_1);
+    myproject(data_in_ap,data_out_ap,const_size_in_1,const_size_out_1);
 
-    nnet::convert_data<result_t, double, N_LAYER_11>(layer13_out_ap, layer13_out);
+    nnet::convert_data<result_t, double, N_LAYER_11>(data_out_ap, data_out);
 }
 
 }

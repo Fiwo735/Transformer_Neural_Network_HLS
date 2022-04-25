@@ -1,7 +1,7 @@
 <profile>
 
 <section name = "Vivado HLS Report for 'transformer'" level="0">
-<item name = "Date">Thu Apr 21 05:19:27 2022
+<item name = "Date">Sat Apr 23 08:31:26 2022
 </item>
 <item name = "Version">2019.2 (Build 2704478 on Wed Nov 06 22:10:23 MST 2019)</item>
 <item name = "Project">myproject_prj</item>
@@ -31,7 +31,7 @@
 <section name = "" level="1">
 <item name = "Instance"><table name="" hasTotal="0">
 <keys size="9">Instance, Module, min, max, min, max, min, max, Type</keys>
-<column name="grp_self_attention_fu_513">self_attention, 174, 174, 0.870 us, 0.870 us, 174, 174, none</column>
+<column name="grp_self_attention_fu_513">self_attention, 175, 175, 0.875 us, 0.875 us, 175, 175, none</column>
 <column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s_fu_553">dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_s, 1, 1, 5.000 ns, 5.000 ns, 1, 1, function</column>
 <column name="grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_fu_723">dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0, 1, 1, 5.000 ns, 5.000 ns, 1, 1, function</column>
 <column name="call_ret5_relu_ap_fixed_ap_fixed_35_15_5_3_0_sigmoid_config1_s_fu_861">relu_ap_fixed_ap_fixed_35_15_5_3_0_sigmoid_config1_s, 0, 0, 0 ns, 0 ns, 1, 1, function</column>

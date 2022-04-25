@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Messages>
-	<Message severity="INFO" prefix="[COSIM 212-47]" key="COSIM_TCL_47_1115" tag="" content="Using XSIM for RTL simulation."/>
-	<Message severity="INFO" prefix="[COSIM 212-14]" key="COSIM_TCL_14_1084" tag="" content="Instrumenting C test bench ..."/>
-	<Message severity="ERROR" prefix="[COSIM 212-346]" key="COSIM_TCL_346_1217" tag="COSIM" content="C test bench instrumentation failed: Cannot determine C object for RTL port data_in_V."/>
-	<Message severity="ERROR" prefix="[COSIM 212-5]" key="COSIM_TCL_5_1075" tag="" content="*** C/RTL co-simulation file generation failed. ***"/>
-	<Message severity="ERROR" prefix="[COSIM 212-4]" key="COSIM_TCL_4_1074" tag="" content="*** C/RTL co-simulation finished: FAIL ***"/>
-</Messages>

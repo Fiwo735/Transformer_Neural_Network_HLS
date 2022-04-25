@@ -166,7 +166,9 @@ def train_test_loop(
     all_labels = torch.stack(all_labels) if len(all_labels) == 1 else torch.stack(all_labels[:-1])
     all_predicted = torch.stack(all_predicted) if len(all_predicted) == 1 else torch.stack(all_predicted[:-1])
     if print_predictions:
-      print(f'Predictions: {all_predicted.squeeze().tolist()}')
+      all_predicted_list = all_predicted.squeeze().tolist()
+      all_predicted_str = ' '.join([str(el) for el in all_predicted_list])
+      print(f'Predictions:\n{all_predicted_str}')
 
     all_predicted = torch.argmax(all_predicted, dim=2)
     correct_predictions = (all_predicted == all_labels).sum()
@@ -220,6 +222,7 @@ def evaluate(
             criterion=criterion,
             is_train=False,
             num_particles=1,
+            print_predictions=print_predictions,
           )
 
   return (accuracy, total_time)
@@ -234,9 +237,12 @@ def time_evaluate(
 
   # Evaluate once to warm-up
   print(f'Timing evaluation, warming up...')
-  for _ in range(2):
+  for _ in range(5):
     _, _ = evaluate(test_loader=test_loader, model=model, criterion=criterion)
-  torch.cuda.synchronize() # Wait for warm-up to finish
+  
+   # If using GPU, wait for warm-up to finish
+  if torch.cuda.is_available():
+    torch.cuda.synchronize()
 
   times = []
   print(f'Evaluating {num_epochs} times...')
@@ -254,6 +260,7 @@ def main(
   debug_path: Optional[str] = None,
   is_debug: bool = False,
   is_timing: bool = False,
+  only_predictions: bool = False,
 ) -> None:
  
   batch_size = 128
@@ -301,34 +308,39 @@ def main(
   
   # Test model
   if is_debug:
-    _, _ = evaluate(test_loader=tiny_loader, model=model, criterion=criterion, filepath=debug_path)
+    _, _ = evaluate(test_loader=tiny_loader, model=model, criterion=criterion, filepath=debug_path, print_predictions=True)
     print(f'Debug output saved to {debug_path}')
     if is_timing:
       print(f'WARNING: Skipping timing as debug affects evaluation speed')
   elif is_timing:
-    accuracy, average_time = time_evaluate(test_loader=test_loader, model=model, criterion=criterion, num_epochs=10)
+    accuracy, average_time = time_evaluate(test_loader=test_loader, model=model, criterion=criterion, num_epochs=50)
     average_time_batch = average_time / (len(test_loader) - 2)
     print(f'Test accuracy: {accuracy*100:.2f}% in {average_time:.2f} s')
     print(f'{average_time_batch * 1000:.2f} ms per batch')
     print(f'{average_time_batch / batch_size * 1000000:.2f} us per sample')
-  else:
-    _, _ = evaluate(test_loader=tiny_loader, model=model, criterion=criterion, print_predictions=True)
+  elif not only_predictions:
     accuracy, total_time = evaluate(test_loader=test_loader, model=model, criterion=criterion)
     print(f'Test accuracy: {accuracy*100:.2f}% in {total_time:.2f} s')
+  else:
+    _, _ = evaluate(test_loader=tiny_loader, model=model, criterion=criterion, print_predictions=True)
 
 
 def parse():
   parser = argparse.ArgumentParser(description='Train and/or evaluate Pytorch model')
+
   parser.add_argument('--train', action='store_true')
   parser.add_argument('--debug', action='store_true')
   parser.add_argument('--timing', action='store_true')
   parser.add_argument('--rng_seed', action='store_true')
   parser.add_argument('--use_cpu', action='store_true')
+  parser.add_argument('--only_predictions', action='store_true')
 
   return parser.parse_args()
 
 
 if __name__ == "__main__":
+
+  torch.set_printoptions(precision=5, threshold=2097152, linewidth=1000, sci_mode=False)
 
   args = parse()
 
@@ -350,5 +362,6 @@ if __name__ == "__main__":
     state_path=os.path.join(DIR_NAME, 'best.pth.tar'),
     debug_path=os.path.join(DIR_NAME, 'layers_output.txt'),
     is_debug=args.debug,
-    is_timing=args.timing
+    is_timing=args.timing,
+    only_predictions=args.only_predictions,
   )

@@ -263,48 +263,100 @@ if {${::AESL::PGuard_autoexp_gen}} {
 }
 
 set axilite_register_dict [dict create]
-# XIL_BRAM:
+# Direct connection:
 if {${::AESL::PGuard_autoexp_gen}} {
-if {[info proc ::AESL_LIB_XILADAPTER::xil_bram_gen] == "::AESL_LIB_XILADAPTER::xil_bram_gen"} {
-eval "::AESL_LIB_XILADAPTER::xil_bram_gen { \
+eval "cg_default_interface_gen_dc { \
     id 1043 \
     name data_in_V \
-    reset_level 1 \
-    sync_rst true \
+    type other \
     dir I \
-    corename data_in_V \
-    op interface \
-    ports { data_in_V_address0 { O 4 vector } data_in_V_ce0 { O 1 bit } data_in_V_q0 { I 35 vector } data_in_V_address1 { O 4 vector } data_in_V_ce1 { O 1 bit } data_in_V_q1 { I 35 vector } } \
-} "
-} else {
-puts "@W \[IMPL-110\] Cannot find bus interface model in the library. Ignored generation of bus interface for 'data_in_V'"
-}
-}
-
-
-# XIL_BRAM:
-if {${::AESL::PGuard_autoexp_gen}} {
-if {[info proc ::AESL_LIB_XILADAPTER::xil_bram_gen] == "::AESL_LIB_XILADAPTER::xil_bram_gen"} {
-eval "::AESL_LIB_XILADAPTER::xil_bram_gen { \
-    id 1044 \
-    name data_out_V \
     reset_level 1 \
     sync_rst true \
-    dir O \
-    corename data_out_V \
+    corename dc_data_in_V \
     op interface \
-    ports { data_out_V_address0 { O 3 vector } data_out_V_ce0 { O 1 bit } data_out_V_we0 { O 1 bit } data_out_V_d0 { O 35 vector } data_out_V_address1 { O 3 vector } data_out_V_ce1 { O 1 bit } data_out_V_we1 { O 1 bit } data_out_V_d1 { O 35 vector } } \
+    ports { data_in_V { I 560 vector } data_in_V_ap_vld { I 1 bit } } \
 } "
-} else {
-puts "@W \[IMPL-110\] Cannot find bus interface model in the library. Ignored generation of bus interface for 'data_out_V'"
-}
 }
 
+# Direct connection:
+if {${::AESL::PGuard_autoexp_gen}} {
+eval "cg_default_interface_gen_dc { \
+    id 1044 \
+    name data_out_0_V \
+    type other \
+    dir O \
+    reset_level 1 \
+    sync_rst true \
+    corename dc_data_out_0_V \
+    op interface \
+    ports { data_out_0_V { O 35 vector } data_out_0_V_ap_vld { O 1 bit } } \
+} "
+}
 
 # Direct connection:
 if {${::AESL::PGuard_autoexp_gen}} {
 eval "cg_default_interface_gen_dc { \
     id 1045 \
+    name data_out_1_V \
+    type other \
+    dir O \
+    reset_level 1 \
+    sync_rst true \
+    corename dc_data_out_1_V \
+    op interface \
+    ports { data_out_1_V { O 35 vector } data_out_1_V_ap_vld { O 1 bit } } \
+} "
+}
+
+# Direct connection:
+if {${::AESL::PGuard_autoexp_gen}} {
+eval "cg_default_interface_gen_dc { \
+    id 1046 \
+    name data_out_2_V \
+    type other \
+    dir O \
+    reset_level 1 \
+    sync_rst true \
+    corename dc_data_out_2_V \
+    op interface \
+    ports { data_out_2_V { O 35 vector } data_out_2_V_ap_vld { O 1 bit } } \
+} "
+}
+
+# Direct connection:
+if {${::AESL::PGuard_autoexp_gen}} {
+eval "cg_default_interface_gen_dc { \
+    id 1047 \
+    name data_out_3_V \
+    type other \
+    dir O \
+    reset_level 1 \
+    sync_rst true \
+    corename dc_data_out_3_V \
+    op interface \
+    ports { data_out_3_V { O 35 vector } data_out_3_V_ap_vld { O 1 bit } } \
+} "
+}
+
+# Direct connection:
+if {${::AESL::PGuard_autoexp_gen}} {
+eval "cg_default_interface_gen_dc { \
+    id 1048 \
+    name data_out_4_V \
+    type other \
+    dir O \
+    reset_level 1 \
+    sync_rst true \
+    corename dc_data_out_4_V \
+    op interface \
+    ports { data_out_4_V { O 35 vector } data_out_4_V_ap_vld { O 1 bit } } \
+} "
+}
+
+# Direct connection:
+if {${::AESL::PGuard_autoexp_gen}} {
+eval "cg_default_interface_gen_dc { \
+    id 1049 \
     name const_size_in_1 \
     type other \
     dir O \
@@ -319,7 +371,7 @@ eval "cg_default_interface_gen_dc { \
 # Direct connection:
 if {${::AESL::PGuard_autoexp_gen}} {
 eval "cg_default_interface_gen_dc { \
-    id 1046 \
+    id 1050 \
     name const_size_out_1 \
     type other \
     dir O \
