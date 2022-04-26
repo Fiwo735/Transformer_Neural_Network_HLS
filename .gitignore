@@ -39,8 +39,6 @@ example_data
 
 # HLS
 vivado_hls.log
-solution1.aps
-solution1.log
 .autopilot_exit
 autopilot.flow.log
 csim.exe
