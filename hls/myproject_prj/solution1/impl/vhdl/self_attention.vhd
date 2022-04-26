@@ -841,13 +841,13 @@ architecture behav of self_attention is
     signal trunc_ln_reg_6214 : STD_LOGIC_VECTOR (15 downto 0);
     signal ap_CS_fsm_state93 : STD_LOGIC;
     attribute fsm_encoding of ap_CS_fsm_state93 : signal is "none";
-    signal trunc_ln708_5_reg_6219 : STD_LOGIC_VECTOR (15 downto 0);
-    signal trunc_ln708_6_reg_6224 : STD_LOGIC_VECTOR (15 downto 0);
-    signal trunc_ln708_7_reg_6229 : STD_LOGIC_VECTOR (15 downto 0);
-    signal trunc_ln708_8_reg_6234 : STD_LOGIC_VECTOR (15 downto 0);
-    signal trunc_ln708_9_reg_6239 : STD_LOGIC_VECTOR (15 downto 0);
-    signal trunc_ln708_s_reg_6244 : STD_LOGIC_VECTOR (15 downto 0);
-    signal trunc_ln708_1_reg_6249 : STD_LOGIC_VECTOR (15 downto 0);
+    signal trunc_ln708_1_reg_6219 : STD_LOGIC_VECTOR (15 downto 0);
+    signal trunc_ln708_2_reg_6224 : STD_LOGIC_VECTOR (15 downto 0);
+    signal trunc_ln708_3_reg_6229 : STD_LOGIC_VECTOR (15 downto 0);
+    signal trunc_ln708_4_reg_6234 : STD_LOGIC_VECTOR (15 downto 0);
+    signal trunc_ln708_5_reg_6239 : STD_LOGIC_VECTOR (15 downto 0);
+    signal trunc_ln708_6_reg_6244 : STD_LOGIC_VECTOR (15 downto 0);
+    signal trunc_ln708_7_reg_6249 : STD_LOGIC_VECTOR (15 downto 0);
     signal ap_CS_fsm_state102 : STD_LOGIC;
     attribute fsm_encoding of ap_CS_fsm_state102 : signal is "none";
     signal attention_q0 : STD_LOGIC_VECTOR (31 downto 0);
@@ -4472,13 +4472,13 @@ begin
     begin
         if (ap_clk'event and ap_clk = '1') then
             if ((ap_const_logic_1 = ap_CS_fsm_state93)) then
-                trunc_ln708_1_reg_6249 <= grp_matmul_ap_fixed_ap_fixed_2ul_8ul_8ul_2ul_s_fu_1892_ap_return_7(27 downto 12);
-                trunc_ln708_5_reg_6219 <= grp_matmul_ap_fixed_ap_fixed_2ul_8ul_8ul_2ul_s_fu_1892_ap_return_4(27 downto 12);
-                trunc_ln708_6_reg_6224 <= grp_matmul_ap_fixed_ap_fixed_2ul_8ul_8ul_2ul_s_fu_1892_ap_return_2(27 downto 12);
-                trunc_ln708_7_reg_6229 <= grp_matmul_ap_fixed_ap_fixed_2ul_8ul_8ul_2ul_s_fu_1892_ap_return_6(27 downto 12);
-                trunc_ln708_8_reg_6234 <= grp_matmul_ap_fixed_ap_fixed_2ul_8ul_8ul_2ul_s_fu_1892_ap_return_1(27 downto 12);
-                trunc_ln708_9_reg_6239 <= grp_matmul_ap_fixed_ap_fixed_2ul_8ul_8ul_2ul_s_fu_1892_ap_return_5(27 downto 12);
-                trunc_ln708_s_reg_6244 <= grp_matmul_ap_fixed_ap_fixed_2ul_8ul_8ul_2ul_s_fu_1892_ap_return_3(27 downto 12);
+                trunc_ln708_1_reg_6219 <= grp_matmul_ap_fixed_ap_fixed_2ul_8ul_8ul_2ul_s_fu_1892_ap_return_4(27 downto 12);
+                trunc_ln708_2_reg_6224 <= grp_matmul_ap_fixed_ap_fixed_2ul_8ul_8ul_2ul_s_fu_1892_ap_return_2(27 downto 12);
+                trunc_ln708_3_reg_6229 <= grp_matmul_ap_fixed_ap_fixed_2ul_8ul_8ul_2ul_s_fu_1892_ap_return_6(27 downto 12);
+                trunc_ln708_4_reg_6234 <= grp_matmul_ap_fixed_ap_fixed_2ul_8ul_8ul_2ul_s_fu_1892_ap_return_1(27 downto 12);
+                trunc_ln708_5_reg_6239 <= grp_matmul_ap_fixed_ap_fixed_2ul_8ul_8ul_2ul_s_fu_1892_ap_return_5(27 downto 12);
+                trunc_ln708_6_reg_6244 <= grp_matmul_ap_fixed_ap_fixed_2ul_8ul_8ul_2ul_s_fu_1892_ap_return_3(27 downto 12);
+                trunc_ln708_7_reg_6249 <= grp_matmul_ap_fixed_ap_fixed_2ul_8ul_8ul_2ul_s_fu_1892_ap_return_7(27 downto 12);
                 trunc_ln_reg_6214 <= grp_matmul_ap_fixed_ap_fixed_2ul_8ul_8ul_2ul_s_fu_1892_ap_return_0(27 downto 12);
             end if;
         end if;
@@ -5159,14 +5159,14 @@ begin
     end process;
 
 
-    energy_scaled_red_V_d0_assign_proc : process(trunc_ln_reg_6214, trunc_ln708_6_reg_6224, trunc_ln708_8_reg_6234, trunc_ln708_s_reg_6244, ap_CS_fsm_state97, ap_CS_fsm_state94, ap_CS_fsm_state95, ap_CS_fsm_state96)
+    energy_scaled_red_V_d0_assign_proc : process(trunc_ln_reg_6214, trunc_ln708_2_reg_6224, trunc_ln708_4_reg_6234, trunc_ln708_6_reg_6244, ap_CS_fsm_state97, ap_CS_fsm_state94, ap_CS_fsm_state95, ap_CS_fsm_state96)
     begin
         if ((ap_const_logic_1 = ap_CS_fsm_state97)) then 
-            energy_scaled_red_V_d0 <= trunc_ln708_s_reg_6244;
+            energy_scaled_red_V_d0 <= trunc_ln708_6_reg_6244;
         elsif ((ap_const_logic_1 = ap_CS_fsm_state96)) then 
-            energy_scaled_red_V_d0 <= trunc_ln708_8_reg_6234;
+            energy_scaled_red_V_d0 <= trunc_ln708_4_reg_6234;
         elsif ((ap_const_logic_1 = ap_CS_fsm_state95)) then 
-            energy_scaled_red_V_d0 <= trunc_ln708_6_reg_6224;
+            energy_scaled_red_V_d0 <= trunc_ln708_2_reg_6224;
         elsif ((ap_const_logic_1 = ap_CS_fsm_state94)) then 
             energy_scaled_red_V_d0 <= trunc_ln_reg_6214;
         else 
@@ -5175,16 +5175,16 @@ begin
     end process;
 
 
-    energy_scaled_red_V_d1_assign_proc : process(trunc_ln708_5_reg_6219, trunc_ln708_7_reg_6229, trunc_ln708_9_reg_6239, trunc_ln708_1_reg_6249, ap_CS_fsm_state97, ap_CS_fsm_state94, ap_CS_fsm_state95, ap_CS_fsm_state96)
+    energy_scaled_red_V_d1_assign_proc : process(trunc_ln708_1_reg_6219, trunc_ln708_3_reg_6229, trunc_ln708_5_reg_6239, trunc_ln708_7_reg_6249, ap_CS_fsm_state97, ap_CS_fsm_state94, ap_CS_fsm_state95, ap_CS_fsm_state96)
     begin
         if ((ap_const_logic_1 = ap_CS_fsm_state97)) then 
-            energy_scaled_red_V_d1 <= trunc_ln708_1_reg_6249;
+            energy_scaled_red_V_d1 <= trunc_ln708_7_reg_6249;
         elsif ((ap_const_logic_1 = ap_CS_fsm_state96)) then 
-            energy_scaled_red_V_d1 <= trunc_ln708_9_reg_6239;
+            energy_scaled_red_V_d1 <= trunc_ln708_5_reg_6239;
         elsif ((ap_const_logic_1 = ap_CS_fsm_state95)) then 
-            energy_scaled_red_V_d1 <= trunc_ln708_7_reg_6229;
+            energy_scaled_red_V_d1 <= trunc_ln708_3_reg_6229;
         elsif ((ap_const_logic_1 = ap_CS_fsm_state94)) then 
-            energy_scaled_red_V_d1 <= trunc_ln708_5_reg_6219;
+            energy_scaled_red_V_d1 <= trunc_ln708_1_reg_6219;
         else 
             energy_scaled_red_V_d1 <= "XXXXXXXXXXXXXXXX";
         end if; 

@@ -46,8 +46,7 @@ autopilot.flow.log
 csim.exe
 csim_layers.log
 myproject_csim.log
-hls4ml_tutorial/model_1/hls4ml_prj/myproject_prj/solution1/syn/*
-hls4ml_tutorial/model_1/hls4ml_prj/myproject_prj/solution1/.autopilot/*
+hls/myproject_prj/solution1/*
 
 # Python
 *.npy

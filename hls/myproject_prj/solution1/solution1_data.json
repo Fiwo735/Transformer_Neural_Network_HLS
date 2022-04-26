@@ -59,7 +59,7 @@
     "ClockPeriod": "5",
     "IsCombLogic": "0",
     "II": "x",
-    "Latency": "2086",
+    "Latency": "2282",
     "Uncertainty": "0.625"
   },
   "Xdc": {"OocClocks": ["create_clock -name ap_clk -period 5.000 [get_ports ap_clk]"]},
@@ -85,13 +85,14 @@
       "impl\/vhdl\/dense_latency_ap_fixed_ap_fixed_mlp_config_0_0_0_0_0_0.vhd",
       "impl\/vhdl\/init_log_table_ap_fixed_16_6_5_3_0_softmax_config0_s.vhd",
       "impl\/vhdl\/join_equally_ap_fixed_35_15_5_3_0_2ul_48ul_s.vhd",
+      "impl\/vhdl\/log_softmax_latency_ap_fixed_ap_fixed_softmax_config0_s.vhd",
+      "impl\/vhdl\/log_softmax_latency_ap_fixed_ap_fixed_softmax_config0_s_edEe.vhd",
+      "impl\/vhdl\/log_softmax_latency_ap_fixed_ap_fixed_softmax_config0_s_leOg.vhd",
       "impl\/vhdl\/matmul_ap_fixed_ap_fixed_2ul_2ul_2ul_8ul_s.vhd",
       "impl\/vhdl\/matmul_ap_fixed_ap_fixed_2ul_8ul_8ul_2ul_s.vhd",
       "impl\/vhdl\/myproject_flog_32ns_32ns_32_9_full_dsp_1.vhd",
       "impl\/vhdl\/myproject_fpext_32ns_64_2_1.vhd",
-      "impl\/vhdl\/myproject_log_table_i.vhd",
       "impl\/vhdl\/myproject_mlp_dimensions_reduced_V.vhd",
-      "impl\/vhdl\/myproject_mul_mul_16s_16s_26_1_1.vhd",
       "impl\/vhdl\/myproject_mul_mul_16s_16s_32_1_1.vhd",
       "impl\/vhdl\/myproject_transformer_0_out.vhd",
       "impl\/vhdl\/p_fill_n_a_ap_fixed_unsigned_long_double_s.vhd",
@@ -104,8 +105,6 @@
       "impl\/vhdl\/softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s.vhd",
       "impl\/vhdl\/softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s_exbkb.vhd",
       "impl\/vhdl\/softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s_incud.vhd",
-      "impl\/vhdl\/softmax_latency_ap_fixed_ap_fixed_softmax_config0_s.vhd",
-      "impl\/vhdl\/softmax_latency_ap_fixed_ap_fixed_softmax_config0_s_exp_tdEe.vhd",
       "impl\/vhdl\/transformer.vhd",
       "impl\/vhdl\/transpose_2d_ap_fixed_sa_transpose_config0_s.vhd",
       "impl\/vhdl\/myproject.vhd"
@@ -119,13 +118,15 @@
       "impl\/verilog\/dense_latency_ap_fixed_ap_fixed_mlp_config_0_0_0_0_0_0.v",
       "impl\/verilog\/init_log_table_ap_fixed_16_6_5_3_0_softmax_config0_s.v",
       "impl\/verilog\/join_equally_ap_fixed_35_15_5_3_0_2ul_48ul_s.v",
+      "impl\/verilog\/log_softmax_latency_ap_fixed_ap_fixed_softmax_config0_s.v",
+      "impl\/verilog\/log_softmax_latency_ap_fixed_ap_fixed_softmax_config0_s_edEe.v",
+      "impl\/verilog\/log_softmax_latency_ap_fixed_ap_fixed_softmax_config0_s_edEe_rom.dat",
+      "impl\/verilog\/log_softmax_latency_ap_fixed_ap_fixed_softmax_config0_s_leOg.v",
       "impl\/verilog\/matmul_ap_fixed_ap_fixed_2ul_2ul_2ul_8ul_s.v",
       "impl\/verilog\/matmul_ap_fixed_ap_fixed_2ul_8ul_8ul_2ul_s.v",
       "impl\/verilog\/myproject_flog_32ns_32ns_32_9_full_dsp_1.v",
       "impl\/verilog\/myproject_fpext_32ns_64_2_1.v",
-      "impl\/verilog\/myproject_log_table_i.v",
       "impl\/verilog\/myproject_mlp_dimensions_reduced_V.v",
-      "impl\/verilog\/myproject_mul_mul_16s_16s_26_1_1.v",
       "impl\/verilog\/myproject_mul_mul_16s_16s_32_1_1.v",
       "impl\/verilog\/myproject_transformer_0_out.v",
       "impl\/verilog\/p_fill_n_a_ap_fixed_unsigned_long_double_s.v",
@@ -140,9 +141,6 @@
       "impl\/verilog\/softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s_exbkb_rom.dat",
       "impl\/verilog\/softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s_incud.v",
       "impl\/verilog\/softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s_incud_rom.dat",
-      "impl\/verilog\/softmax_latency_ap_fixed_ap_fixed_softmax_config0_s.v",
-      "impl\/verilog\/softmax_latency_ap_fixed_ap_fixed_softmax_config0_s_exp_tdEe.v",
-      "impl\/verilog\/softmax_latency_ap_fixed_ap_fixed_softmax_config0_s_exp_tdEe_rom.dat",
       "impl\/verilog\/transformer.v",
       "impl\/verilog\/transpose_2d_ap_fixed_sa_transpose_config0_s.v",
       "impl\/verilog\/myproject.v"
@@ -383,7 +381,7 @@
       "Instances": [
         {
           "ModuleName": "transformer",
-          "InstanceName": "grp_transformer_fu_821",
+          "InstanceName": "grp_transformer_fu_759",
           "Instances": [
             {
               "ModuleName": "self_attention",
@@ -437,37 +435,29 @@
             },
             {
               "ModuleName": "relu_ap_fixed_ap_fixed_35_15_5_3_0_sigmoid_config1_s",
-              "InstanceName": "call_ret5_relu_ap_fixed_ap_fixed_35_15_5_3_0_sigmoid_config1_s_fu_861"
-            },
-            {
-              "ModuleName": "relu_ap_fixed_ap_fixed_35_15_5_3_0_sigmoid_config1_s",
-              "InstanceName": "call_ret6_relu_ap_fixed_ap_fixed_35_15_5_3_0_sigmoid_config1_s_fu_1061"
+              "InstanceName": "grp_relu_ap_fixed_ap_fixed_35_15_5_3_0_sigmoid_config1_s_fu_861"
             },
             {
               "ModuleName": "relu_ap_fixed_ap_fixed_35_15_5_3_0_sigmoid_config0_s",
-              "InstanceName": "call_ret1_relu_ap_fixed_ap_fixed_35_15_5_3_0_sigmoid_config0_s_fu_1197"
-            },
-            {
-              "ModuleName": "relu_ap_fixed_ap_fixed_35_15_5_3_0_sigmoid_config0_s",
-              "InstanceName": "call_ret2_relu_ap_fixed_ap_fixed_35_15_5_3_0_sigmoid_config0_s_fu_1301"
+              "InstanceName": "grp_relu_ap_fixed_ap_fixed_35_15_5_3_0_sigmoid_config0_s_fu_1063"
             }
           ]
         },
         {
           "ModuleName": "dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_2",
-          "InstanceName": "grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_2_fu_846"
+          "InstanceName": "grp_dense_latency_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_2_fu_784"
         },
         {
-          "ModuleName": "init_log_table_ap_fixed_16_6_5_3_0_softmax_config0_s",
-          "InstanceName": "grp_init_log_table_ap_fixed_16_6_5_3_0_softmax_config0_s_fu_852"
+          "ModuleName": "log_softmax_latency_ap_fixed_ap_fixed_softmax_config0_s",
+          "InstanceName": "grp_log_softmax_latency_ap_fixed_ap_fixed_softmax_config0_s_fu_790",
+          "Instances": [{
+              "ModuleName": "init_log_table_ap_fixed_16_6_5_3_0_softmax_config0_s",
+              "InstanceName": "grp_init_log_table_ap_fixed_16_6_5_3_0_softmax_config0_s_fu_153"
+            }]
         },
         {
           "ModuleName": "dense_latency_ap_fixed_ap_fixed_mlp_config_0_0_0_0_0_0",
-          "InstanceName": "grp_dense_latency_ap_fixed_ap_fixed_mlp_config_0_0_0_0_0_0_fu_857"
-        },
-        {
-          "ModuleName": "softmax_latency_ap_fixed_ap_fixed_softmax_config0_s",
-          "InstanceName": "grp_softmax_latency_ap_fixed_ap_fixed_softmax_config0_s_fu_862"
+          "InstanceName": "grp_dense_latency_ap_fixed_ap_fixed_mlp_config_0_0_0_0_0_0_fu_801"
         }
       ]
     },
@@ -591,10 +581,10 @@
         "isCombinational": "0",
         "isOneStateSeq": "0"
       },
-      "softmax_latency_ap_fixed_ap_fixed_softmax_config0_s": {
+      "log_softmax_latency_ap_fixed_ap_fixed_softmax_config0_s": {
         "FunctionProtocol": "ap_ctrl_hs",
         "isTaskLevelControl": "1",
-        "isPipelined": "1",
+        "isPipelined": "0",
         "isCombinational": "0",
         "isOneStateSeq": "0"
       },
@@ -924,10 +914,10 @@
       },
       "transformer": {
         "Latency": {
-          "LatencyBest": "201",
-          "LatencyAvg": "201",
-          "LatencyWorst": "201",
-          "PipelineII": "201",
+          "LatencyBest": "198",
+          "LatencyAvg": "198",
+          "LatencyWorst": "198",
+          "PipelineII": "198",
           "PipelineDepth": "",
           "PipelineType": "none"
         },
@@ -939,8 +929,8 @@
         "Area": {
           "BRAM_18K": "13",
           "DSP48E": "4350",
-          "FF": "94690",
-          "LUT": "146950",
+          "FF": "94687",
+          "LUT": "141238",
           "URAM": "0"
         }
       },
@@ -988,34 +978,34 @@
           "URAM": "0"
         }
       },
-      "softmax_latency_ap_fixed_ap_fixed_softmax_config0_s": {
+      "log_softmax_latency_ap_fixed_ap_fixed_softmax_config0_s": {
         "Latency": {
-          "LatencyBest": "2",
-          "LatencyAvg": "2",
-          "LatencyWorst": "2",
-          "PipelineII": "1",
-          "PipelineDepth": "3",
-          "PipelineType": "function"
+          "LatencyBest": "2050",
+          "LatencyAvg": "2050",
+          "LatencyWorst": "2050",
+          "PipelineII": "2050",
+          "PipelineDepth": "",
+          "PipelineType": "none"
         },
         "Timing": {
           "Target": "5.00",
           "Uncertainty": "0.62",
-          "Estimate": "3.691"
+          "Estimate": "4.157"
         },
         "Area": {
           "BRAM_18K": "16",
-          "DSP48E": "5",
-          "FF": "83",
-          "LUT": "68",
+          "DSP48E": "13",
+          "FF": "2795",
+          "LUT": "12247",
           "URAM": "0"
         }
       },
       "myproject": {
         "Latency": {
-          "LatencyBest": "2086",
-          "LatencyAvg": "2086",
-          "LatencyWorst": "2086",
-          "PipelineII": "2087",
+          "LatencyBest": "2282",
+          "LatencyAvg": "2282",
+          "LatencyWorst": "2282",
+          "PipelineII": "2283",
           "PipelineDepth": "",
           "PipelineType": "none"
         },
@@ -1025,10 +1015,10 @@
           "Estimate": "4.358"
         },
         "Area": {
-          "BRAM_18K": "37",
-          "DSP48E": "5040",
-          "FF": "106724",
-          "LUT": "175540",
+          "BRAM_18K": "33",
+          "DSP48E": "5035",
+          "FF": "106782",
+          "LUT": "169920",
           "URAM": "0"
         }
       }
@@ -1044,7 +1034,7 @@
   },
   "GenData": {
     "DataVersion": "0.2",
-    "Time": "2022-04-23 08:40:26 BST",
+    "Time": "2022-04-26 08:37:58 BST",
     "ToolName": "vivado_hls",
     "ToolVersion": "2019.2"
   }

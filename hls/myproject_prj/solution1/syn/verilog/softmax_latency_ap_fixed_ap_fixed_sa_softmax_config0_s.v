@@ -86,15 +86,15 @@ wire    ap_block_state2_pp0_stage0_iter1;
 wire    ap_block_state3_pp0_stage0_iter2;
 wire    ap_block_state4_pp0_stage0_iter3;
 reg    ap_block_pp0_stage0_11001;
-wire   [11:0] exp_table13_address0;
-reg    exp_table13_ce0;
-wire   [15:0] exp_table13_q0;
-wire   [11:0] exp_table13_address1;
-reg    exp_table13_ce1;
-wire   [15:0] exp_table13_q1;
-wire   [11:0] invert_table15_address0;
-reg    invert_table15_ce0;
-wire   [15:0] invert_table15_q0;
+wire   [11:0] exp_table12_address0;
+reg    exp_table12_ce0;
+wire   [15:0] exp_table12_q0;
+wire   [11:0] exp_table12_address1;
+reg    exp_table12_ce1;
+wire   [15:0] exp_table12_q1;
+wire   [11:0] invert_table13_address0;
+reg    invert_table13_ce0;
+wire   [15:0] invert_table13_q0;
 reg   [0:0] res_V_offset3_read_reg_291;
 reg   [0:0] res_V_offset3_read_reg_291_pp0_iter1_reg;
 reg   [0:0] res_V_offset3_read_reg_291_pp0_iter2_reg;
@@ -104,23 +104,23 @@ reg   [0:0] res_V_offset_read_reg_296_pp0_iter2_reg;
 reg  signed [15:0] exp_res_0_V_reg_321;
 reg  signed [15:0] exp_res_1_V_reg_326;
 reg    ap_block_pp0_stage0_subdone;
-wire   [63:0] zext_ln306_fu_168_p1;
+wire   [63:0] zext_ln329_fu_168_p1;
 wire   [63:0] tmp_3_fu_179_p3;
-wire   [63:0] zext_ln307_fu_198_p1;
-wire   [63:0] zext_ln307_1_fu_213_p1;
-wire   [63:0] zext_ln319_fu_234_p1;
+wire   [63:0] zext_ln330_fu_198_p1;
+wire   [63:0] zext_ln330_1_fu_213_p1;
+wire   [63:0] zext_ln342_fu_234_p1;
 wire   [63:0] zext_ln203_fu_247_p1;
 wire   [63:0] tmp_1_fu_258_p3;
 wire  signed [31:0] mul_ln1118_fu_277_p2;
 wire  signed [31:0] mul_ln1118_1_fu_284_p2;
 wire   [2:0] tmp_2_fu_158_p4;
-wire   [2:0] or_ln306_fu_173_p2;
+wire   [2:0] or_ln329_fu_173_p2;
 wire   [11:0] y_V_fu_188_p4;
-wire   [11:0] y_V_6_fu_203_p4;
+wire   [11:0] y_V_1_fu_203_p4;
 wire  signed [15:0] exp_sum_V_fu_218_p0;
 wire  signed [15:0] exp_sum_V_fu_218_p1;
 wire   [15:0] exp_sum_V_fu_218_p2;
-wire   [11:0] y_V_7_fu_224_p4;
+wire   [11:0] y_V_2_fu_224_p4;
 wire   [2:0] tmp_fu_239_p4;
 wire   [2:0] or_ln203_fu_252_p2;
 wire  signed [15:0] mul_ln1118_fu_277_p1;
@@ -143,27 +143,27 @@ softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s_exbkb #(
     .DataWidth( 16 ),
     .AddressRange( 4096 ),
     .AddressWidth( 12 ))
-exp_table13_U(
+exp_table12_U(
     .clk(ap_clk),
     .reset(ap_rst),
-    .address0(exp_table13_address0),
-    .ce0(exp_table13_ce0),
-    .q0(exp_table13_q0),
-    .address1(exp_table13_address1),
-    .ce1(exp_table13_ce1),
-    .q1(exp_table13_q1)
+    .address0(exp_table12_address0),
+    .ce0(exp_table12_ce0),
+    .q0(exp_table12_q0),
+    .address1(exp_table12_address1),
+    .ce1(exp_table12_ce1),
+    .q1(exp_table12_q1)
 );
 
 softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s_incud #(
     .DataWidth( 16 ),
     .AddressRange( 4096 ),
     .AddressWidth( 12 ))
-invert_table15_U(
+invert_table13_U(
     .clk(ap_clk),
     .reset(ap_rst),
-    .address0(invert_table15_address0),
-    .ce0(invert_table15_ce0),
-    .q0(invert_table15_q0)
+    .address0(invert_table13_address0),
+    .ce0(invert_table13_ce0),
+    .q0(invert_table13_q0)
 );
 
 myproject_mul_mul_16s_16s_32_1_1 #(
@@ -230,8 +230,8 @@ end
 
 always @ (posedge ap_clk) begin
     if (((1'b1 == ap_ce) & (1'b0 == ap_block_pp0_stage0_11001) & (ap_enable_reg_pp0_iter2 == 1'b1))) begin
-        exp_res_0_V_reg_321 <= exp_table13_q0;
-        exp_res_1_V_reg_326 <= exp_table13_q1;
+        exp_res_0_V_reg_321 <= exp_table12_q0;
+        exp_res_1_V_reg_326 <= exp_table12_q1;
     end
 end
 
@@ -317,25 +317,25 @@ end
 
 always @ (*) begin
     if (((1'b1 == ap_ce) & (1'b0 == ap_block_pp0_stage0_11001) & (ap_enable_reg_pp0_iter1 == 1'b1) & (1'b1 == ap_CS_fsm_pp0_stage0))) begin
-        exp_table13_ce0 = 1'b1;
+        exp_table12_ce0 = 1'b1;
     end else begin
-        exp_table13_ce0 = 1'b0;
+        exp_table12_ce0 = 1'b0;
     end
 end
 
 always @ (*) begin
     if (((1'b1 == ap_ce) & (1'b0 == ap_block_pp0_stage0_11001) & (ap_enable_reg_pp0_iter1 == 1'b1) & (1'b1 == ap_CS_fsm_pp0_stage0))) begin
-        exp_table13_ce1 = 1'b1;
+        exp_table12_ce1 = 1'b1;
     end else begin
-        exp_table13_ce1 = 1'b0;
+        exp_table12_ce1 = 1'b0;
     end
 end
 
 always @ (*) begin
     if (((1'b1 == ap_ce) & (1'b0 == ap_block_pp0_stage0_11001) & (ap_enable_reg_pp0_iter2 == 1'b1))) begin
-        invert_table15_ce0 = 1'b1;
+        invert_table13_ce0 = 1'b1;
     end else begin
-        invert_table15_ce0 = 1'b0;
+        invert_table13_ce0 = 1'b0;
     end
 end
 
@@ -408,21 +408,21 @@ assign ap_enable_pp0 = (ap_idle_pp0 ^ 1'b1);
 
 assign ap_enable_reg_pp0_iter0 = ap_start;
 
-assign data_V_address0 = zext_ln306_fu_168_p1;
+assign data_V_address0 = zext_ln329_fu_168_p1;
 
 assign data_V_address1 = tmp_3_fu_179_p3;
 
-assign exp_sum_V_fu_218_p0 = exp_table13_q1;
+assign exp_sum_V_fu_218_p0 = exp_table12_q1;
 
-assign exp_sum_V_fu_218_p1 = exp_table13_q0;
+assign exp_sum_V_fu_218_p1 = exp_table12_q0;
 
 assign exp_sum_V_fu_218_p2 = ($signed(exp_sum_V_fu_218_p0) + $signed(exp_sum_V_fu_218_p1));
 
-assign exp_table13_address0 = zext_ln307_fu_198_p1;
+assign exp_table12_address0 = zext_ln330_fu_198_p1;
 
-assign exp_table13_address1 = zext_ln307_1_fu_213_p1;
+assign exp_table12_address1 = zext_ln330_1_fu_213_p1;
 
-assign invert_table15_address0 = zext_ln319_fu_234_p1;
+assign invert_table13_address0 = zext_ln342_fu_234_p1;
 
 assign mul_ln1118_1_fu_284_p1 = sext_ln1118_fu_267_p1;
 
@@ -430,7 +430,7 @@ assign mul_ln1118_fu_277_p1 = sext_ln1118_fu_267_p1;
 
 assign or_ln203_fu_252_p2 = (tmp_fu_239_p4 | 3'd1);
 
-assign or_ln306_fu_173_p2 = (tmp_2_fu_158_p4 | 3'd1);
+assign or_ln329_fu_173_p2 = (tmp_2_fu_158_p4 | 3'd1);
 
 assign res_V_address0 = zext_ln203_fu_247_p1;
 
@@ -440,30 +440,30 @@ assign res_V_d0 = mul_ln1118_fu_277_p2;
 
 assign res_V_d1 = mul_ln1118_1_fu_284_p2;
 
-assign sext_ln1118_fu_267_p1 = $signed(invert_table15_q0);
+assign sext_ln1118_fu_267_p1 = $signed(invert_table13_q0);
 
 assign tmp_1_fu_258_p3 = {{61'd0}, {or_ln203_fu_252_p2}};
 
 assign tmp_2_fu_158_p4 = {{{data_V_offset}, {data_V_offset1}}, {1'd0}};
 
-assign tmp_3_fu_179_p3 = {{61'd0}, {or_ln306_fu_173_p2}};
+assign tmp_3_fu_179_p3 = {{61'd0}, {or_ln329_fu_173_p2}};
 
 assign tmp_fu_239_p4 = {{{res_V_offset_read_reg_296_pp0_iter2_reg}, {res_V_offset3_read_reg_291_pp0_iter2_reg}}, {1'd0}};
 
-assign y_V_6_fu_203_p4 = {{data_V_q1[15:4]}};
+assign y_V_1_fu_203_p4 = {{data_V_q1[15:4]}};
 
-assign y_V_7_fu_224_p4 = {{exp_sum_V_fu_218_p2[15:4]}};
+assign y_V_2_fu_224_p4 = {{exp_sum_V_fu_218_p2[15:4]}};
 
 assign y_V_fu_188_p4 = {{data_V_q0[15:4]}};
 
 assign zext_ln203_fu_247_p1 = tmp_fu_239_p4;
 
-assign zext_ln306_fu_168_p1 = tmp_2_fu_158_p4;
+assign zext_ln329_fu_168_p1 = tmp_2_fu_158_p4;
 
-assign zext_ln307_1_fu_213_p1 = y_V_6_fu_203_p4;
+assign zext_ln330_1_fu_213_p1 = y_V_1_fu_203_p4;
 
-assign zext_ln307_fu_198_p1 = y_V_fu_188_p4;
+assign zext_ln330_fu_198_p1 = y_V_fu_188_p4;
 
-assign zext_ln319_fu_234_p1 = y_V_7_fu_224_p4;
+assign zext_ln342_fu_234_p1 = y_V_2_fu_224_p4;
 
 endmodule //softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s

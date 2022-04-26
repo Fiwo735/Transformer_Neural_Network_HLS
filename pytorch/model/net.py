@@ -125,7 +125,9 @@ class ConstituentNet(nn.Module):
         #     print("out (after out layer)")
         #     print(out)
 
+        # final_result = torch.sub(out, out.max(dim=-1, keepdim=True).values)
         final_result = F.log_softmax(out, dim=-1)
+        # final_result = F.softmax(out, dim=-1)
         self.debug_print('final_result (softmax)', final_result)
 
         return final_result
