@@ -363,7 +363,7 @@ void log_softmax_latency(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in])
     bool initialized = false;
     typename CONFIG_T::exp_table_t exp_table[CONFIG_T::table_size];
     // typename CONFIG_T::inv_table_t invert_table[CONFIG_T::table_size];
-    typename CONFIG_T::log_table_t log_table[CONFIG_T::table_size];
+    static typename CONFIG_T::log_table_t log_table[CONFIG_T::table_size];
 #else
     static bool initialized = false;
     static typename CONFIG_T::exp_table_t exp_table[CONFIG_T::table_size];
