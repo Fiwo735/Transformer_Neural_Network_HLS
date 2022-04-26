@@ -68,15 +68,15 @@ architecture behav of softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s is
     signal ap_block_state3_pp0_stage0_iter2 : BOOLEAN;
     signal ap_block_state4_pp0_stage0_iter3 : BOOLEAN;
     signal ap_block_pp0_stage0_11001 : BOOLEAN;
-    signal exp_table13_address0 : STD_LOGIC_VECTOR (11 downto 0);
-    signal exp_table13_ce0 : STD_LOGIC;
-    signal exp_table13_q0 : STD_LOGIC_VECTOR (15 downto 0);
-    signal exp_table13_address1 : STD_LOGIC_VECTOR (11 downto 0);
-    signal exp_table13_ce1 : STD_LOGIC;
-    signal exp_table13_q1 : STD_LOGIC_VECTOR (15 downto 0);
-    signal invert_table15_address0 : STD_LOGIC_VECTOR (11 downto 0);
-    signal invert_table15_ce0 : STD_LOGIC;
-    signal invert_table15_q0 : STD_LOGIC_VECTOR (15 downto 0);
+    signal exp_table12_address0 : STD_LOGIC_VECTOR (11 downto 0);
+    signal exp_table12_ce0 : STD_LOGIC;
+    signal exp_table12_q0 : STD_LOGIC_VECTOR (15 downto 0);
+    signal exp_table12_address1 : STD_LOGIC_VECTOR (11 downto 0);
+    signal exp_table12_ce1 : STD_LOGIC;
+    signal exp_table12_q1 : STD_LOGIC_VECTOR (15 downto 0);
+    signal invert_table13_address0 : STD_LOGIC_VECTOR (11 downto 0);
+    signal invert_table13_ce0 : STD_LOGIC;
+    signal invert_table13_q0 : STD_LOGIC_VECTOR (15 downto 0);
     signal res_V_offset3_read_reg_291 : STD_LOGIC_VECTOR (0 downto 0);
     signal res_V_offset3_read_reg_291_pp0_iter1_reg : STD_LOGIC_VECTOR (0 downto 0);
     signal res_V_offset3_read_reg_291_pp0_iter2_reg : STD_LOGIC_VECTOR (0 downto 0);
@@ -86,23 +86,23 @@ architecture behav of softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s is
     signal exp_res_0_V_reg_321 : STD_LOGIC_VECTOR (15 downto 0);
     signal exp_res_1_V_reg_326 : STD_LOGIC_VECTOR (15 downto 0);
     signal ap_block_pp0_stage0_subdone : BOOLEAN;
-    signal zext_ln306_fu_168_p1 : STD_LOGIC_VECTOR (63 downto 0);
+    signal zext_ln329_fu_168_p1 : STD_LOGIC_VECTOR (63 downto 0);
     signal tmp_3_fu_179_p3 : STD_LOGIC_VECTOR (63 downto 0);
-    signal zext_ln307_fu_198_p1 : STD_LOGIC_VECTOR (63 downto 0);
-    signal zext_ln307_1_fu_213_p1 : STD_LOGIC_VECTOR (63 downto 0);
-    signal zext_ln319_fu_234_p1 : STD_LOGIC_VECTOR (63 downto 0);
+    signal zext_ln330_fu_198_p1 : STD_LOGIC_VECTOR (63 downto 0);
+    signal zext_ln330_1_fu_213_p1 : STD_LOGIC_VECTOR (63 downto 0);
+    signal zext_ln342_fu_234_p1 : STD_LOGIC_VECTOR (63 downto 0);
     signal zext_ln203_fu_247_p1 : STD_LOGIC_VECTOR (63 downto 0);
     signal tmp_1_fu_258_p3 : STD_LOGIC_VECTOR (63 downto 0);
     signal mul_ln1118_fu_277_p2 : STD_LOGIC_VECTOR (31 downto 0);
     signal mul_ln1118_1_fu_284_p2 : STD_LOGIC_VECTOR (31 downto 0);
     signal tmp_2_fu_158_p4 : STD_LOGIC_VECTOR (2 downto 0);
-    signal or_ln306_fu_173_p2 : STD_LOGIC_VECTOR (2 downto 0);
+    signal or_ln329_fu_173_p2 : STD_LOGIC_VECTOR (2 downto 0);
     signal y_V_fu_188_p4 : STD_LOGIC_VECTOR (11 downto 0);
-    signal y_V_6_fu_203_p4 : STD_LOGIC_VECTOR (11 downto 0);
+    signal y_V_1_fu_203_p4 : STD_LOGIC_VECTOR (11 downto 0);
     signal exp_sum_V_fu_218_p0 : STD_LOGIC_VECTOR (15 downto 0);
     signal exp_sum_V_fu_218_p1 : STD_LOGIC_VECTOR (15 downto 0);
     signal exp_sum_V_fu_218_p2 : STD_LOGIC_VECTOR (15 downto 0);
-    signal y_V_7_fu_224_p4 : STD_LOGIC_VECTOR (11 downto 0);
+    signal y_V_2_fu_224_p4 : STD_LOGIC_VECTOR (11 downto 0);
     signal tmp_fu_239_p4 : STD_LOGIC_VECTOR (2 downto 0);
     signal or_ln203_fu_252_p2 : STD_LOGIC_VECTOR (2 downto 0);
     signal mul_ln1118_fu_277_p1 : STD_LOGIC_VECTOR (15 downto 0);
@@ -160,7 +160,7 @@ architecture behav of softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s is
 
 
 begin
-    exp_table13_U : component softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s_exbkb
+    exp_table12_U : component softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s_exbkb
     generic map (
         DataWidth => 16,
         AddressRange => 4096,
@@ -168,14 +168,14 @@ begin
     port map (
         clk => ap_clk,
         reset => ap_rst,
-        address0 => exp_table13_address0,
-        ce0 => exp_table13_ce0,
-        q0 => exp_table13_q0,
-        address1 => exp_table13_address1,
-        ce1 => exp_table13_ce1,
-        q1 => exp_table13_q1);
+        address0 => exp_table12_address0,
+        ce0 => exp_table12_ce0,
+        q0 => exp_table12_q0,
+        address1 => exp_table12_address1,
+        ce1 => exp_table12_ce1,
+        q1 => exp_table12_q1);
 
-    invert_table15_U : component softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s_incud
+    invert_table13_U : component softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s_incud
     generic map (
         DataWidth => 16,
         AddressRange => 4096,
@@ -183,9 +183,9 @@ begin
     port map (
         clk => ap_clk,
         reset => ap_rst,
-        address0 => invert_table15_address0,
-        ce0 => invert_table15_ce0,
-        q0 => invert_table15_q0);
+        address0 => invert_table13_address0,
+        ce0 => invert_table13_ce0,
+        q0 => invert_table13_q0);
 
     myproject_mul_mul_16s_16s_32_1_1_U410 : component myproject_mul_mul_16s_16s_32_1_1
     generic map (
@@ -272,8 +272,8 @@ begin
     begin
         if (ap_clk'event and ap_clk = '1') then
             if (((ap_const_logic_1 = ap_ce) and (ap_const_boolean_0 = ap_block_pp0_stage0_11001) and (ap_enable_reg_pp0_iter2 = ap_const_logic_1))) then
-                exp_res_0_V_reg_321 <= exp_table13_q0;
-                exp_res_1_V_reg_326 <= exp_table13_q1;
+                exp_res_0_V_reg_321 <= exp_table12_q0;
+                exp_res_1_V_reg_326 <= exp_table12_q1;
             end if;
         end if;
     end process;
@@ -392,7 +392,7 @@ begin
         end if; 
     end process;
 
-    data_V_address0 <= zext_ln306_fu_168_p1(3 - 1 downto 0);
+    data_V_address0 <= zext_ln329_fu_168_p1(3 - 1 downto 0);
     data_V_address1 <= tmp_3_fu_179_p3(3 - 1 downto 0);
 
     data_V_ce0_assign_proc : process(ap_start, ap_CS_fsm_pp0_stage0, ap_block_pp0_stage0_11001, ap_ce)
@@ -414,46 +414,46 @@ begin
         end if; 
     end process;
 
-    exp_sum_V_fu_218_p0 <= exp_table13_q1;
-    exp_sum_V_fu_218_p1 <= exp_table13_q0;
+    exp_sum_V_fu_218_p0 <= exp_table12_q1;
+    exp_sum_V_fu_218_p1 <= exp_table12_q0;
     exp_sum_V_fu_218_p2 <= std_logic_vector(signed(exp_sum_V_fu_218_p0) + signed(exp_sum_V_fu_218_p1));
-    exp_table13_address0 <= zext_ln307_fu_198_p1(12 - 1 downto 0);
-    exp_table13_address1 <= zext_ln307_1_fu_213_p1(12 - 1 downto 0);
+    exp_table12_address0 <= zext_ln330_fu_198_p1(12 - 1 downto 0);
+    exp_table12_address1 <= zext_ln330_1_fu_213_p1(12 - 1 downto 0);
 
-    exp_table13_ce0_assign_proc : process(ap_CS_fsm_pp0_stage0, ap_enable_reg_pp0_iter1, ap_block_pp0_stage0_11001, ap_ce)
+    exp_table12_ce0_assign_proc : process(ap_CS_fsm_pp0_stage0, ap_enable_reg_pp0_iter1, ap_block_pp0_stage0_11001, ap_ce)
     begin
         if (((ap_const_logic_1 = ap_ce) and (ap_const_boolean_0 = ap_block_pp0_stage0_11001) and (ap_enable_reg_pp0_iter1 = ap_const_logic_1) and (ap_const_logic_1 = ap_CS_fsm_pp0_stage0))) then 
-            exp_table13_ce0 <= ap_const_logic_1;
+            exp_table12_ce0 <= ap_const_logic_1;
         else 
-            exp_table13_ce0 <= ap_const_logic_0;
+            exp_table12_ce0 <= ap_const_logic_0;
         end if; 
     end process;
 
 
-    exp_table13_ce1_assign_proc : process(ap_CS_fsm_pp0_stage0, ap_enable_reg_pp0_iter1, ap_block_pp0_stage0_11001, ap_ce)
+    exp_table12_ce1_assign_proc : process(ap_CS_fsm_pp0_stage0, ap_enable_reg_pp0_iter1, ap_block_pp0_stage0_11001, ap_ce)
     begin
         if (((ap_const_logic_1 = ap_ce) and (ap_const_boolean_0 = ap_block_pp0_stage0_11001) and (ap_enable_reg_pp0_iter1 = ap_const_logic_1) and (ap_const_logic_1 = ap_CS_fsm_pp0_stage0))) then 
-            exp_table13_ce1 <= ap_const_logic_1;
+            exp_table12_ce1 <= ap_const_logic_1;
         else 
-            exp_table13_ce1 <= ap_const_logic_0;
+            exp_table12_ce1 <= ap_const_logic_0;
         end if; 
     end process;
 
-    invert_table15_address0 <= zext_ln319_fu_234_p1(12 - 1 downto 0);
+    invert_table13_address0 <= zext_ln342_fu_234_p1(12 - 1 downto 0);
 
-    invert_table15_ce0_assign_proc : process(ap_enable_reg_pp0_iter2, ap_block_pp0_stage0_11001, ap_ce)
+    invert_table13_ce0_assign_proc : process(ap_enable_reg_pp0_iter2, ap_block_pp0_stage0_11001, ap_ce)
     begin
         if (((ap_const_logic_1 = ap_ce) and (ap_const_boolean_0 = ap_block_pp0_stage0_11001) and (ap_enable_reg_pp0_iter2 = ap_const_logic_1))) then 
-            invert_table15_ce0 <= ap_const_logic_1;
+            invert_table13_ce0 <= ap_const_logic_1;
         else 
-            invert_table15_ce0 <= ap_const_logic_0;
+            invert_table13_ce0 <= ap_const_logic_0;
         end if; 
     end process;
 
     mul_ln1118_1_fu_284_p1 <= sext_ln1118_fu_267_p1(16 - 1 downto 0);
     mul_ln1118_fu_277_p1 <= sext_ln1118_fu_267_p1(16 - 1 downto 0);
     or_ln203_fu_252_p2 <= (tmp_fu_239_p4 or ap_const_lv3_1);
-    or_ln306_fu_173_p2 <= (tmp_2_fu_158_p4 or ap_const_lv3_1);
+    or_ln329_fu_173_p2 <= (tmp_2_fu_158_p4 or ap_const_lv3_1);
     res_V_address0 <= zext_ln203_fu_247_p1(3 - 1 downto 0);
     res_V_address1 <= tmp_1_fu_258_p3(3 - 1 downto 0);
 
@@ -498,18 +498,18 @@ begin
         end if; 
     end process;
 
-        sext_ln1118_fu_267_p1 <= std_logic_vector(IEEE.numeric_std.resize(signed(invert_table15_q0),32));
+        sext_ln1118_fu_267_p1 <= std_logic_vector(IEEE.numeric_std.resize(signed(invert_table13_q0),32));
 
     tmp_1_fu_258_p3 <= (ap_const_lv61_0 & or_ln203_fu_252_p2);
     tmp_2_fu_158_p4 <= ((data_V_offset & data_V_offset1) & ap_const_lv1_0);
-    tmp_3_fu_179_p3 <= (ap_const_lv61_0 & or_ln306_fu_173_p2);
+    tmp_3_fu_179_p3 <= (ap_const_lv61_0 & or_ln329_fu_173_p2);
     tmp_fu_239_p4 <= ((res_V_offset_read_reg_296_pp0_iter2_reg & res_V_offset3_read_reg_291_pp0_iter2_reg) & ap_const_lv1_0);
-    y_V_6_fu_203_p4 <= data_V_q1(15 downto 4);
-    y_V_7_fu_224_p4 <= exp_sum_V_fu_218_p2(15 downto 4);
+    y_V_1_fu_203_p4 <= data_V_q1(15 downto 4);
+    y_V_2_fu_224_p4 <= exp_sum_V_fu_218_p2(15 downto 4);
     y_V_fu_188_p4 <= data_V_q0(15 downto 4);
     zext_ln203_fu_247_p1 <= std_logic_vector(IEEE.numeric_std.resize(unsigned(tmp_fu_239_p4),64));
-    zext_ln306_fu_168_p1 <= std_logic_vector(IEEE.numeric_std.resize(unsigned(tmp_2_fu_158_p4),64));
-    zext_ln307_1_fu_213_p1 <= std_logic_vector(IEEE.numeric_std.resize(unsigned(y_V_6_fu_203_p4),64));
-    zext_ln307_fu_198_p1 <= std_logic_vector(IEEE.numeric_std.resize(unsigned(y_V_fu_188_p4),64));
-    zext_ln319_fu_234_p1 <= std_logic_vector(IEEE.numeric_std.resize(unsigned(y_V_7_fu_224_p4),64));
+    zext_ln329_fu_168_p1 <= std_logic_vector(IEEE.numeric_std.resize(unsigned(tmp_2_fu_158_p4),64));
+    zext_ln330_1_fu_213_p1 <= std_logic_vector(IEEE.numeric_std.resize(unsigned(y_V_1_fu_203_p4),64));
+    zext_ln330_fu_198_p1 <= std_logic_vector(IEEE.numeric_std.resize(unsigned(y_V_fu_188_p4),64));
+    zext_ln342_fu_234_p1 <= std_logic_vector(IEEE.numeric_std.resize(unsigned(y_V_2_fu_224_p4),64));
 end behav;

@@ -121,45 +121,82 @@ void transformer(
     data_T norm0_in_el[CONFIG_T::n_particles][CONFIG_T::n_el];
     nnet::split_equally<data_T, CONFIG_T::n_particles, CONFIG_T::n_el>(self_attention_out, norm0_in_el);
 
-    // ReLU
     data_T SiLU0_out[CONFIG_T::n_particles][CONFIG_T::n_el];
+    data_T dense0_out[CONFIG_T::n_particles][CONFIG_T::n_el_doubled];
+    data_T zero_bias0[CONFIG_T::n_el_doubled];
+    fill_zero<data_T,CONFIG_T::n_el_doubled>(zero_bias0);
+    data_T SiLU1_out[CONFIG_T::n_particles][CONFIG_T::n_el_doubled];
+    data_T dense1_out[CONFIG_T::n_particles][CONFIG_T::n_el];
+    data_T zero_bias1[CONFIG_T::n_el];
+    fill_zero<data_T,CONFIG_T::n_el>(zero_bias1);
+
     for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
+
+    // ReLU
         relu<data_T, data_T, SIG0_CONFIG_T>(norm0_in_el[jj], SiLU0_out[jj]);
 #ifndef __SYNTHESIS__
         print_full_result<data_T, CONFIG_T::n_el>("ReLU0_out[jj]", SiLU0_out[jj], fout);
 #endif
-    }
 
     // Dense
-    data_T dense0_out[CONFIG_T::n_particles][CONFIG_T::n_el_doubled];
-    data_T zero_bias0[CONFIG_T::n_el_doubled];
-    fill_zero<data_T,CONFIG_T::n_el_doubled >(zero_bias0);
-    for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
         dense<data_T, data_T, DENSE0_CONFIG_T>(SiLU0_out[jj], dense0_out[jj], dense0_weight, zero_bias0);
 #ifndef __SYNTHESIS__
         print_full_result<input_t, CONFIG_T::n_el_doubled>("dense0_out[jj]", dense0_out[jj], fout);
 #endif
-    }
+
 
     // ReLU
-    data_T SiLU1_out[CONFIG_T::n_particles][CONFIG_T::n_el_doubled];
-    for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
         relu<data_T, data_T, SIG1_CONFIG_T>(dense0_out[jj], SiLU1_out[jj]);
 #ifndef __SYNTHESIS__
         print_full_result<input_t, CONFIG_T::n_el_doubled>("ReLU1_out[jj]", SiLU1_out[jj], fout);
 #endif
-    }
 
     // Dense
-    data_T dense1_out[CONFIG_T::n_particles][CONFIG_T::n_el];
-    data_T zero_bias1[CONFIG_T::n_el];
-    fill_zero<data_T,CONFIG_T::n_el >(zero_bias1);
-    for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
         dense<data_T, data_T, DENSE1_CONFIG_T>(SiLU1_out[jj], dense1_out[jj], dense1_weight, zero_bias1);
 #ifndef __SYNTHESIS__
         print_full_result<input_t, CONFIG_T::n_el>("dense1_out[jj]", dense1_out[jj], fout);
 #endif
     }
+
+//     // ReLU
+//     data_T SiLU0_out[CONFIG_T::n_particles][CONFIG_T::n_el];
+//     for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
+//         relu<data_T, data_T, SIG0_CONFIG_T>(norm0_in_el[jj], SiLU0_out[jj]);
+// #ifndef __SYNTHESIS__
+//         print_full_result<data_T, CONFIG_T::n_el>("ReLU0_out[jj]", SiLU0_out[jj], fout);
+// #endif
+//     }
+
+//     // Dense
+//     data_T dense0_out[CONFIG_T::n_particles][CONFIG_T::n_el_doubled];
+//     data_T zero_bias0[CONFIG_T::n_el_doubled];
+//     fill_zero<data_T,CONFIG_T::n_el_doubled >(zero_bias0);
+//     for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
+//         dense<data_T, data_T, DENSE0_CONFIG_T>(SiLU0_out[jj], dense0_out[jj], dense0_weight, zero_bias0);
+// #ifndef __SYNTHESIS__
+//         print_full_result<input_t, CONFIG_T::n_el_doubled>("dense0_out[jj]", dense0_out[jj], fout);
+// #endif
+//     }
+
+//     // ReLU
+//     data_T SiLU1_out[CONFIG_T::n_particles][CONFIG_T::n_el_doubled];
+//     for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
+//         relu<data_T, data_T, SIG1_CONFIG_T>(dense0_out[jj], SiLU1_out[jj]);
+// #ifndef __SYNTHESIS__
+//         print_full_result<input_t, CONFIG_T::n_el_doubled>("ReLU1_out[jj]", SiLU1_out[jj], fout);
+// #endif
+//     }
+
+//     // Dense
+//     data_T dense1_out[CONFIG_T::n_particles][CONFIG_T::n_el];
+//     data_T zero_bias1[CONFIG_T::n_el];
+//     fill_zero<data_T,CONFIG_T::n_el >(zero_bias1);
+//     for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
+//         dense<data_T, data_T, DENSE1_CONFIG_T>(SiLU1_out[jj], dense1_out[jj], dense1_weight, zero_bias1);
+// #ifndef __SYNTHESIS__
+//         print_full_result<input_t, CONFIG_T::n_el>("dense1_out[jj]", dense1_out[jj], fout);
+// #endif
+//     }
 
     // Sum
     // TODO maybe self-attention shouldnt return flattened thing, given we need it as [][] for transformer

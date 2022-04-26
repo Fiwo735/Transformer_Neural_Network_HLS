@@ -25,21 +25,21 @@ const sc_lv<32> softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s::ap_const
 const sc_lv<32> softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s::ap_const_lv32_F = "1111";
 
 softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s::softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s(sc_module_name name) : sc_module(name), mVcdFile(0) {
-    exp_table13_U = new softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s_exbkb("exp_table13_U");
-    exp_table13_U->clk(ap_clk);
-    exp_table13_U->reset(ap_rst);
-    exp_table13_U->address0(exp_table13_address0);
-    exp_table13_U->ce0(exp_table13_ce0);
-    exp_table13_U->q0(exp_table13_q0);
-    exp_table13_U->address1(exp_table13_address1);
-    exp_table13_U->ce1(exp_table13_ce1);
-    exp_table13_U->q1(exp_table13_q1);
-    invert_table15_U = new softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s_incud("invert_table15_U");
-    invert_table15_U->clk(ap_clk);
-    invert_table15_U->reset(ap_rst);
-    invert_table15_U->address0(invert_table15_address0);
-    invert_table15_U->ce0(invert_table15_ce0);
-    invert_table15_U->q0(invert_table15_q0);
+    exp_table12_U = new softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s_exbkb("exp_table12_U");
+    exp_table12_U->clk(ap_clk);
+    exp_table12_U->reset(ap_rst);
+    exp_table12_U->address0(exp_table12_address0);
+    exp_table12_U->ce0(exp_table12_ce0);
+    exp_table12_U->q0(exp_table12_q0);
+    exp_table12_U->address1(exp_table12_address1);
+    exp_table12_U->ce1(exp_table12_ce1);
+    exp_table12_U->q1(exp_table12_q1);
+    invert_table13_U = new softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s_incud("invert_table13_U");
+    invert_table13_U->clk(ap_clk);
+    invert_table13_U->reset(ap_rst);
+    invert_table13_U->address0(invert_table13_address0);
+    invert_table13_U->ce0(invert_table13_ce0);
+    invert_table13_U->q0(invert_table13_q0);
     myproject_mul_mul_16s_16s_32_1_1_U410 = new myproject_mul_mul_16s_16s_32_1_1<1,1,16,16,32>("myproject_mul_mul_16s_16s_32_1_1_U410");
     myproject_mul_mul_16s_16s_32_1_1_U410->din0(exp_res_0_V_reg_321);
     myproject_mul_mul_16s_16s_32_1_1_U410->din1(mul_ln1118_fu_277_p1);
@@ -118,7 +118,7 @@ softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s::softmax_latency_ap_fixed
     sensitive << ( ap_start );
     sensitive << ( ap_CS_fsm_pp0_stage0 );
     sensitive << ( ap_block_pp0_stage0 );
-    sensitive << ( zext_ln306_fu_168_p1 );
+    sensitive << ( zext_ln329_fu_168_p1 );
 
     SC_METHOD(thread_data_V_address1);
     sensitive << ( ap_start );
@@ -141,47 +141,47 @@ softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s::softmax_latency_ap_fixed
     SC_METHOD(thread_exp_sum_V_fu_218_p0);
     sensitive << ( ap_block_pp0_stage0 );
     sensitive << ( ap_enable_reg_pp0_iter2 );
-    sensitive << ( exp_table13_q1 );
+    sensitive << ( exp_table12_q1 );
 
     SC_METHOD(thread_exp_sum_V_fu_218_p1);
     sensitive << ( ap_block_pp0_stage0 );
     sensitive << ( ap_enable_reg_pp0_iter2 );
-    sensitive << ( exp_table13_q0 );
+    sensitive << ( exp_table12_q0 );
 
     SC_METHOD(thread_exp_sum_V_fu_218_p2);
     sensitive << ( exp_sum_V_fu_218_p0 );
     sensitive << ( exp_sum_V_fu_218_p1 );
 
-    SC_METHOD(thread_exp_table13_address0);
+    SC_METHOD(thread_exp_table12_address0);
     sensitive << ( ap_CS_fsm_pp0_stage0 );
     sensitive << ( ap_block_pp0_stage0 );
     sensitive << ( ap_enable_reg_pp0_iter1 );
-    sensitive << ( zext_ln307_fu_198_p1 );
+    sensitive << ( zext_ln330_fu_198_p1 );
 
-    SC_METHOD(thread_exp_table13_address1);
+    SC_METHOD(thread_exp_table12_address1);
     sensitive << ( ap_CS_fsm_pp0_stage0 );
     sensitive << ( ap_block_pp0_stage0 );
     sensitive << ( ap_enable_reg_pp0_iter1 );
-    sensitive << ( zext_ln307_1_fu_213_p1 );
+    sensitive << ( zext_ln330_1_fu_213_p1 );
 
-    SC_METHOD(thread_exp_table13_ce0);
+    SC_METHOD(thread_exp_table12_ce0);
     sensitive << ( ap_CS_fsm_pp0_stage0 );
     sensitive << ( ap_enable_reg_pp0_iter1 );
     sensitive << ( ap_block_pp0_stage0_11001 );
     sensitive << ( ap_ce );
 
-    SC_METHOD(thread_exp_table13_ce1);
+    SC_METHOD(thread_exp_table12_ce1);
     sensitive << ( ap_CS_fsm_pp0_stage0 );
     sensitive << ( ap_enable_reg_pp0_iter1 );
     sensitive << ( ap_block_pp0_stage0_11001 );
     sensitive << ( ap_ce );
 
-    SC_METHOD(thread_invert_table15_address0);
+    SC_METHOD(thread_invert_table13_address0);
     sensitive << ( ap_block_pp0_stage0 );
     sensitive << ( ap_enable_reg_pp0_iter2 );
-    sensitive << ( zext_ln319_fu_234_p1 );
+    sensitive << ( zext_ln342_fu_234_p1 );
 
-    SC_METHOD(thread_invert_table15_ce0);
+    SC_METHOD(thread_invert_table13_ce0);
     sensitive << ( ap_enable_reg_pp0_iter2 );
     sensitive << ( ap_block_pp0_stage0_11001 );
     sensitive << ( ap_ce );
@@ -199,7 +199,7 @@ softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s::softmax_latency_ap_fixed
     SC_METHOD(thread_or_ln203_fu_252_p2);
     sensitive << ( tmp_fu_239_p4 );
 
-    SC_METHOD(thread_or_ln306_fu_173_p2);
+    SC_METHOD(thread_or_ln329_fu_173_p2);
     sensitive << ( tmp_2_fu_158_p4 );
 
     SC_METHOD(thread_res_V_address0);
@@ -243,7 +243,7 @@ softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s::softmax_latency_ap_fixed
     sensitive << ( ap_ce );
 
     SC_METHOD(thread_sext_ln1118_fu_267_p1);
-    sensitive << ( invert_table15_q0 );
+    sensitive << ( invert_table13_q0 );
 
     SC_METHOD(thread_tmp_1_fu_258_p3);
     sensitive << ( or_ln203_fu_252_p2 );
@@ -253,16 +253,16 @@ softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s::softmax_latency_ap_fixed
     sensitive << ( data_V_offset1 );
 
     SC_METHOD(thread_tmp_3_fu_179_p3);
-    sensitive << ( or_ln306_fu_173_p2 );
+    sensitive << ( or_ln329_fu_173_p2 );
 
     SC_METHOD(thread_tmp_fu_239_p4);
     sensitive << ( res_V_offset3_read_reg_291_pp0_iter2_reg );
     sensitive << ( res_V_offset_read_reg_296_pp0_iter2_reg );
 
-    SC_METHOD(thread_y_V_6_fu_203_p4);
+    SC_METHOD(thread_y_V_1_fu_203_p4);
     sensitive << ( data_V_q1 );
 
-    SC_METHOD(thread_y_V_7_fu_224_p4);
+    SC_METHOD(thread_y_V_2_fu_224_p4);
     sensitive << ( exp_sum_V_fu_218_p2 );
 
     SC_METHOD(thread_y_V_fu_188_p4);
@@ -271,17 +271,17 @@ softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s::softmax_latency_ap_fixed
     SC_METHOD(thread_zext_ln203_fu_247_p1);
     sensitive << ( tmp_fu_239_p4 );
 
-    SC_METHOD(thread_zext_ln306_fu_168_p1);
+    SC_METHOD(thread_zext_ln329_fu_168_p1);
     sensitive << ( tmp_2_fu_158_p4 );
 
-    SC_METHOD(thread_zext_ln307_1_fu_213_p1);
-    sensitive << ( y_V_6_fu_203_p4 );
+    SC_METHOD(thread_zext_ln330_1_fu_213_p1);
+    sensitive << ( y_V_1_fu_203_p4 );
 
-    SC_METHOD(thread_zext_ln307_fu_198_p1);
+    SC_METHOD(thread_zext_ln330_fu_198_p1);
     sensitive << ( y_V_fu_188_p4 );
 
-    SC_METHOD(thread_zext_ln319_fu_234_p1);
-    sensitive << ( y_V_7_fu_224_p4 );
+    SC_METHOD(thread_zext_ln342_fu_234_p1);
+    sensitive << ( y_V_2_fu_224_p4 );
 
     SC_METHOD(thread_ap_NS_fsm);
     sensitive << ( ap_CS_fsm );
@@ -340,15 +340,15 @@ softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s::softmax_latency_ap_fixed
     sc_trace(mVcdFile, ap_block_state3_pp0_stage0_iter2, "ap_block_state3_pp0_stage0_iter2");
     sc_trace(mVcdFile, ap_block_state4_pp0_stage0_iter3, "ap_block_state4_pp0_stage0_iter3");
     sc_trace(mVcdFile, ap_block_pp0_stage0_11001, "ap_block_pp0_stage0_11001");
-    sc_trace(mVcdFile, exp_table13_address0, "exp_table13_address0");
-    sc_trace(mVcdFile, exp_table13_ce0, "exp_table13_ce0");
-    sc_trace(mVcdFile, exp_table13_q0, "exp_table13_q0");
-    sc_trace(mVcdFile, exp_table13_address1, "exp_table13_address1");
-    sc_trace(mVcdFile, exp_table13_ce1, "exp_table13_ce1");
-    sc_trace(mVcdFile, exp_table13_q1, "exp_table13_q1");
-    sc_trace(mVcdFile, invert_table15_address0, "invert_table15_address0");
-    sc_trace(mVcdFile, invert_table15_ce0, "invert_table15_ce0");
-    sc_trace(mVcdFile, invert_table15_q0, "invert_table15_q0");
+    sc_trace(mVcdFile, exp_table12_address0, "exp_table12_address0");
+    sc_trace(mVcdFile, exp_table12_ce0, "exp_table12_ce0");
+    sc_trace(mVcdFile, exp_table12_q0, "exp_table12_q0");
+    sc_trace(mVcdFile, exp_table12_address1, "exp_table12_address1");
+    sc_trace(mVcdFile, exp_table12_ce1, "exp_table12_ce1");
+    sc_trace(mVcdFile, exp_table12_q1, "exp_table12_q1");
+    sc_trace(mVcdFile, invert_table13_address0, "invert_table13_address0");
+    sc_trace(mVcdFile, invert_table13_ce0, "invert_table13_ce0");
+    sc_trace(mVcdFile, invert_table13_q0, "invert_table13_q0");
     sc_trace(mVcdFile, res_V_offset3_read_reg_291, "res_V_offset3_read_reg_291");
     sc_trace(mVcdFile, res_V_offset3_read_reg_291_pp0_iter1_reg, "res_V_offset3_read_reg_291_pp0_iter1_reg");
     sc_trace(mVcdFile, res_V_offset3_read_reg_291_pp0_iter2_reg, "res_V_offset3_read_reg_291_pp0_iter2_reg");
@@ -358,23 +358,23 @@ softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s::softmax_latency_ap_fixed
     sc_trace(mVcdFile, exp_res_0_V_reg_321, "exp_res_0_V_reg_321");
     sc_trace(mVcdFile, exp_res_1_V_reg_326, "exp_res_1_V_reg_326");
     sc_trace(mVcdFile, ap_block_pp0_stage0_subdone, "ap_block_pp0_stage0_subdone");
-    sc_trace(mVcdFile, zext_ln306_fu_168_p1, "zext_ln306_fu_168_p1");
+    sc_trace(mVcdFile, zext_ln329_fu_168_p1, "zext_ln329_fu_168_p1");
     sc_trace(mVcdFile, tmp_3_fu_179_p3, "tmp_3_fu_179_p3");
-    sc_trace(mVcdFile, zext_ln307_fu_198_p1, "zext_ln307_fu_198_p1");
-    sc_trace(mVcdFile, zext_ln307_1_fu_213_p1, "zext_ln307_1_fu_213_p1");
-    sc_trace(mVcdFile, zext_ln319_fu_234_p1, "zext_ln319_fu_234_p1");
+    sc_trace(mVcdFile, zext_ln330_fu_198_p1, "zext_ln330_fu_198_p1");
+    sc_trace(mVcdFile, zext_ln330_1_fu_213_p1, "zext_ln330_1_fu_213_p1");
+    sc_trace(mVcdFile, zext_ln342_fu_234_p1, "zext_ln342_fu_234_p1");
     sc_trace(mVcdFile, zext_ln203_fu_247_p1, "zext_ln203_fu_247_p1");
     sc_trace(mVcdFile, tmp_1_fu_258_p3, "tmp_1_fu_258_p3");
     sc_trace(mVcdFile, mul_ln1118_fu_277_p2, "mul_ln1118_fu_277_p2");
     sc_trace(mVcdFile, mul_ln1118_1_fu_284_p2, "mul_ln1118_1_fu_284_p2");
     sc_trace(mVcdFile, tmp_2_fu_158_p4, "tmp_2_fu_158_p4");
-    sc_trace(mVcdFile, or_ln306_fu_173_p2, "or_ln306_fu_173_p2");
+    sc_trace(mVcdFile, or_ln329_fu_173_p2, "or_ln329_fu_173_p2");
     sc_trace(mVcdFile, y_V_fu_188_p4, "y_V_fu_188_p4");
-    sc_trace(mVcdFile, y_V_6_fu_203_p4, "y_V_6_fu_203_p4");
+    sc_trace(mVcdFile, y_V_1_fu_203_p4, "y_V_1_fu_203_p4");
     sc_trace(mVcdFile, exp_sum_V_fu_218_p0, "exp_sum_V_fu_218_p0");
     sc_trace(mVcdFile, exp_sum_V_fu_218_p1, "exp_sum_V_fu_218_p1");
     sc_trace(mVcdFile, exp_sum_V_fu_218_p2, "exp_sum_V_fu_218_p2");
-    sc_trace(mVcdFile, y_V_7_fu_224_p4, "y_V_7_fu_224_p4");
+    sc_trace(mVcdFile, y_V_2_fu_224_p4, "y_V_2_fu_224_p4");
     sc_trace(mVcdFile, tmp_fu_239_p4, "tmp_fu_239_p4");
     sc_trace(mVcdFile, or_ln203_fu_252_p2, "or_ln203_fu_252_p2");
     sc_trace(mVcdFile, mul_ln1118_fu_277_p1, "mul_ln1118_fu_277_p1");
@@ -393,8 +393,8 @@ softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s::~softmax_latency_ap_fixe
     if (mVcdFile) 
         sc_close_vcd_trace_file(mVcdFile);
 
-    delete exp_table13_U;
-    delete invert_table15_U;
+    delete exp_table12_U;
+    delete invert_table13_U;
     delete myproject_mul_mul_16s_16s_32_1_1_U410;
     delete myproject_mul_mul_16s_16s_32_1_1_U411;
 }
@@ -428,8 +428,8 @@ void softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s::thread_ap_clk_no_re
         }
     }
     if ((esl_seteq<1,1,1>(ap_block_pp0_stage0_11001.read(), ap_const_boolean_0) && esl_seteq<1,1,1>(ap_ce.read(), ap_const_logic_1) && esl_seteq<1,1,1>(ap_const_logic_1, ap_enable_reg_pp0_iter2.read()))) {
-        exp_res_0_V_reg_321 = exp_table13_q0.read();
-        exp_res_1_V_reg_326 = exp_table13_q1.read();
+        exp_res_0_V_reg_321 = exp_table12_q0.read();
+        exp_res_1_V_reg_326 = exp_table12_q1.read();
     }
     if ((esl_seteq<1,1,1>(ap_const_logic_1, ap_CS_fsm_pp0_stage0.read()) && esl_seteq<1,1,1>(ap_block_pp0_stage0_11001.read(), ap_const_boolean_0) && esl_seteq<1,1,1>(ap_ce.read(), ap_const_logic_1))) {
         res_V_offset3_read_reg_291 = res_V_offset3.read();
@@ -550,7 +550,7 @@ void softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s::thread_ap_reset_idl
 }
 
 void softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s::thread_data_V_address0() {
-    data_V_address0 =  (sc_lv<3>) (zext_ln306_fu_168_p1.read());
+    data_V_address0 =  (sc_lv<3>) (zext_ln329_fu_168_p1.read());
 }
 
 void softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s::thread_data_V_address1() {
@@ -580,58 +580,58 @@ void softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s::thread_data_V_ce1()
 }
 
 void softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s::thread_exp_sum_V_fu_218_p0() {
-    exp_sum_V_fu_218_p0 = exp_table13_q1.read();
+    exp_sum_V_fu_218_p0 = exp_table12_q1.read();
 }
 
 void softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s::thread_exp_sum_V_fu_218_p1() {
-    exp_sum_V_fu_218_p1 = exp_table13_q0.read();
+    exp_sum_V_fu_218_p1 = exp_table12_q0.read();
 }
 
 void softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s::thread_exp_sum_V_fu_218_p2() {
     exp_sum_V_fu_218_p2 = (!exp_sum_V_fu_218_p0.read().is_01() || !exp_sum_V_fu_218_p1.read().is_01())? sc_lv<16>(): (sc_bigint<16>(exp_sum_V_fu_218_p0.read()) + sc_bigint<16>(exp_sum_V_fu_218_p1.read()));
 }
 
-void softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s::thread_exp_table13_address0() {
-    exp_table13_address0 =  (sc_lv<12>) (zext_ln307_fu_198_p1.read());
+void softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s::thread_exp_table12_address0() {
+    exp_table12_address0 =  (sc_lv<12>) (zext_ln330_fu_198_p1.read());
 }
 
-void softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s::thread_exp_table13_address1() {
-    exp_table13_address1 =  (sc_lv<12>) (zext_ln307_1_fu_213_p1.read());
+void softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s::thread_exp_table12_address1() {
+    exp_table12_address1 =  (sc_lv<12>) (zext_ln330_1_fu_213_p1.read());
 }
 
-void softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s::thread_exp_table13_ce0() {
+void softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s::thread_exp_table12_ce0() {
     if ((esl_seteq<1,1,1>(ap_const_logic_1, ap_CS_fsm_pp0_stage0.read()) && 
          esl_seteq<1,1,1>(ap_block_pp0_stage0_11001.read(), ap_const_boolean_0) && 
          esl_seteq<1,1,1>(ap_ce.read(), ap_const_logic_1) && 
          esl_seteq<1,1,1>(ap_const_logic_1, ap_enable_reg_pp0_iter1.read()))) {
-        exp_table13_ce0 = ap_const_logic_1;
+        exp_table12_ce0 = ap_const_logic_1;
     } else {
-        exp_table13_ce0 = ap_const_logic_0;
+        exp_table12_ce0 = ap_const_logic_0;
     }
 }
 
-void softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s::thread_exp_table13_ce1() {
+void softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s::thread_exp_table12_ce1() {
     if ((esl_seteq<1,1,1>(ap_const_logic_1, ap_CS_fsm_pp0_stage0.read()) && 
          esl_seteq<1,1,1>(ap_block_pp0_stage0_11001.read(), ap_const_boolean_0) && 
          esl_seteq<1,1,1>(ap_ce.read(), ap_const_logic_1) && 
          esl_seteq<1,1,1>(ap_const_logic_1, ap_enable_reg_pp0_iter1.read()))) {
-        exp_table13_ce1 = ap_const_logic_1;
+        exp_table12_ce1 = ap_const_logic_1;
     } else {
-        exp_table13_ce1 = ap_const_logic_0;
+        exp_table12_ce1 = ap_const_logic_0;
     }
 }
 
-void softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s::thread_invert_table15_address0() {
-    invert_table15_address0 =  (sc_lv<12>) (zext_ln319_fu_234_p1.read());
+void softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s::thread_invert_table13_address0() {
+    invert_table13_address0 =  (sc_lv<12>) (zext_ln342_fu_234_p1.read());
 }
 
-void softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s::thread_invert_table15_ce0() {
+void softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s::thread_invert_table13_ce0() {
     if ((esl_seteq<1,1,1>(ap_block_pp0_stage0_11001.read(), ap_const_boolean_0) && 
          esl_seteq<1,1,1>(ap_ce.read(), ap_const_logic_1) && 
          esl_seteq<1,1,1>(ap_const_logic_1, ap_enable_reg_pp0_iter2.read()))) {
-        invert_table15_ce0 = ap_const_logic_1;
+        invert_table13_ce0 = ap_const_logic_1;
     } else {
-        invert_table15_ce0 = ap_const_logic_0;
+        invert_table13_ce0 = ap_const_logic_0;
     }
 }
 
@@ -647,8 +647,8 @@ void softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s::thread_or_ln203_fu_
     or_ln203_fu_252_p2 = (tmp_fu_239_p4.read() | ap_const_lv3_1);
 }
 
-void softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s::thread_or_ln306_fu_173_p2() {
-    or_ln306_fu_173_p2 = (tmp_2_fu_158_p4.read() | ap_const_lv3_1);
+void softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s::thread_or_ln329_fu_173_p2() {
+    or_ln329_fu_173_p2 = (tmp_2_fu_158_p4.read() | ap_const_lv3_1);
 }
 
 void softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s::thread_res_V_address0() {
@@ -708,7 +708,7 @@ void softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s::thread_res_V_we1() 
 }
 
 void softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s::thread_sext_ln1118_fu_267_p1() {
-    sext_ln1118_fu_267_p1 = esl_sext<32,16>(invert_table15_q0.read());
+    sext_ln1118_fu_267_p1 = esl_sext<32,16>(invert_table13_q0.read());
 }
 
 void softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s::thread_tmp_1_fu_258_p3() {
@@ -720,19 +720,19 @@ void softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s::thread_tmp_2_fu_158
 }
 
 void softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s::thread_tmp_3_fu_179_p3() {
-    tmp_3_fu_179_p3 = esl_concat<61,3>(ap_const_lv61_0, or_ln306_fu_173_p2.read());
+    tmp_3_fu_179_p3 = esl_concat<61,3>(ap_const_lv61_0, or_ln329_fu_173_p2.read());
 }
 
 void softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s::thread_tmp_fu_239_p4() {
     tmp_fu_239_p4 = esl_concat<2,1>(esl_concat<1,1>(res_V_offset_read_reg_296_pp0_iter2_reg.read(), res_V_offset3_read_reg_291_pp0_iter2_reg.read()), ap_const_lv1_0);
 }
 
-void softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s::thread_y_V_6_fu_203_p4() {
-    y_V_6_fu_203_p4 = data_V_q1.read().range(15, 4);
+void softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s::thread_y_V_1_fu_203_p4() {
+    y_V_1_fu_203_p4 = data_V_q1.read().range(15, 4);
 }
 
-void softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s::thread_y_V_7_fu_224_p4() {
-    y_V_7_fu_224_p4 = exp_sum_V_fu_218_p2.read().range(15, 4);
+void softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s::thread_y_V_2_fu_224_p4() {
+    y_V_2_fu_224_p4 = exp_sum_V_fu_218_p2.read().range(15, 4);
 }
 
 void softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s::thread_y_V_fu_188_p4() {
@@ -743,20 +743,20 @@ void softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s::thread_zext_ln203_f
     zext_ln203_fu_247_p1 = esl_zext<64,3>(tmp_fu_239_p4.read());
 }
 
-void softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s::thread_zext_ln306_fu_168_p1() {
-    zext_ln306_fu_168_p1 = esl_zext<64,3>(tmp_2_fu_158_p4.read());
+void softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s::thread_zext_ln329_fu_168_p1() {
+    zext_ln329_fu_168_p1 = esl_zext<64,3>(tmp_2_fu_158_p4.read());
 }
 
-void softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s::thread_zext_ln307_1_fu_213_p1() {
-    zext_ln307_1_fu_213_p1 = esl_zext<64,12>(y_V_6_fu_203_p4.read());
+void softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s::thread_zext_ln330_1_fu_213_p1() {
+    zext_ln330_1_fu_213_p1 = esl_zext<64,12>(y_V_1_fu_203_p4.read());
 }
 
-void softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s::thread_zext_ln307_fu_198_p1() {
-    zext_ln307_fu_198_p1 = esl_zext<64,12>(y_V_fu_188_p4.read());
+void softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s::thread_zext_ln330_fu_198_p1() {
+    zext_ln330_fu_198_p1 = esl_zext<64,12>(y_V_fu_188_p4.read());
 }
 
-void softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s::thread_zext_ln319_fu_234_p1() {
-    zext_ln319_fu_234_p1 = esl_zext<64,12>(y_V_7_fu_224_p4.read());
+void softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s::thread_zext_ln342_fu_234_p1() {
+    zext_ln342_fu_234_p1 = esl_zext<64,12>(y_V_2_fu_224_p4.read());
 }
 
 void softmax_latency_ap_fixed_ap_fixed_sa_softmax_config0_s::thread_ap_NS_fsm() {

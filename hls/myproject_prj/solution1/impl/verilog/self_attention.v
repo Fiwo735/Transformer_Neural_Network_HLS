@@ -592,13 +592,13 @@ reg   [34:0] energy_3_0_assign_1_reg_6202;
 reg   [34:0] energy_3_1_assign_1_reg_6208;
 reg   [15:0] trunc_ln_reg_6214;
 wire    ap_CS_fsm_state93;
-reg   [15:0] trunc_ln708_5_reg_6219;
-reg   [15:0] trunc_ln708_6_reg_6224;
-reg   [15:0] trunc_ln708_7_reg_6229;
-reg   [15:0] trunc_ln708_8_reg_6234;
-reg   [15:0] trunc_ln708_9_reg_6239;
-reg   [15:0] trunc_ln708_s_reg_6244;
-reg   [15:0] trunc_ln708_1_reg_6249;
+reg   [15:0] trunc_ln708_1_reg_6219;
+reg   [15:0] trunc_ln708_2_reg_6224;
+reg   [15:0] trunc_ln708_3_reg_6229;
+reg   [15:0] trunc_ln708_4_reg_6234;
+reg   [15:0] trunc_ln708_5_reg_6239;
+reg   [15:0] trunc_ln708_6_reg_6244;
+reg   [15:0] trunc_ln708_7_reg_6249;
 wire    ap_CS_fsm_state102;
 wire   [31:0] attention_q0;
 reg   [31:0] attention_load_reg_6414;
@@ -3064,13 +3064,13 @@ end
 
 always @ (posedge ap_clk) begin
     if ((1'b1 == ap_CS_fsm_state93)) begin
-        trunc_ln708_1_reg_6249 <= {{grp_matmul_ap_fixed_ap_fixed_2ul_8ul_8ul_2ul_s_fu_1892_ap_return_7[27:12]}};
-        trunc_ln708_5_reg_6219 <= {{grp_matmul_ap_fixed_ap_fixed_2ul_8ul_8ul_2ul_s_fu_1892_ap_return_4[27:12]}};
-        trunc_ln708_6_reg_6224 <= {{grp_matmul_ap_fixed_ap_fixed_2ul_8ul_8ul_2ul_s_fu_1892_ap_return_2[27:12]}};
-        trunc_ln708_7_reg_6229 <= {{grp_matmul_ap_fixed_ap_fixed_2ul_8ul_8ul_2ul_s_fu_1892_ap_return_6[27:12]}};
-        trunc_ln708_8_reg_6234 <= {{grp_matmul_ap_fixed_ap_fixed_2ul_8ul_8ul_2ul_s_fu_1892_ap_return_1[27:12]}};
-        trunc_ln708_9_reg_6239 <= {{grp_matmul_ap_fixed_ap_fixed_2ul_8ul_8ul_2ul_s_fu_1892_ap_return_5[27:12]}};
-        trunc_ln708_s_reg_6244 <= {{grp_matmul_ap_fixed_ap_fixed_2ul_8ul_8ul_2ul_s_fu_1892_ap_return_3[27:12]}};
+        trunc_ln708_1_reg_6219 <= {{grp_matmul_ap_fixed_ap_fixed_2ul_8ul_8ul_2ul_s_fu_1892_ap_return_4[27:12]}};
+        trunc_ln708_2_reg_6224 <= {{grp_matmul_ap_fixed_ap_fixed_2ul_8ul_8ul_2ul_s_fu_1892_ap_return_2[27:12]}};
+        trunc_ln708_3_reg_6229 <= {{grp_matmul_ap_fixed_ap_fixed_2ul_8ul_8ul_2ul_s_fu_1892_ap_return_6[27:12]}};
+        trunc_ln708_4_reg_6234 <= {{grp_matmul_ap_fixed_ap_fixed_2ul_8ul_8ul_2ul_s_fu_1892_ap_return_1[27:12]}};
+        trunc_ln708_5_reg_6239 <= {{grp_matmul_ap_fixed_ap_fixed_2ul_8ul_8ul_2ul_s_fu_1892_ap_return_5[27:12]}};
+        trunc_ln708_6_reg_6244 <= {{grp_matmul_ap_fixed_ap_fixed_2ul_8ul_8ul_2ul_s_fu_1892_ap_return_3[27:12]}};
+        trunc_ln708_7_reg_6249 <= {{grp_matmul_ap_fixed_ap_fixed_2ul_8ul_8ul_2ul_s_fu_1892_ap_return_7[27:12]}};
         trunc_ln_reg_6214 <= {{grp_matmul_ap_fixed_ap_fixed_2ul_8ul_8ul_2ul_s_fu_1892_ap_return_0[27:12]}};
     end
 end
@@ -3274,11 +3274,11 @@ end
 
 always @ (*) begin
     if ((1'b1 == ap_CS_fsm_state97)) begin
-        energy_scaled_red_V_d0 = trunc_ln708_s_reg_6244;
+        energy_scaled_red_V_d0 = trunc_ln708_6_reg_6244;
     end else if ((1'b1 == ap_CS_fsm_state96)) begin
-        energy_scaled_red_V_d0 = trunc_ln708_8_reg_6234;
+        energy_scaled_red_V_d0 = trunc_ln708_4_reg_6234;
     end else if ((1'b1 == ap_CS_fsm_state95)) begin
-        energy_scaled_red_V_d0 = trunc_ln708_6_reg_6224;
+        energy_scaled_red_V_d0 = trunc_ln708_2_reg_6224;
     end else if ((1'b1 == ap_CS_fsm_state94)) begin
         energy_scaled_red_V_d0 = trunc_ln_reg_6214;
     end else begin
@@ -3288,13 +3288,13 @@ end
 
 always @ (*) begin
     if ((1'b1 == ap_CS_fsm_state97)) begin
-        energy_scaled_red_V_d1 = trunc_ln708_1_reg_6249;
+        energy_scaled_red_V_d1 = trunc_ln708_7_reg_6249;
     end else if ((1'b1 == ap_CS_fsm_state96)) begin
-        energy_scaled_red_V_d1 = trunc_ln708_9_reg_6239;
+        energy_scaled_red_V_d1 = trunc_ln708_5_reg_6239;
     end else if ((1'b1 == ap_CS_fsm_state95)) begin
-        energy_scaled_red_V_d1 = trunc_ln708_7_reg_6229;
+        energy_scaled_red_V_d1 = trunc_ln708_3_reg_6229;
     end else if ((1'b1 == ap_CS_fsm_state94)) begin
-        energy_scaled_red_V_d1 = trunc_ln708_5_reg_6219;
+        energy_scaled_red_V_d1 = trunc_ln708_1_reg_6219;
     end else begin
         energy_scaled_red_V_d1 = 'bx;
     end

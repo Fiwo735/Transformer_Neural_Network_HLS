@@ -12,13 +12,13 @@ void init_log_table_ap_fixed_16_6_5_3_0_softmax_config0_s::thread_ap_clk_no_rese
         ap_CS_fsm = ap_NS_fsm.read();
     }
     if (esl_seteq<1,1,1>(ap_const_logic_1, ap_CS_fsm_state2047.read())) {
-        icmp_ln571_reg_50937 = icmp_ln571_fu_50669_p2.read();
-        sub_ln575_reg_50943 = sub_ln575_fu_50675_p2.read();
-        tmp_reg_50927 = bitcast_ln696_fu_50635_p1.read().range(63, 63);
-        trunc_ln565_reg_50932 = trunc_ln565_fu_50665_p1.read();
+        icmp_ln571_reg_53775 = icmp_ln571_fu_53507_p2.read();
+        sub_ln575_reg_53781 = sub_ln575_fu_53513_p2.read();
+        tmp_1_reg_53765 = bitcast_ln696_fu_53473_p1.read().range(63, 63);
+        trunc_ln565_reg_53770 = trunc_ln565_fu_53503_p1.read();
     }
     if (esl_seteq<1,1,1>(ap_const_logic_1, ap_CS_fsm_state2045.read())) {
-        tmp_i_i_reg_50921 = grp_fu_50629_p2.read();
+        tmp_i_i_reg_53759 = grp_fu_53467_p2.read();
     }
 }
 
