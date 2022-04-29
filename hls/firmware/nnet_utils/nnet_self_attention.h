@@ -76,65 +76,84 @@ void self_attention(
 
     // QKV (dense)
     data_T qkv_out[CONFIG_T::n_qkv];
-    data_T zero_bias0[CONFIG_T::n_qkv_out_el];
-    fill_zero<data_T,CONFIG_T::n_qkv_out_el>(zero_bias0);
+    // data_T zero_bias0[CONFIG_T::n_qkv_out_el];
+    // fill_zero<data_T,CONFIG_T::n_qkv_out_el>(zero_bias0);
     data_T qkv_in_el[CONFIG_T::n_particles][CONFIG_T::n_qkv_in_el];
     data_T qkv_out_el[CONFIG_T::n_particles][CONFIG_T::n_qkv_out_el];
 
     split_equally<data_T, CONFIG_T::n_particles, CONFIG_T::n_qkv_in_el>(data, qkv_in_el);
     QKV: for (int iqkv = 0; iqkv < CONFIG_T::n_particles; iqkv++) {
-        dense<data_T, data_T, DENSE0_CONFIG_T>(qkv_in_el[iqkv], qkv_out_el[iqkv], QKV_weight, zero_bias0);
-    }
-    join_equally<data_T, CONFIG_T::n_particles, CONFIG_T::n_qkv_out_el>(qkv_out_el, qkv_out);
-
+        dense_latency_no_bias<data_T, data_T, DENSE0_CONFIG_T>(qkv_in_el[iqkv], qkv_out_el[iqkv], QKV_weight);
+        // dense<data_T, data_T, DENSE0_CONFIG_T>(qkv_in_el[iqkv], qkv_out_el[iqkv], QKV_weight, zero_bias0);
 #ifndef __SYNTHESIS__
-    print_full_result<data_T, CONFIG_T::n_qkv>("qkv_out", qkv_out, fout);
+    print_full_result<data_T, CONFIG_T::n_qkv_out_el>("qkv_out_el[iqkv]", qkv_out_el[iqkv], fout);
 #endif
+
+    }
+//     join_equally<data_T, CONFIG_T::n_particles, CONFIG_T::n_qkv_out_el>(qkv_out_el, qkv_out);
+
+// #ifndef __SYNTHESIS__
+//     print_full_result<data_T, CONFIG_T::n_qkv>("qkv_out", qkv_out, fout);
+// #endif
 
     // Reshape
-    data_T qkv_reshaped[CONFIG_T::n_particles][CONFIG_T::n_qkv_out_el];
-    //TODO: implement this properly 384 (3*128) -> 2x192
-    QKV_reshape: for (int ii = 0; ii < CONFIG_T::n_particles; ii++) {
-        for (int jj = 0; jj < CONFIG_T::n_qkv_out_el; jj += 2) {
-            qkv_reshaped[ii][jj] = qkv_out[ii + jj];
-            qkv_reshaped[ii][jj+1] = qkv_out[ii + jj + CONFIG_T::n_qkv_out_el];
-        }
-#ifndef __SYNTHESIS__
-        print_full_result<data_T, CONFIG_T::n_qkv_out_el>("qkv_reshaped[ii]", qkv_reshaped[ii], fout);
-#endif
-    }
+//     data_T qkv_reshaped[CONFIG_T::n_particles][CONFIG_T::n_qkv_out_el];
+//     //TODO: implement this properly 384 (3*128) -> 2x192
+//     QKV_reshape: for (int ii = 0; ii < CONFIG_T::n_particles; ii++) {
+//         for (int jj = 0; jj < CONFIG_T::n_qkv_out_el; jj += 2) {
+//             qkv_reshaped[ii][jj] = qkv_out[ii + jj];
+//             qkv_reshaped[ii][jj+1] = qkv_out[ii + jj + CONFIG_T::n_qkv_out_el];
+//         }
+// #ifndef __SYNTHESIS__
+//         print_full_result<data_T, CONFIG_T::n_qkv_out_el>("qkv_reshaped[ii]", qkv_reshaped[ii], fout);
+// #endif
+//     }
 
     // QKV split
     data_T queries[CONFIG_T::n_particles][CONFIG_T::n_q];
     data_T keys[CONFIG_T::n_particles][CONFIG_T::n_k];
     data_T values[CONFIG_T::n_particles][CONFIG_T::n_v];
 
-    Queries_split: for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
-        for (int iq = 0; iq < CONFIG_T::n_q; iq++) {
-            queries[jj][iq] = qkv_reshaped[jj][iq];
+    QKV_split: for (unsigned ii = 0; ii < CONFIG_T::n_particles; ii++) {
+        for (unsigned ll = 0; ll < CONFIG_T::n_qkv_out_el/(3*2); ll++) { // 3 from QKV, 2 from inner jj loop
+            for (unsigned jj = 0; jj < 2; jj++){ // TODO likely depends on particles (?) and shouldnt be hardcoded
+                unsigned out_index = ll * 2 + jj;
+                unsigned in_index_const = ll + jj * CONFIG_T::n_qkv_out_el / 2;
+                unsigned in_index_var = CONFIG_T::n_qkv_out_el / (2*3);
+
+                queries[ii][out_index] = qkv_out_el[ii][in_index_const]; // const + 0 * var
+                keys[ii][out_index] = qkv_out_el[ii][in_index_const + in_index_var]; // const + 1 * var
+                values[ii][out_index] = qkv_out_el[ii][in_index_const + 2 * in_index_var]; // const + 2 * var
+            }
         }
-#ifndef __SYNTHESIS__
-        print_full_result<data_T, CONFIG_T::n_q>("queries[jj]", queries[jj], fout);
-#endif
     }
 
-    Keys_split: for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
-        for (int ik = 0; ik < CONFIG_T::n_k; ik++) {
-            keys[jj][ik] = qkv_reshaped[jj][CONFIG_T::n_q + ik];
-        }
-#ifndef __SYNTHESIS__
-        print_full_result<data_T, CONFIG_T::n_k>("keys[jj]", keys[jj], fout);
-#endif
-    }
+//     Queries_split: for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
+//         for (int iq = 0; iq < CONFIG_T::n_q; iq++) {
+//             queries[jj][iq] = qkv_reshaped[jj][iq];
+//         }
+// #ifndef __SYNTHESIS__
+//         print_full_result<data_T, CONFIG_T::n_q>("queries[jj]", queries[jj], fout);
+// #endif
+//     }
 
-    Values_split: for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
-        for (int iv = 0; iv < CONFIG_T::n_v; iv++) {
-            values[jj][iv] = qkv_reshaped[jj][CONFIG_T::n_q + CONFIG_T::n_k + iv];
-        }
-#ifndef __SYNTHESIS__
-        print_full_result<data_T, CONFIG_T::n_v>("values[jj]", values[jj], fout);
-#endif
-    }
+//     Keys_split: for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
+//         for (int ik = 0; ik < CONFIG_T::n_k; ik++) {
+//             keys[jj][ik] = qkv_reshaped[jj][CONFIG_T::n_q + ik];
+//         }
+// #ifndef __SYNTHESIS__
+//         print_full_result<data_T, CONFIG_T::n_k>("keys[jj]", keys[jj], fout);
+// #endif
+//     }
+
+//     Values_split: for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
+//         for (int iv = 0; iv < CONFIG_T::n_v; iv++) {
+//             values[jj][iv] = qkv_reshaped[jj][CONFIG_T::n_q + CONFIG_T::n_k + iv];
+//         }
+// #ifndef __SYNTHESIS__
+//         print_full_result<data_T, CONFIG_T::n_v>("values[jj]", values[jj], fout);
+// #endif
+//     }
 
     // TODO make the dimensions nicer (improve parameters.h)
     data_T queries_outer_transposed[2][CONFIG_T::n_particles*CONFIG_T::n_q/2];
@@ -173,8 +192,8 @@ void self_attention(
 
     // Energy (matmul)
     data_T energy[CONFIG_T::n_particles][CONFIG_T::n_energy];
-    data_T zero_bias1[CONFIG_T::n_energy];
-    fill_zero<data_T,CONFIG_T::n_energy>(zero_bias1);
+    // data_T zero_bias1[CONFIG_T::n_energy];
+    // fill_zero<data_T,CONFIG_T::n_energy>(zero_bias1);
 
     for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
         matmul<data_T, data_T, 2, CONFIG_T::n_el/2, CONFIG_T::n_el/2, 2>(queries_outer_transposed[jj], keys_transposed[jj], energy[jj]);
@@ -255,8 +274,8 @@ void self_attention(
 
     // Scaled attention (matmul)
     data_T scaled_attention[CONFIG_T::n_particles][CONFIG_T::n_scaled_attention];
-    data_T zero_bias2[CONFIG_T::n_scaled_attention];
-    fill_zero<data_T,CONFIG_T::n_scaled_attention >(zero_bias2);
+    // data_T zero_bias2[CONFIG_T::n_scaled_attention];
+    // fill_zero<data_T,CONFIG_T::n_scaled_attention >(zero_bias2);
     for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
         matmul<data_T, data_T, 2, 2, 2, CONFIG_T::n_el/2>(attention_flat[jj], values_transposed[jj], scaled_attention[jj]);
 #ifndef __SYNTHESIS__

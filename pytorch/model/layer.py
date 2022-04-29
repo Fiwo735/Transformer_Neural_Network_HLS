@@ -204,7 +204,7 @@ class SelfAttention(nn.Module):
         # self.debug_print(f'weight of qkv {self.qkv.weight.size()}')
 
         out = out.view(m_batch, seq_len, self.heads, -1)   # (batch_m, seq_len, num_heads, 2*C_head + C//num_head )
-        # self.debug_print('out (after view)', out)
+        self.debug_print('out (after view)', out)
 
         queries, keys, values = torch.split(out, [C_H, C_H, C // self.heads], dim=-1)
         self.debug_print('queries', queries)

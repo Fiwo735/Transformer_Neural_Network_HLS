@@ -155,11 +155,11 @@ def parse():
 
 
 def set_hls_output_predictions(path, results):
-  print(f'{results=}')
+  # print(f'{results=}')
   results_to_write = ''
   for result in results:
     results_to_write += ' '.join([str(el) for el in result]) + '\n'
-  print(f'{results_to_write=}')
+  # print(f'{results_to_write=}')
   with open(path, 'w') as f:
     f.write(results_to_write)
 

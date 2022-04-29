@@ -36,7 +36,7 @@ def output_format_to_numpy(x, cols_in_line=9, end_cols_in_line=2, total_elements
   return result
 
 def case_0():
-  two_cols_data = ''' Columns 1 to 6  4.0129e-02  8.1093e-01 -6.7605e-02  4.5763e-02 -9.1097e-01 -7.3065e-01
+  two_cols_data = '''Columns 1 to 6  4.0129e-02  8.1093e-01 -6.7605e-02  4.5763e-02 -9.1097e-01 -7.3065e-01
  -6.1937e+00  1.5361e+01 -7.8609e+01  3.5738e+01 -3.8578e+01  6.5512e-01
 
 Columns 7 to 12  1.9955e+00  1.7008e+00  1.1903e+00  6.8385e-01 -7.6752e-01 -1.4813e+00
@@ -708,7 +708,72 @@ Columns 64 to 64  0.8253
 
   print(my_reshape(ar))
 
+import numpy as np
+from math import log
 
+def isPower2(x):
+  return (x & (x-1) == 0) and x != 0
+
+def generateTable(size: int, func, max_val: int) -> np.array:
+  assert isPower2(size)
+
+  table = np.empty(shape=(size))
+  for i, x in enumerate(np.linspace(0, max_val, size, endpoint=False)):
+    try:
+      table[i] = func(x)
+    except:
+      table[i] = func(x + 0.001)
+    print(f'{i=}, {x=}')
+  return table
+
+def case_4():
+  table_size = 1024
+  table = generateTable(size=table_size, func=log, max_val=32)
+
+  name = 'log_table'
+  guard = name.upper() + '_H_'
+  var_type = 'general_table_t'
+  
+  table_values = ', '.join(['\n' * (n % 7 == 6) + f'{el:.16f}' for n, el in enumerate(table)])
+  
+  content = []
+  content.append(f'#ifndef {guard}')
+  content.append(f'#define {guard}')
+  content.append('')
+  # content.append('#ifndef __SYNTHESIS__')
+  # content.append(f'{var_type} {name}[{table_size}];')
+  # content.append('#else')
+  content.append(f'{var_type} {name}[{table_size}] = {{{table_values}}};')
+  # content.append('')
+  # content.append('#endif')
+  content.append('')
+  content.append('#endif')
+
+  content = '\n'.join(content)
+  
+  with open('log_table.h', 'w') as f:
+    f.write(content)
+
+def case_5():
+  
+  n_particles = 2
+  n_size = 12
+
+
+  for i in range(n_particles):
+    for l in range(n_size//(2*3)):
+      for j in range(2):
+
+        in_index_Q = j * (n_size/2) + 0 * (n_size/(2*3)) + l
+        in_index_K = j * (n_size/2) + 1 * (n_size/(2*3)) + l
+        in_index_V = j * (n_size/2) + 2 * (n_size/(2*3)) + l
+
+
+        out_index = l * 2 + j
+
+        print(f'{i=}   ||   {j=}, {l=}   ||   {in_index_Q=}, {in_index_K=}, {in_index_V=}   |   {out_index=}')
+
+    print('-'*50)
 
 if __name__ == '__main__':
-  case_3()
+  case_5()
