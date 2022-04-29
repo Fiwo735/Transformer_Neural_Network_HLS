@@ -121,7 +121,7 @@ void myproject(
     for (int jj = 0; jj < N_LABELS; jj++) {
         mlp_out_red[jj] = (input_t_red) mlp_out[jj];
     }
-    nnet::log_softmax_latency<input_t_red, result_t, softmax_config0>(mlp_out_red, data_out);
+    nnet::log_softmax_latency<input_t_red, result_t, softmax_config0>(mlp_out_red, data_out, log_table);
 
 #ifndef __SYNTHESIS__
     nnet::print_full_result<result_t, N_LABELS>("data_out", data_out, fout);

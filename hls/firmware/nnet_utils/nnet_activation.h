@@ -268,11 +268,12 @@ void init_log_table(typename CONFIG_T::log_table_t table_out[CONFIG_T::table_siz
     for(unsigned i = 0; i < CONFIG_T::table_size; i++){
         // Slicing bits for address is going to round towards 0, so take the central value
         float x = softmax_real_val_from_idx_pos<data_T, CONFIG_T>(i);
-        // std::cout << "i: " << i << " x: " << x;
-        // if (x < 0) x = -x; // TODO: change the val_from_idx function call so that this step is not needed
-        // std::cout << " x: " << x;
-        typename CONFIG_T::log_table_t log_x = log_fcn_float(x);
+        // float x = (float) i;
+        // std::cout << "i: " << i << " x: " << x << "\n";
+        // typename CONFIG_T::log_table_t log_x = log_fcn_float(x);
+        typename CONFIG_T::log_table_t log_x = std::log(x);
         table_out[i] = log_x;
+        // table_out[i] = log(i);
         // std::cout << " log_fcn_float(x): " << log_fcn_float(x) << " log_x: " << log_x << " table_out[i]: " << table_out[i] << std::endl;
         // fout << "x: " << x << " log_fcn_float(x): " << log_fcn_float(x) << " log_x: " << log_x << " table_out[i]: " << table_out[i] << "\n";
     }
@@ -354,7 +355,8 @@ void softmax_latency(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in]){
 }
 
 template <class data_T, class res_T, typename CONFIG_T>
-void log_softmax_latency(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in]){
+void log_softmax_latency(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in], typename CONFIG_T::log_table_t log_table[CONFIG_T::table_size]){
+// void log_softmax_latency(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in]){
     // std::ofstream fout("tb_data/csim_layers.log", std::ios_base::app); //TODO remove
     #pragma HLS pipeline
 
@@ -363,19 +365,22 @@ void log_softmax_latency(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in])
     bool initialized = false;
     typename CONFIG_T::exp_table_t exp_table[CONFIG_T::table_size];
     // typename CONFIG_T::inv_table_t invert_table[CONFIG_T::table_size];
-    static typename CONFIG_T::log_table_t log_table[CONFIG_T::table_size];
+    // typename CONFIG_T::log_table_t log_table[CONFIG_T::table_size];
 #else
     static bool initialized = false;
     static typename CONFIG_T::exp_table_t exp_table[CONFIG_T::table_size];
     // static typename CONFIG_T::inv_table_t invert_table[CONFIG_T::table_size];
-    static typename CONFIG_T::log_table_t log_table[CONFIG_T::table_size];
+    // static typename CONFIG_T::log_table_t log_table[CONFIG_T::table_size];
 #endif
+
+    #pragma HLS RESOURCE variable=log_table core=RAM_2P
+
     if (!initialized) {
         // Note we are exponentiating the inputs, which have type data_T
         init_exp_table<data_T, CONFIG_T>(exp_table);
         // Note we are inverting the exponentials, which have type exp_table_t
         // init_invert_table<typename CONFIG_T::exp_table_t, CONFIG_T>(invert_table);
-        init_log_table<data_T, CONFIG_T>(log_table);
+        // init_log_table<data_T, CONFIG_T>(log_table);
         initialized = true;
     }
 
@@ -403,7 +408,9 @@ void log_softmax_latency(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in])
     // fout << "exp_sum: " << exp_sum << "\n";
 
     // typename CONFIG_T::inv_table_t inv_exp_sum = invert_table[softmax_idx_from_real_val<typename CONFIG_T::exp_table_t,CONFIG_T>(exp_sum)];
-    typename CONFIG_T::log_table_t log_sum = log_table[softmax_idx_from_real_val_pos<typename CONFIG_T::exp_table_t,CONFIG_T>(exp_sum)];
+    unsigned xx = softmax_idx_from_real_val_pos<typename CONFIG_T::exp_table_t,CONFIG_T>(exp_sum);
+    // unsigned xx = (unsigned) exp_sum;
+    typename CONFIG_T::log_table_t log_sum = log_table[xx];
     // fout << "inv_exp_sum: " << inv_exp_sum << "\n";
 
     // Op_max<data_T> op_max;

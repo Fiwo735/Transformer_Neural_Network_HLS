@@ -1,0 +1,323 @@
+
+
+================================================================
+== Vivado HLS Report for 'join_equally_ap_fixed_35_15_5_3_0_2ul_48ul_s'
+================================================================
+* Date:           Fri Apr 29 00:46:25 2022
+
+* Version:        2019.2 (Build 2704478 on Wed Nov 06 22:10:23 MST 2019)
+* Project:        myproject_prj
+* Solution:       solution1
+* Product family: virtexuplus
+* Target device:  xcu250-figd2104-2L-e
+
+
+================================================================
+== Performance Estimates
+================================================================
++ Timing: 
+    * Summary: 
+    +--------+---------+----------+------------+
+    |  Clock |  Target | Estimated| Uncertainty|
+    +--------+---------+----------+------------+
+    |ap_clk  | 5.00 ns | 1.158 ns |   0.62 ns  |
+    +--------+---------+----------+------------+
+
++ Latency: 
+    * Summary: 
+    +---------+---------+----------+----------+-----+-----+----------+
+    |  Latency (cycles) |  Latency (absolute) |  Interval | Pipeline |
+    |   min   |   max   |    min   |    max   | min | max |   Type   |
+    +---------+---------+----------+----------+-----+-----+----------+
+    |       47|       47| 0.235 us | 0.235 us |   48|   48| function |
+    +---------+---------+----------+----------+-----+-----+----------+
+
+    + Detail: 
+        * Instance: 
+        N/A
+
+        * Loop: 
+        N/A
+
+
+
+================================================================
+== Utilization Estimates
+================================================================
+* Summary: 
++---------------------+---------+-------+---------+---------+------+
+|         Name        | BRAM_18K| DSP48E|    FF   |   LUT   | URAM |
++---------------------+---------+-------+---------+---------+------+
+|DSP                  |        -|      -|        -|        -|     -|
+|Expression           |        -|      -|        -|        -|     -|
+|FIFO                 |        -|      -|        -|        -|     -|
+|Instance             |        -|      -|        -|        -|     -|
+|Memory               |        -|      -|        -|        -|     -|
+|Multiplexer          |        -|      -|        -|     1065|     -|
+|Register             |        -|      -|     3338|        -|     -|
++---------------------+---------+-------+---------+---------+------+
+|Total                |        0|      0|     3338|     1065|     0|
++---------------------+---------+-------+---------+---------+------+
+|Available SLR        |     1344|   3072|   864000|   432000|   320|
++---------------------+---------+-------+---------+---------+------+
+|Utilization SLR (%)  |        0|      0|    ~0   |    ~0   |     0|
++---------------------+---------+-------+---------+---------+------+
+|Available            |     5376|  12288|  3456000|  1728000|  1280|
++---------------------+---------+-------+---------+---------+------+
+|Utilization (%)      |        0|      0|    ~0   |    ~0   |     0|
++---------------------+---------+-------+---------+---------+------+
+
++ Detail: 
+    * Instance: 
+    N/A
+
+    * DSP48E: 
+    N/A
+
+    * Memory: 
+    N/A
+
+    * FIFO: 
+    N/A
+
+    * Expression: 
+    N/A
+
+    * Multiplexer: 
+    +----------------+-----+-----------+-----+-----------+
+    |      Name      | LUT | Input Size| Bits| Total Bits|
+    +----------------+-----+-----------+-----+-----------+
+    |ap_NS_fsm       |  213|         49|    1|         49|
+    |res_V_address0  |  213|         49|    7|        343|
+    |res_V_address1  |  213|         49|    7|        343|
+    |res_V_d0        |  213|         49|   35|       1715|
+    |res_V_d1        |  213|         49|   35|       1715|
+    +----------------+-----+-----------+-----+-----------+
+    |Total           | 1065|        245|   85|       4165|
+    +----------------+-----+-----------+-----+-----------+
+
+    * Register: 
+    +------------------------------+----+----+-----+-----------+
+    |             Name             | FF | LUT| Bits| Const Bits|
+    +------------------------------+----+----+-----+-----------+
+    |ap_CS_fsm                     |  48|   0|   48|          0|
+    |ap_port_reg_data_10_0_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_10_1_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_11_0_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_11_1_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_12_0_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_12_1_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_13_0_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_13_1_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_14_0_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_14_1_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_15_0_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_15_1_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_16_0_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_16_1_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_17_0_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_17_1_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_18_0_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_18_1_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_19_0_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_19_1_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_1_0_V_read   |  35|   0|   35|          0|
+    |ap_port_reg_data_1_1_V_read   |  35|   0|   35|          0|
+    |ap_port_reg_data_20_0_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_20_1_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_21_0_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_21_1_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_22_0_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_22_1_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_23_0_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_23_1_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_24_0_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_24_1_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_25_0_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_25_1_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_26_0_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_26_1_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_27_0_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_27_1_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_28_0_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_28_1_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_29_0_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_29_1_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_2_0_V_read   |  35|   0|   35|          0|
+    |ap_port_reg_data_2_1_V_read   |  35|   0|   35|          0|
+    |ap_port_reg_data_30_0_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_30_1_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_31_0_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_31_1_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_32_0_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_32_1_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_33_0_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_33_1_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_34_0_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_34_1_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_35_0_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_35_1_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_36_0_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_36_1_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_37_0_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_37_1_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_38_0_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_38_1_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_39_0_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_39_1_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_3_0_V_read   |  35|   0|   35|          0|
+    |ap_port_reg_data_3_1_V_read   |  35|   0|   35|          0|
+    |ap_port_reg_data_40_0_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_40_1_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_41_0_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_41_1_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_42_0_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_42_1_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_43_0_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_43_1_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_44_0_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_44_1_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_45_0_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_45_1_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_46_0_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_46_1_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_47_0_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_47_1_V_read  |  35|   0|   35|          0|
+    |ap_port_reg_data_4_0_V_read   |  35|   0|   35|          0|
+    |ap_port_reg_data_4_1_V_read   |  35|   0|   35|          0|
+    |ap_port_reg_data_5_0_V_read   |  35|   0|   35|          0|
+    |ap_port_reg_data_5_1_V_read   |  35|   0|   35|          0|
+    |ap_port_reg_data_6_0_V_read   |  35|   0|   35|          0|
+    |ap_port_reg_data_6_1_V_read   |  35|   0|   35|          0|
+    |ap_port_reg_data_7_0_V_read   |  35|   0|   35|          0|
+    |ap_port_reg_data_7_1_V_read   |  35|   0|   35|          0|
+    |ap_port_reg_data_8_0_V_read   |  35|   0|   35|          0|
+    |ap_port_reg_data_8_1_V_read   |  35|   0|   35|          0|
+    |ap_port_reg_data_9_0_V_read   |  35|   0|   35|          0|
+    |ap_port_reg_data_9_1_V_read   |  35|   0|   35|          0|
+    +------------------------------+----+----+-----+-----------+
+    |Total                         |3338|   0| 3338|          0|
+    +------------------------------+----+----+-----+-----------+
+
+
+
+================================================================
+== Interface
+================================================================
+* Summary: 
++------------------+-----+-----+------------+----------------------------------------------------+--------------+
+|     RTL Ports    | Dir | Bits|  Protocol  |                    Source Object                   |    C Type    |
++------------------+-----+-----+------------+----------------------------------------------------+--------------+
+|ap_clk            |  in |    1| ap_ctrl_hs | join_equally<ap_fixed<35, 15, 5, 3, 0>, 2ul, 48ul> | return value |
+|ap_rst            |  in |    1| ap_ctrl_hs | join_equally<ap_fixed<35, 15, 5, 3, 0>, 2ul, 48ul> | return value |
+|ap_start          |  in |    1| ap_ctrl_hs | join_equally<ap_fixed<35, 15, 5, 3, 0>, 2ul, 48ul> | return value |
+|ap_done           | out |    1| ap_ctrl_hs | join_equally<ap_fixed<35, 15, 5, 3, 0>, 2ul, 48ul> | return value |
+|ap_idle           | out |    1| ap_ctrl_hs | join_equally<ap_fixed<35, 15, 5, 3, 0>, 2ul, 48ul> | return value |
+|ap_ready          | out |    1| ap_ctrl_hs | join_equally<ap_fixed<35, 15, 5, 3, 0>, 2ul, 48ul> | return value |
+|ap_ce             |  in |    1| ap_ctrl_hs | join_equally<ap_fixed<35, 15, 5, 3, 0>, 2ul, 48ul> | return value |
+|data_0_0_V_read   |  in |   35|   ap_none  |                   data_0_0_V_read                  |    scalar    |
+|data_0_1_V_read   |  in |   35|   ap_none  |                   data_0_1_V_read                  |    scalar    |
+|data_1_0_V_read   |  in |   35|   ap_none  |                   data_1_0_V_read                  |    scalar    |
+|data_1_1_V_read   |  in |   35|   ap_none  |                   data_1_1_V_read                  |    scalar    |
+|data_2_0_V_read   |  in |   35|   ap_none  |                   data_2_0_V_read                  |    scalar    |
+|data_2_1_V_read   |  in |   35|   ap_none  |                   data_2_1_V_read                  |    scalar    |
+|data_3_0_V_read   |  in |   35|   ap_none  |                   data_3_0_V_read                  |    scalar    |
+|data_3_1_V_read   |  in |   35|   ap_none  |                   data_3_1_V_read                  |    scalar    |
+|data_4_0_V_read   |  in |   35|   ap_none  |                   data_4_0_V_read                  |    scalar    |
+|data_4_1_V_read   |  in |   35|   ap_none  |                   data_4_1_V_read                  |    scalar    |
+|data_5_0_V_read   |  in |   35|   ap_none  |                   data_5_0_V_read                  |    scalar    |
+|data_5_1_V_read   |  in |   35|   ap_none  |                   data_5_1_V_read                  |    scalar    |
+|data_6_0_V_read   |  in |   35|   ap_none  |                   data_6_0_V_read                  |    scalar    |
+|data_6_1_V_read   |  in |   35|   ap_none  |                   data_6_1_V_read                  |    scalar    |
+|data_7_0_V_read   |  in |   35|   ap_none  |                   data_7_0_V_read                  |    scalar    |
+|data_7_1_V_read   |  in |   35|   ap_none  |                   data_7_1_V_read                  |    scalar    |
+|data_8_0_V_read   |  in |   35|   ap_none  |                   data_8_0_V_read                  |    scalar    |
+|data_8_1_V_read   |  in |   35|   ap_none  |                   data_8_1_V_read                  |    scalar    |
+|data_9_0_V_read   |  in |   35|   ap_none  |                   data_9_0_V_read                  |    scalar    |
+|data_9_1_V_read   |  in |   35|   ap_none  |                   data_9_1_V_read                  |    scalar    |
+|data_10_0_V_read  |  in |   35|   ap_none  |                  data_10_0_V_read                  |    scalar    |
+|data_10_1_V_read  |  in |   35|   ap_none  |                  data_10_1_V_read                  |    scalar    |
+|data_11_0_V_read  |  in |   35|   ap_none  |                  data_11_0_V_read                  |    scalar    |
+|data_11_1_V_read  |  in |   35|   ap_none  |                  data_11_1_V_read                  |    scalar    |
+|data_12_0_V_read  |  in |   35|   ap_none  |                  data_12_0_V_read                  |    scalar    |
+|data_12_1_V_read  |  in |   35|   ap_none  |                  data_12_1_V_read                  |    scalar    |
+|data_13_0_V_read  |  in |   35|   ap_none  |                  data_13_0_V_read                  |    scalar    |
+|data_13_1_V_read  |  in |   35|   ap_none  |                  data_13_1_V_read                  |    scalar    |
+|data_14_0_V_read  |  in |   35|   ap_none  |                  data_14_0_V_read                  |    scalar    |
+|data_14_1_V_read  |  in |   35|   ap_none  |                  data_14_1_V_read                  |    scalar    |
+|data_15_0_V_read  |  in |   35|   ap_none  |                  data_15_0_V_read                  |    scalar    |
+|data_15_1_V_read  |  in |   35|   ap_none  |                  data_15_1_V_read                  |    scalar    |
+|data_16_0_V_read  |  in |   35|   ap_none  |                  data_16_0_V_read                  |    scalar    |
+|data_16_1_V_read  |  in |   35|   ap_none  |                  data_16_1_V_read                  |    scalar    |
+|data_17_0_V_read  |  in |   35|   ap_none  |                  data_17_0_V_read                  |    scalar    |
+|data_17_1_V_read  |  in |   35|   ap_none  |                  data_17_1_V_read                  |    scalar    |
+|data_18_0_V_read  |  in |   35|   ap_none  |                  data_18_0_V_read                  |    scalar    |
+|data_18_1_V_read  |  in |   35|   ap_none  |                  data_18_1_V_read                  |    scalar    |
+|data_19_0_V_read  |  in |   35|   ap_none  |                  data_19_0_V_read                  |    scalar    |
+|data_19_1_V_read  |  in |   35|   ap_none  |                  data_19_1_V_read                  |    scalar    |
+|data_20_0_V_read  |  in |   35|   ap_none  |                  data_20_0_V_read                  |    scalar    |
+|data_20_1_V_read  |  in |   35|   ap_none  |                  data_20_1_V_read                  |    scalar    |
+|data_21_0_V_read  |  in |   35|   ap_none  |                  data_21_0_V_read                  |    scalar    |
+|data_21_1_V_read  |  in |   35|   ap_none  |                  data_21_1_V_read                  |    scalar    |
+|data_22_0_V_read  |  in |   35|   ap_none  |                  data_22_0_V_read                  |    scalar    |
+|data_22_1_V_read  |  in |   35|   ap_none  |                  data_22_1_V_read                  |    scalar    |
+|data_23_0_V_read  |  in |   35|   ap_none  |                  data_23_0_V_read                  |    scalar    |
+|data_23_1_V_read  |  in |   35|   ap_none  |                  data_23_1_V_read                  |    scalar    |
+|data_24_0_V_read  |  in |   35|   ap_none  |                  data_24_0_V_read                  |    scalar    |
+|data_24_1_V_read  |  in |   35|   ap_none  |                  data_24_1_V_read                  |    scalar    |
+|data_25_0_V_read  |  in |   35|   ap_none  |                  data_25_0_V_read                  |    scalar    |
+|data_25_1_V_read  |  in |   35|   ap_none  |                  data_25_1_V_read                  |    scalar    |
+|data_26_0_V_read  |  in |   35|   ap_none  |                  data_26_0_V_read                  |    scalar    |
+|data_26_1_V_read  |  in |   35|   ap_none  |                  data_26_1_V_read                  |    scalar    |
+|data_27_0_V_read  |  in |   35|   ap_none  |                  data_27_0_V_read                  |    scalar    |
+|data_27_1_V_read  |  in |   35|   ap_none  |                  data_27_1_V_read                  |    scalar    |
+|data_28_0_V_read  |  in |   35|   ap_none  |                  data_28_0_V_read                  |    scalar    |
+|data_28_1_V_read  |  in |   35|   ap_none  |                  data_28_1_V_read                  |    scalar    |
+|data_29_0_V_read  |  in |   35|   ap_none  |                  data_29_0_V_read                  |    scalar    |
+|data_29_1_V_read  |  in |   35|   ap_none  |                  data_29_1_V_read                  |    scalar    |
+|data_30_0_V_read  |  in |   35|   ap_none  |                  data_30_0_V_read                  |    scalar    |
+|data_30_1_V_read  |  in |   35|   ap_none  |                  data_30_1_V_read                  |    scalar    |
+|data_31_0_V_read  |  in |   35|   ap_none  |                  data_31_0_V_read                  |    scalar    |
+|data_31_1_V_read  |  in |   35|   ap_none  |                  data_31_1_V_read                  |    scalar    |
+|data_32_0_V_read  |  in |   35|   ap_none  |                  data_32_0_V_read                  |    scalar    |
+|data_32_1_V_read  |  in |   35|   ap_none  |                  data_32_1_V_read                  |    scalar    |
+|data_33_0_V_read  |  in |   35|   ap_none  |                  data_33_0_V_read                  |    scalar    |
+|data_33_1_V_read  |  in |   35|   ap_none  |                  data_33_1_V_read                  |    scalar    |
+|data_34_0_V_read  |  in |   35|   ap_none  |                  data_34_0_V_read                  |    scalar    |
+|data_34_1_V_read  |  in |   35|   ap_none  |                  data_34_1_V_read                  |    scalar    |
+|data_35_0_V_read  |  in |   35|   ap_none  |                  data_35_0_V_read                  |    scalar    |
+|data_35_1_V_read  |  in |   35|   ap_none  |                  data_35_1_V_read                  |    scalar    |
+|data_36_0_V_read  |  in |   35|   ap_none  |                  data_36_0_V_read                  |    scalar    |
+|data_36_1_V_read  |  in |   35|   ap_none  |                  data_36_1_V_read                  |    scalar    |
+|data_37_0_V_read  |  in |   35|   ap_none  |                  data_37_0_V_read                  |    scalar    |
+|data_37_1_V_read  |  in |   35|   ap_none  |                  data_37_1_V_read                  |    scalar    |
+|data_38_0_V_read  |  in |   35|   ap_none  |                  data_38_0_V_read                  |    scalar    |
+|data_38_1_V_read  |  in |   35|   ap_none  |                  data_38_1_V_read                  |    scalar    |
+|data_39_0_V_read  |  in |   35|   ap_none  |                  data_39_0_V_read                  |    scalar    |
+|data_39_1_V_read  |  in |   35|   ap_none  |                  data_39_1_V_read                  |    scalar    |
+|data_40_0_V_read  |  in |   35|   ap_none  |                  data_40_0_V_read                  |    scalar    |
+|data_40_1_V_read  |  in |   35|   ap_none  |                  data_40_1_V_read                  |    scalar    |
+|data_41_0_V_read  |  in |   35|   ap_none  |                  data_41_0_V_read                  |    scalar    |
+|data_41_1_V_read  |  in |   35|   ap_none  |                  data_41_1_V_read                  |    scalar    |
+|data_42_0_V_read  |  in |   35|   ap_none  |                  data_42_0_V_read                  |    scalar    |
+|data_42_1_V_read  |  in |   35|   ap_none  |                  data_42_1_V_read                  |    scalar    |
+|data_43_0_V_read  |  in |   35|   ap_none  |                  data_43_0_V_read                  |    scalar    |
+|data_43_1_V_read  |  in |   35|   ap_none  |                  data_43_1_V_read                  |    scalar    |
+|data_44_0_V_read  |  in |   35|   ap_none  |                  data_44_0_V_read                  |    scalar    |
+|data_44_1_V_read  |  in |   35|   ap_none  |                  data_44_1_V_read                  |    scalar    |
+|data_45_0_V_read  |  in |   35|   ap_none  |                  data_45_0_V_read                  |    scalar    |
+|data_45_1_V_read  |  in |   35|   ap_none  |                  data_45_1_V_read                  |    scalar    |
+|data_46_0_V_read  |  in |   35|   ap_none  |                  data_46_0_V_read                  |    scalar    |
+|data_46_1_V_read  |  in |   35|   ap_none  |                  data_46_1_V_read                  |    scalar    |
+|data_47_0_V_read  |  in |   35|   ap_none  |                  data_47_0_V_read                  |    scalar    |
+|data_47_1_V_read  |  in |   35|   ap_none  |                  data_47_1_V_read                  |    scalar    |
+|res_V_address0    | out |    7|  ap_memory |                        res_V                       |     array    |
+|res_V_ce0         | out |    1|  ap_memory |                        res_V                       |     array    |
+|res_V_we0         | out |    1|  ap_memory |                        res_V                       |     array    |
+|res_V_d0          | out |   35|  ap_memory |                        res_V                       |     array    |
+|res_V_address1    | out |    7|  ap_memory |                        res_V                       |     array    |
+|res_V_ce1         | out |    1|  ap_memory |                        res_V                       |     array    |
+|res_V_we1         | out |    1|  ap_memory |                        res_V                       |     array    |
+|res_V_d1          | out |   35|  ap_memory |                        res_V                       |     array    |
++------------------+-----+-----+------------+----------------------------------------------------+--------------+
+

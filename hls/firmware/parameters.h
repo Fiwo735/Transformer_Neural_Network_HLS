@@ -31,6 +31,8 @@
 #include "weights/transformers_0_linear_2_weight.h"
 #include "weights/transformers_0_linear_5_weight.h"
 
+#include "weights/log_table.h"
+
 //------- TOP -------
 
 struct embedded_config : nnet::dense_config {
@@ -201,7 +203,7 @@ struct sigmoid_config0 : nnet::activ_config {
     static const unsigned n_in = N_EMBEDDED_DIM;
 
     // Internal info
-    static const unsigned table_size = N_SMALL_TABLE_SIZE;
+    // static const unsigned table_size = N_SMALL_TABLE_SIZE;
 
     // Resource reuse info
     static const unsigned io_type = nnet::io_parallel;
@@ -256,7 +258,7 @@ struct sigmoid_config1 : nnet::activ_config {
     static const unsigned n_in = (N_EMBEDDED_DIM * 2);
 
     // Internal info
-    static const unsigned table_size = N_SMALL_TABLE_SIZE;
+    // static const unsigned table_size = N_SMALL_TABLE_SIZE;
 
     // Resource reuse info
     static const unsigned io_type = nnet::io_parallel;

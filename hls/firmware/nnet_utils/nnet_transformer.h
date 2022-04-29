@@ -123,12 +123,12 @@ void transformer(
 
     data_T SiLU0_out[CONFIG_T::n_particles][CONFIG_T::n_el];
     data_T dense0_out[CONFIG_T::n_particles][CONFIG_T::n_el_doubled];
-    data_T zero_bias0[CONFIG_T::n_el_doubled];
-    fill_zero<data_T,CONFIG_T::n_el_doubled>(zero_bias0);
+    // data_T zero_bias0[CONFIG_T::n_el_doubled];
+    // fill_zero<data_T,CONFIG_T::n_el_doubled>(zero_bias0);
     data_T SiLU1_out[CONFIG_T::n_particles][CONFIG_T::n_el_doubled];
     data_T dense1_out[CONFIG_T::n_particles][CONFIG_T::n_el];
-    data_T zero_bias1[CONFIG_T::n_el];
-    fill_zero<data_T,CONFIG_T::n_el>(zero_bias1);
+    // data_T zero_bias1[CONFIG_T::n_el];
+    // fill_zero<data_T,CONFIG_T::n_el>(zero_bias1);
 
     for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
 
@@ -139,7 +139,8 @@ void transformer(
 #endif
 
     // Dense
-        dense<data_T, data_T, DENSE0_CONFIG_T>(SiLU0_out[jj], dense0_out[jj], dense0_weight, zero_bias0);
+        // dense<data_T, data_T, DENSE0_CONFIG_T>(SiLU0_out[jj], dense0_out[jj], dense0_weight, zero_bias0);
+        dense_latency_no_bias<data_T, data_T, DENSE0_CONFIG_T>(SiLU0_out[jj], dense0_out[jj], dense0_weight);
 #ifndef __SYNTHESIS__
         print_full_result<input_t, CONFIG_T::n_el_doubled>("dense0_out[jj]", dense0_out[jj], fout);
 #endif
@@ -152,7 +153,8 @@ void transformer(
 #endif
 
     // Dense
-        dense<data_T, data_T, DENSE1_CONFIG_T>(SiLU1_out[jj], dense1_out[jj], dense1_weight, zero_bias1);
+        // dense<data_T, data_T, DENSE1_CONFIG_T>(SiLU1_out[jj], dense1_out[jj], dense1_weight, zero_bias1);
+        dense_latency_no_bias<data_T, data_T, DENSE1_CONFIG_T>(SiLU1_out[jj], dense1_out[jj], dense1_weight);
 #ifndef __SYNTHESIS__
         print_full_result<input_t, CONFIG_T::n_el>("dense1_out[jj]", dense1_out[jj], fout);
 #endif
