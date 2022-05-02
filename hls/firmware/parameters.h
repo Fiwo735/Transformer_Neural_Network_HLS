@@ -388,24 +388,6 @@ struct sa_transpose_config0 : nnet::transpose_config {
     static const unsigned width = 2;
 };
 
-// TODO, THIS IS REPLACED BY MATMUL 
-struct sa_dense_config1 : nnet::dense_config {
-    static const unsigned n_in = 128;
-    static const unsigned n_out = 4;
-    static const unsigned io_type = nnet::io_parallel;
-    static const unsigned strategy = nnet::latency;
-    static const unsigned reuse_factor = 1;
-    static const unsigned n_zeros = 0;
-    static const unsigned n_nonzeros = 128;
-    static const bool store_weights_in_bram = false;
-    typedef model_default_t accum_t;
-    typedef model_default_t bias_t;
-    typedef model_default_t weight_t;
-    typedef ap_uint<1> index_t;
-    template<class x_T, class y_T, class res_T>
-    using product = nnet::product::mult<x_T, y_T, res_T>;
-};
-
 struct sa_softmax_config0 : nnet::activ_config {
     static const unsigned n_in = 2;
     static const unsigned table_size = N_BIG_TABLE_SIZE;
@@ -415,24 +397,6 @@ struct sa_softmax_config0 : nnet::activ_config {
     static const nnet::softmax_implementation implementation = nnet::softmax_implementation::latency;
     typedef general_table_t exp_table_t;
     typedef general_table_t inv_table_t;
-};
-
-// TODO, THIS IS REPLACED BY MATMUL 
-struct sa_dense_config2 : nnet::dense_config {
-    static const unsigned n_in = 4;
-    static const unsigned n_out = 128;
-    static const unsigned io_type = nnet::io_parallel;
-    static const unsigned strategy = nnet::latency;
-    static const unsigned reuse_factor = 1;
-    static const unsigned n_zeros = 0;
-    static const unsigned n_nonzeros = 128;
-    static const bool store_weights_in_bram = false;
-    typedef model_default_t accum_t;
-    typedef model_default_t bias_t;
-    typedef model_default_t weight_t;
-    typedef ap_uint<1> index_t;
-    template<class x_T, class y_T, class res_T>
-    using product = nnet::product::mult<x_T, y_T, res_T>;
 };
 
 struct sa_dense_config3 : nnet::dense_config {

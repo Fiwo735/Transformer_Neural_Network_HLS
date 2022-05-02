@@ -89,156 +89,58 @@ struct transformer_config
 
 // TODO make input_t and data_t be used consistently
 
-template<class data_T, class res_T, typename CONFIG_T, typename SA_CONFIG_T, typename SA_NORM_CONFIG_T, typename SA_DENSE0_CONFIG_T, typename SA_TRANSPOSE0_CONFIG_T, typename SA_DENSE1_CONFIG_T, typename SA_SOFTMAX_CONFIG_T, typename SA_DENSE2_CONFIG_T, typename SA_DENSE3_CONFIG_T, typename NORM0_CONFIG_T, typename SIG0_CONFIG_T, typename DENSE0_CONFIG_T, typename NORM1_CONFIG_T, typename SIG1_CONFIG_T, typename DENSE1_CONFIG_T>
+template<class data_T, class res_T, typename CONFIG_T, typename SA_CONFIG_T, typename SA_NORM_CONFIG_T, typename SA_DENSE0_CONFIG_T, typename SA_TRANSPOSE0_CONFIG_T, typename SA_SOFTMAX_CONFIG_T, typename SA_DENSE3_CONFIG_T, typename NORM0_CONFIG_T, typename SIG0_CONFIG_T, typename DENSE0_CONFIG_T, typename NORM1_CONFIG_T, typename SIG1_CONFIG_T, typename DENSE1_CONFIG_T>
 void transformer(
-    data_T                               data[CONFIG_T::n_in],
-    res_T                                res[CONFIG_T::n_out],
+    data_T                               data[CONFIG_T::n_particles][CONFIG_T::n_el],
+    res_T                                res[CONFIG_T::n_particles][CONFIG_T::n_el],
     typename CONFIG_T::SA_QKV_weight_t   SA_QKV_weight[CONFIG_T::n_SA_QKV_weight],
     typename CONFIG_T::SA_dense_weight_t SA_dense_weight[CONFIG_T::n_SA_dense_weight],
     typename CONFIG_T::SA_dense_bias_t   SA_dense_bias[CONFIG_T::n_SA_dense_bias],
     typename CONFIG_T::dense0_weight_t   dense0_weight[CONFIG_T::n_dense0_weight],
     typename CONFIG_T::dense1_weight_t   dense1_weight[CONFIG_T::n_dense1_weight]
 ){
-
-#ifndef __SYNTHESIS__
-    std::ofstream fout("tb_data/csim_layers.log", std::ios_base::app);
-#endif
+    #pragma HLS PIPELINE
 
     // Self-attention
-    data_T self_attention_out[CONFIG_T::n_in];
-    self_attention<data_T, data_T, SA_CONFIG_T, SA_NORM_CONFIG_T, SA_DENSE0_CONFIG_T, SA_TRANSPOSE0_CONFIG_T, SA_DENSE1_CONFIG_T, SA_SOFTMAX_CONFIG_T, SA_DENSE2_CONFIG_T, SA_DENSE3_CONFIG_T>(
+    data_T self_attention_out[CONFIG_T::n_particles][CONFIG_T::n_el];
+    self_attention<data_T, data_T, SA_CONFIG_T, SA_NORM_CONFIG_T, SA_DENSE0_CONFIG_T, SA_TRANSPOSE0_CONFIG_T, SA_SOFTMAX_CONFIG_T, SA_DENSE3_CONFIG_T>(
         data,
         self_attention_out,
         SA_QKV_weight,
         SA_dense_weight,
         SA_dense_bias
     );
+    PRETTY_PRINT_2D(self_attention_out, CONFIG_T::n_particles, CONFIG_T::n_el);
 
-#ifndef __SYNTHESIS__
-    print_full_result<input_t, CONFIG_T::n_in>("self_attention_out", self_attention_out, fout);
-#endif
-
-    data_T norm0_in_el[CONFIG_T::n_particles][CONFIG_T::n_el];
-    nnet::split_equally<data_T, CONFIG_T::n_particles, CONFIG_T::n_el>(self_attention_out, norm0_in_el);
-
-    data_T SiLU0_out[CONFIG_T::n_particles][CONFIG_T::n_el];
+    data_T self_attention_sum[CONFIG_T::n_particles][CONFIG_T::n_el];
+    data_T activ0[CONFIG_T::n_particles][CONFIG_T::n_el];
     data_T dense0_out[CONFIG_T::n_particles][CONFIG_T::n_el_doubled];
-    // data_T zero_bias0[CONFIG_T::n_el_doubled];
-    // fill_zero<data_T,CONFIG_T::n_el_doubled>(zero_bias0);
-    data_T SiLU1_out[CONFIG_T::n_particles][CONFIG_T::n_el_doubled];
+    data_T activ1[CONFIG_T::n_particles][CONFIG_T::n_el_doubled];
     data_T dense1_out[CONFIG_T::n_particles][CONFIG_T::n_el];
-    // data_T zero_bias1[CONFIG_T::n_el];
-    // fill_zero<data_T,CONFIG_T::n_el>(zero_bias1);
 
     for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
-
-    // ReLU
-        relu<data_T, data_T, SIG0_CONFIG_T>(norm0_in_el[jj], SiLU0_out[jj]);
-#ifndef __SYNTHESIS__
-        print_full_result<data_T, CONFIG_T::n_el>("ReLU0_out[jj]", SiLU0_out[jj], fout);
-#endif
-
-    // Dense
-        // dense<data_T, data_T, DENSE0_CONFIG_T>(SiLU0_out[jj], dense0_out[jj], dense0_weight, zero_bias0);
-        dense_latency_no_bias<data_T, data_T, DENSE0_CONFIG_T>(SiLU0_out[jj], dense0_out[jj], dense0_weight);
-#ifndef __SYNTHESIS__
-        print_full_result<input_t, CONFIG_T::n_el_doubled>("dense0_out[jj]", dense0_out[jj], fout);
-#endif
-
-
-    // ReLU
-        relu<data_T, data_T, SIG1_CONFIG_T>(dense0_out[jj], SiLU1_out[jj]);
-#ifndef __SYNTHESIS__
-        print_full_result<input_t, CONFIG_T::n_el_doubled>("ReLU1_out[jj]", SiLU1_out[jj], fout);
-#endif
-
-    // Dense
-        // dense<data_T, data_T, DENSE1_CONFIG_T>(SiLU1_out[jj], dense1_out[jj], dense1_weight, zero_bias1);
-        dense_latency_no_bias<data_T, data_T, DENSE1_CONFIG_T>(SiLU1_out[jj], dense1_out[jj], dense1_weight);
-#ifndef __SYNTHESIS__
-        print_full_result<input_t, CONFIG_T::n_el>("dense1_out[jj]", dense1_out[jj], fout);
-#endif
-    }
-
-//     // ReLU
-//     data_T SiLU0_out[CONFIG_T::n_particles][CONFIG_T::n_el];
-//     for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
-//         relu<data_T, data_T, SIG0_CONFIG_T>(norm0_in_el[jj], SiLU0_out[jj]);
-// #ifndef __SYNTHESIS__
-//         print_full_result<data_T, CONFIG_T::n_el>("ReLU0_out[jj]", SiLU0_out[jj], fout);
-// #endif
-//     }
-
-//     // Dense
-//     data_T dense0_out[CONFIG_T::n_particles][CONFIG_T::n_el_doubled];
-//     data_T zero_bias0[CONFIG_T::n_el_doubled];
-//     fill_zero<data_T,CONFIG_T::n_el_doubled >(zero_bias0);
-//     for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
-//         dense<data_T, data_T, DENSE0_CONFIG_T>(SiLU0_out[jj], dense0_out[jj], dense0_weight, zero_bias0);
-// #ifndef __SYNTHESIS__
-//         print_full_result<input_t, CONFIG_T::n_el_doubled>("dense0_out[jj]", dense0_out[jj], fout);
-// #endif
-//     }
-
-//     // ReLU
-//     data_T SiLU1_out[CONFIG_T::n_particles][CONFIG_T::n_el_doubled];
-//     for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
-//         relu<data_T, data_T, SIG1_CONFIG_T>(dense0_out[jj], SiLU1_out[jj]);
-// #ifndef __SYNTHESIS__
-//         print_full_result<input_t, CONFIG_T::n_el_doubled>("ReLU1_out[jj]", SiLU1_out[jj], fout);
-// #endif
-//     }
-
-//     // Dense
-//     data_T dense1_out[CONFIG_T::n_particles][CONFIG_T::n_el];
-//     data_T zero_bias1[CONFIG_T::n_el];
-//     fill_zero<data_T,CONFIG_T::n_el >(zero_bias1);
-//     for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
-//         dense<data_T, data_T, DENSE1_CONFIG_T>(SiLU1_out[jj], dense1_out[jj], dense1_weight, zero_bias1);
-// #ifndef __SYNTHESIS__
-//         print_full_result<input_t, CONFIG_T::n_el>("dense1_out[jj]", dense1_out[jj], fout);
-// #endif
-//     }
-
-    // Sum
-    // TODO maybe self-attention shouldnt return flattened thing, given we need it as [][] for transformer
-    data_T sum_out[CONFIG_T::n_particles][CONFIG_T::n_el];
-    Final_sum: for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
         for (int iendsum = 0; iendsum < CONFIG_T::n_el; iendsum++) {
-            if (CONFIG_T::io_type == io_serial){
-                #pragma HLS PIPELINE
-            }
-            sum_out[jj][iendsum] = dense1_out[jj][iendsum] + norm0_in_el[jj][iendsum]; // norm0_in_el == self_attention, but [][] instead of flat
+            self_attention_sum[jj][iendsum] = data[jj][iendsum] + self_attention_out[jj][iendsum];
         }
-#ifndef __SYNTHESIS__
-        print_full_result<input_t, CONFIG_T::n_el>("sum_out[jj]", sum_out[jj], fout);
-#endif
-    }
 
-    // Flatten
-    data_T sum_out_flat[CONFIG_T::n_out];
-    for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
+        relu<data_T, data_T, SIG0_CONFIG_T>(self_attention_sum[jj], activ0[jj]);
+
+        dense_latency_no_bias<data_T, data_T, DENSE0_CONFIG_T>(activ0[jj], dense0_out[jj], dense0_weight);
+
+        relu<data_T, data_T, SIG1_CONFIG_T>(dense0_out[jj], activ1[jj]);
+
+        dense_latency_no_bias<data_T, data_T, DENSE1_CONFIG_T>(activ1[jj], dense1_out[jj], dense1_weight);
+
         for (int ii = 0; ii < CONFIG_T::n_el; ii++) {
-            sum_out_flat[jj + ii * CONFIG_T::n_particles] = sum_out[jj][ii];
+            res[jj][ii] = dense1_out[jj][ii] + self_attention_sum[jj][ii];
         }
     }
-
-#ifndef __SYNTHESIS__
-    print_full_result<data_T, CONFIG_T::n_out>("sum_out_flat", sum_out_flat, fout);
-#endif
-
-    // Cast
-    Result: for(int ires = 0; ires < CONFIG_T::n_out; ires++){
-        if (CONFIG_T::io_type == io_serial){
-            #pragma HLS UNROLL
-        }
-        res[ires] = cast<data_T, res_T, CONFIG_T>(sum_out_flat[ires]);
-    }
-
-#ifndef __SYNTHESIS__
-    print_full_result<input_t, CONFIG_T::n_out>("res", res, fout);
-    fout.close();
-#endif
+    PRETTY_PRINT_2D(self_attention_sum, CONFIG_T::n_particles, CONFIG_T::n_el);
+    PRETTY_PRINT_2D(activ0, CONFIG_T::n_particles, CONFIG_T::n_el);
+    PRETTY_PRINT_2D(dense0_out, CONFIG_T::n_particles, CONFIG_T::n_el_doubled);
+    PRETTY_PRINT_2D(activ1, CONFIG_T::n_particles, CONFIG_T::n_el_doubled);
+    PRETTY_PRINT_2D(dense1_out, CONFIG_T::n_particles, CONFIG_T::n_el);
+    PRETTY_PRINT_2D(res, CONFIG_T::n_particles, CONFIG_T::n_el);
 }
 
 }

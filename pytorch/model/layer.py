@@ -151,7 +151,7 @@ class SelfAttention(nn.Module):
     
     def debug_print(self, name: str, t):
         if self.is_debug and not self.training:
-            print(f"SA: {name} -> {t.size()}")
+            print(f"\nSA: {name} -> {t.size()}")
             print(t)
 
     def forward(self, x):
@@ -357,6 +357,7 @@ class Transformer(nn.Module):
         # self.linear_4 = nn.SiLU()
         self.linear_4 = nn.ReLU()
         self.linear_5 = nn.Linear(in_dim*2, in_dim, bias=False)
+        # self.linear_6 = nn.ReLU()
 
         self.dropout = nn.Dropout(dropout)
 
@@ -395,7 +396,7 @@ class Transformer(nn.Module):
 
     def debug_print(self, name: str, t):
         if self.is_debug and not self.training:
-            print(f"T: {name} -> {t.size()}")
+            print(f"\nT: {name} -> {t.size()}")
             print(t)
 
     def forward(self, x):
@@ -458,7 +459,11 @@ class Transformer(nn.Module):
         out5 = self.linear_5(out4)
         self.debug_print('out5 (after linear_5)', out5)
 
+        # out6 = self.linear_6(out5)
+        # self.debug_print('out6 (after linear_6)', out6)
+
         out = x + out5
+        # out = x + out6
         self.debug_print('out (after x + out)', out)
 
         out =  self.dropout(out)
