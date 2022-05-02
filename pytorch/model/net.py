@@ -75,7 +75,7 @@ class ConstituentNet(nn.Module):
 
     def debug_print(self, name: str, t):
         if self.is_debug and not self.training:
-            print(f"{name} -> {t.size()}")
+            print(f"\n{name} -> {t.size()}")
             print(t)
 
     def forward(self, x):

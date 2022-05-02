@@ -317,14 +317,14 @@ void copy_data_axi(std::vector<src_T> src, dst_T dst[SIZE]) {
 
 template<class res_T, size_t SIZE>
 void print_result(res_T result[SIZE], std::ostream &out, bool keep = false) {
-    std::ofstream fout("tb_data/csim_layers.log", std::ios_base::app);
+    // std::ofstream fout("tb_data/csim_layers.log", std::ios_base::app);
     // fout << "before printing results" << "\n";
     for(int i = 0; i < SIZE; i++) {
         out << result[i] << " ";
     }
     out << std::endl;
     // fout << "after printing results" << "\n";
-    fout.close();
+    // fout.close();
 }
 
 template<class res_T, size_t SIZE>

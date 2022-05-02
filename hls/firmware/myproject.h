@@ -28,7 +28,8 @@
 
 // Prototype of top level function for C-synthesis
 void myproject(
-    input_t data_in[N_INPUT],
+    // input_t data_in[N_INPUT],
+    input_t data_in[N_PARTICLES][N_FEATURES],
     result_t data_out[N_LABELS],
     unsigned short &const_size_in_1,
     unsigned short &const_size_out_1

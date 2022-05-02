@@ -14,6 +14,48 @@
 
 #include "nnet_layernorm.h"
 
+#ifndef __SYNTHESIS__
+std::ofstream FOUT("tb_data/csim_layers.log", std::ios_base::app);
+
+#define PRETTY_PRINT(ARR, SIZE) {\
+  FOUT << #ARR << " [" << SIZE << "]:\n";\
+  for (unsigned i = 0; i < SIZE; i++) {\
+    FOUT << ARR[i] << " ";\
+  }\
+  FOUT << "\n\n";\
+}
+
+#define PRETTY_PRINT_2D(ARR, SIZE0, SIZE1) {\
+  FOUT << #ARR << " [" << SIZE0 << "][" << SIZE1 << "]:\n";\
+  for (unsigned i = 0; i < SIZE0; i++) {\
+    for (unsigned j = 0; j < SIZE1; j++) {\
+        FOUT << ARR[i][j] << " ";\
+    }\
+    FOUT << "\n";\
+  }\
+  FOUT << "\n";\
+}
+
+#define PRETTY_PRINT_3D(ARR, SIZE0, SIZE1, SIZE2) {\
+  FOUT << #ARR << " [" << SIZE0 << "][" << SIZE1 << "][" << SIZE2 << "]:\n";\
+  for (unsigned i = 0; i < SIZE0; i++) {\
+    for (unsigned j = 0; j < SIZE1; j++) {\
+        for (unsigned k = 0; k < SIZE2; k++) {\
+            FOUT << ARR[i][j][k] << " ";\
+        }\
+        FOUT << "\n";\
+    }\
+    FOUT << "\n";\
+  }\
+}
+
+#else
+
+#define PRETTY_PRINT(ARR, SIZE) {}
+#define PRETTY_PRINT_2D(ARR, SIZE0, SIZE1) {}
+#define PRETTY_PRINT_3D(ARR, SIZE0, SIZE1, SIZE2) {}
+#endif
+
 namespace nnet {
 
 struct self_attention_config
@@ -36,8 +78,6 @@ struct self_attention_config
     typedef float accum_t;
 
     typedef float inv_sqrt_d_k_t;
-
-    // static const inv_sqrt_d_k_t inv_sqrt_d_k = 0.0883883476483; //TODO:
 
     // Layer Sizes
     static const unsigned n_in = 256;
@@ -62,52 +102,22 @@ struct self_attention_config
     using product = product::mult<x_T, y_T, res_T>;
 };
 
-template<class data_T, class res_T, typename CONFIG_T, typename NORM_CONFIG_T, typename DENSE0_CONFIG_T, typename SA_TRANSPOSE0_CONFIG_T, typename DENSE1_CONFIG_T, typename SOFTMAX_CONFIG_T, typename DENSE2_CONFIG_T, typename DENSE3_CONFIG_T>
+template<class data_T, class res_T, typename CONFIG_T, typename NORM_CONFIG_T, typename DENSE0_CONFIG_T, typename SA_TRANSPOSE0_CONFIG_T, typename SOFTMAX_CONFIG_T, typename DENSE3_CONFIG_T>
 void self_attention(
-    data_T                            data[CONFIG_T::n_in],
-    res_T                             res[CONFIG_T::n_out],
+    data_T                            data[CONFIG_T::n_particles][CONFIG_T::n_qkv_in_el],
+    res_T                             res[CONFIG_T::n_particles][CONFIG_T::n_scaled_attention],
     typename CONFIG_T::QKV_weight_t   QKV_weight[CONFIG_T::n_QKV_weight],
     typename CONFIG_T::dense_weight_t dense_weight[CONFIG_T::n_dense_weight],
     typename CONFIG_T::dense_bias_t   dense_bias[CONFIG_T::n_dense_bias]
 ){
-#ifndef __SYNTHESIS__
-    std::ofstream fout("tb_data/csim_layers.log", std::ios_base::app);
-#endif
+    #pragma HLS PIPELINE
 
     // QKV (dense)
-    data_T qkv_out[CONFIG_T::n_qkv];
-    // data_T zero_bias0[CONFIG_T::n_qkv_out_el];
-    // fill_zero<data_T,CONFIG_T::n_qkv_out_el>(zero_bias0);
-    data_T qkv_in_el[CONFIG_T::n_particles][CONFIG_T::n_qkv_in_el];
     data_T qkv_out_el[CONFIG_T::n_particles][CONFIG_T::n_qkv_out_el];
-
-    split_equally<data_T, CONFIG_T::n_particles, CONFIG_T::n_qkv_in_el>(data, qkv_in_el);
-    QKV: for (int iqkv = 0; iqkv < CONFIG_T::n_particles; iqkv++) {
-        dense_latency_no_bias<data_T, data_T, DENSE0_CONFIG_T>(qkv_in_el[iqkv], qkv_out_el[iqkv], QKV_weight);
-        // dense<data_T, data_T, DENSE0_CONFIG_T>(qkv_in_el[iqkv], qkv_out_el[iqkv], QKV_weight, zero_bias0);
-#ifndef __SYNTHESIS__
-    print_full_result<data_T, CONFIG_T::n_qkv_out_el>("qkv_out_el[iqkv]", qkv_out_el[iqkv], fout);
-#endif
-
+    QKV_dense: for (int iqkv = 0; iqkv < CONFIG_T::n_particles; iqkv++) {
+        dense_latency_no_bias<data_T, data_T, DENSE0_CONFIG_T>(data[iqkv], qkv_out_el[iqkv], QKV_weight);
     }
-//     join_equally<data_T, CONFIG_T::n_particles, CONFIG_T::n_qkv_out_el>(qkv_out_el, qkv_out);
-
-// #ifndef __SYNTHESIS__
-//     print_full_result<data_T, CONFIG_T::n_qkv>("qkv_out", qkv_out, fout);
-// #endif
-
-    // Reshape
-//     data_T qkv_reshaped[CONFIG_T::n_particles][CONFIG_T::n_qkv_out_el];
-//     //TODO: implement this properly 384 (3*128) -> 2x192
-//     QKV_reshape: for (int ii = 0; ii < CONFIG_T::n_particles; ii++) {
-//         for (int jj = 0; jj < CONFIG_T::n_qkv_out_el; jj += 2) {
-//             qkv_reshaped[ii][jj] = qkv_out[ii + jj];
-//             qkv_reshaped[ii][jj+1] = qkv_out[ii + jj + CONFIG_T::n_qkv_out_el];
-//         }
-// #ifndef __SYNTHESIS__
-//         print_full_result<data_T, CONFIG_T::n_qkv_out_el>("qkv_reshaped[ii]", qkv_reshaped[ii], fout);
-// #endif
-//     }
+    PRETTY_PRINT_2D(qkv_out_el, CONFIG_T::n_particles, CONFIG_T::n_qkv_out_el);
 
     // QKV split
     data_T queries[CONFIG_T::n_particles][CONFIG_T::n_q];
@@ -127,33 +137,10 @@ void self_attention(
             }
         }
     }
+    PRETTY_PRINT_2D(queries, CONFIG_T::n_particles, CONFIG_T::n_q);
+    PRETTY_PRINT_2D(keys, CONFIG_T::n_particles, CONFIG_T::n_k);
+    PRETTY_PRINT_2D(values, CONFIG_T::n_particles, CONFIG_T::n_v);
 
-//     Queries_split: for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
-//         for (int iq = 0; iq < CONFIG_T::n_q; iq++) {
-//             queries[jj][iq] = qkv_reshaped[jj][iq];
-//         }
-// #ifndef __SYNTHESIS__
-//         print_full_result<data_T, CONFIG_T::n_q>("queries[jj]", queries[jj], fout);
-// #endif
-//     }
-
-//     Keys_split: for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
-//         for (int ik = 0; ik < CONFIG_T::n_k; ik++) {
-//             keys[jj][ik] = qkv_reshaped[jj][CONFIG_T::n_q + ik];
-//         }
-// #ifndef __SYNTHESIS__
-//         print_full_result<data_T, CONFIG_T::n_k>("keys[jj]", keys[jj], fout);
-// #endif
-//     }
-
-//     Values_split: for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
-//         for (int iv = 0; iv < CONFIG_T::n_v; iv++) {
-//             values[jj][iv] = qkv_reshaped[jj][CONFIG_T::n_q + CONFIG_T::n_k + iv];
-//         }
-// #ifndef __SYNTHESIS__
-//         print_full_result<data_T, CONFIG_T::n_v>("values[jj]", values[jj], fout);
-// #endif
-//     }
 
     // TODO make the dimensions nicer (improve parameters.h)
     data_T queries_outer_transposed[2][CONFIG_T::n_particles*CONFIG_T::n_q/2];
@@ -162,12 +149,7 @@ void self_attention(
             queries_outer_transposed[iv % 2][((iv >> 1) << 1) + jj] = queries[jj][iv];
         }
     }
-
-#ifndef __SYNTHESIS__
-    for (int jj = 0; jj < 2; jj++) {
-        print_full_result<data_T, CONFIG_T::n_particles*CONFIG_T::n_q/2>("queries_outer_transposed[jj]", queries_outer_transposed[jj], fout);
-    }
-#endif
+    PRETTY_PRINT_2D(queries_outer_transposed, 2, CONFIG_T::n_particles*CONFIG_T::n_q/2);
 
     data_T keys_outer_transposed[2][CONFIG_T::n_particles*CONFIG_T::n_k/2];
     for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
@@ -175,90 +157,49 @@ void self_attention(
             keys_outer_transposed[iv % 2][((int) (iv / 2)) * 2 + jj] = keys[jj][iv];
         }
     }
-
-#ifndef __SYNTHESIS__
-    for (int jj = 0; jj < 2; jj++) {
-        print_full_result<data_T, CONFIG_T::n_particles*CONFIG_T::n_k/2>("keys_outer_transposed[jj]", keys_outer_transposed[jj], fout);
-    }
-#endif
+    PRETTY_PRINT_2D(keys_outer_transposed, 2, CONFIG_T::n_particles*CONFIG_T::n_k/2);
 
     data_T keys_transposed[2][CONFIG_T::n_particles*CONFIG_T::n_k/2];
     for (int jj = 0; jj < 2; jj++) {
         transpose_2d<data_T, SA_TRANSPOSE0_CONFIG_T>(keys_outer_transposed[jj], keys_transposed[jj]);
-#ifndef __SYNTHESIS__
-        print_full_result<data_T, CONFIG_T::n_particles*CONFIG_T::n_k/2>("keys_transposed[jj]", keys_transposed[jj], fout);
-#endif
     }
+    PRETTY_PRINT_2D(keys_transposed, 2, CONFIG_T::n_particles*CONFIG_T::n_k/2);
 
     // Energy (matmul)
-    data_T energy[CONFIG_T::n_particles][CONFIG_T::n_energy];
-    // data_T zero_bias1[CONFIG_T::n_energy];
-    // fill_zero<data_T,CONFIG_T::n_energy>(zero_bias1);
-
+    // std::cout << "energy" << std::endl;
+    static data_T energy[CONFIG_T::n_particles][CONFIG_T::n_energy];
     for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
         matmul<data_T, data_T, 2, CONFIG_T::n_el/2, CONFIG_T::n_el/2, 2>(queries_outer_transposed[jj], keys_transposed[jj], energy[jj]);
-#ifndef __SYNTHESIS__
-        print_full_result<data_T, CONFIG_T::n_energy>("energy[jj]", energy[jj], fout);
-#endif
     }
+    PRETTY_PRINT_2D(energy, CONFIG_T::n_particles, CONFIG_T::n_energy);
 
-    // Scale
-    data_T energy_scaled[CONFIG_T::n_particles][2][CONFIG_T::n_attention];
-    Scale: for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
-        for (int ii = 0; ii < 2; ii++) {
-            for (int iscale = 0; iscale < CONFIG_T::n_attention; iscale++) {
-                energy_scaled[jj][ii][iscale] = (energy[jj][ii + iscale * 2]) >> 2;
-            }
-#ifndef __SYNTHESIS__
-            print_full_result<data_T, CONFIG_T::n_attention>("energy_scaled[jj][ii]", energy_scaled[jj][ii], fout);
-#endif
-        }
-    }
-
-    // Reduce precision for more accurate results of softmax
+    // Scale and reduce precision for more accurate results of softmax, then flatten
     data_T_red energy_scaled_red[CONFIG_T::n_particles][2][CONFIG_T::n_attention];
+    data_T attention[CONFIG_T::n_particles][2][CONFIG_T::n_attention];
+    data_T attention_flat[CONFIG_T::n_particles][2 * CONFIG_T::n_attention];
     for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
         for (int ii = 0; ii < 2; ii++) {
             for (int kk = 0; kk < CONFIG_T::n_attention; kk++) {
                 if (CONFIG_T::io_type == io_serial){
                     #pragma HLS UNROLL
                 }
-                energy_scaled_red[jj][ii][kk] = cast<data_T, data_T_red, CONFIG_T>(energy_scaled[jj][ii][kk]);
+                data_T current = (energy[jj][ii + kk * 2]) >> SCALE_SHIFT;
+                energy_scaled_red[jj][ii][kk] = cast<data_T, data_T_red, CONFIG_T>(current);
             }
-#ifndef __SYNTHESIS__
-            print_full_result<data_T_red, CONFIG_T::n_attention>("energy_scaled_red[jj][ii]", energy_scaled_red[jj][ii], fout);
-#endif
-        }
-    }
 
-    // Attention (softmax)
-    data_T attention[CONFIG_T::n_particles][2][CONFIG_T::n_attention];
-    for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
-        for (int ii = 0; ii < 2; ii++) {
-            // softmax<data_T, data_T, SOFTMAX_CONFIG_T>(energy_scaled[jj][ii], attention[jj][ii]);
             softmax<data_T_red, data_T, SOFTMAX_CONFIG_T>(energy_scaled_red[jj][ii], attention[jj][ii]);
-#ifndef __SYNTHESIS__
-            print_full_result<data_T, CONFIG_T::n_attention>("attention[jj][ii]", attention[jj][ii], fout);
-#endif
-        }
-    }
-    // TODO maybe manually recast the type into full precision? as currently it happens implicitly in softmax
+            // TODO maybe manually recast the type into full precision? as currently it happens implicitly in softmax
 
-    // Flatten last two dims
-    data_T attention_flat[CONFIG_T::n_particles][2 * CONFIG_T::n_attention];
-    for (int kk = 0; kk < CONFIG_T::n_particles; kk++) {
-        for (int jj = 0; jj < CONFIG_T::n_attention; jj++) {
-            for (int ii = 0; ii < 2; ii++) {
-                attention_flat[kk][jj + ii * 2] = attention[kk][jj][ii];
+            for (int kk = 0; kk < CONFIG_T::n_attention; kk++) {
+                // std::cout << "attention[" << jj << "][" << ii << "][" << kk << "]: " << attention[jj][ii][kk] << std::endl;
+                attention_flat[jj][kk * CONFIG_T::n_attention + ii] = attention[jj][ii][kk]; //TODO CONFIG_T::n_attention might need to be '2' (ii loop)
+                // std::cout << "attention_flat[" << jj << "][" << kk * CONFIG_T::n_attention + ii << "]: " << attention_flat[jj][kk * CONFIG_T::n_attention + ii] << "\n" << std::endl;
             }
         }
     }
-
-#ifndef __SYNTHESIS__
-    for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
-        print_full_result<data_T, 2*CONFIG_T::n_attention>("attention_flat[jj]", attention_flat[jj], fout);
-    }
-#endif
+    PRETTY_PRINT_3D(energy_scaled_red, CONFIG_T::n_particles, 2, CONFIG_T::n_attention);
+    PRETTY_PRINT_3D(attention, CONFIG_T::n_particles, 2, CONFIG_T::n_attention);
+    PRETTY_PRINT_2D(attention_flat, CONFIG_T::n_particles, 2 * CONFIG_T::n_attention);
 
     data_T values_transposed[2][CONFIG_T::n_particles*CONFIG_T::n_v/2];
     for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
@@ -266,22 +207,15 @@ void self_attention(
             values_transposed[iv % 2][((iv >> 1) << 1) + jj] = values[jj][iv];
         }
     }
-#ifndef __SYNTHESIS__
-    for (int jj = 0; jj < 2; jj++) {
-        print_full_result<data_T, CONFIG_T::n_particles*CONFIG_T::n_v/2>("values_transposed[jj]", values_transposed[jj], fout);
-    }
-#endif
+    PRETTY_PRINT_2D(values_transposed, 2, CONFIG_T::n_particles*CONFIG_T::n_v/2);
 
     // Scaled attention (matmul)
-    data_T scaled_attention[CONFIG_T::n_particles][CONFIG_T::n_scaled_attention];
-    // data_T zero_bias2[CONFIG_T::n_scaled_attention];
-    // fill_zero<data_T,CONFIG_T::n_scaled_attention >(zero_bias2);
+    // std::cout << "scaled attention" << std::endl;
+    static data_T scaled_attention[CONFIG_T::n_particles][CONFIG_T::n_scaled_attention];
     for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
         matmul<data_T, data_T, 2, 2, 2, CONFIG_T::n_el/2>(attention_flat[jj], values_transposed[jj], scaled_attention[jj]);
-#ifndef __SYNTHESIS__
-        print_full_result<data_T, CONFIG_T::n_scaled_attention>("scaled_attention[jj]", scaled_attention[jj], fout);
-#endif
     }
+    PRETTY_PRINT_2D(scaled_attention, CONFIG_T::n_particles, CONFIG_T::n_scaled_attention);
 
     data_T scaled_attention_transposed[2][CONFIG_T::n_particles*CONFIG_T::n_scaled_attention/2];
     for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
@@ -289,76 +223,25 @@ void self_attention(
             scaled_attention_transposed[iv % 2][((iv >> 1) << 1) + jj] = scaled_attention[jj][iv];
         }
     }
-
-#ifndef __SYNTHESIS__
-    for (int jj = 0; jj < 2; jj++) {
-        print_full_result<data_T, CONFIG_T::n_particles*CONFIG_T::n_scaled_attention/2>("scaled_attention_transposed[jj]", scaled_attention_transposed[jj], fout);
-    }
-#endif
+    PRETTY_PRINT_2D(scaled_attention_transposed, 2, CONFIG_T::n_particles*CONFIG_T::n_scaled_attention/2);
 
     // Reshape
     data_T scaled_attention_reshaped[CONFIG_T::n_particles][CONFIG_T::n_scaled_attention];
     for (int jj = 0; jj < 2; jj++) {
         for (int kk = 0; kk < CONFIG_T::n_particles; kk++) {
             for (int ii = 0; ii < CONFIG_T::n_scaled_attention/2; ii++) {
-                // fout << "jj:" << jj << ", kk:" << kk << ", ii:" << ii << " -> out[" << jj << "][" << ii + kk * CONFIG_T::n_scaled_attention/2 << "] = in[" << jj << "][" << ii * CONFIG_T::n_particles + kk << "] = " << scaled_attention_transposed[jj][ii * CONFIG_T::n_particles + kk] << "\n";
                 scaled_attention_reshaped[jj][ii + kk * CONFIG_T::n_scaled_attention/2] = scaled_attention_transposed[jj][ii * CONFIG_T::n_particles + kk];
             }
         }
     }
-
-#ifndef __SYNTHESIS__
-    for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
-        print_full_result<data_T, CONFIG_T::n_scaled_attention>("scaled_attention_reshaped[jj]", scaled_attention_reshaped[jj], fout);
-    }
-#endif
+    PRETTY_PRINT_2D(scaled_attention_reshaped, CONFIG_T::n_particles, CONFIG_T::n_scaled_attention);
 
     // Dense
-    data_T result[CONFIG_T::n_particles][CONFIG_T::n_scaled_attention];
+    // data_T result[CONFIG_T::n_particles][CONFIG_T::n_scaled_attention];
     for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
-        dense<data_T, data_T, DENSE3_CONFIG_T>(scaled_attention_reshaped[jj], result[jj], dense_weight, dense_bias);
-#ifndef __SYNTHESIS__
-        print_full_result<data_T, CONFIG_T::n_scaled_attention>("result[jj]", result[jj], fout);
-#endif
+        dense<data_T, data_T, DENSE3_CONFIG_T>(scaled_attention_reshaped[jj], res[jj], dense_weight, dense_bias);
     }
-
-    // Sum
-    data_T sum_out[CONFIG_T::n_particles][CONFIG_T::n_scaled_attention];
-    Final_sum: for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
-        for (int iendsum = 0; iendsum < CONFIG_T::n_scaled_attention; iendsum++) {
-            if (CONFIG_T::io_type == io_serial){
-                #pragma HLS PIPELINE
-            }
-            sum_out[jj][iendsum] = result[jj][iendsum] + data[jj + iendsum * CONFIG_T::n_particles];
-        }
-#ifndef __SYNTHESIS__
-        print_full_result<data_T, CONFIG_T::n_scaled_attention>("sum_out[jj]", sum_out[jj], fout);
-#endif
-    }
-
-    // Flatten
-    data_T sum_out_flat[CONFIG_T::n_out];
-    for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
-        for (int ii = 0; ii < CONFIG_T::n_scaled_attention; ii++) {
-            sum_out_flat[jj + ii * CONFIG_T::n_particles] = sum_out[jj][ii];
-        }
-    }
-
-#ifndef __SYNTHESIS__
-    print_full_result<data_T, CONFIG_T::n_out>("sum_out_flat", sum_out_flat, fout);
-#endif
-
-    // Cast
-    Result: for(int ires = 0; ires < CONFIG_T::n_out; ires++){
-        if (CONFIG_T::io_type == io_serial){
-            #pragma HLS UNROLL
-        }
-        res[ires] = cast<data_T, res_T, CONFIG_T>(sum_out_flat[ires]);
-    }
-
-#ifndef __SYNTHESIS__
-    fout.close();
-#endif
+    PRETTY_PRINT_2D(res, CONFIG_T::n_particles, CONFIG_T::n_scaled_attention);
 }
 
 }

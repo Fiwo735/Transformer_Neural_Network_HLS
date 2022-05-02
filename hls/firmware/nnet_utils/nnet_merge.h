@@ -328,13 +328,17 @@ void matmul(
     input_T b[r2 * c2],
     res_T res[r1 * c2]
 ) {
+    // std::cout << "r1: " << r1 << " c1: " << c1 << " r2: " << r2 << " c2: " << c2 << std::endl;
     for(int i = 0; i < c1; i++) {
         for(int j = 0; j < c2; j++) {
             for(int k = 0; k < r1; k++) {
                 res[j*r1 + k] += a[i*r1 + k] * b[j*r2 + i];
+                // std::cout << "res[" << j*r1 + k << "]: " << res[j*r1 + k] << std::endl;
             }
         }
     }
+    // std::cout << std::endl;
+    // std::cout << std::endl;
 }
 
 }
