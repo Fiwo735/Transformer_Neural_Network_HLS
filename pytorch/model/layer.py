@@ -121,7 +121,6 @@ class SelfAttention(nn.Module):
         self.latent_dim = latent_dim if latent_dim is not None else in_dim
         self.head_dim = self.latent_dim // num_heads
         self.heads = num_heads
-        self.heads = num_heads
         self.gamma = 1  # self.gamma = nn.Parameter(torch.zeros(1))
 
         # self.norm = nn.LayerNorm(in_dim)
