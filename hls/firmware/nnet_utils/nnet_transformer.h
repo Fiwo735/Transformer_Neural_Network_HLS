@@ -99,10 +99,14 @@ void transformer(
     typename CONFIG_T::dense0_weight_t   dense0_weight[CONFIG_T::n_dense0_weight],
     typename CONFIG_T::dense1_weight_t   dense1_weight[CONFIG_T::n_dense1_weight]
 ){
+    #pragma HLS ARRAY_PARTITION variable=data complete dim=0
+    #pragma HLS ARRAY_PARTITION variable=res complete dim=0
+    #pragma HLS FUNCTION_INSTANTIATE variable=SA_QKV_weight,SA_dense_weight,SA_dense_bias,dense0_weight,dense1_weight
     #pragma HLS PIPELINE
 
     // Self-attention
     data_T self_attention_out[CONFIG_T::n_particles][CONFIG_T::n_el];
+    #pragma HLS ARRAY_PARTITION variable=self_attention_out complete dim=0
     self_attention<data_T, data_T, SA_CONFIG_T, SA_NORM_CONFIG_T, SA_DENSE0_CONFIG_T, SA_TRANSPOSE0_CONFIG_T, SA_SOFTMAX_CONFIG_T, SA_DENSE3_CONFIG_T>(
         data,
         self_attention_out,
@@ -113,10 +117,15 @@ void transformer(
     PRETTY_PRINT_2D(self_attention_out, CONFIG_T::n_particles, CONFIG_T::n_el);
 
     data_T self_attention_sum[CONFIG_T::n_particles][CONFIG_T::n_el];
+    #pragma HLS ARRAY_PARTITION variable=self_attention_sum complete dim=0
     data_T activ0[CONFIG_T::n_particles][CONFIG_T::n_el];
+    #pragma HLS ARRAY_PARTITION variable=activ0 complete dim=0
     data_T dense0_out[CONFIG_T::n_particles][CONFIG_T::n_el_doubled];
+    #pragma HLS ARRAY_PARTITION variable=dense0_out complete dim=0
     data_T activ1[CONFIG_T::n_particles][CONFIG_T::n_el_doubled];
+    #pragma HLS ARRAY_PARTITION variable=activ1 complete dim=0
     data_T dense1_out[CONFIG_T::n_particles][CONFIG_T::n_el];
+    #pragma HLS ARRAY_PARTITION variable=dense1_out complete dim=0
 
     for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
         for (int iendsum = 0; iendsum < CONFIG_T::n_el; iendsum++) {

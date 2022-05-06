@@ -4,9 +4,7 @@ import typing
 import torch
 import torch.nn as nn
 
-# torch.set_printoptions(profile='full', sci_mode=False, threshold=2097152)
 torch.set_printoptions(precision=5, threshold=2097152, linewidth=1000, sci_mode=False)
-
 
 class FeedForward(nn.Module):
 
@@ -136,6 +134,8 @@ class SelfAttention(nn.Module):
 
         assert  (in_dim // num_heads) * num_heads == in_dim, "Embedding dim needs to be divisible by num_heads"
         assert  self.head_dim * num_heads ==  self.latent_dim, "Latent dim needs to be divisible by num_heads."
+
+        torch.set_printoptions(precision=5, threshold=2097152, linewidth=1000, sci_mode=False)
 
     def get_avg_mean(self):
         # return self.curr_mean / self.counter
@@ -370,6 +370,8 @@ class Transformer(nn.Module):
         self.curr_mean3 = None
         self.curr_var3 = None
         self.counter3 = 0
+
+        torch.set_printoptions(precision=5, threshold=2097152, linewidth=1000, sci_mode=False)
 
     def get_avg_mean0(self):
         # return self.curr_mean0 / self.counter0

@@ -62,9 +62,9 @@
 // typedef ap_fixed<32,9> general_table_t;
 
 // ap_fixed<total, int> 
-typedef ap_fixed<35,15> model_default_t;
-typedef ap_fixed<35,15> input_t;
-typedef ap_fixed<35,15> result_t;
+typedef ap_fixed<27,15> model_default_t;
+typedef ap_fixed<27,15> input_t;
+typedef ap_fixed<27,15> result_t;
 // typedef ap_fixed<64,32> general_table_t;
 typedef ap_fixed<16,6> general_table_t;
 typedef ap_fixed<16,6> data_T_red;

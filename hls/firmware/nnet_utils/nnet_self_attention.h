@@ -110,10 +110,14 @@ void self_attention(
     typename CONFIG_T::dense_weight_t dense_weight[CONFIG_T::n_dense_weight],
     typename CONFIG_T::dense_bias_t   dense_bias[CONFIG_T::n_dense_bias]
 ){
+    #pragma HLS ARRAY_PARTITION variable=data complete dim=0
+    #pragma HLS ARRAY_PARTITION variable=res complete dim=0
+    #pragma HLS FUNCTION_INSTANTIATE variable=QKV_weight,dense_weight,dense_bias
     #pragma HLS PIPELINE
 
     // QKV (dense)
     data_T qkv_out_el[CONFIG_T::n_particles][CONFIG_T::n_qkv_out_el];
+    #pragma HLS ARRAY_PARTITION variable=qkv_out_el complete dim=0
     QKV_dense: for (int iqkv = 0; iqkv < CONFIG_T::n_particles; iqkv++) {
         dense_latency_no_bias<data_T, data_T, DENSE0_CONFIG_T>(data[iqkv], qkv_out_el[iqkv], QKV_weight);
     }
@@ -121,8 +125,11 @@ void self_attention(
 
     // QKV split
     data_T queries[CONFIG_T::n_particles][CONFIG_T::n_q];
+    #pragma HLS ARRAY_PARTITION variable=queries complete dim=0
     data_T keys[CONFIG_T::n_particles][CONFIG_T::n_k];
+    #pragma HLS ARRAY_PARTITION variable=keys complete dim=0
     data_T values[CONFIG_T::n_particles][CONFIG_T::n_v];
+    #pragma HLS ARRAY_PARTITION variable=values complete dim=0
 
     QKV_split: for (unsigned ii = 0; ii < CONFIG_T::n_particles; ii++) {
         for (unsigned ll = 0; ll < CONFIG_T::n_qkv_out_el/(3*2); ll++) { // 3 from QKV, 2 from inner jj loop
@@ -141,103 +148,53 @@ void self_attention(
     PRETTY_PRINT_2D(keys, CONFIG_T::n_particles, CONFIG_T::n_k);
     PRETTY_PRINT_2D(values, CONFIG_T::n_particles, CONFIG_T::n_v);
 
-
-    // TODO make the dimensions nicer (improve parameters.h)
-    data_T queries_outer_transposed[2][CONFIG_T::n_particles*CONFIG_T::n_q/2];
-    for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
-        for (int iv = 0; iv < CONFIG_T::n_q; iv++) {
-            queries_outer_transposed[iv % 2][((iv >> 1) << 1) + jj] = queries[jj][iv];
+    // Einsum(qhc, khc -> hqk)
+    static data_T energy[CONFIG_T::n_particles][2][2];
+    #pragma HLS ARRAY_PARTITION variable=energy complete dim=0
+    for (unsigned cc = 0; cc < CONFIG_T::n_el/2; cc++) {
+        for (unsigned hh = 0; hh < 2; hh++) {
+            for (unsigned qq = 0; qq < CONFIG_T::n_particles; qq++) {
+                for (unsigned kk = 0; kk < CONFIG_T::n_particles; kk++) {
+                    energy[hh][kk][qq] += (keys[qq][hh + cc * 2] * queries[kk][hh + cc * 2]) >> SCALE_SHIFT;
+                }
+            }
         }
     }
-    PRETTY_PRINT_2D(queries_outer_transposed, 2, CONFIG_T::n_particles*CONFIG_T::n_q/2);
+    PRETTY_PRINT_3D(energy, CONFIG_T::n_particles, 2, 2);
 
-    data_T keys_outer_transposed[2][CONFIG_T::n_particles*CONFIG_T::n_k/2];
-    for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
-        for (int iv = 0; iv < CONFIG_T::n_k; iv++) {
-            keys_outer_transposed[iv % 2][((int) (iv / 2)) * 2 + jj] = keys[jj][iv];
-        }
-    }
-    PRETTY_PRINT_2D(keys_outer_transposed, 2, CONFIG_T::n_particles*CONFIG_T::n_k/2);
-
-    data_T keys_transposed[2][CONFIG_T::n_particles*CONFIG_T::n_k/2];
-    for (int jj = 0; jj < 2; jj++) {
-        transpose_2d<data_T, SA_TRANSPOSE0_CONFIG_T>(keys_outer_transposed[jj], keys_transposed[jj]);
-    }
-    PRETTY_PRINT_2D(keys_transposed, 2, CONFIG_T::n_particles*CONFIG_T::n_k/2);
-
-    // Energy (matmul)
-    // std::cout << "energy" << std::endl;
-    static data_T energy[CONFIG_T::n_particles][CONFIG_T::n_energy];
-    for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
-        matmul<data_T, data_T, 2, CONFIG_T::n_el/2, CONFIG_T::n_el/2, 2>(queries_outer_transposed[jj], keys_transposed[jj], energy[jj]);
-    }
-    PRETTY_PRINT_2D(energy, CONFIG_T::n_particles, CONFIG_T::n_energy);
-
-    // Scale and reduce precision for more accurate results of softmax, then flatten
+    // Scale and reduce precision for more accurate results of softmax
     data_T_red energy_scaled_red[CONFIG_T::n_particles][2][CONFIG_T::n_attention];
+    #pragma HLS ARRAY_PARTITION variable=energy_scaled_red complete dim=0
     data_T attention[CONFIG_T::n_particles][2][CONFIG_T::n_attention];
-    data_T attention_flat[CONFIG_T::n_particles][2 * CONFIG_T::n_attention];
+    #pragma HLS ARRAY_PARTITION variable=attention complete dim=0
     for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
         for (int ii = 0; ii < 2; ii++) {
             for (int kk = 0; kk < CONFIG_T::n_attention; kk++) {
-                if (CONFIG_T::io_type == io_serial){
-                    #pragma HLS UNROLL
-                }
-                data_T current = (energy[jj][ii + kk * 2]) >> SCALE_SHIFT;
-                energy_scaled_red[jj][ii][kk] = cast<data_T, data_T_red, CONFIG_T>(current);
+                energy_scaled_red[jj][ii][kk] = cast<data_T, data_T_red, CONFIG_T>(energy[jj][ii][kk]);
             }
 
             softmax<data_T_red, data_T, SOFTMAX_CONFIG_T>(energy_scaled_red[jj][ii], attention[jj][ii]);
             // TODO maybe manually recast the type into full precision? as currently it happens implicitly in softmax
-
-            for (int kk = 0; kk < CONFIG_T::n_attention; kk++) {
-                // std::cout << "attention[" << jj << "][" << ii << "][" << kk << "]: " << attention[jj][ii][kk] << std::endl;
-                attention_flat[jj][kk * CONFIG_T::n_attention + ii] = attention[jj][ii][kk]; //TODO CONFIG_T::n_attention might need to be '2' (ii loop)
-                // std::cout << "attention_flat[" << jj << "][" << kk * CONFIG_T::n_attention + ii << "]: " << attention_flat[jj][kk * CONFIG_T::n_attention + ii] << "\n" << std::endl;
-            }
         }
     }
     PRETTY_PRINT_3D(energy_scaled_red, CONFIG_T::n_particles, 2, CONFIG_T::n_attention);
     PRETTY_PRINT_3D(attention, CONFIG_T::n_particles, 2, CONFIG_T::n_attention);
-    PRETTY_PRINT_2D(attention_flat, CONFIG_T::n_particles, 2 * CONFIG_T::n_attention);
 
-    data_T values_transposed[2][CONFIG_T::n_particles*CONFIG_T::n_v/2];
-    for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
-        for (int iv = 0; iv < CONFIG_T::n_v; iv++) {
-            values_transposed[iv % 2][((iv >> 1) << 1) + jj] = values[jj][iv];
-        }
-    }
-    PRETTY_PRINT_2D(values_transposed, 2, CONFIG_T::n_particles*CONFIG_T::n_v/2);
-
-    // Scaled attention (matmul)
-    // std::cout << "scaled attention" << std::endl;
-    static data_T scaled_attention[CONFIG_T::n_particles][CONFIG_T::n_scaled_attention];
-    for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
-        matmul<data_T, data_T, 2, 2, 2, CONFIG_T::n_el/2>(attention_flat[jj], values_transposed[jj], scaled_attention[jj]);
-    }
-    PRETTY_PRINT_2D(scaled_attention, CONFIG_T::n_particles, CONFIG_T::n_scaled_attention);
-
-    data_T scaled_attention_transposed[2][CONFIG_T::n_particles*CONFIG_T::n_scaled_attention/2];
-    for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
-        for (int iv = 0; iv < CONFIG_T::n_scaled_attention; iv++) {
-            scaled_attention_transposed[iv % 2][((iv >> 1) << 1) + jj] = scaled_attention[jj][iv];
-        }
-    }
-    PRETTY_PRINT_2D(scaled_attention_transposed, 2, CONFIG_T::n_particles*CONFIG_T::n_scaled_attention/2);
-
-    // Reshape
-    data_T scaled_attention_reshaped[CONFIG_T::n_particles][CONFIG_T::n_scaled_attention];
-    for (int jj = 0; jj < 2; jj++) {
-        for (int kk = 0; kk < CONFIG_T::n_particles; kk++) {
-            for (int ii = 0; ii < CONFIG_T::n_scaled_attention/2; ii++) {
-                scaled_attention_reshaped[jj][ii + kk * CONFIG_T::n_scaled_attention/2] = scaled_attention_transposed[jj][ii * CONFIG_T::n_particles + kk];
+    // Einsum(hql, lhc -> qhc) then reshape
+    static data_T scaled_attention_reshaped[CONFIG_T::n_particles][CONFIG_T::n_scaled_attention];
+    #pragma HLS ARRAY_PARTITION variable=scaled_attention_reshaped complete dim=0
+    for (unsigned qq = 0; qq < 2; qq++) {
+        for (unsigned ll = 0; ll < CONFIG_T::n_attention; ll++) {
+            for (unsigned hh = 0; hh < CONFIG_T::n_particles; hh++) {
+                for (unsigned cc = 0; cc < CONFIG_T::n_el/2; cc++) {
+                    scaled_attention_reshaped[qq][cc + hh * CONFIG_T::n_scaled_attention/2] += attention[hh][qq][ll] * values[ll][hh + cc * CONFIG_T::n_particles];
+                }
             }
         }
     }
     PRETTY_PRINT_2D(scaled_attention_reshaped, CONFIG_T::n_particles, CONFIG_T::n_scaled_attention);
 
     // Dense
-    // data_T result[CONFIG_T::n_particles][CONFIG_T::n_scaled_attention];
     for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
         dense<data_T, data_T, DENSE3_CONFIG_T>(scaled_attention_reshaped[jj], res[jj], dense_weight, dense_bias);
     }

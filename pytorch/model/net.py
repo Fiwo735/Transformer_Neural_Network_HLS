@@ -5,7 +5,6 @@ import numpy as np
 
 from .layer import Perceiver, PerceiverDynamicQuery, Transformer, FourierMixer, CrossTransformer
 
-# torch.set_printoptions(profile='full', sci_mode=False, threshold=2097152)
 torch.set_printoptions(precision=5, threshold=2097152, linewidth=1000, sci_mode=False)
 
 class DNN(nn.Module):
@@ -61,6 +60,8 @@ class ConstituentNet(nn.Module):
         self.curr_mean = None
         self.curr_var = None
         self.counter = 0
+
+        torch.set_printoptions(precision=5, threshold=2097152, linewidth=1000, sci_mode=False)
 
     def get_avg_mean(self):
         # return self.curr_mean / self.counter
