@@ -1,0 +1,172 @@
+
+
+================================================================
+== Vivado HLS Report for 'relu_ap_fixed_ap_fixed_35_15_5_3_0_sigmoid_config0_s'
+================================================================
+* Date:           Fri May  6 04:15:54 2022
+
+* Version:        2019.2 (Build 2704478 on Wed Nov 06 22:10:23 MST 2019)
+* Project:        myproject_prj
+* Solution:       solution1
+* Product family: virtexuplus
+* Target device:  xcu250-figd2104-2L-e
+
+
+================================================================
+== Performance Estimates
+================================================================
++ Timing: 
+    * Summary: 
+    +--------+---------+----------+------------+
+    |  Clock |  Target | Estimated| Uncertainty|
+    +--------+---------+----------+------------+
+    |ap_clk  | 5.00 ns | 1.162 ns |   0.62 ns  |
+    +--------+---------+----------+------------+
+
++ Latency: 
+    * Summary: 
+    +---------+---------+----------+----------+-----+-----+----------+
+    |  Latency (cycles) |  Latency (absolute) |  Interval | Pipeline |
+    |   min   |   max   |    min   |    max   | min | max |   Type   |
+    +---------+---------+----------+----------+-----+-----+----------+
+    |        0|        0|   0 ns   |   0 ns   |    1|    1| function |
+    +---------+---------+----------+----------+-----+-----+----------+
+
+    + Detail: 
+        * Instance: 
+        N/A
+
+        * Loop: 
+        N/A
+
+
+
+================================================================
+== Utilization Estimates
+================================================================
+* Summary: 
++---------------------+---------+-------+---------+---------+------+
+|         Name        | BRAM_18K| DSP48E|    FF   |   LUT   | URAM |
++---------------------+---------+-------+---------+---------+------+
+|DSP                  |        -|      -|        -|        -|     -|
+|Expression           |        -|      -|        0|      880|     -|
+|FIFO                 |        -|      -|        -|        -|     -|
+|Instance             |        -|      -|        -|        -|     -|
+|Memory               |        -|      -|        -|        -|     -|
+|Multiplexer          |        -|      -|        -|        -|     -|
+|Register             |        -|      -|        -|        -|     -|
++---------------------+---------+-------+---------+---------+------+
+|Total                |        0|      0|        0|      880|     0|
++---------------------+---------+-------+---------+---------+------+
+|Available SLR        |     1344|   3072|   864000|   432000|   320|
++---------------------+---------+-------+---------+---------+------+
+|Utilization SLR (%)  |        0|      0|        0|    ~0   |     0|
++---------------------+---------+-------+---------+---------+------+
+|Available            |     5376|  12288|  3456000|  1728000|  1280|
++---------------------+---------+-------+---------+---------+------+
+|Utilization (%)      |        0|      0|        0|    ~0   |     0|
++---------------------+---------+-------+---------+---------+------+
+
++ Detail: 
+    * Instance: 
+    N/A
+
+    * DSP48E: 
+    N/A
+
+    * Memory: 
+    N/A
+
+    * FIFO: 
+    N/A
+
+    * Expression: 
+    +--------------------------+----------+-------+---+----+------------+------------+
+    |       Variable Name      | Operation| DSP48E| FF| LUT| Bitwidth P0| Bitwidth P1|
+    +--------------------------+----------+-------+---+----+------------+------------+
+    |icmp_ln1494_10_fu_372_p2  |   icmp   |      0|  0|  21|          35|           1|
+    |icmp_ln1494_11_fu_394_p2  |   icmp   |      0|  0|  21|          35|           1|
+    |icmp_ln1494_12_fu_416_p2  |   icmp   |      0|  0|  21|          35|           1|
+    |icmp_ln1494_13_fu_438_p2  |   icmp   |      0|  0|  21|          35|           1|
+    |icmp_ln1494_14_fu_460_p2  |   icmp   |      0|  0|  21|          35|           1|
+    |icmp_ln1494_15_fu_482_p2  |   icmp   |      0|  0|  21|          35|           1|
+    |icmp_ln1494_1_fu_174_p2   |   icmp   |      0|  0|  21|          35|           1|
+    |icmp_ln1494_2_fu_196_p2   |   icmp   |      0|  0|  21|          35|           1|
+    |icmp_ln1494_3_fu_218_p2   |   icmp   |      0|  0|  21|          35|           1|
+    |icmp_ln1494_4_fu_240_p2   |   icmp   |      0|  0|  21|          35|           1|
+    |icmp_ln1494_5_fu_262_p2   |   icmp   |      0|  0|  21|          35|           1|
+    |icmp_ln1494_6_fu_284_p2   |   icmp   |      0|  0|  21|          35|           1|
+    |icmp_ln1494_7_fu_306_p2   |   icmp   |      0|  0|  21|          35|           1|
+    |icmp_ln1494_8_fu_328_p2   |   icmp   |      0|  0|  21|          35|           1|
+    |icmp_ln1494_9_fu_350_p2   |   icmp   |      0|  0|  21|          35|           1|
+    |icmp_ln1494_fu_152_p2     |   icmp   |      0|  0|  21|          35|           1|
+    |select_ln85_32_fu_184_p3  |  select  |      0|  0|  34|           1|          34|
+    |select_ln85_33_fu_206_p3  |  select  |      0|  0|  34|           1|          34|
+    |select_ln85_34_fu_228_p3  |  select  |      0|  0|  34|           1|          34|
+    |select_ln85_35_fu_250_p3  |  select  |      0|  0|  34|           1|          34|
+    |select_ln85_36_fu_272_p3  |  select  |      0|  0|  34|           1|          34|
+    |select_ln85_37_fu_294_p3  |  select  |      0|  0|  34|           1|          34|
+    |select_ln85_38_fu_316_p3  |  select  |      0|  0|  34|           1|          34|
+    |select_ln85_39_fu_338_p3  |  select  |      0|  0|  34|           1|          34|
+    |select_ln85_40_fu_360_p3  |  select  |      0|  0|  34|           1|          34|
+    |select_ln85_41_fu_382_p3  |  select  |      0|  0|  34|           1|          34|
+    |select_ln85_42_fu_404_p3  |  select  |      0|  0|  34|           1|          34|
+    |select_ln85_43_fu_426_p3  |  select  |      0|  0|  34|           1|          34|
+    |select_ln85_44_fu_448_p3  |  select  |      0|  0|  34|           1|          34|
+    |select_ln85_45_fu_470_p3  |  select  |      0|  0|  34|           1|          34|
+    |select_ln85_46_fu_492_p3  |  select  |      0|  0|  34|           1|          34|
+    |select_ln85_fu_162_p3     |  select  |      0|  0|  34|           1|          34|
+    +--------------------------+----------+-------+---+----+------------+------------+
+    |Total                     |          |      0|  0| 880|         576|         560|
+    +--------------------------+----------+-------+---+----+------------+------------+
+
+    * Multiplexer: 
+    N/A
+
+    * Register: 
+    N/A
+
+
+
+================================================================
+== Interface
+================================================================
+* Summary: 
++----------------+-----+-----+------------+------------------------------------------------------+--------------+
+|    RTL Ports   | Dir | Bits|  Protocol  |                     Source Object                    |    C Type    |
++----------------+-----+-----+------------+------------------------------------------------------+--------------+
+|ap_ready        | out |    1| ap_ctrl_hs | relu<ap_fixed,ap_fixed<35,15,5,3,0>,sigmoid_config0> | return value |
+|ap_return_0     | out |   35| ap_ctrl_hs | relu<ap_fixed,ap_fixed<35,15,5,3,0>,sigmoid_config0> | return value |
+|ap_return_1     | out |   35| ap_ctrl_hs | relu<ap_fixed,ap_fixed<35,15,5,3,0>,sigmoid_config0> | return value |
+|ap_return_2     | out |   35| ap_ctrl_hs | relu<ap_fixed,ap_fixed<35,15,5,3,0>,sigmoid_config0> | return value |
+|ap_return_3     | out |   35| ap_ctrl_hs | relu<ap_fixed,ap_fixed<35,15,5,3,0>,sigmoid_config0> | return value |
+|ap_return_4     | out |   35| ap_ctrl_hs | relu<ap_fixed,ap_fixed<35,15,5,3,0>,sigmoid_config0> | return value |
+|ap_return_5     | out |   35| ap_ctrl_hs | relu<ap_fixed,ap_fixed<35,15,5,3,0>,sigmoid_config0> | return value |
+|ap_return_6     | out |   35| ap_ctrl_hs | relu<ap_fixed,ap_fixed<35,15,5,3,0>,sigmoid_config0> | return value |
+|ap_return_7     | out |   35| ap_ctrl_hs | relu<ap_fixed,ap_fixed<35,15,5,3,0>,sigmoid_config0> | return value |
+|ap_return_8     | out |   35| ap_ctrl_hs | relu<ap_fixed,ap_fixed<35,15,5,3,0>,sigmoid_config0> | return value |
+|ap_return_9     | out |   35| ap_ctrl_hs | relu<ap_fixed,ap_fixed<35,15,5,3,0>,sigmoid_config0> | return value |
+|ap_return_10    | out |   35| ap_ctrl_hs | relu<ap_fixed,ap_fixed<35,15,5,3,0>,sigmoid_config0> | return value |
+|ap_return_11    | out |   35| ap_ctrl_hs | relu<ap_fixed,ap_fixed<35,15,5,3,0>,sigmoid_config0> | return value |
+|ap_return_12    | out |   35| ap_ctrl_hs | relu<ap_fixed,ap_fixed<35,15,5,3,0>,sigmoid_config0> | return value |
+|ap_return_13    | out |   35| ap_ctrl_hs | relu<ap_fixed,ap_fixed<35,15,5,3,0>,sigmoid_config0> | return value |
+|ap_return_14    | out |   35| ap_ctrl_hs | relu<ap_fixed,ap_fixed<35,15,5,3,0>,sigmoid_config0> | return value |
+|ap_return_15    | out |   35| ap_ctrl_hs | relu<ap_fixed,ap_fixed<35,15,5,3,0>,sigmoid_config0> | return value |
+|data_0_V_read   |  in |   35|   ap_none  |                     data_0_V_read                    |    scalar    |
+|data_1_V_read   |  in |   35|   ap_none  |                     data_1_V_read                    |    scalar    |
+|data_2_V_read   |  in |   35|   ap_none  |                     data_2_V_read                    |    scalar    |
+|data_3_V_read   |  in |   35|   ap_none  |                     data_3_V_read                    |    scalar    |
+|data_4_V_read   |  in |   35|   ap_none  |                     data_4_V_read                    |    scalar    |
+|data_5_V_read   |  in |   35|   ap_none  |                     data_5_V_read                    |    scalar    |
+|data_6_V_read   |  in |   35|   ap_none  |                     data_6_V_read                    |    scalar    |
+|data_7_V_read   |  in |   35|   ap_none  |                     data_7_V_read                    |    scalar    |
+|data_8_V_read   |  in |   35|   ap_none  |                     data_8_V_read                    |    scalar    |
+|data_9_V_read   |  in |   35|   ap_none  |                     data_9_V_read                    |    scalar    |
+|data_10_V_read  |  in |   35|   ap_none  |                    data_10_V_read                    |    scalar    |
+|data_11_V_read  |  in |   35|   ap_none  |                    data_11_V_read                    |    scalar    |
+|data_12_V_read  |  in |   35|   ap_none  |                    data_12_V_read                    |    scalar    |
+|data_13_V_read  |  in |   35|   ap_none  |                    data_13_V_read                    |    scalar    |
+|data_14_V_read  |  in |   35|   ap_none  |                    data_14_V_read                    |    scalar    |
+|data_15_V_read  |  in |   35|   ap_none  |                    data_15_V_read                    |    scalar    |
++----------------+-----+-----+------------+------------------------------------------------------+--------------+
+

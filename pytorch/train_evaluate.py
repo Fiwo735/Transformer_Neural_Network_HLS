@@ -14,7 +14,7 @@ from typing import Tuple, Optional, List
 from torch.utils.data import TensorDataset, DataLoader
 from sklearn.datasets import fetch_openml
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import LabelEncoder, StandardScaler
+from sklearn.preprocessing import LabelEncoder, StandardScaler, normalize
 from tqdm import tqdm
 from time import time
 
@@ -127,8 +127,32 @@ def fetch_N_dataset(num_particles: int) -> None:
 
 def load_dataset(
   num_particles: int,
-  batch_size: int = 128
+  batch_size: int = 128,
+  tiny_size: int = 1,
 ) -> Tuple[DataLoader, DataLoader, DataLoader, List[str]]:
+
+  def custom_normalize(x):
+    # print(f'{x.shape=}')
+
+    x_reshaped = x.reshape(-1, 16)
+    # print(f'{x_reshaped.shape=}')
+
+    x_normalized = normalize(x_reshaped, axis=0, norm='l1') * 1e10
+    # print(f'{x_normalized.shape=}')
+
+    # axis_sum = np.sum(x_normalized, axis=0)
+    # print(f'{axis_sum=}')
+
+    result = x_normalized.reshape(-1, num_particles, 16)
+    # print(f'{result.shape=}')
+
+    # print(f'{x[0][0]=}')
+    # print(f'{x[0][1]=}')
+    # print(f'{result[0][0]=}')
+    # print(f'{result[0][1]=}')
+    # print()
+
+    return torch.Tensor(result)
 
   X_train_val = np.load(X_TRAIN_FILENAMES[num_particles])
   X_test = np.ascontiguousarray(np.load(X_TEST_FILENAMES[num_particles]))
@@ -140,6 +164,9 @@ def load_dataset(
   else:
     classes = ['Gluon', 'Light_quarks', 'W_boson', 'Z_boson', 'Top_quark']
 
+  # X_train_val = custom_normalize(X_train_val)
+  # X_test = custom_normalize(X_test)
+
   tensor_X_train_val = torch.Tensor(X_train_val)
   tensor_X_test = torch.Tensor(X_test)
   tensor_y_train_val = torch.Tensor(y_train_val)
@@ -148,10 +175,18 @@ def load_dataset(
   tensor_y_train_val = tensor_y_train_val.type(torch.LongTensor)
   tensor_y_test = tensor_y_test.type(torch.LongTensor)
 
+  # tensor_X_train_val = custom_normalize(tensor_X_train_val)
+  # tensor_X_test = custom_normalize(tensor_X_test)
+
   # print(f'{tensor_X_train_val.shape=}')
   # print(f'{tensor_y_train_val.shape=}')
   # print(f'{tensor_X_test.shape=}')
   # print(f'{tensor_y_test.shape=}')
+
+  # print(f'{tensor_X_train_val[0][0]=}')
+  # print(f'{tensor_X_train_val[0][1]=}')
+
+  # quit()
 
   train_loader = DataLoader(
     TensorDataset(tensor_X_train_val, tensor_y_train_val),
@@ -164,8 +199,9 @@ def load_dataset(
   )
 
   # Dataloader for printing layer-by-layer evaluation of (1, tiny_size, 16)
+  tiny_tensor_X_test = tensor_X_test[:1,:tiny_size,:] if num_particles != 1 else tensor_X_test[:1,:]
   tiny_loader = DataLoader(
-    TensorDataset(tensor_X_test[:1], tensor_y_test[:1]),
+    TensorDataset(tiny_tensor_X_test, tensor_y_test[:1]),
     batch_size=1
   )
 
@@ -292,8 +328,12 @@ def evaluate(
       with open(filepath, 'w') as f:
         with contextlib.redirect_stdout(f):
           # Write input data in HLS format
-          for i in range(num_particles):
-            f.write(' '.join([str(el) for el in next(iter(test_loader))[0][i].tolist()]) + '\n')
+          samples = next(iter(test_loader))[0][0].tolist()
+          if num_particles != 1:
+            for sample in samples:
+              f.write(' '.join([str(el) for el in sample]) + '\n')
+          else:
+            f.write(' '.join([str(el) for el in samples]) + '\n')
 
           accuracy, total_time = train_test_loop(
             loader=test_loader,
@@ -321,8 +361,8 @@ def time_evaluate(
     _, _ = evaluate(test_loader=test_loader, model=model, criterion=criterion, num_particles=num_particles)
   
    # If using GPU, wait for warm-up to finish
-  if torch.cuda.is_available():
-    torch.cuda.synchronize()
+  if DEVICE.type == 'cuda':
+    torch.cuda.synchronize(DEVICE)
 
   times = []
   print(f'Evaluating {num_epochs} times...')
@@ -330,7 +370,8 @@ def time_evaluate(
     accuracy, total_time = evaluate(test_loader=test_loader, model=model, criterion=criterion, num_particles=num_particles)
     times.append(total_time)
 
-  return (accuracy, sum(times) / num_epochs)
+  times = np.array(times)
+  return (accuracy, times.mean(), times.std())
 
 
 def main(
@@ -342,17 +383,18 @@ def main(
   is_debug: bool = False,
   is_timing: bool = False,
   only_predictions: bool = False,
+  tiny_size: int = 1,
+  num_epochs: int = 3,
 ) -> None:
  
   batch_size = 128
   criterion = torch.nn.NLLLoss()
-  num_epochs = 5
   num_transformers = 1
   embbed_dim = 16
   num_heads = 2
   dropout = 0.0
 
-  train_loader, test_loader, tiny_loader, classes = load_dataset(num_particles=num_particles, batch_size=batch_size)
+  train_loader, test_loader, tiny_loader, classes = load_dataset(num_particles=num_particles, batch_size=batch_size, tiny_size=tiny_size)
 
   if do_train:
     # Instantiate model
@@ -394,11 +436,15 @@ def main(
     if is_timing:
       print(f'WARNING: Skipping timing as debug affects evaluation speed')
   elif is_timing:
-    accuracy, average_time = time_evaluate(test_loader=test_loader, model=model, criterion=criterion, num_epochs=50, num_particles=num_particles)
-    average_time_batch = average_time / (len(test_loader) - 2)
-    print(f'Test accuracy: {accuracy*100:.2f}% in {average_time:.2f} s')
-    print(f'{average_time_batch * 1000:.2f} ms per batch')
-    print(f'{average_time_batch / batch_size * 1000000:.2f} us per sample')
+    accuracy, time_mean, time_std = time_evaluate(test_loader=test_loader, model=model, criterion=criterion, num_epochs=num_epochs, num_particles=num_particles)
+    time_mean_batch = time_mean / (len(test_loader) - 2)
+    time_std_batch = time_std / (len(test_loader) - 2)
+    time_mean_sample = time_mean_batch / batch_size
+    time_std_sample = time_std_batch / batch_size
+
+    print(f'Test accuracy: {accuracy*100:.2f}%')
+    print(f'{time_mean_batch * 1000:.3f} \u00B1 {time_std_batch * 1000:.3f} ms per batch')
+    print(f'{time_mean_sample * 1000000:.3f} \u00B1 {time_std_sample * 1000000:.3f} us per sample')
   elif not only_predictions:
     accuracy, total_time = evaluate(test_loader=test_loader, model=model, criterion=criterion, num_particles=num_particles)
     print(f'Test accuracy: {accuracy*100:.2f}% in {total_time:.2f} s')
@@ -417,6 +463,9 @@ def parse():
   parser.add_argument('--use_cpu', action='store_true')
   parser.add_argument('--only_predictions', action='store_true')
   parser.add_argument('--fetch', action='store_true')
+  parser.add_argument('--tiny_size', action='store', type=int)
+  parser.add_argument('--epochs', action='store', type=int)
+  parser.add_argument('--cuda', action='store', type=int, default=0)
 
   return parser.parse_args()
 
@@ -429,13 +478,15 @@ if __name__ == "__main__":
 
   if args.use_cpu:
     DEVICE = torch.device('cpu')
-  print(f'{DEVICE=}')
+    print(f'{DEVICE=}')
+  else:
+    assert 0 <= args.cuda < torch.cuda.device_count(), f'CUDA index outside [0, {torch.cuda.device_count()})'
+    DEVICE = torch.device(f'cuda:{args.cuda}')
+    print(f'{DEVICE=}, name={torch.cuda.get_device_name(DEVICE)}')
 
   if not args.rng_seed:
     set_seed(123)
 
-  # Fetch data if needed
-  
   if args.fetch:
     if args.particles == 1:
       Path(DATA_DIR).mkdir(parents=True, exist_ok=True)
@@ -453,4 +504,6 @@ if __name__ == "__main__":
     is_debug=args.debug,
     is_timing=args.timing,
     only_predictions=args.only_predictions,
+    tiny_size=args.tiny_size,
+    num_epochs=args.epochs,
   )
