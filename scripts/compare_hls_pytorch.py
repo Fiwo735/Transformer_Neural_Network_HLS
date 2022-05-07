@@ -3,6 +3,7 @@ import sys
 import subprocess
 import argparse
 import re
+import numpy as np
 
 from os import fdopen, remove
 from tempfile import mkstemp
@@ -28,10 +29,12 @@ def run_vivado_hls(hls_dir_path, build_tcl_path, quiet=True):
 
 
 def run_pytorch(script_path, update_path):
-  script_command = f'python3 {script_path} --only_predictions | tail -n 1'
+  # script_command = f'python3 {script_path} --only_predictions | tail -n 1'
+  script_command = f'python3 {script_path} --generate_hls_tb --use_cpu --particles 1'
 
   start_time = time()
-  result = subprocess.run(script_command, shell=True, stdout=subprocess.PIPE)
+  # result = subprocess.run(script_command, shell=True, stdout=subprocess.PIPE)
+  result = subprocess.run(script_command, shell=True)
   end_time = time()
 
   if result.returncode != 0:
@@ -39,16 +42,17 @@ def run_pytorch(script_path, update_path):
 
   print(f'Running Pytorch took {end_time - start_time:.2f} s')
   
-  pytorch_results = [float(el) for el in result.stdout.decode('UTF-8').split(' ')]
+  # pytorch_results = [float(el) for el in result.stdout.decode('UTF-8').split(' ')]
   # For now, put results inside another list as in the future this might become list of results for different inputs
-  pytorch_results = [pytorch_results]
+  # pytorch_results = [pytorch_results]
 
   update_command = f'python3 {update_path}'
-  subprocess.run(update_command, shell=True)
+  # subprocess.run(update_command, shell=True)
+  subprocess.run(update_command, shell=True, stdout=subprocess.PIPE)
   if result.returncode != 0:
     raise RuntimeError(f'{update_command} returned {result.returncode}')
 
-  return pytorch_results
+  # return pytorch_results
 
 
 
@@ -76,6 +80,8 @@ def get_pytorch_results(path):
 def compare_results(hls_results, pytorch_results, quiet=True):
   total_MSE = 0.
   elements_count = 0
+  correct_predictions = 0
+  predictions_count = 0
 
   assert len(hls_results) == len(pytorch_results), f'{hls_results=}, {pytorch_results=}'
 
@@ -94,7 +100,10 @@ def compare_results(hls_results, pytorch_results, quiet=True):
       total_MSE += diff * diff
       elements_count += 1
 
-  return total_MSE / float(elements_count)
+    correct_predictions += (np.argmax(hls_result) == np.argmax(pytorch_result))
+    predictions_count += 1
+
+  return (total_MSE / float(elements_count), correct_predictions / predictions_count)
 
 
 def clean_file(path):
@@ -181,11 +190,14 @@ if __name__ == '__main__':
   args, run_hls = parse()
 
   if args.pytorch:
-    pytorch_results = run_pytorch(script_path=pytorch_script_path, update_path=update_weights_script_path)
+    # pytorch_results = run_pytorch(script_path=pytorch_script_path, update_path=update_weights_script_path)
+    run_pytorch(script_path=pytorch_script_path, update_path=update_weights_script_path)
+    pytorch_results = get_pytorch_results(path='hls/tb_data/tb_output_predictions.dat')
   else:
-    pytorch_results = get_pytorch_results(path=pytorch_results_log_path)
+    # pytorch_results = get_pytorch_results(path=pytorch_results_log_path)
+    pytorch_results = get_pytorch_results(path='hls/tb_data/tb_output_predictions.dat')
 
-  set_hls_output_predictions(path=hls_output_predictions_path, results=pytorch_results)
+  # set_hls_output_predictions(path=hls_output_predictions_path, results=pytorch_results)
   
   if run_hls:
     # Set relevant flags in build_prj.tcl
@@ -201,16 +213,16 @@ if __name__ == '__main__':
     print('\nCSimulation:')
 
     csim_results = get_hls_results(path=csim_results_log_path)
-    total_MSE = compare_results(hls_results=csim_results, pytorch_results=pytorch_results, quiet=False)
+    average_MSE, accuracy = compare_results(hls_results=csim_results, pytorch_results=pytorch_results, quiet=True)
 
-    print('\nMSE:', total_MSE)
+    print(f'\nAverage MSE: {average_MSE:.5f}, accuracy: {accuracy*100:.2f}%')
 
   if args.cosim:
     print('\nRTL Co-simulation ')
 
     cosim_results = get_hls_results(path=rtl_cosim_results_log_path)
     pytorch_results = get_pytorch_results(path=pytorch_results_log_path)
-    total_MSE = compare_results(hls_results=cosim_results, pytorch_results=pytorch_results, quiet=False)
+    average_MSE, accuracy = compare_results(hls_results=cosim_results, pytorch_results=pytorch_results, quiet=True)
 
-    print('\nMSE:', total_MSE)
+    print(f'\nAverage MSE: {average_MSE:.5f}, accuracy: {accuracy*100:.2f}%')
 

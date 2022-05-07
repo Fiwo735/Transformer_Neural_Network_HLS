@@ -226,7 +226,7 @@ def train_test_loop(
   num_particles: int = 1,
   num_epochs: int = 5,
   print_predictions: bool = False,
-) -> Tuple[Optional[float], float]:
+) -> Tuple[Optional[float], float, Tuple[List[float], List[float]]]:
 
   is_eval = not is_train
 
@@ -239,6 +239,7 @@ def train_test_loop(
   loader_length = len(loader)
   batch_size = loader.batch_size
 
+  all_data = []
   all_labels = []
   all_predicted = []
   accuracy = None
@@ -252,6 +253,9 @@ def train_test_loop(
 
         if num_particles == 1:
           data = torch.unsqueeze(data, dim=1)
+
+        if is_eval:
+          all_data.append(data.detach())
 
         labels = labels.to(DEVICE)
         data = data.to(DEVICE)
@@ -283,12 +287,12 @@ def train_test_loop(
       all_predicted_str = ' '.join([str(el) for el in all_predicted_list])
       print(f'Predictions:\n{all_predicted_str}')
 
-    all_predicted = torch.argmax(all_predicted, dim=2)
-    correct_predictions = (all_predicted == all_labels).sum()
-    accuracy = correct_predictions / torch.numel(all_predicted)
+    all_predicted_argmax = torch.argmax(all_predicted, dim=2)
+    correct_predictions = (all_predicted_argmax == all_labels).sum()
+    accuracy = correct_predictions / torch.numel(all_predicted_argmax)
 
 
-  return (accuracy, end_time - start_time)
+  return (accuracy, end_time - start_time, (all_data, all_predicted))
 
 
 def save_model(model: nn.Module, script_path: str, state_path: str) -> None:
@@ -311,11 +315,11 @@ def evaluate(
   filepath: Optional[str] = None,
   print_predictions: bool = False,
   num_particles: int = 1,
-) -> Tuple[float, float]:
+) -> Tuple[float, float, Tuple[List[float], List[float]]]:
 
   with torch.inference_mode():
     if filepath is None:
-      accuracy, total_time = train_test_loop(
+      accuracy, total_time, data_results = train_test_loop(
         loader=test_loader,
         model=model,
         criterion=criterion,
@@ -335,7 +339,7 @@ def evaluate(
           else:
             f.write(' '.join([str(el) for el in samples]) + '\n')
 
-          accuracy, total_time = train_test_loop(
+          accuracy, total_time, data_results = train_test_loop(
             loader=test_loader,
             model=model,
             criterion=criterion,
@@ -344,7 +348,7 @@ def evaluate(
             print_predictions=print_predictions,
           )
 
-  return (accuracy, total_time)
+  return (accuracy, total_time, data_results)
 
 
 def time_evaluate(
@@ -358,7 +362,7 @@ def time_evaluate(
   # Evaluate once to warm-up
   print(f'Timing evaluation, warming up...')
   for _ in range(5):
-    _, _ = evaluate(test_loader=test_loader, model=model, criterion=criterion, num_particles=num_particles)
+    _, _, _ = evaluate(test_loader=test_loader, model=model, criterion=criterion, num_particles=num_particles)
   
    # If using GPU, wait for warm-up to finish
   if DEVICE.type == 'cuda':
@@ -367,7 +371,7 @@ def time_evaluate(
   times = []
   print(f'Evaluating {num_epochs} times...')
   for _ in range(num_epochs):
-    accuracy, total_time = evaluate(test_loader=test_loader, model=model, criterion=criterion, num_particles=num_particles)
+    accuracy, total_time, _ = evaluate(test_loader=test_loader, model=model, criterion=criterion, num_particles=num_particles)
     times.append(total_time)
 
   times = np.array(times)
@@ -385,6 +389,9 @@ def main(
   only_predictions: bool = False,
   tiny_size: int = 1,
   num_epochs: int = 3,
+  do_generate_in_out_hls_tb: bool = False,
+  hls_tb_in_path: Optional[str] = None,
+  hls_tb_out_path: Optional[str] = None,
 ) -> None:
  
   batch_size = 128
@@ -411,7 +418,7 @@ def main(
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
 
     # Train model
-    _, total_time = train_test_loop(
+    _, total_time, _ = train_test_loop(
       loader=train_loader,
       model=model,
       criterion=criterion,
@@ -431,7 +438,7 @@ def main(
   
   # Test model
   if is_debug:
-    _, _ = evaluate(test_loader=tiny_loader, model=model, criterion=criterion, filepath=debug_path, print_predictions=True, num_particles=num_particles)
+    _, _, _ = evaluate(test_loader=tiny_loader, model=model, criterion=criterion, filepath=debug_path, print_predictions=True, num_particles=num_particles)
     print(f'Debug output saved to {debug_path}')
     if is_timing:
       print(f'WARNING: Skipping timing as debug affects evaluation speed')
@@ -446,10 +453,31 @@ def main(
     print(f'{time_mean_batch * 1000:.3f} \u00B1 {time_std_batch * 1000:.3f} ms per batch')
     print(f'{time_mean_sample * 1000000:.3f} \u00B1 {time_std_sample * 1000000:.3f} us per sample')
   elif not only_predictions:
-    accuracy, total_time = evaluate(test_loader=test_loader, model=model, criterion=criterion, num_particles=num_particles)
+    accuracy, total_time, (data, results) = evaluate(test_loader=test_loader, model=model, criterion=criterion, num_particles=num_particles)
     print(f'Test accuracy: {accuracy*100:.2f}% in {total_time:.2f} s')
+    
+    if do_generate_in_out_hls_tb:
+      assert len(data) - 1 == len(results) == len(test_loader) - 2, 'Number of captured samples and predictions must match DataLoader size'
+      
+      with open(hls_tb_in_path, 'w') as f_in, open(hls_tb_out_path, 'w') as f_out:
+        # Iterate until shorter ends and print to corresponding files
+        for index, (data_batch, results_batch) in enumerate(zip(data, results)):
+          data_list = data_batch.tolist()
+          results_list = results_batch.tolist()
+
+          for data, results in zip(data_list, results_list):
+            # TODO this only handles 1 x 16 for now
+            data_str = ' '.join([str(el) for el in data[0]]) + '\n'
+            results_str = ' '.join([str(el) for el in results]) + '\n'
+
+            f_in.write(data_str)
+            f_out.write(results_str)
+          
+          if index > 10:
+            break
+
   else:
-    _, _ = evaluate(test_loader=tiny_loader, model=model, criterion=criterion, print_predictions=True, num_particles=num_particles)
+    _, _, _ = evaluate(test_loader=tiny_loader, model=model, criterion=criterion, print_predictions=True, num_particles=num_particles)
 
 
 def parse():
@@ -466,6 +494,7 @@ def parse():
   parser.add_argument('--tiny_size', action='store', type=int)
   parser.add_argument('--epochs', action='store', type=int)
   parser.add_argument('--cuda', action='store', type=int, default=0)
+  parser.add_argument('--generate_hls_tb', action='store_true')
 
   return parser.parse_args()
 
@@ -506,4 +535,7 @@ if __name__ == "__main__":
     only_predictions=args.only_predictions,
     tiny_size=args.tiny_size,
     num_epochs=args.epochs,
+    do_generate_in_out_hls_tb=args.generate_hls_tb,
+    hls_tb_in_path='hls/tb_data/tb_input_features.dat',
+    hls_tb_out_path='hls/tb_data/tb_output_predictions.dat',
   )
