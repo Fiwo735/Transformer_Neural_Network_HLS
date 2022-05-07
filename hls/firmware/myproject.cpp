@@ -84,7 +84,7 @@ void myproject(
     static bool loaded_weights = false;
     if (!loaded_weights) {
         //hls-fpga-machine-learning insert load weights
-        std::cout << "Loading weights from txt" << "\n";
+        // std::cout << "Loading weights from txt" << "\n";
         
         nnet::load_weights_from_txt<model_default_t, 16>(cls_token, "cls_token.txt");
         nnet::load_weights_from_txt<model_default_t, 256>(inp_layer_weight, "inp_layer_weight.txt");
@@ -100,6 +100,8 @@ void myproject(
         loaded_weights = true;
     }
 #endif
+
+    // std::cout << "In myproject(...)" << std::endl;
 
     PRETTY_PRINT_2D(data_in, N_PARTICLES, N_FEATURES);
 
@@ -158,6 +160,10 @@ void myproject(
     PRETTY_PRINT(data_out, N_LABELS);
 
 #ifndef __SYNTHESIS__
-    FOUT.close();
+    // TODO don't close and just let it close automatically to avoid issues where running multiple tests?
+    // FOUT.close();
 #endif
+
+    // std::cout << "End of myproject(...)" << std::endl;
+    // nnet::print_result<result_t, N_LABELS>(data_out, std::cout, true);
 }

@@ -149,12 +149,13 @@ void self_attention(
     PRETTY_PRINT_2D(values, CONFIG_T::n_particles, CONFIG_T::n_v);
 
     // Einsum(qhc, khc -> hqk)
-    static data_T energy[CONFIG_T::n_particles][2][2];
+    data_T energy[CONFIG_T::n_particles][2][2];
     #pragma HLS ARRAY_PARTITION variable=energy complete dim=0
     for (unsigned cc = 0; cc < CONFIG_T::n_el/2; cc++) {
         for (unsigned hh = 0; hh < 2; hh++) {
             for (unsigned qq = 0; qq < CONFIG_T::n_particles; qq++) {
                 for (unsigned kk = 0; kk < CONFIG_T::n_particles; kk++) {
+                    if (cc == 0) energy[hh][kk][qq] = 0;
                     energy[hh][kk][qq] += (keys[qq][hh + cc * 2] * queries[kk][hh + cc * 2]) >> SCALE_SHIFT;
                 }
             }
@@ -181,12 +182,13 @@ void self_attention(
     PRETTY_PRINT_3D(attention, CONFIG_T::n_particles, 2, CONFIG_T::n_attention);
 
     // Einsum(hql, lhc -> qhc) then reshape
-    static data_T scaled_attention_reshaped[CONFIG_T::n_particles][CONFIG_T::n_scaled_attention];
+    data_T scaled_attention_reshaped[CONFIG_T::n_particles][CONFIG_T::n_scaled_attention];
     #pragma HLS ARRAY_PARTITION variable=scaled_attention_reshaped complete dim=0
     for (unsigned qq = 0; qq < 2; qq++) {
         for (unsigned ll = 0; ll < CONFIG_T::n_attention; ll++) {
             for (unsigned hh = 0; hh < CONFIG_T::n_particles; hh++) {
                 for (unsigned cc = 0; cc < CONFIG_T::n_el/2; cc++) {
+                    if (ll == 0) scaled_attention_reshaped[qq][cc + hh * CONFIG_T::n_scaled_attention/2] = 0;
                     scaled_attention_reshaped[qq][cc + hh * CONFIG_T::n_scaled_attention/2] += attention[hh][qq][ll] * values[ll][hh + cc * CONFIG_T::n_particles];
                 }
             }
