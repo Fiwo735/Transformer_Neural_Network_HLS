@@ -853,9 +853,12 @@ def case_6():
   5.48813
   4.07788
   -0.7246 
-  
 
 
+
+
+def case_7():
+  pass
 
 if __name__ == '__main__':
-  case_6()
+  case_7()

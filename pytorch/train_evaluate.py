@@ -17,6 +17,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder, StandardScaler, normalize
 from tqdm import tqdm
 from time import time
+from fvcore.nn import FlopCountAnalysis
 
 from model.net import ConstituentNet
 
@@ -392,7 +393,14 @@ def main(
   do_generate_in_out_hls_tb: bool = False,
   hls_tb_in_path: Optional[str] = None,
   hls_tb_out_path: Optional[str] = None,
+  measure_flops: bool = False,
 ) -> None:
+
+  if measure_flops:
+    assert do_train, 'Model has to be retrained for measuring FLOPS, since loading using torch.jit.load() results in hook error.'
+    if num_epochs != 1:
+      print('This run will measure FLOPS, so epoch number is forced to 1 for faster training')
+      num_epochs = 1
  
   batch_size = 128
   criterion = torch.nn.NLLLoss()
@@ -479,6 +487,11 @@ def main(
   else:
     _, _, _ = evaluate(test_loader=tiny_loader, model=model, criterion=criterion, print_predictions=True, num_particles=num_particles)
 
+  if measure_flops:
+    flop_input = torch.rand((batch_size, num_particles, 16)).to(DEVICE)
+    flops = FlopCountAnalysis(model=model, inputs=flop_input)
+    print(f'FLOPS: {flops.total() / 1000} k')
+
 
 def parse():
   parser = argparse.ArgumentParser(description='Train and/or evaluate Pytorch model')
@@ -495,6 +508,7 @@ def parse():
   parser.add_argument('--epochs', action='store', type=int)
   parser.add_argument('--cuda', action='store', type=int, default=0)
   parser.add_argument('--generate_hls_tb', action='store_true')
+  parser.add_argument('--flop', action='store_true')
 
   return parser.parse_args()
 
@@ -538,4 +552,5 @@ if __name__ == "__main__":
     do_generate_in_out_hls_tb=args.generate_hls_tb,
     hls_tb_in_path='hls/tb_data/tb_input_features.dat',
     hls_tb_out_path='hls/tb_data/tb_output_predictions.dat',
+    measure_flops=args.flop,
   )
