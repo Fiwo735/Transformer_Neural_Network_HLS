@@ -341,10 +341,10 @@ void print_result(hls::stream<res_T> &result, std::ostream &out, bool keep = fal
 
 // custom, pretty print
 template<class data_T, size_t size>
-void print_full_result(const std::string& name, data_T data[size], std::ofstream& fout) {
-    fout << name << " ["<< size << "]:" << "\n";
-    nnet::print_result<data_T, size>(data, fout);
-    fout << "\n";
+void print_full_result(const std::string& name, data_T data[size], std::ostream& out) {
+    out << name << " ["<< size << "]:" << "\n";
+    nnet::print_result<data_T, size>(data, out);
+    out << "\n";
 }
 
 template<class data_T, size_t SIZE>

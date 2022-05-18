@@ -15,8 +15,8 @@
 #define N_PARTICLES 1
 #define N_FEATURES 16
 
-#define N_EMBEDDED_DIM 16
 // SCALE_SHIFT is log2(sqrt(N_EMBEDDED_DIM))
+#define N_EMBEDDED_DIM 16
 #define SCALE_SHIFT 2
 
 #define N_INPUT (N_PARTICLES * N_FEATURES)
@@ -50,29 +50,23 @@
 #define N_BIG_TABLE_SIZE 1024
 // #define N_SMALL_TABLE_SIZE 1024
 
-//hls-fpga-machine-learning insert layer-precision
-// typedef ap_fixed<16,6> model_default_t;
-// typedef ap_fixed<16,6> input_t;
-// typedef ap_fixed<16,6> result_t;
-// typedef ap_fixed<18,8> general_table_t;
-
-// typedef ap_fixed<32,9> model_default_t;
-// typedef ap_fixed<32,9> input_t;
-// typedef ap_fixed<32,9> result_t;
-// typedef ap_fixed<32,9> general_table_t;
-
 // ap_fixed<total, int> 
-typedef ap_fixed<29,15> model_default_t;
-typedef ap_fixed<29,15> input_t;
-typedef ap_fixed<29,15> result_t;
-// typedef ap_fixed<64,32> general_table_t;
-typedef ap_fixed<16,6> general_table_t;
-typedef ap_fixed<16,6> data_T_red;
-typedef ap_fixed<16,6> input_t_red;
+typedef ap_fixed<27,15> model_default_t;
+typedef ap_fixed<27,15> input_t;
+typedef ap_fixed<27,15> result_t;
 
-// typedef float general_table_t;
-// typedef float model_default_t;
-// typedef float input_t;
-// typedef float result_t;
+typedef ap_fixed<17,7> general_table_t;
+typedef ap_fixed<17,7> data_T_red;
+typedef ap_fixed<17,7> input_t_red;
+
+// typedef ap_fixed<29,15> model_default_t;
+// typedef ap_fixed<29,15> input_t;
+// typedef ap_fixed<29,15> result_t;
+
+// typedef ap_fixed<17,7> general_table_t;
+// typedef ap_fixed<17,7> data_T_red;
+// typedef ap_fixed<17,7> input_t_red;
+
+
 
 #endif

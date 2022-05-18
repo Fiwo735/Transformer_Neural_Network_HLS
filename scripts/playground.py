@@ -728,7 +728,7 @@ def generateTable(size: int, func, max_val: int) -> np.array:
 
 def case_4():
   table_size = 1024
-  table = generateTable(size=table_size, func=log, max_val=32)
+  table = generateTable(size=table_size, func=log, max_val=64)
 
   name = 'log_table'
   guard = name.upper() + '_H_'
@@ -858,7 +858,29 @@ def case_6():
 
 
 def case_7():
-  pass
+  a = torch.Tensor([[1.56459, 1.51986, -1.29900, 0.24279, 0.24415]])
+  print(f'{a=}')
+  
+  # res = nn.functional.softmax(a, dim=1)
+  # print(f'{res=}')
+
+  # res2 = nn.functional.softmax(-a, dim=1)
+  # print(f'{res2=}')
+
+  es = a.exp()
+  print(f'{es=}')
+
+  s = es.sum()
+  print(f'{s=}')
+
+  l = s.log()
+  print(f'{l=}')
+
+  res = a - l
+  print(f'{res=}')
+
+  # log_res = res.log()
+  # print(f'{log_res=}')
 
 if __name__ == '__main__':
-  case_7()
+  case_4()

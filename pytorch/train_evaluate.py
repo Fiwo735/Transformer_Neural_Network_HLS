@@ -170,6 +170,11 @@ def load_dataset(
 
   tensor_X_train_val = torch.Tensor(X_train_val)
   tensor_X_test = torch.Tensor(X_test)
+
+  if num_particles == 1:
+    tensor_X_train_val = tensor_X_train_val.unsqueeze(dim=1)
+    tensor_X_test = tensor_X_test.unsqueeze(dim=1)
+  
   tensor_y_train_val = torch.Tensor(y_train_val)
   tensor_y_test = torch.Tensor(y_test)
 
@@ -200,11 +205,29 @@ def load_dataset(
   )
 
   # Dataloader for printing layer-by-layer evaluation of (1, tiny_size, 16)
-  tiny_tensor_X_test = tensor_X_test[:1,:tiny_size,:] if num_particles != 1 else tensor_X_test[:1,:]
-  tiny_loader = DataLoader(
-    TensorDataset(tiny_tensor_X_test, tensor_y_test[:1]),
-    batch_size=1
-  )
+  # print(f'{tensor_X_test.shape=}')
+
+  # tiny_tensor_X_test = tensor_X_test[:1,:tiny_size,:] if num_particles != 1 else tensor_X_test[:tiny_size,:]
+  # print(f'{tiny_size=}')
+
+  if num_particles == 1:
+    tiny_tensor_X_test = tensor_X_test[:tiny_size+1,:,:]
+    # print(f'{tiny_tensor_X_test.shape=}')
+
+    tiny_loader = DataLoader(
+      TensorDataset(tiny_tensor_X_test, tensor_y_test[:tiny_size+1]),
+      batch_size=1
+    )
+
+  else:
+    assert tiny_size <= num_particles
+    tiny_tensor_X_test = tensor_X_test[:1,:tiny_size+1,:]
+    # print(f'{tiny_tensor_X_test.shape=}')
+
+    tiny_loader = DataLoader(
+      TensorDataset(tiny_tensor_X_test, tensor_y_test[:1]),
+      batch_size=1
+    )
 
   return train_loader, test_loader, tiny_loader, classes
 
@@ -227,7 +250,7 @@ def train_test_loop(
   num_particles: int = 1,
   num_epochs: int = 5,
   print_predictions: bool = False,
-) -> Tuple[Optional[float], float, Tuple[List[float], List[float]]]:
+) -> Tuple[Optional[float], float, Tuple[List[float], List[float], List[float]]]:
 
   is_eval = not is_train
 
@@ -252,8 +275,8 @@ def train_test_loop(
       tepoch.set_description(f'{prefix} epoch {epoch+1}/{num_epochs}')
       for idx, (data, labels) in enumerate(tepoch):
 
-        if num_particles == 1:
-          data = torch.unsqueeze(data, dim=1)
+        # if num_particles == 1:
+        #   data = torch.unsqueeze(data, dim=1)
 
         if is_eval:
           all_data.append(data.detach())
@@ -293,7 +316,7 @@ def train_test_loop(
     accuracy = correct_predictions / torch.numel(all_predicted_argmax)
 
 
-  return (accuracy, end_time - start_time, (all_data, all_predicted))
+  return (accuracy, end_time - start_time, (all_data, all_predicted, all_labels))
 
 
 def save_model(model: nn.Module, script_path: str, state_path: str) -> None:
@@ -316,7 +339,7 @@ def evaluate(
   filepath: Optional[str] = None,
   print_predictions: bool = False,
   num_particles: int = 1,
-) -> Tuple[float, float, Tuple[List[float], List[float]]]:
+) -> Tuple[float, float, Tuple[List[float], List[float], List[float]]]:
 
   with torch.inference_mode():
     if filepath is None:
@@ -381,7 +404,7 @@ def time_evaluate(
 
 def main(
   num_particles: int,
-  do_train: bool = True,
+  do_train: bool = False,
   script_path: Optional[str] = None,
   state_path: Optional[str] = None,
   debug_path: Optional[str] = None,
@@ -393,6 +416,7 @@ def main(
   do_generate_in_out_hls_tb: bool = False,
   hls_tb_in_path: Optional[str] = None,
   hls_tb_out_path: Optional[str] = None,
+  hls_tb_labels_path: Optional[str] = None,
   measure_flops: bool = False,
 ) -> None:
 
@@ -446,6 +470,7 @@ def main(
   
   # Test model
   if is_debug:
+    print(f'{len(tiny_loader)=}, {tiny_size=}')
     _, _, _ = evaluate(test_loader=tiny_loader, model=model, criterion=criterion, filepath=debug_path, print_predictions=True, num_particles=num_particles)
     print(f'Debug output saved to {debug_path}')
     if is_timing:
@@ -461,31 +486,38 @@ def main(
     print(f'{time_mean_batch * 1000:.3f} \u00B1 {time_std_batch * 1000:.3f} ms per batch')
     print(f'{time_mean_sample * 1000000:.3f} \u00B1 {time_std_sample * 1000000:.3f} us per sample')
   elif not only_predictions:
-    accuracy, total_time, (data, results) = evaluate(test_loader=test_loader, model=model, criterion=criterion, num_particles=num_particles)
+    accuracy, total_time, (data, results, labels) = evaluate(test_loader=test_loader, model=model, criterion=criterion, num_particles=num_particles)
     print(f'Test accuracy: {accuracy*100:.2f}% in {total_time:.2f} s')
-    
+
     if do_generate_in_out_hls_tb:
       assert len(data) - 1 == len(results) == len(test_loader) - 2, 'Number of captured samples and predictions must match DataLoader size'
       
-      with open(hls_tb_in_path, 'w') as f_in, open(hls_tb_out_path, 'w') as f_out:
+      with open(hls_tb_in_path, 'w') as f_in, open(hls_tb_out_path, 'w') as f_out, open(hls_tb_labels_path, 'w') as f_labels:
         # Iterate until shorter ends and print to corresponding files
-        for index, (data_batch, results_batch) in enumerate(zip(data, results)):
+        for index, (data_batch, results_batch, labels_batch) in enumerate(zip(data, results, labels)):
           data_list = data_batch.tolist()
           results_list = results_batch.tolist()
+          labels_list = labels_batch.tolist()
 
-          for data, results in zip(data_list, results_list):
+          for sub_index, (curr_data, curr_results, curr_labels) in enumerate(zip(data_list, results_list, labels_list)):
             # TODO this only handles 1 x 16 for now
-            data_str = ' '.join([str(el) for el in data[0]]) + '\n'
-            results_str = ' '.join([str(el) for el in results]) + '\n'
+            data_str = ' '.join([str(el) for el in curr_data[0]]) + '\n'
+            results_str = ' '.join([str(el) for el in curr_results]) + '\n'
+            curr_str = str(curr_labels) + '\n'#' '.join([str(el) for el in curr_labels]) + '\n'
 
             f_in.write(data_str)
             f_out.write(results_str)
-          
-          if index > 10:
-            break
+            f_labels.write(curr_str)
 
+            # if sub_index >= 5:
+            #   break
+          
+          if index >= 39:
+            break
   else:
     _, _, _ = evaluate(test_loader=tiny_loader, model=model, criterion=criterion, print_predictions=True, num_particles=num_particles)
+
+  
 
   if measure_flops:
     flop_input = torch.rand((batch_size, num_particles, 16)).to(DEVICE)
@@ -504,7 +536,7 @@ def parse():
   parser.add_argument('--use_cpu', action='store_true')
   parser.add_argument('--only_predictions', action='store_true')
   parser.add_argument('--fetch', action='store_true')
-  parser.add_argument('--tiny_size', action='store', type=int)
+  parser.add_argument('--tiny_size', action='store', type=int, default=1)
   parser.add_argument('--epochs', action='store', type=int)
   parser.add_argument('--cuda', action='store', type=int, default=0)
   parser.add_argument('--generate_hls_tb', action='store_true')
@@ -538,11 +570,13 @@ if __name__ == "__main__":
       Path(DATA_30_DIR).mkdir(parents=True, exist_ok=True) # TODO add other dirs if implemented
       fetch_N_dataset(num_particles=args.particles)
 
+  debug_prefix = 'debug_' if args.debug else ''
+
   main(
     num_particles=args.particles,
     do_train=args.train,
-    script_path=os.path.join(DIR_NAME, 'best.script.pth'),
-    state_path=os.path.join(DIR_NAME, 'best.pth.tar'),
+    script_path=os.path.join(DIR_NAME, debug_prefix + 'best.script.pth'),
+    state_path=os.path.join(DIR_NAME, debug_prefix + 'best.pth.tar'),
     debug_path=os.path.join(DIR_NAME, 'layers_output.txt'),
     is_debug=args.debug,
     is_timing=args.timing,
@@ -552,5 +586,6 @@ if __name__ == "__main__":
     do_generate_in_out_hls_tb=args.generate_hls_tb,
     hls_tb_in_path='hls/tb_data/tb_input_features.dat',
     hls_tb_out_path='hls/tb_data/tb_output_predictions.dat',
+    hls_tb_labels_path='hls/tb_data/tb_labels.dat',
     measure_flops=args.flop,
   )

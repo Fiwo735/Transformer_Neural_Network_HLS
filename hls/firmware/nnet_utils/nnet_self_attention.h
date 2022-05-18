@@ -157,6 +157,7 @@ void self_attention(
                 for (unsigned kk = 0; kk < CONFIG_T::n_particles; kk++) {
                     if (cc == 0) energy[hh][kk][qq] = 0;
                     energy[hh][kk][qq] += (keys[qq][hh + cc * 2] * queries[kk][hh + cc * 2]) >> SCALE_SHIFT;
+                    // if (hh == 0 && kk == 0 && qq == 0) std::cout << "energy[" << hh << "][" << kk << "][" << qq << "]: " << energy[hh][kk][qq] << std::endl;
                 }
             }
         }
