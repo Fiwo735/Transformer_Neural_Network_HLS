@@ -87,7 +87,7 @@ struct self_attention_config
     static const unsigned n_q = 256;
     static const unsigned n_k = 256;
     static const unsigned n_v = 256;
-    static const unsigned n_energy = 8;
+    // static const unsigned n_energy = 8;
     static const unsigned n_scaled_attention = 256;
 
     // Resource reuse info
@@ -132,11 +132,11 @@ void self_attention(
     #pragma HLS ARRAY_PARTITION variable=values complete dim=0
 
     QKV_split: for (unsigned ii = 0; ii < CONFIG_T::n_particles; ii++) {
-        for (unsigned ll = 0; ll < CONFIG_T::n_qkv_out_el/(3*2); ll++) { // 3 from QKV, 2 from inner jj loop
-            for (unsigned jj = 0; jj < 2; jj++){ // TODO likely depends on particles (?) and shouldnt be hardcoded
-                unsigned out_index = ll * 2 + jj;
-                unsigned in_index_const = ll + jj * CONFIG_T::n_qkv_out_el / 2;
-                unsigned in_index_var = CONFIG_T::n_qkv_out_el / (2*3);
+        for (unsigned ll = 0; ll < CONFIG_T::n_qkv_out_el/(3*CONFIG_T::n_heads); ll++) { // 3 from QKV, 2 from number of heads
+            for (unsigned jj = 0; jj < CONFIG_T::n_heads; jj++){
+                unsigned out_index = ll * CONFIG_T::n_heads + jj;
+                unsigned in_index_const = ll + jj * CONFIG_T::n_qkv_out_el / CONFIG_T::n_heads;
+                unsigned in_index_var = CONFIG_T::n_qkv_out_el / (3*CONFIG_T::n_heads);
 
                 queries[ii][out_index] = qkv_out_el[ii][in_index_const]; // const + 0 * var
                 keys[ii][out_index] = qkv_out_el[ii][in_index_const + in_index_var]; // const + 1 * var

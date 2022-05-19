@@ -330,7 +330,8 @@ struct self_attention_config0 : nnet::self_attention_config {
     static const unsigned n_q = N_EMBEDDED_DIM;
     static const unsigned n_k = N_EMBEDDED_DIM;
     static const unsigned n_v = N_EMBEDDED_DIM;
-    static const unsigned n_energy = (2 * (N_PARTICLES + 1));
+    // static const unsigned n_energy = (2 * (N_PARTICLES + 1));
+    static const unsigned n_heads = N_HEADS;
     static const unsigned n_attention = (N_PARTICLES + 1);
     static const unsigned n_scaled_attention = N_EMBEDDED_DIM;
 

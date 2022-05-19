@@ -47,7 +47,8 @@ class ConstituentNet(nn.Module):
         #     nn.LayerNorm(embbed_dim),
         #     nn.Linear(embbed_dim, num_classes)
         # )
-        # self.out_layer_0 = nn.LayerNorm(embbed_dim)
+        self.out_layer_0 = nn.LayerNorm(embbed_dim)
+        # self.out_layer_0 = nn.BatchNorm1d(embbed_dim)
         self.out_layer_1 = nn.Linear(embbed_dim, num_classes)
         
         self.cls_token = nn.Parameter(torch.randn(1, 1, embbed_dim)) # learned classification token, (1, 1, C)
@@ -112,8 +113,8 @@ class ConstituentNet(nn.Module):
                 self.curr_mean = (self.curr_mean + cur_mean) if self.curr_mean is not None else (cur_mean)
                 self.counter += 1
 
-        # out = self.out_layer_0(out)
-        # self.debug_print('out (after out layer 0)', out)
+        out = self.out_layer_0(out)
+        self.debug_print('out (after out layer 0)', out)
 
         out = self.out_layer_1(out)
         self.debug_print('out (after out layer 1)', out)

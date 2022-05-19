@@ -7,6 +7,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import argparse
 import h5py
+import matplotlib.pyplot as plt
 
 from tracemalloc import start
 from pathlib import Path
@@ -18,6 +19,8 @@ from sklearn.preprocessing import LabelEncoder, StandardScaler, normalize
 from tqdm import tqdm
 from time import time
 from fvcore.nn import FlopCountAnalysis
+from sklearn.metrics import roc_curve, auc, roc_auc_score
+from scipy import interpolate
 
 from model.net import ConstituentNet
 
@@ -51,6 +54,8 @@ Y_TEST_FILENAMES = {
 CLASSES_FILENAMES = {
   1: os.path.join(DATA_DIR, 'classes.npy'),
 }
+
+CLASSES = ['Gluon', 'Light quark', 'W boson', 'Z boson', 'Top quark']
 
 def set_seed(seed=0):
   np.random.seed(seed)
@@ -250,6 +255,7 @@ def train_test_loop(
   num_particles: int = 1,
   num_epochs: int = 5,
   print_predictions: bool = False,
+  secondary_loader: Optional[DataLoader] = None
 ) -> Tuple[Optional[float], float, Tuple[List[float], List[float], List[float]]]:
 
   is_eval = not is_train
@@ -300,6 +306,45 @@ def train_test_loop(
 
         if idx == loader_length - 2: # issue with ConsitutentNet mean/var summation with last batch
           break
+
+    # Temporary evaluation after each epoch
+    ##############
+    if secondary_loader is not None:
+      # print(f'Evaluating on test dataset...')
+      e_all_data = []
+      e_all_labels = []
+      e_all_predicted = []
+      e_accuracy = None
+      e_loader_length = len(secondary_loader)
+      model.eval()
+      for idx, (data, labels) in enumerate(secondary_loader):
+
+        # if num_particles == 1:
+        #   data = torch.unsqueeze(data, dim=1)
+
+        e_all_data.append(data.detach())
+
+        labels = labels.to(DEVICE)
+        data = data.to(DEVICE)
+
+        predicted = model(data)
+        loss = criterion(predicted, labels)
+
+        e_all_labels.append(labels.detach().cpu())
+        e_all_predicted.append(predicted.detach().cpu())
+
+        if idx == loader_length - 128: # issue with ConsitutentNet mean/var summation with last batch
+          break
+
+      model.train()
+      e_all_labels = torch.stack(e_all_labels) if len(e_all_labels) == 1 else torch.stack(e_all_labels[:-1])
+      e_all_predicted = torch.stack(e_all_predicted) if len(e_all_predicted) == 1 else torch.stack(e_all_predicted[:-1])
+
+      e_all_predicted_argmax = torch.argmax(e_all_predicted, dim=2)
+      e_correct_predictions = (e_all_predicted_argmax == e_all_labels).sum()
+      e_accuracy = e_correct_predictions / torch.numel(e_all_predicted_argmax)
+      ##############
+      print(f'Accuracy after epoch {epoch+1}: {e_accuracy*100:.2f}')
 
   end_time = time()
 
@@ -402,6 +447,59 @@ def time_evaluate(
   return (accuracy, times.mean(), times.std())
 
 
+def compute_roc_auc(targets, predictions):
+  def find_FPR_TPR_AUC(curr_targets, curr_predictions):
+    FPRs, TPRs, _ = roc_curve(curr_targets, curr_predictions)
+    return FPRs, TPRs, auc(FPRs, TPRs)
+
+  num_classes = len(CLASSES)
+
+  targets = np.vstack([F.one_hot(target, num_classes) for target in targets])
+  predictions = np.vstack(predictions)
+
+  FPRs = [-1] * num_classes
+  TPRs = [-1] * num_classes
+  AUCs = [-1] * num_classes
+  interpolated_10s = [-1] * num_classes
+  interpolated_1s = [-1] * num_classes
+
+  # print('\n' + '-'*22 + 'AUC Analysis' + '-'*21)
+  print('-'*55)
+  print('Particle' + ' '*8 + 'AUC' + ' '*8 + 'TPR @ FPR=10%' + ' '*3 + 'TPR @ FPR=1%')
+  print('-'*55)
+
+  fig = plt.figure()
+  plt.plot([0, 1], [0, 1], linestyle='--')
+  
+  for i in range(num_classes):
+    FPRs[i], TPRs[i], AUCs[i] = find_FPR_TPR_AUC(targets[:, i], predictions[:, i])
+    interpolated = interpolate.interp1d(FPRs[i], TPRs[i])
+    interpolated_10s[i] = interpolated(0.1)
+    interpolated_1s[i] = interpolated(0.01)
+    particle = CLASSES[i]
+
+    print(f'{particle + ":" :<13} {AUCs[i]:<15.4f} {interpolated_10s[i]:<15.4f} {interpolated_1s[i]:<8.4f}')
+    plt.plot(FPRs[i], TPRs[i], label=f'{particle} (AUC={AUCs[i]:.4f})')
+  
+  plt.xlim([-0.01, 1.0])
+  plt.ylim([0.0, 1.01])
+  plt.xlabel('False Positive Rate')
+  plt.ylabel('True Positive Rate')
+  plt.title('Receiver operating characteristic curve')
+  plt.grid()
+  handles, labels = plt.gca().get_legend_handles_labels()
+  labels, handles = zip(*sorted(zip(labels, handles), key=lambda t: t[0]))
+  plt.gca().legend(handles, labels, loc='lower right')
+  fig.tight_layout()
+  plt.savefig('logs/ROC.png', format='png', dpi=200)
+
+  print('-'*55)
+  print('Average:' + ' '*6 + f'{sum(AUCs)/num_classes:<15.4f} {sum(interpolated_10s)/num_classes:<15.4f} {sum(interpolated_1s)/num_classes:<8.4f}')
+  print('-'*55)
+    
+  FPR_micro, TPR_micro, AUC_micro = find_FPR_TPR_AUC(targets.ravel(), predictions.ravel())
+
+
 def main(
   num_particles: int,
   do_train: bool = False,
@@ -428,8 +526,8 @@ def main(
  
   batch_size = 128
   criterion = torch.nn.NLLLoss()
-  num_transformers = 1
-  embbed_dim = 16
+  num_transformers = 3
+  embbed_dim = 64
   num_heads = 2
   dropout = 0.0
 
@@ -458,6 +556,7 @@ def main(
       is_train=True,
       num_particles=num_particles,
       num_epochs=num_epochs,
+      secondary_loader=test_loader,
     )
     print(f'Training took {total_time:.2f} s')
 
@@ -488,6 +587,7 @@ def main(
   elif not only_predictions:
     accuracy, total_time, (data, results, labels) = evaluate(test_loader=test_loader, model=model, criterion=criterion, num_particles=num_particles)
     print(f'Test accuracy: {accuracy*100:.2f}% in {total_time:.2f} s')
+    compute_roc_auc(targets=labels, predictions=results)
 
     if do_generate_in_out_hls_tb:
       assert len(data) - 1 == len(results) == len(test_loader) - 2, 'Number of captured samples and predictions must match DataLoader size'

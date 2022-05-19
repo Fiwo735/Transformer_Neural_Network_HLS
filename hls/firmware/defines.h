@@ -14,17 +14,21 @@
 #define N_BATCH_SIZE 1
 #define N_PARTICLES 1
 #define N_FEATURES 16
+#define N_LABELS 5
 
-// SCALE_SHIFT is log2(sqrt(N_EMBEDDED_DIM))
+// Network configuration options
+#define SKIP_FINAL_ACTIVATION 0
+#define N_TRANSFORMER_LAYERS 3
+#define N_HEADS 2
 #define N_EMBEDDED_DIM 16
+// SCALE_SHIFT is log2(sqrt(N_EMBEDDED_DIM))
 #define SCALE_SHIFT 2
 
+// Derived configuration options
 #define N_INPUT (N_PARTICLES * N_FEATURES)
 #define N_EMBEDDED (N_PARTICLES * N_EMBEDDED_DIM)
 // N_TRANSFORMER uses N_PARTICLES + 1 to account for the hidden class tokens
 #define N_TRANSFORMER ((N_PARTICLES + 1) * N_EMBEDDED_DIM)
-
-#define N_LABELS 5
 
 
 // #if N_EMBEDDED_DIM == 1
@@ -47,10 +51,10 @@
 //   #define N_SA_INV_SQRT_SIZE0 0.0625000000000000
 // #endif
 
+// Hardware precision (ap_fixed<total, int>)
 #define N_BIG_TABLE_SIZE 1024
 // #define N_SMALL_TABLE_SIZE 1024
 
-// ap_fixed<total, int> 
 typedef ap_fixed<27,15> model_default_t;
 typedef ap_fixed<27,15> input_t;
 typedef ap_fixed<27,15> result_t;

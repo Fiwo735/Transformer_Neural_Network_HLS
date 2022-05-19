@@ -101,8 +101,6 @@ void myproject(
     }
 #endif
 
-    // std::cout << "In myproject(...)" << std::endl;
-
     PRETTY_PRINT_2D(data_in, N_PARTICLES, N_FEATURES);
 
     // Input embedding
@@ -125,7 +123,7 @@ void myproject(
     }
     PRETTY_PRINT_2D(embedded_with_cls, N_PARTICLES+1, N_EMBEDDED_DIM);
 
-    // Jet transformer
+    // Jet transformers
     input_t transformer_0_out[N_PARTICLES+1][N_EMBEDDED_DIM];
     nnet::transformer<input_t, input_t, transformer_config0, self_attention_config0, sa_norm_config0, sa_dense_config0, sa_transpose_config0, sa_softmax_config0, sa_dense_config3, normalize_config1, sigmoid_config0, transformer_dense_config0, normalize_config2, sigmoid_config1, transformer_dense_config1>(
         embedded_with_cls,
@@ -138,34 +136,69 @@ void myproject(
     );
     PRETTY_PRINT_2D(transformer_0_out, N_PARTICLES+1, N_EMBEDDED_DIM);
 
+#if N_TRANSFORMER_LAYERS > 1
+    input_t transformer_1_out[N_PARTICLES+1][N_EMBEDDED_DIM];
+    nnet::transformer<input_t, input_t, transformer_config0, self_attention_config0, sa_norm_config0, sa_dense_config0, sa_transpose_config0, sa_softmax_config0, sa_dense_config3, normalize_config1, sigmoid_config0, transformer_dense_config0, normalize_config2, sigmoid_config1, transformer_dense_config1>(
+        transformer_0_out,
+        transformer_1_out,
+        transformers_1_self_attention_qkv_weight,
+        transformers_1_self_attention_out_weight,
+        transformers_1_self_attention_out_bias,
+        transformers_1_linear_2_weight,
+        transformers_1_linear_5_weight
+    );
+    PRETTY_PRINT_2D(transformer_1_out, N_PARTICLES+1, N_EMBEDDED_DIM);
+#endif
+
+#if N_TRANSFORMER_LAYERS > 2
+    input_t transformer_2_out[N_PARTICLES+1][N_EMBEDDED_DIM];
+    nnet::transformer<input_t, input_t, transformer_config0, self_attention_config0, sa_norm_config0, sa_dense_config0, sa_transpose_config0, sa_softmax_config0, sa_dense_config3, normalize_config1, sigmoid_config0, transformer_dense_config0, normalize_config2, sigmoid_config1, transformer_dense_config1>(
+        transformer_1_out,
+        transformer_2_out,
+        transformers_2_self_attention_qkv_weight,
+        transformers_2_self_attention_out_weight,
+        transformers_2_self_attention_out_bias,
+        transformers_2_linear_2_weight,
+        transformers_2_linear_5_weight
+    );
+    PRETTY_PRINT_2D(transformer_2_out, N_PARTICLES+1, N_EMBEDDED_DIM);
+#endif
+
     // MLP dimension reduction
     input_t mlp_dimensions_reduced[N_EMBEDDED_DIM];
     mlp_dim: for (int imlp = 0; imlp < N_EMBEDDED_DIM; imlp++) {
+#if N_TRANSFORMER_LAYERS == 1
         mlp_dimensions_reduced[imlp] = transformer_0_out[0][imlp];
+#elif N_TRANSFORMER_LAYERS == 2
+        mlp_dimensions_reduced[imlp] = transformer_1_out[0][imlp];
+#elif N_TRANSFORMER_LAYERS == 3
+        mlp_dimensions_reduced[imlp] = transformer_2_out[0][imlp];
+#else
+        std::cerr << "Transformer layers count must be in {1, 2, 3}" << std::endl;
+#endif
     }
     PRETTY_PRINT(mlp_dimensions_reduced, N_EMBEDDED_DIM);
 
+#if SKIP_FINAL_ACTIVATION == 0
     // MLP dense
-    // input_t mlp_out[N_LABELS];
-    // nnet::dense<input_t, input_t, mlp_config>(mlp_dimensions_reduced, mlp_out, out_layer_1_weight, out_layer_1_bias);
-    // PRETTY_PRINT(mlp_out, N_LABELS);
-    nnet::dense<input_t, input_t, mlp_config>(mlp_dimensions_reduced, data_out, out_layer_1_weight, out_layer_1_bias);
-    PRETTY_PRINT(data_out, N_LABELS);
+    input_t mlp_out[N_LABELS];
+    nnet::dense<input_t, input_t, mlp_config>(mlp_dimensions_reduced, mlp_out, out_layer_1_weight, out_layer_1_bias);
+    PRETTY_PRINT(mlp_out, N_LABELS);
 
     // Reduce precision for more accurate results of Log softmax
-    // input_t_red mlp_out_red[N_LABELS];
-    // for (int jj = 0; jj < N_LABELS; jj++) {
-    //     mlp_out_red[jj] = (input_t_red) mlp_out[jj];
-    // }
-    // PRETTY_PRINT(mlp_out_red, N_LABELS);
-    // nnet::log_softmax_latency<input_t_red, result_t, softmax_config0>(mlp_out_red, data_out, log_table);
-    // PRETTY_PRINT(data_out, N_LABELS);
+    input_t_red mlp_out_red[N_LABELS];
+    for (int jj = 0; jj < N_LABELS; jj++) {
+        mlp_out_red[jj] = (input_t_red) mlp_out[jj];
+    }
+    PRETTY_PRINT(mlp_out_red, N_LABELS);
+    nnet::log_softmax_latency<input_t_red, result_t, softmax_config0>(mlp_out_red, data_out, log_table);
+#else
+    nnet::dense<input_t, input_t, mlp_config>(mlp_dimensions_reduced, data_out, out_layer_1_weight, out_layer_1_bias);
+#endif
+    PRETTY_PRINT(data_out, N_LABELS);
 
 #ifndef __SYNTHESIS__
     // TODO don't close and just let it close automatically to avoid issues where running multiple tests?
     // FOUT.close();
 #endif
-
-    // std::cout << "End of myproject(...)" << std::endl;
-    // nnet::print_result<result_t, N_LABELS>(data_out, std::cout, true);
 }
