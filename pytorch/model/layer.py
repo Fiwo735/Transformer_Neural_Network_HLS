@@ -121,8 +121,8 @@ class SelfAttention(nn.Module):
         self.heads = num_heads
         self.gamma = 1  # self.gamma = nn.Parameter(torch.zeros(1))
 
-        self.norm = nn.LayerNorm(in_dim)
-        # self.norm = nn.BatchNorm1d(in_dim) 
+        # self.norm = nn.LayerNorm(in_dim)
+        self.norm = nn.BatchNorm1d(in_dim)
         self.qkv = nn.Linear(in_dim, 2*self.latent_dim + in_dim, bias=False)
         self.out = nn.Linear(in_dim, in_dim)
 
@@ -139,11 +139,13 @@ class SelfAttention(nn.Module):
 
     def get_avg_mean(self):
         # return self.curr_mean / self.counter
-        return torch.div(self.curr_mean, self.counter)
+        # return torch.div(self.curr_mean, self.counter)
+        return self.norm.running_mean
 
     def get_avg_var(self):
         # return self.curr_var / self.counter
-        return torch.div(self.curr_var, self.counter)
+        # return torch.div(self.curr_var, self.counter)
+        return self.norm.running_var
     
     def get_counter(self):
         return self.counter
@@ -164,6 +166,8 @@ class SelfAttention(nn.Module):
 
         m_batch, seq_len, C = x.size()
         self.debug_print('input', x)
+        # self.debug_print('x mean', torch.mean(x, dim=0))
+        # self.debug_print('x var', torch.var(x, dim=0, unbiased=False))
 
         C_H = self.head_dim
         # self.debug_print(f'self.head_dim {C_H}')
@@ -171,7 +175,7 @@ class SelfAttention(nn.Module):
         # For normalization calculation embedding
         with torch.no_grad():
             if self.training:
-                cur_var = torch.var(x, dim=2, unbiased=False)
+                cur_var = torch.var(x, dim=0, unbiased=False)
                 if self.curr_var is not None:
                     if self.curr_var.shape == cur_var.shape:
                         self.curr_var = self.curr_var + cur_var
@@ -181,7 +185,7 @@ class SelfAttention(nn.Module):
                 else:
                     self.curr_var = cur_var
 
-                cur_mean = torch.mean(x, dim=2)
+                cur_mean = torch.mean(x, dim=0)
                 if self.curr_mean is not None:
                     if self.curr_mean.shape == cur_mean.shape:
                         self.curr_mean = self.curr_mean + cur_mean
@@ -193,7 +197,8 @@ class SelfAttention(nn.Module):
                 self.counter += 1
             
         # Normalization across channels
-        out = self.norm(x)
+        # out = self.norm(x)
+        out = self.norm(x.transpose(1,2)).transpose(1,2)
         self.debug_print('out (after norm)', out)
 
         # Queries, keys, and values
@@ -346,17 +351,17 @@ class Transformer(nn.Module):
         #     nn.SiLU(),
         #     nn.Linear(in_dim*2, in_dim, bias=False),
         # )
-        self.linear_0 = nn.LayerNorm(in_dim)
-        # self.linear_0 = nn.BatchNorm1d(in_dim)
+        # self.linear_0 = nn.LayerNorm(in_dim)
+        self.linear_0 = nn.BatchNorm1d(in_dim)
         # self.linear_1 = nn.SiLU()
         self.linear_1 = nn.ReLU()
         self.linear_2 = nn.Linear(in_dim, in_dim*2, bias=False)
-        self.linear_3 = nn.LayerNorm(in_dim*2)
-        # self.linear_3 = nn.BatchNorm1d(in_dim*2)
+        # self.linear_3 = nn.LayerNorm(in_dim*2)
+        self.linear_3 = nn.BatchNorm1d(in_dim*2)
         # self.linear_4 = nn.SiLU()
         self.linear_4 = nn.ReLU()
         self.linear_5 = nn.Linear(in_dim*2, in_dim, bias=False)
-        self.linear_6 = nn.ReLU()
+        # self.linear_6 = nn.ReLU()
 
         self.dropout = nn.Dropout(dropout)
 
@@ -375,22 +380,26 @@ class Transformer(nn.Module):
 
     def get_avg_mean0(self):
         # return self.curr_mean0 / self.counter0
-        return torch.div(self.curr_mean0, self.counter0)
+        # return torch.div(self.curr_mean0, self.counter0)
+        return self.linear_0.running_mean
 
     def get_avg_var0(self):
         # return self.curr_var0 / self.counter0
-        return torch.div(self.curr_var0, self.counter0)
+        # return torch.div(self.curr_var0, self.counter0)
+        return self.linear_0.running_var
 
     def get_counter0(self):
         return self.counter0
 
     def get_avg_mean3(self):
         # return self.curr_mean3 / self.counter3
-        return torch.div(self.curr_mean3, self.counter3)
+        # return torch.div(self.curr_mean3, self.counter3)
+        return self.linear_3.running_mean
 
     def get_avg_var3(self):
         # return self.curr_var3 / self.counter3
-        return torch.div(self.curr_var3, self.counter3)
+        # return torch.div(self.curr_var3, self.counter3)
+        return self.linear_3.running_var
 
     def get_counter3(self):
         return self.counter3
@@ -421,13 +430,17 @@ class Transformer(nn.Module):
                 # self.curr_var0 += torch.var(x, unbiased=False)
                 # self.curr_mean0 += torch.mean(x)
                 # self.counter0 += 1
-                cur_var0 = torch.var(x, dim=2, unbiased=False)
+                # print(f'{x.shape=}')
+                cur_var0 = torch.var(x, dim=0, unbiased=False)
                 self.curr_var0 = (self.curr_var0 + cur_var0) if self.curr_var0 is not None else (cur_var0)
-                cur_mean0 = torch.mean(x, dim=2)
+                cur_mean0 = torch.mean(x, dim=0)
                 self.curr_mean0 = (self.curr_mean0 + cur_mean0) if self.curr_mean0 is not None else (cur_mean0)
                 self.counter0 += 1
+                # print(f'{cur_var0.shape=}')
+                # print(f'{cur_mean0.shape=}')
 
-        out0 = self.linear_0(x)
+        # out0 = self.linear_0(x)
+        out0 = self.linear_0(x.transpose(1,2)).transpose(1,2)
         self.debug_print('out0 (after linear_0)', out0)
 
         out1 = self.linear_1(out0)
@@ -444,13 +457,14 @@ class Transformer(nn.Module):
                 # self.curr_mean3 += torch.mean(out2)
                 # self.counter3 += 1
 
-                cur_var3 = torch.var(out2, dim=2, unbiased=False)
+                cur_var3 = torch.var(out2, dim=0, unbiased=False)
                 self.curr_var3 = (self.curr_var3 + cur_var3) if self.curr_var3 is not None else (cur_var3)
-                cur_mean3 = torch.mean(out2, dim=2)
+                cur_mean3 = torch.mean(out2, dim=0)
                 self.curr_mean3 = (self.curr_mean3 + cur_mean3) if self.curr_mean3 is not None else (cur_mean3)
                 self.counter3 += 1
 
-        out3 = self.linear_3(out2)
+        # out3 = self.linear_3(out2)
+        out3 = self.linear_3(out2.transpose(1,2)).transpose(1,2)
         self.debug_print('out3 (after linear_3)', out3)
 
         out4 = self.linear_4(out3)
@@ -460,11 +474,11 @@ class Transformer(nn.Module):
         out5 = self.linear_5(out4)
         self.debug_print('out5 (after linear_5)', out5)
 
-        out6 = self.linear_6(out5)
-        self.debug_print('out6 (after linear_6)', out6)
+        # out6 = self.linear_6(out5)
+        # self.debug_print('out6 (after linear_6)', out6)
 
-        # out = x + out5
-        out = x + out6
+        out = x + out5
+        # out = x + out6
         self.debug_print('out (after x + out)', out)
 
         out =  self.dropout(out)

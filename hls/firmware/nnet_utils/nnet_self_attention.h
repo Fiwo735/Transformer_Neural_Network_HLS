@@ -106,6 +106,8 @@ template<class data_T, class res_T, typename CONFIG_T, typename NORM_CONFIG_T, t
 void self_attention(
     data_T                            data[CONFIG_T::n_particles][CONFIG_T::n_qkv_in_el],
     res_T                             res[CONFIG_T::n_particles][CONFIG_T::n_scaled_attention],
+    typename CONFIG_T::norm_weight_t  norm_weight[CONFIG_T::n_qkv_in_el],
+    typename CONFIG_T::norm_bias_t    norm_bias[CONFIG_T::n_qkv_in_el],
     typename CONFIG_T::QKV_weight_t   QKV_weight[CONFIG_T::n_QKV_weight],
     typename CONFIG_T::dense_weight_t dense_weight[CONFIG_T::n_dense_weight],
     typename CONFIG_T::dense_bias_t   dense_bias[CONFIG_T::n_dense_bias]
@@ -115,11 +117,24 @@ void self_attention(
     #pragma HLS FUNCTION_INSTANTIATE variable=QKV_weight,dense_weight,dense_bias
     #pragma HLS PIPELINE
 
+#if SKIP_NORM == 0
+    // Normalize
+    data_T normalized[CONFIG_T::n_particles][CONFIG_T::n_qkv_in_el];
+    #pragma HLS ARRAY_PARTITION variable=normalized complete dim=0
+    Norm: for (unsigned inorm = 0; inorm < CONFIG_T::n_particles; inorm++) {
+        normalize<data_T, data_T, NORM_CONFIG_T>(data[inorm], normalized[inorm], norm_weight, norm_bias);
+    }
+#endif
+
     // QKV (dense)
     data_T qkv_out_el[CONFIG_T::n_particles][CONFIG_T::n_qkv_out_el];
     #pragma HLS ARRAY_PARTITION variable=qkv_out_el complete dim=0
     QKV_dense: for (int iqkv = 0; iqkv < CONFIG_T::n_particles; iqkv++) {
+#if SKIP_NORM == 0
+        dense_latency_no_bias<data_T, data_T, DENSE0_CONFIG_T>(normalized[iqkv], qkv_out_el[iqkv], QKV_weight);
+#else
         dense_latency_no_bias<data_T, data_T, DENSE0_CONFIG_T>(data[iqkv], qkv_out_el[iqkv], QKV_weight);
+#endif
     }
     PRETTY_PRINT_2D(qkv_out_el, CONFIG_T::n_particles, CONFIG_T::n_qkv_out_el);
 

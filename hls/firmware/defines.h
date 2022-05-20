@@ -18,6 +18,7 @@
 
 // Network configuration options
 #define SKIP_FINAL_ACTIVATION 0
+#define SKIP_NORM 0
 #define N_TRANSFORMER_LAYERS 3
 #define N_HEADS 2
 #define N_EMBEDDED_DIM 16
@@ -63,13 +64,35 @@ typedef ap_fixed<17,7> general_table_t;
 typedef ap_fixed<17,7> data_T_red;
 typedef ap_fixed<17,7> input_t_red;
 
-// typedef ap_fixed<29,15> model_default_t;
-// typedef ap_fixed<29,15> input_t;
-// typedef ap_fixed<29,15> result_t;
+// Top
+typedef ap_fixed<27,15> input_t;
 
-// typedef ap_fixed<17,7> general_table_t;
-// typedef ap_fixed<17,7> data_T_red;
-// typedef ap_fixed<17,7> input_t_red;
+typedef ap_fixed<27,15> top_embedded_weight_t;
+typedef ap_fixed<27,15> top_embedded_bias_t;
+typedef ap_fixed<27,15> top_embedded_t;
+typedef ap_fixed<27,15> top_embedded_a_t;
+typedef ap_fixed<27,15> top_embedded_b_t;
+typedef ap_fixed<27,15> top_embedded_w_t;
+
+typedef ap_fixed<27,15> top_cls_token_t;
+
+typedef ap_fixed<27,15> top_mlp_dim_red_t;
+
+typedef ap_fixed<27,15> top_norm_weight_t;
+typedef ap_fixed<27,15> top_norm_bias_t;
+typedef ap_fixed<27,15> top_norm_t;
+
+typedef ap_fixed<27,15> top_mlp_weight_t;
+typedef ap_fixed<27,15> top_mlp_bias_t;
+typedef ap_fixed<27,15> top_mlp_t;
+
+typedef ap_fixed<17,7> top_mlp_red_t;
+
+typedef ap_fixed<27,15> result_t;
+
+// Transformer
+
+// Self-Attention
 
 
 

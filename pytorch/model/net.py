@@ -47,8 +47,8 @@ class ConstituentNet(nn.Module):
         #     nn.LayerNorm(embbed_dim),
         #     nn.Linear(embbed_dim, num_classes)
         # )
-        self.out_layer_0 = nn.LayerNorm(embbed_dim)
-        # self.out_layer_0 = nn.BatchNorm1d(embbed_dim)
+        # self.out_layer_0 = nn.LayerNorm(embbed_dim)
+        self.out_layer_0 = nn.BatchNorm1d(embbed_dim)
         self.out_layer_1 = nn.Linear(embbed_dim, num_classes)
         
         self.cls_token = nn.Parameter(torch.randn(1, 1, embbed_dim)) # learned classification token, (1, 1, C)
@@ -66,11 +66,13 @@ class ConstituentNet(nn.Module):
 
     def get_avg_mean(self):
         # return self.curr_mean / self.counter
-        return torch.div(self.curr_mean, self.counter)
+        # return torch.div(self.curr_mean, self.counter)
+        return self.out_layer_0.running_mean
 
     def get_avg_var(self):
         # return self.curr_var / self.counter
-        return torch.div(self.curr_var, self.counter)
+        # return torch.div(self.curr_var, self.counter)
+        return self.out_layer_0.running_var
 
     def get_counter(self):
         return self.counter
@@ -107,10 +109,15 @@ class ConstituentNet(nn.Module):
         # For normalization calculation embedding
         with torch.no_grad():
             if self.training:
-                cur_var = torch.var(out, dim=1, unbiased=False)
+                # print(f'{out.shape=}')
+                cur_var = torch.var(out, dim=0, unbiased=False)
                 self.curr_var = (self.curr_var + cur_var) if self.curr_var is not None else (cur_var)
-                cur_mean = torch.mean(out, dim=1)
+                # print(f'{cur_var.shape=}')
+                # print(f'{self.curr_var.shape=}')
+                cur_mean = torch.mean(out, dim=0)
                 self.curr_mean = (self.curr_mean + cur_mean) if self.curr_mean is not None else (cur_mean)
+                # print(f'{cur_mean.shape=}')
+                # print(f'{self.curr_mean.shape=}')
                 self.counter += 1
 
         out = self.out_layer_0(out)

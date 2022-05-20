@@ -86,16 +86,47 @@ void myproject(
         //hls-fpga-machine-learning insert load weights
         // std::cout << "Loading weights from txt" << "\n";
         
-        nnet::load_weights_from_txt<model_default_t, 16>(cls_token, "cls_token.txt");
-        nnet::load_weights_from_txt<model_default_t, 256>(inp_layer_weight, "inp_layer_weight.txt");
-        nnet::load_weights_from_txt<model_default_t, 16>(inp_layer_bias, "inp_layer_bias.txt");
-        nnet::load_weights_from_txt<model_default_t, 80>(out_layer_1_weight, "out_layer_1_weight.txt");
-        nnet::load_weights_from_txt<model_default_t, 5>(out_layer_1_bias, "out_layer_1_bias.txt");
-        nnet::load_weights_from_txt<model_default_t, 768>(transformers_0_self_attention_qkv_weight, "transformers_0_self_attention_qkv_weight.txt");
-        nnet::load_weights_from_txt<model_default_t, 256>(transformers_0_self_attention_out_weight, "transformers_0_self_attention_out_weight.txt");
-        nnet::load_weights_from_txt<model_default_t, 16>(transformers_0_self_attention_out_bias, "transformers_0_self_attention_out_bias.txt");
-        nnet::load_weights_from_txt<model_default_t, 512>(transformers_0_linear_2_weight, "transformers_0_linear_2_weight.txt");
-        nnet::load_weights_from_txt<model_default_t, 512>(transformers_0_linear_5_weight, "transformers_0_linear_5_weight.txt");
+        nnet::load_weights_from_txt<top_cls_token_t, 64>(cls_token, "cls_token.txt");
+        nnet::load_weights_from_txt<top_embedded_weight_t, 1024>(inp_layer_weight, "inp_layer_weight.txt");
+        nnet::load_weights_from_txt<top_embedded_bias_t, 64>(inp_layer_bias, "inp_layer_bias.txt");
+        nnet::load_weights_from_txt<top_norm_weight_t, 64>(out_layer_0_weight, "out_layer_0_weight.txt");
+        nnet::load_weights_from_txt<top_norm_bias_t, 64>(out_layer_0_bias, "out_layer_0_bias.txt");
+        nnet::load_weights_from_txt<top_mlp_weight_t, 320>(out_layer_1_weight, "out_layer_1_weight.txt");
+        nnet::load_weights_from_txt<top_mlp_bias_t, 5>(out_layer_1_bias, "out_layer_1_bias.txt");
+
+        nnet::load_weights_from_txt<model_default_t, 64>(transformers_0_self_attention_norm_weight, "transformers_0_self_attention_norm_weight.txt");
+        nnet::load_weights_from_txt<model_default_t, 64>(transformers_0_self_attention_norm_bias, "transformers_0_self_attention_norm_bias.txt");
+        nnet::load_weights_from_txt<model_default_t, 12288>(transformers_0_self_attention_qkv_weight, "transformers_0_self_attention_qkv_weight.txt");
+        nnet::load_weights_from_txt<model_default_t, 4096>(transformers_0_self_attention_out_weight, "transformers_0_self_attention_out_weight.txt");
+        nnet::load_weights_from_txt<model_default_t, 64>(transformers_0_self_attention_out_bias, "transformers_0_self_attention_out_bias.txt");
+        nnet::load_weights_from_txt<model_default_t, 64>(transformers_0_linear_0_weight, "transformers_0_linear_0_weight.txt");
+        nnet::load_weights_from_txt<model_default_t, 64>(transformers_0_linear_0_bias, "transformers_0_linear_0_bias.txt");
+        nnet::load_weights_from_txt<model_default_t, 8192>(transformers_0_linear_2_weight, "transformers_0_linear_2_weight.txt");
+        nnet::load_weights_from_txt<model_default_t, 128>(transformers_0_linear_3_weight, "transformers_0_linear_3_weight.txt");
+        nnet::load_weights_from_txt<model_default_t, 128>(transformers_0_linear_3_bias, "transformers_0_linear_3_bias.txt");
+        nnet::load_weights_from_txt<model_default_t, 8192>(transformers_0_linear_5_weight, "transformers_0_linear_5_weight.txt");
+        nnet::load_weights_from_txt<model_default_t, 64>(transformers_1_self_attention_norm_weight, "transformers_1_self_attention_norm_weight.txt");
+        nnet::load_weights_from_txt<model_default_t, 64>(transformers_1_self_attention_norm_bias, "transformers_1_self_attention_norm_bias.txt");
+        nnet::load_weights_from_txt<model_default_t, 12288>(transformers_1_self_attention_qkv_weight, "transformers_1_self_attention_qkv_weight.txt");
+        nnet::load_weights_from_txt<model_default_t, 4096>(transformers_1_self_attention_out_weight, "transformers_1_self_attention_out_weight.txt");
+        nnet::load_weights_from_txt<model_default_t, 64>(transformers_1_self_attention_out_bias, "transformers_1_self_attention_out_bias.txt");
+        nnet::load_weights_from_txt<model_default_t, 64>(transformers_1_linear_0_weight, "transformers_1_linear_0_weight.txt");
+        nnet::load_weights_from_txt<model_default_t, 64>(transformers_1_linear_0_bias, "transformers_1_linear_0_bias.txt");
+        nnet::load_weights_from_txt<model_default_t, 8192>(transformers_1_linear_2_weight, "transformers_1_linear_2_weight.txt");
+        nnet::load_weights_from_txt<model_default_t, 128>(transformers_1_linear_3_weight, "transformers_1_linear_3_weight.txt");
+        nnet::load_weights_from_txt<model_default_t, 128>(transformers_1_linear_3_bias, "transformers_1_linear_3_bias.txt");
+        nnet::load_weights_from_txt<model_default_t, 8192>(transformers_1_linear_5_weight, "transformers_1_linear_5_weight.txt");
+        nnet::load_weights_from_txt<model_default_t, 64>(transformers_2_self_attention_norm_weight, "transformers_2_self_attention_norm_weight.txt");
+        nnet::load_weights_from_txt<model_default_t, 64>(transformers_2_self_attention_norm_bias, "transformers_2_self_attention_norm_bias.txt");
+        nnet::load_weights_from_txt<model_default_t, 12288>(transformers_2_self_attention_qkv_weight, "transformers_2_self_attention_qkv_weight.txt");
+        nnet::load_weights_from_txt<model_default_t, 4096>(transformers_2_self_attention_out_weight, "transformers_2_self_attention_out_weight.txt");
+        nnet::load_weights_from_txt<model_default_t, 64>(transformers_2_self_attention_out_bias, "transformers_2_self_attention_out_bias.txt");
+        nnet::load_weights_from_txt<model_default_t, 64>(transformers_2_linear_0_weight, "transformers_2_linear_0_weight.txt");
+        nnet::load_weights_from_txt<model_default_t, 64>(transformers_2_linear_0_bias, "transformers_2_linear_0_bias.txt");
+        nnet::load_weights_from_txt<model_default_t, 8192>(transformers_2_linear_2_weight, "transformers_2_linear_2_weight.txt");
+        nnet::load_weights_from_txt<model_default_t, 128>(transformers_2_linear_3_weight, "transformers_2_linear_3_weight.txt");
+        nnet::load_weights_from_txt<model_default_t, 128>(transformers_2_linear_3_bias, "transformers_2_linear_3_bias.txt");
+        nnet::load_weights_from_txt<model_default_t, 8192>(transformers_2_linear_5_weight, "transformers_2_linear_5_weight.txt");
 
         loaded_weights = true;
     }
@@ -104,21 +135,21 @@ void myproject(
     PRETTY_PRINT_2D(data_in, N_PARTICLES, N_FEATURES);
 
     // Input embedding
-    input_t embedded_input[N_PARTICLES][N_EMBEDDED_DIM];
+    top_embedded_t embedded_input[N_PARTICLES][N_EMBEDDED_DIM];
     for (unsigned ipart = 0; ipart < N_PARTICLES; ipart++) {
-        nnet::dense<input_t, input_t, embedded_config>(data_in[ipart], embedded_input[ipart], inp_layer_weight, inp_layer_bias);
+        nnet::dense<input_t, top_embedded_t, embedded_config>(data_in[ipart], embedded_input[ipart], inp_layer_weight, inp_layer_bias);
     }
     PRETTY_PRINT_2D(embedded_input, N_PARTICLES, N_EMBEDDED_DIM);
 
     // Class token
-    input_t embedded_with_cls[N_PARTICLES+1][N_EMBEDDED_DIM];
+    top_cls_token_t embedded_with_cls[N_PARTICLES+1][N_EMBEDDED_DIM];
     PRETTY_PRINT(cls_token, N_EMBEDDED_DIM);
     for (unsigned icls = 0; icls < N_EMBEDDED_DIM; icls++) {
         embedded_with_cls[0][icls] = cls_token[icls];
     }
     for (unsigned ipart = 0; ipart < N_PARTICLES; ipart++) {
         for (unsigned icls = 0; icls < N_EMBEDDED_DIM; icls++) {
-            embedded_with_cls[ipart+1][icls] = embedded_input[ipart][icls]; 
+            embedded_with_cls[ipart+1][icls] = (top_cls_token_t) embedded_input[ipart][icls]; 
         }
     }
     PRETTY_PRINT_2D(embedded_with_cls, N_PARTICLES+1, N_EMBEDDED_DIM);
@@ -128,10 +159,16 @@ void myproject(
     nnet::transformer<input_t, input_t, transformer_config0, self_attention_config0, sa_norm_config0, sa_dense_config0, sa_transpose_config0, sa_softmax_config0, sa_dense_config3, normalize_config1, sigmoid_config0, transformer_dense_config0, normalize_config2, sigmoid_config1, transformer_dense_config1>(
         embedded_with_cls,
         transformer_0_out,
+        transformers_0_self_attention_norm_weight,
+        transformers_0_self_attention_norm_bias,
         transformers_0_self_attention_qkv_weight,
         transformers_0_self_attention_out_weight,
         transformers_0_self_attention_out_bias,
+        transformers_0_linear_0_weight,
+        transformers_0_linear_0_bias,
         transformers_0_linear_2_weight,
+        transformers_0_linear_3_weight,
+        transformers_0_linear_3_bias,
         transformers_0_linear_5_weight
     );
     PRETTY_PRINT_2D(transformer_0_out, N_PARTICLES+1, N_EMBEDDED_DIM);
@@ -141,10 +178,16 @@ void myproject(
     nnet::transformer<input_t, input_t, transformer_config0, self_attention_config0, sa_norm_config0, sa_dense_config0, sa_transpose_config0, sa_softmax_config0, sa_dense_config3, normalize_config1, sigmoid_config0, transformer_dense_config0, normalize_config2, sigmoid_config1, transformer_dense_config1>(
         transformer_0_out,
         transformer_1_out,
+        transformers_1_self_attention_norm_weight,
+        transformers_1_self_attention_norm_bias,
         transformers_1_self_attention_qkv_weight,
         transformers_1_self_attention_out_weight,
         transformers_1_self_attention_out_bias,
+        transformers_1_linear_0_weight,
+        transformers_1_linear_0_bias,
         transformers_1_linear_2_weight,
+        transformers_1_linear_3_weight,
+        transformers_1_linear_3_bias,
         transformers_1_linear_5_weight
     );
     PRETTY_PRINT_2D(transformer_1_out, N_PARTICLES+1, N_EMBEDDED_DIM);
@@ -155,45 +198,66 @@ void myproject(
     nnet::transformer<input_t, input_t, transformer_config0, self_attention_config0, sa_norm_config0, sa_dense_config0, sa_transpose_config0, sa_softmax_config0, sa_dense_config3, normalize_config1, sigmoid_config0, transformer_dense_config0, normalize_config2, sigmoid_config1, transformer_dense_config1>(
         transformer_1_out,
         transformer_2_out,
+        transformers_2_self_attention_norm_weight,
+        transformers_2_self_attention_norm_bias,
         transformers_2_self_attention_qkv_weight,
         transformers_2_self_attention_out_weight,
         transformers_2_self_attention_out_bias,
+        transformers_2_linear_0_weight,
+        transformers_2_linear_0_bias,
         transformers_2_linear_2_weight,
+        transformers_2_linear_3_weight,
+        transformers_2_linear_3_bias,
         transformers_2_linear_5_weight
     );
     PRETTY_PRINT_2D(transformer_2_out, N_PARTICLES+1, N_EMBEDDED_DIM);
 #endif
 
     // MLP dimension reduction
-    input_t mlp_dimensions_reduced[N_EMBEDDED_DIM];
+    top_mlp_dim_red_t mlp_dimensions_reduced[N_EMBEDDED_DIM];
     mlp_dim: for (int imlp = 0; imlp < N_EMBEDDED_DIM; imlp++) {
 #if N_TRANSFORMER_LAYERS == 1
-        mlp_dimensions_reduced[imlp] = transformer_0_out[0][imlp];
+        mlp_dimensions_reduced[imlp] = (top_mlp_dim_red_t) transformer_0_out[0][imlp];
 #elif N_TRANSFORMER_LAYERS == 2
-        mlp_dimensions_reduced[imlp] = transformer_1_out[0][imlp];
+        mlp_dimensions_reduced[imlp] = (top_mlp_dim_red_t) transformer_1_out[0][imlp];
 #elif N_TRANSFORMER_LAYERS == 3
-        mlp_dimensions_reduced[imlp] = transformer_2_out[0][imlp];
+        mlp_dimensions_reduced[imlp] = (top_mlp_dim_red_t) transformer_2_out[0][imlp];
 #else
         std::cerr << "Transformer layers count must be in {1, 2, 3}" << std::endl;
 #endif
     }
     PRETTY_PRINT(mlp_dimensions_reduced, N_EMBEDDED_DIM);
 
+#if SKIP_NORM == 0
+    // Normalize
+    top_norm_t normalized[N_EMBEDDED_DIM];
+    nnet::normalize<top_mlp_dim_red_t, top_norm_t, normalize_config0>(mlp_dimensions_reduced, normalized, out_layer_0_weight, out_layer_0_bias);
+    PRETTY_PRINT(normalized, N_EMBEDDED_DIM);
+#endif
+
 #if SKIP_FINAL_ACTIVATION == 0
     // MLP dense
-    input_t mlp_out[N_LABELS];
-    nnet::dense<input_t, input_t, mlp_config>(mlp_dimensions_reduced, mlp_out, out_layer_1_weight, out_layer_1_bias);
+    top_mlp_t mlp_out[N_LABELS];
+#if SKIP_NORM == 0
+    nnet::dense<top_norm_t, top_mlp_t, mlp_config>(normalized, mlp_out, out_layer_1_weight, out_layer_1_bias);
+#else
+    nnet::dense<top_mlp_dim_red_t, top_mlp_t, mlp_config>(mlp_dimensions_reduced, mlp_out, out_layer_1_weight, out_layer_1_bias);
+#endif
     PRETTY_PRINT(mlp_out, N_LABELS);
 
     // Reduce precision for more accurate results of Log softmax
-    input_t_red mlp_out_red[N_LABELS];
+    top_mlp_red_t mlp_out_red[N_LABELS];
     for (int jj = 0; jj < N_LABELS; jj++) {
-        mlp_out_red[jj] = (input_t_red) mlp_out[jj];
+        mlp_out_red[jj] = (top_mlp_red_t) mlp_out[jj];
     }
     PRETTY_PRINT(mlp_out_red, N_LABELS);
-    nnet::log_softmax_latency<input_t_red, result_t, softmax_config0>(mlp_out_red, data_out, log_table);
+    nnet::log_softmax_latency<top_mlp_red_t, result_t, softmax_config0>(mlp_out_red, data_out, log_table);
 #else
-    nnet::dense<input_t, input_t, mlp_config>(mlp_dimensions_reduced, data_out, out_layer_1_weight, out_layer_1_bias);
+#if SKIP_NORM == 0
+    nnet::dense<top_norm_t, result_t, mlp_config>(normalized, data_out, out_layer_1_weight, out_layer_1_bias);
+#else
+    nnet::dense<top_mlp_dim_red_t, result_t, mlp_config>(mlp_dimensions_reduced, data_out, out_layer_1_weight, out_layer_1_bias);
+#endif
 #endif
     PRETTY_PRINT(data_out, N_LABELS);
 

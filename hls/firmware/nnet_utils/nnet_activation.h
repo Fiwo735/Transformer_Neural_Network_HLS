@@ -397,7 +397,7 @@ void log_softmax_latency(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in],
     // nnet::print_full_result<general_table_t, CONFIG_T::table_size>("exp_table", exp_table, fout);
     // nnet::print_full_result<general_table_t, CONFIG_T::table_size>("log_table", log_table, fout);
     // nnet::print_full_result<general_table_t, CONFIG_T::table_size>("invert_table:", invert_table, fout);
-    nnet::print_full_result<data_T, CONFIG_T::n_in>("after table initialization, data:", data, std::cout);
+    // nnet::print_full_result<data_T, CONFIG_T::n_in>("after table initialization, data:", data, std::cout);
 
     // Calculate all the e^x's
     typename CONFIG_T::exp_table_t exp_res[CONFIG_T::n_in];
@@ -409,22 +409,22 @@ void log_softmax_latency(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in],
         exp_res[i] = exp_table[x];
     }
 
-    nnet::print_full_result<general_table_t, CONFIG_T::n_in>("exp_res", exp_res, std::cout);
+    // nnet::print_full_result<general_table_t, CONFIG_T::n_in>("exp_res", exp_res, std::cout);
 
     // Explicitly sum the results with an adder tree.
     // Rounding & Saturation mode, which improve accuracy, prevent Vivado from expression balancing
     Op_add<typename CONFIG_T::exp_table_t> op_add;
     exp_sum = reduce<typename CONFIG_T::exp_table_t, CONFIG_T::n_in, Op_add<typename CONFIG_T::exp_table_t>>(exp_res, op_add);
 
-    std::cout << "exp_sum: " << exp_sum << "\n";
+    // std::cout << "exp_sum: " << exp_sum << "\n";
 
     // typename CONFIG_T::inv_table_t inv_exp_sum = invert_table[softmax_idx_from_real_val<typename CONFIG_T::exp_table_t,CONFIG_T>(exp_sum)];
     unsigned xx = softmax_idx_from_real_val_pos<typename CONFIG_T::exp_table_t,CONFIG_T>(exp_sum) * 2; // TODO fix idx scaling from manually generated table
-    std::cout << "xx: " << xx << "\n";
+    // std::cout << "xx: " << xx << "\n";
     // unsigned xx = (unsigned) exp_sum;
     typename CONFIG_T::log_table_t log_sum = log_table[xx];
     // fout << "inv_exp_sum: " << inv_exp_sum << "\n";
-    std::cout << "log_sum: " << log_sum << "\n";
+    // std::cout << "log_sum: " << log_sum << "\n";
 
     // Op_max<data_T> op_max;
     // data_T x_max = reduce<data_T, CONFIG_T::n_in, Op_max<data_T>>(data, op_max);
@@ -435,7 +435,7 @@ void log_softmax_latency(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in],
         // res[i] = data[i] - x_max;
     }
 
-    nnet::print_full_result<res_T, CONFIG_T::n_in>("res", res, std::cout);
+    // nnet::print_full_result<res_T, CONFIG_T::n_in>("res", res, std::cout);
 
     // fout.close(); //TODO removes
 }

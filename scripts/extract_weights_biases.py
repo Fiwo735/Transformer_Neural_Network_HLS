@@ -7,28 +7,31 @@ DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 def transform_norm_weights_biases(
   arr: np.array,
   is_weight: bool,
-  mean: float,
-  var: float,
+  # mean: float,
+  # var: float,
+  mean: torch.Tensor,
+  var: torch.Tensor,
   corr_old_weights: Optional[List[float]] = None,
   eps: int = 1e-5,
 ) -> np.array:
 
-  # mean = arr.mean()
-  # var = arr.var()
+  mean = mean.cpu().numpy()
+  var = var.cpu().numpy()
+
+  # print(f'{arr.shape=}, {mean.shape=}, {var.shape=}')
+
   denom = np.sqrt(var + eps)
 
-  # f_norm = None
-  normalized_arr = None
   if is_weight:
-    # f_norm = lambda x: (x / denom)
-    normalized_arr = np.array([w / denom for w in arr])
+    # normalized_arr = np.array([w / denom for w in arr])
+    normalized_arr = np.divide(arr, denom)
   else:
-    # f_norm = lambda x: (x - (corr_old_weights * mean / denom))
-    normalized_arr = np.array([b - corr_old_weights[i] * mean / denom for i, b in enumerate(arr)])
+    # normalized_arr = np.array([b - corr_old_weights[i] * mean / denom for i, b in enumerate(arr)])
+    normalized_arr = np.subtract(arr, np.multiply(np.divide(corr_old_weights, denom), mean))
 
   # normalized_arr = np.array(list(map(f_norm, arr)))
   assert normalized_arr.shape == arr.shape,\
-    f'Array shape cannot change (old {arr.shape}, new {normalized_arr.shape}'
+    f'Array shape cannot change - old: {arr.shape}, new: {normalized_arr.shape}'
 
   return normalized_arr
 
@@ -45,6 +48,8 @@ def prepare_files(
   previous_was_weight,
   previous_weights,
   norm_layer_base_names_index: int=0,
+  running_mean_dict = None,
+  running_var_dict = None,
 ) -> tuple:
 
   h_file_name = layer_name.replace('.', '_')
@@ -64,12 +69,12 @@ def prepare_files(
   overview.append([str(list(values.shape)), layer_name])
 
   # print debug raw values
-  if len(values.shape) <= 2:
-    np.savetxt(result_path + h_file_name + '_raw_' + '.txt', values, delimiter=', ', fmt='%.4f')
-  else:
-    assert len(values.shape) == 3, 'No more than 3 dimensions are expected'
-    for layer in values:
-      np.savetxt(result_path + h_file_name + '_raw_' + '.txt', layer, delimiter=', ', fmt='%.4f')
+  # if len(values.shape) <= 2:
+  #   np.savetxt(result_path + h_file_name + '_raw_' + '.txt', values, delimiter=', ', fmt='%.4f')
+  # else:
+  #   assert len(values.shape) == 3, 'No more than 3 dimensions are expected'
+  #   for layer in values:
+  #     np.savetxt(result_path + h_file_name + '_raw_' + '.txt', layer, delimiter=', ', fmt='%.4f')
 
   # header guards
   header_guard_name = h_file_name.upper() + "_H_"
@@ -105,10 +110,12 @@ def prepare_files(
   # apply the mean/variance embedding for normalization layers
   # print(f'Checking if {layer_name} (with base {current_base}) is in norm_layer_base_names')
   # print(f"{layer_name=} {previous_base=} {current_base=} {previous_was_weight=}")
-  if current_base in norm_layer_base_names.keys():
+  # if current_base in norm_layer_base_names.keys():
+  if current_base in running_mean_dict.keys():
     print(f'Applying mean/var calculation embedding to {layer_name}')
     current_is_weight = layer_name.split('.')[-1] == 'weight'
-    mean, var = norm_layer_base_names[current_base][norm_layer_base_names_index]
+    # mean, var = norm_layer_base_names[current_base][norm_layer_base_names_index]
+    mean, var = running_mean_dict[current_base], running_var_dict[current_base]
 
     if not current_is_weight:
       assert previous_base == current_base and previous_was_weight,\
@@ -163,14 +170,25 @@ def prepare_files(
   return (previous_base, previous_was_weight, previous_weights)
 
 def extract_weights_biases(
-  model_path: str,
+  state_dict_path: str,
   result_path: str,
   norm_layer_base_names: Dict[str, Tuple[float, float]],
   var_type: str = "model_default_t",
   flatten_order: str = "C",
 ) -> None:
 
-  model = torch.load(model_path, map_location=DEVICE)
+  # Custom compare so that running stats are processed first, as weights and biases depend on them
+  def custom_compare(item1):
+    if 'running_mean' in item1 or 'running_var' in item1:
+      return -1
+    else:
+      return 1
+      
+  state_dict_raw = torch.load(state_dict_path, map_location=DEVICE)['state_dict']
+  state_dict = {}
+  for k in sorted(state_dict_raw, key=custom_compare):
+    state_dict[k] = state_dict_raw[k]
+
   overview = []
   parameters_include = []
   load_weights_from_txt = []
@@ -179,13 +197,29 @@ def extract_weights_biases(
   previous_was_weight = False
   previous_weights = None
 
+  running_mean_dict = {}
+  running_var_dict = {}
+
   i = 0
 
-  for layer_name, values in model['state_dict'].items():
+  for layer_name, values in state_dict.items():
     i += 1
     # print(model['state_dict'].keys())
 
+    # Skip num_batches_tracked attribute
+    if 'num_batches_tracked' in layer_name:
+      continue
+
     current_base = '.'.join(layer_name.split('.')[:-1])
+    current_type = layer_name.split('.')[-1]
+
+    if current_type == 'running_mean':
+      running_mean_dict[current_base] = values
+      continue
+    elif current_type == 'running_var':
+      running_var_dict[current_base] = values
+      continue
+      
     if current_base in norm_layer_base_names.keys() and len(norm_layer_base_names[current_base]) == 2:
       # special case that needs separate weight and biases for [0] and [1:] layers
       _, _, _ = prepare_files(
@@ -231,13 +265,15 @@ def extract_weights_biases(
         previous_base=previous_base,
         previous_was_weight=previous_was_weight,
         previous_weights=previous_weights,
+        running_mean_dict=running_mean_dict,
+        running_var_dict=running_var_dict,
       )
     
     # if i == 2:
     #   exit()  
 
   # print summary
-  print("Model taken from {}".format(model_path))
+  print("Model taken from {}".format(state_dict_path))
   print("Weights and biases saved to {}".format(result_path))
 
   print('\n' + '-'*20 + "Layers summary" + '-'*20 + '\n')
@@ -247,14 +283,16 @@ def extract_weights_biases(
     print("{: <12} {: <20}".format(shape, name))
 
   # print section of #includes for parameters.h
+  print('\nContents of parameters.h')
   print("\n".join(parameters_include))
 
   #print section of nnet::load_weights_from_txt for myproject.cpp
+  print('\nContents of myproject.cpp')
   print("\n".join(load_weights_from_txt))
 
 
 if __name__ == "__main__":
-  model_path = "pytorch/best.pth.tar"
+  state_dict_path = "pytorch/best.pth.tar"
   # result_path = "extracted_weights_biases/"
   result_path = "hls/firmware/weights/"
   norm_layer_base_names = {
@@ -279,5 +317,5 @@ if __name__ == "__main__":
     # 'transformers.2.self_attention.norm':
     #   [(-0.04117840528488159, 1.3190522193908691), (-0.04152524471282959, 126.24896240234375)],
   }
-  extract_weights_biases(model_path=model_path, result_path=result_path, norm_layer_base_names=norm_layer_base_names)
+  extract_weights_biases(state_dict_path=state_dict_path, result_path=result_path, norm_layer_base_names=norm_layer_base_names)
 

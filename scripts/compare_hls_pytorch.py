@@ -379,9 +379,9 @@ if __name__ == '__main__':
       # Set relevant flags in build_prj.tcl
       set_build_options(path=build_tcl_path_full, options=vars(args))
 
-      modify_defines(path=defines_path, options=general_type_option, line_type='ap_fixed')
-      modify_defines(path=defines_path, options=reduced_type_option, line_type='ap_fixed')
-      modify_defines(path=defines_path, options=embedded_dims, line_type='#define')
+      # modify_defines(path=defines_path, options=general_type_option, line_type='ap_fixed')
+      # modify_defines(path=defines_path, options=reduced_type_option, line_type='ap_fixed')
+      # modify_defines(path=defines_path, options=embedded_dims, line_type='#define')
 
       clean_file(path=hls_layers_log_path)
       run_vivado_hls(hls_dir_path=hls_dir_path, build_tcl_path=build_tcl_path, quiet=args.quiet)

@@ -23,13 +23,43 @@
 #include "weights/cls_token.h"
 #include "weights/inp_layer_weight.h"
 #include "weights/inp_layer_bias.h"
+#include "weights/out_layer_0_weight.h"
+#include "weights/out_layer_0_bias.h"
 #include "weights/out_layer_1_weight.h"
 #include "weights/out_layer_1_bias.h"
+#include "weights/transformers_0_self_attention_norm_weight.h"
+#include "weights/transformers_0_self_attention_norm_bias.h"
 #include "weights/transformers_0_self_attention_qkv_weight.h"
 #include "weights/transformers_0_self_attention_out_weight.h"
 #include "weights/transformers_0_self_attention_out_bias.h"
+#include "weights/transformers_0_linear_0_weight.h"
+#include "weights/transformers_0_linear_0_bias.h"
 #include "weights/transformers_0_linear_2_weight.h"
+#include "weights/transformers_0_linear_3_weight.h"
+#include "weights/transformers_0_linear_3_bias.h"
 #include "weights/transformers_0_linear_5_weight.h"
+#include "weights/transformers_1_self_attention_norm_weight.h"
+#include "weights/transformers_1_self_attention_norm_bias.h"
+#include "weights/transformers_1_self_attention_qkv_weight.h"
+#include "weights/transformers_1_self_attention_out_weight.h"
+#include "weights/transformers_1_self_attention_out_bias.h"
+#include "weights/transformers_1_linear_0_weight.h"
+#include "weights/transformers_1_linear_0_bias.h"
+#include "weights/transformers_1_linear_2_weight.h"
+#include "weights/transformers_1_linear_3_weight.h"
+#include "weights/transformers_1_linear_3_bias.h"
+#include "weights/transformers_1_linear_5_weight.h"
+#include "weights/transformers_2_self_attention_norm_weight.h"
+#include "weights/transformers_2_self_attention_norm_bias.h"
+#include "weights/transformers_2_self_attention_qkv_weight.h"
+#include "weights/transformers_2_self_attention_out_weight.h"
+#include "weights/transformers_2_self_attention_out_bias.h"
+#include "weights/transformers_2_linear_0_weight.h"
+#include "weights/transformers_2_linear_0_bias.h"
+#include "weights/transformers_2_linear_2_weight.h"
+#include "weights/transformers_2_linear_3_weight.h"
+#include "weights/transformers_2_linear_3_bias.h"
+#include "weights/transformers_2_linear_5_weight.h"
 
 #include "weights/log_table.h"
 
@@ -44,9 +74,9 @@ struct embedded_config : nnet::dense_config {
     static const unsigned n_zeros = 0;
     static const unsigned n_nonzeros = (N_EMBEDDED * N_EMBEDDED);
     static const bool store_weights_in_bram = false;
-    typedef model_default_t accum_t;
-    typedef model_default_t bias_t;
-    typedef model_default_t weight_t;
+    typedef top_embedded_a_t accum_t;
+    typedef top_embedded_b_t bias_t;
+    typedef top_embedded_w_t weight_t;
     typedef ap_uint<1> index_t;
     template<class x_T, class y_T, class res_T>
     using product = nnet::product::mult<x_T, y_T, res_T>;
@@ -62,7 +92,7 @@ struct concat_config0 : nnet::concat_config {
     static const unsigned axis = -1;
 };
 
-struct normalize_config0 : nnet::layernorm_config {
+struct normalize_config0 : nnet::batchnorm_config {
     // Internal data type definitions
     typedef model_default_t bias_t;
     typedef model_default_t scale_t;
@@ -70,7 +100,7 @@ struct normalize_config0 : nnet::layernorm_config {
     // Layer Sizes
     static const unsigned n_in = N_EMBEDDED_DIM;
     static const unsigned n_filt = -1;
-    static const unsigned n_layers = 1;
+    // static const unsigned n_layers = 1;
     
     // Resource reuse info
     static const unsigned io_type = nnet::io_parallel;
@@ -177,7 +207,7 @@ struct transformer_config0 : nnet::transformer_config {
     using product = nnet::product::mult<x_T, y_T, res_T>;
 };
 
-struct normalize_config1 : nnet::layernorm_config {
+struct normalize_config1 : nnet::batchnorm_config {
     // Internal data type definitions
     typedef model_default_t bias_t;
     typedef model_default_t scale_t;
@@ -185,7 +215,7 @@ struct normalize_config1 : nnet::layernorm_config {
     // Layer Sizes
     static const unsigned n_in = N_EMBEDDED_DIM;
     static const unsigned n_filt = -1;
-    static const unsigned n_layers = (N_PARTICLES + 1);
+    // static const unsigned n_layers = (N_PARTICLES + 1);
     
     // Resource reuse info
     static const unsigned io_type = nnet::io_parallel;
@@ -233,7 +263,7 @@ struct transformer_dense_config0 : nnet::dense_config {
     using product = nnet::product::mult<x_T, y_T, res_T>;
 };
 
-struct normalize_config2 : nnet::layernorm_config {
+struct normalize_config2 : nnet::batchnorm_config {
     // Internal data type definitions
     typedef model_default_t bias_t;
     typedef model_default_t scale_t;
@@ -241,7 +271,7 @@ struct normalize_config2 : nnet::layernorm_config {
     // Layer Sizes
     static const unsigned n_in = (N_EMBEDDED_DIM * 2);
     static const unsigned n_filt = -1;
-    static const unsigned n_layers = (N_PARTICLES + 1);
+    // static const unsigned n_layers = (N_PARTICLES + 1);
     
     // Resource reuse info
     static const unsigned io_type = nnet::io_parallel;
@@ -347,7 +377,7 @@ struct self_attention_config0 : nnet::self_attention_config {
     using product = nnet::product::mult<x_T, y_T, res_T>;
 };
 
-struct sa_norm_config0 : nnet::layernorm_config {
+struct sa_norm_config0 : nnet::batchnorm_config {
     // Internal data type definitions
     typedef model_default_t bias_t;
     typedef model_default_t scale_t;
@@ -355,7 +385,7 @@ struct sa_norm_config0 : nnet::layernorm_config {
     // Layer Sizes
     static const unsigned n_in = N_EMBEDDED_DIM;
     static const unsigned n_filt = -1;
-    static const unsigned n_layers = (N_PARTICLES + 1);
+    // static const unsigned n_layers = (N_PARTICLES + 1);
     
     // Resource reuse info
     static const unsigned io_type = nnet::io_parallel;

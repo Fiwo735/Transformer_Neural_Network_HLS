@@ -364,17 +364,19 @@ def train_test_loop(
   return (accuracy, end_time - start_time, (all_data, all_predicted, all_labels))
 
 
-def save_model(model: nn.Module, script_path: str, state_path: str) -> None:
+def save_model(model: nn.Module, model_path: str, script_path: str, state_path: str) -> None:
   model.eval()
   model_script = torch.jit.script(model)
   model_script.save(script_path)
+
+  torch.save(model, model_path)
 
   torch.save(
     {'state_dict': model.state_dict()},
     state_path,
   )
 
-  print(f'Model saved successfully ({script_path}, {state_path})')
+  print(f'Model saved successfully ({model_path}, {script_path}, {state_path})')
 
 
 def evaluate(
@@ -500,9 +502,43 @@ def compute_roc_auc(targets, predictions):
   FPR_micro, TPR_micro, AUC_micro = find_FPR_TPR_AUC(targets.ravel(), predictions.ravel())
 
 
+def mean_var_info(name: str, index: int, mean: torch.Tensor, var: torch.Tensor, ctr: int, sub_index: str='') -> str:
+  result = f"{name}{index}\n"
+  result += f"mean{sub_index}: {mean.size()}\n\t"
+
+  # curr_mean = torch.mean(mean, dim=0)
+  curr_mean = mean
+  if len(mean.size()) > 1:
+    for i in range(curr_mean.shape[0]):
+      result += f"[{i}]: {curr_mean[i]}\n\t"
+    # result += f"[0]: {curr_mean[0]}\n\t"
+    # result += f"[1:]: {torch.mean(curr_mean[1:])}\n"
+  else:
+    result += f"{curr_mean}\n"
+
+  result += f"var{sub_index}: {var.size()}\n\t"
+
+  # curr_var = torch.mean(var, dim=0)
+  curr_var = var
+  if len(var.size()) > 1:
+    for i in range(curr_var.shape[0]):
+      result += f"[{i}]: {curr_var[i]}\n\t"
+    # result += f"[0]: {curr_var[0]}\n\t"
+    # result += f"[1:]: {torch.mean(curr_var[1:])}\n"
+    # print(f"[({curr_mean[0]}, {curr_var[0]}), ({torch.mean(curr_mean[1:])}, {torch.mean(curr_var[1:])})],")
+  else:
+    result += f"{curr_var}\n"
+    # print(f"[({curr_mean}, {curr_var})],")
+
+  result += f"ctr{sub_index}: {ctr}\n"
+
+  return result
+
+
 def main(
   num_particles: int,
   do_train: bool = False,
+  model_path: Optional[str] = None,
   script_path: Optional[str] = None,
   state_path: Optional[str] = None,
   debug_path: Optional[str] = None,
@@ -516,13 +552,18 @@ def main(
   hls_tb_out_path: Optional[str] = None,
   hls_tb_labels_path: Optional[str] = None,
   measure_flops: bool = False,
+  norm_info_path: Optional[str] = None,
 ) -> None:
 
-  if measure_flops:
-    assert do_train, 'Model has to be retrained for measuring FLOPS, since loading using torch.jit.load() results in hook error.'
-    if num_epochs != 1:
-      print('This run will measure FLOPS, so epoch number is forced to 1 for faster training')
-      num_epochs = 1
+  # if measure_flops:
+  #   assert do_train, 'Model has to be retrained for measuring FLOPS, since loading using torch.jit.load() results in RecursiveScriptModule object attribute error.'
+  #   if num_epochs != 1:
+  #     print('This run will measure FLOPS, so epoch number is forced to 1 for faster training')
+  #     num_epochs = 1
+
+  # if norm_info_path is not None:
+  #   assert do_train, 'Model has to be retrained for generating norm_info, since loading using torch.jit.load() results in hook error.'
+
  
   batch_size = 128
   criterion = torch.nn.NLLLoss()
@@ -556,14 +597,37 @@ def main(
       is_train=True,
       num_particles=num_particles,
       num_epochs=num_epochs,
-      secondary_loader=test_loader,
+      # secondary_loader=test_loader,
     )
     print(f'Training took {total_time:.2f} s')
 
-    save_model(model=model, script_path=script_path, state_path=state_path)
+    save_model(model=model, model_path=model_path, script_path=script_path, state_path=state_path)
   
   else:
-    model = torch.jit.load(script_path, map_location=DEVICE)
+    # Load from script
+    # model = torch.jit.load(script_path, map_location=DEVICE)
+
+    # Load from state_dict
+    # model = ConstituentNet(
+    #   in_dim=16,
+    #   embbed_dim=embbed_dim,
+    #   num_heads=num_heads,
+    #   num_classes=len(classes), # 5
+    #   num_transformers=num_transformers,
+    #   dropout=dropout,
+    #   is_debug=is_debug,
+    # )
+    # state_dict = torch.load(state_path)['state_dict']
+    # model.load_state_dict(state_dict, strict=True)
+    # model.to(DEVICE)
+
+    # Load from model
+    model = torch.load(model_path)
+    model.to(DEVICE)
+
+    model.eval()
+
+
 
   print(f'Model parameters: {sum(p.numel() for p in model.parameters() if p.requires_grad)}')
   
@@ -624,6 +688,30 @@ def main(
     flops = FlopCountAnalysis(model=model, inputs=flop_input)
     print(f'FLOPS: {flops.total() / 1000} k')
 
+  if norm_info_path is not None:
+    print(f'Generating mean and variance info for norm layers to {norm_info_path}')
+    with open(f'logs/{norm_info_path}', 'w') as afile:
+      afile.write(mean_var_info(name='Net', index=0, mean=model.get_avg_mean(), var=model.get_avg_var(), ctr=model.get_counter()))
+      # afile.write(f"Net mean: {model.get_avg_mean().size()}\n{torch.mean(model.get_avg_mean())}\nvar: {model.get_avg_var().size()}\n{torch.mean(model.get_avg_var())}\nctr: {model.get_counter()}\n")
+      for index, tr in enumerate(model.transformers):
+        afile.write('-'*30 + '\n')
+        afile.write(mean_var_info(name='Trans', index=index, sub_index='0', mean=tr.get_avg_mean0(), var=tr.get_avg_var0(), ctr=tr.get_counter0()))
+        afile.write(mean_var_info(name='Trans', index=index, sub_index='3', mean=tr.get_avg_mean3(), var=tr.get_avg_var3(), ctr=tr.get_counter3()))
+        afile.write(mean_var_info(name='SA', index=index, mean=tr.self_attention.get_avg_mean(), var=tr.self_attention.get_avg_var(), ctr=tr.self_attention.get_counter()))
+        # afile.write(f"Trans{index} mean0: {tr.get_avg_mean0().size()}\n{torch.mean(tr.get_avg_mean0(), dim=0)}\nvar0: {tr.get_avg_var0().size()}\n{torch.mean(tr.get_avg_var0(), dim=0)}\nctr0: {tr.get_counter0()}\n")
+        # afile.write(f"Trans{index} mean3: {tr.get_avg_mean3().size()}\n{torch.mean(tr.get_avg_mean3(), dim=0)}\nvar3: {tr.get_avg_var3().size()}\n{torch.mean(tr.get_avg_var3(), dim=0)}\nctr3: {tr.get_counter3()}\n")
+        # afile.write(f"SA{index} mean: {tr.self_attention.get_avg_mean().size()}\n{torch.mean(tr.self_attention.get_avg_mean(), dim=0)}\nvar: {tr.self_attention.get_avg_var().size()}\n{torch.mean(tr.self_attention.get_avg_var(), dim=0)}\nctr: {tr.self_attention.get_counter()}\n")
+    
+    with open(f'logs/detailed_{norm_info_path}', 'w') as afile:
+      afile.write(f"Net mean: \n{model.get_avg_mean()}\nvar: \n{model.get_avg_var()}\nctr: {model.get_counter()}\n")
+      for index, tr in enumerate(model.transformers):
+        afile.write('-'*30 + '\n')
+        afile.write(f"Trans{index} mean0: \n{tr.get_avg_mean0()}\nvar0: \n{tr.get_avg_var0()}\nctr0: {tr.get_counter0()}\n")
+        afile.write(f"Trans{index} mean3: \n{tr.get_avg_mean3()}\nvar3: \n{tr.get_avg_var3()}\nctr3: {tr.get_counter3()}\n")
+        afile.write(f"SA{index} mean: \n{tr.self_attention.get_avg_mean()}\nvar: \n{tr.self_attention.get_avg_var()}\nctr: {tr.self_attention.get_counter()}\n")
+
+
+
 
 def parse():
   parser = argparse.ArgumentParser(description='Train and/or evaluate Pytorch model')
@@ -640,7 +728,8 @@ def parse():
   parser.add_argument('--epochs', action='store', type=int)
   parser.add_argument('--cuda', action='store', type=int, default=0)
   parser.add_argument('--generate_hls_tb', action='store_true')
-  parser.add_argument('--flop', action='store_true')
+  parser.add_argument('--flops', action='store_true')
+  parser.add_argument('--norm_info', action='store', type=str, default=None)
 
   return parser.parse_args()
 
@@ -675,6 +764,7 @@ if __name__ == "__main__":
   main(
     num_particles=args.particles,
     do_train=args.train,
+    model_path=os.path.join(DIR_NAME, debug_prefix + 'best.model.pth'),
     script_path=os.path.join(DIR_NAME, debug_prefix + 'best.script.pth'),
     state_path=os.path.join(DIR_NAME, debug_prefix + 'best.pth.tar'),
     debug_path=os.path.join(DIR_NAME, 'layers_output.txt'),
@@ -687,5 +777,6 @@ if __name__ == "__main__":
     hls_tb_in_path='hls/tb_data/tb_input_features.dat',
     hls_tb_out_path='hls/tb_data/tb_output_predictions.dat',
     hls_tb_labels_path='hls/tb_data/tb_labels.dat',
-    measure_flops=args.flop,
+    measure_flops=args.flops,
+    norm_info_path=args.norm_info,
   )

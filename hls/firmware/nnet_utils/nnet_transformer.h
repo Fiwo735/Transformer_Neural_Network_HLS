@@ -93,10 +93,16 @@ template<class data_T, class res_T, typename CONFIG_T, typename SA_CONFIG_T, typ
 void transformer(
     data_T                               data[CONFIG_T::n_particles][CONFIG_T::n_el],
     res_T                                res[CONFIG_T::n_particles][CONFIG_T::n_el],
+    typename CONFIG_T::SA_norm_weight_t  SA_norm_weight[CONFIG_T::n_el],
+    typename CONFIG_T::SA_norm_bias_t    SA_norm_bias[CONFIG_T::n_el],
     typename CONFIG_T::SA_QKV_weight_t   SA_QKV_weight[CONFIG_T::n_SA_QKV_weight],
     typename CONFIG_T::SA_dense_weight_t SA_dense_weight[CONFIG_T::n_SA_dense_weight],
     typename CONFIG_T::SA_dense_bias_t   SA_dense_bias[CONFIG_T::n_SA_dense_bias],
+    typename CONFIG_T::norm0_weight_t    norm0_weight[CONFIG_T::n_el],
+    typename CONFIG_T::norm0_bias_t      norm0_bias[CONFIG_T::n_el],
     typename CONFIG_T::dense0_weight_t   dense0_weight[CONFIG_T::n_dense0_weight],
+    typename CONFIG_T::norm1_weight_t    norm1_weight[CONFIG_T::n_el_doubled],
+    typename CONFIG_T::norm1_bias_t      norm1_bias[CONFIG_T::n_el_doubled],
     typename CONFIG_T::dense1_weight_t   dense1_weight[CONFIG_T::n_dense1_weight]
 ){
     #pragma HLS ARRAY_PARTITION variable=data complete dim=0
@@ -110,6 +116,8 @@ void transformer(
     self_attention<data_T, data_T, SA_CONFIG_T, SA_NORM_CONFIG_T, SA_DENSE0_CONFIG_T, SA_TRANSPOSE0_CONFIG_T, SA_SOFTMAX_CONFIG_T, SA_DENSE3_CONFIG_T>(
         data,
         self_attention_out,
+        SA_norm_weight,
+        SA_norm_bias,
         SA_QKV_weight,
         SA_dense_weight,
         SA_dense_bias
@@ -118,25 +126,44 @@ void transformer(
 
     data_T self_attention_sum[CONFIG_T::n_particles][CONFIG_T::n_el];
     #pragma HLS ARRAY_PARTITION variable=self_attention_sum complete dim=0
+#if SKIP_NORM == 0
+    data_T normalized0[CONFIG_T::n_particles][CONFIG_T::n_el];
+    #pragma HLS ARRAY_PARTITION variable=normalized0 complete dim=0
+#endif
     data_T activ0[CONFIG_T::n_particles][CONFIG_T::n_el];
     #pragma HLS ARRAY_PARTITION variable=activ0 complete dim=0
     data_T dense0_out[CONFIG_T::n_particles][CONFIG_T::n_el_doubled];
     #pragma HLS ARRAY_PARTITION variable=dense0_out complete dim=0
+#if SKIP_NORM == 0
+    data_T normalized1[CONFIG_T::n_particles][CONFIG_T::n_el_doubled];
+    #pragma HLS ARRAY_PARTITION variable=normalized1 complete dim=0
+#endif
     data_T activ1[CONFIG_T::n_particles][CONFIG_T::n_el_doubled];
     #pragma HLS ARRAY_PARTITION variable=activ1 complete dim=0
     data_T dense1_out[CONFIG_T::n_particles][CONFIG_T::n_el];
     #pragma HLS ARRAY_PARTITION variable=dense1_out complete dim=0
+
 
     for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
         for (int iendsum = 0; iendsum < CONFIG_T::n_el; iendsum++) {
             self_attention_sum[jj][iendsum] = data[jj][iendsum] + self_attention_out[jj][iendsum];
         }
 
+#if SKIP_NORM == 0
+        normalize<data_T, data_T, NORM0_CONFIG_T>(self_attention_sum[jj], normalized0[jj], norm0_weight, norm0_bias);
+        relu<data_T, data_T, SIG0_CONFIG_T>(normalized0[jj], activ0[jj]);
+#else
         relu<data_T, data_T, SIG0_CONFIG_T>(self_attention_sum[jj], activ0[jj]);
+#endif
 
         dense_latency_no_bias<data_T, data_T, DENSE0_CONFIG_T>(activ0[jj], dense0_out[jj], dense0_weight);
 
+#if SKIP_NORM == 0
+        normalize<data_T, data_T, NORM1_CONFIG_T>(dense0_out[jj], normalized1[jj], norm1_weight, norm1_bias);
+        relu<data_T, data_T, SIG1_CONFIG_T>(normalized1[jj], activ1[jj]);
+#else
         relu<data_T, data_T, SIG1_CONFIG_T>(dense0_out[jj], activ1[jj]);
+#endif
 
         dense_latency_no_bias<data_T, data_T, DENSE1_CONFIG_T>(activ1[jj], dense1_out[jj], dense1_weight);
 
