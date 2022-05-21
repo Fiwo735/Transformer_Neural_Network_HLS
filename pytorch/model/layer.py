@@ -219,7 +219,8 @@ class SelfAttention(nn.Module):
         energy = torch.einsum("nqhc,nkhc->nhqk", [queries, keys])  # (batch_m, num_heads, seq_len, seq_len)
         self.debug_print('energy', energy)
 
-        attention = torch.softmax(energy / (C ** (1 / 2)), dim=-1) # (batch_m, num_heads, seq_len, seq_len)
+        # attention = torch.softmax(energy / (C ** (1 / 2)), dim=-1) # (batch_m, num_heads, seq_len, seq_len)
+        attention = torch.softmax(energy / C, dim=-1) # (batch_m, num_heads, seq_len, seq_len)
         self.debug_print('attention', attention)
 
         # Output

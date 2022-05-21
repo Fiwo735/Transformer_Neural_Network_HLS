@@ -37,6 +37,7 @@ void dense_latency(
 {
     // std::ofstream fout("tb_data/csim_layers.log", std::ios_base::app);
     // fout << "in dense_latency" << "\n";
+    // std::cout << "in dense_latency" << std::endl;
 
     data_T cache;
     typename CONFIG_T::accum_t mult[CONFIG_T::n_in*CONFIG_T::n_out];
@@ -85,24 +86,29 @@ void dense_latency(
     }
 
     // Do the matrix-multiply
+    // std::cout << "before matrix multiply" << std::endl;
     Product1: for(int ii = 0; ii < CONFIG_T::n_in; ii++) {
         if (CONFIG_T::io_type == io_serial){
             #pragma HLS PIPELINE
         }
         cache = data[ii];
+        // std::cout << "cache loaded " << cache << std::endl;
         Product2: for(int jj = 0; jj < CONFIG_T::n_out; jj++) {
             if (CONFIG_T::io_type == io_serial) {
                 int multiplier_limit  = ceil(float(CONFIG_T::n_out) / float(CONFIG_T::reuse_factor));
                 CONFIG_T::template product<data_T, typename CONFIG_T::weight_t, typename CONFIG_T::accum_t>::limit(multiplier_limit);
             }
             int index = ii*CONFIG_T::n_out+jj;
-            int index2 = ii + jj * CONFIG_T::n_in;
+            // int index2 = ii + jj * CONFIG_T::n_in;
+            // std::cout << "ii " << ii << "/" << CONFIG_T::n_in << " jj " << jj << "/" << CONFIG_T::n_out << " index " << index << " index2 " << index2 << std::endl;
+            // std::cout << "weights obtained: " << weights[index] << std::endl;
             mult[index] = CONFIG_T::template product<data_T, typename CONFIG_T::weight_t, typename CONFIG_T::accum_t>::product(cache, weights[index]);
             // fout << "ii=" << ii << ", jj=" << jj << ", index=" << index << ", cache=" << cache << ", weights[index]=" << weights[index] << ", mult[index]=" << mult[index] << "\n";
         }
     }
 
     // Initialize accumulator with input biases
+    // std::cout << "before accum init" << std::endl;
     ResetAccum: for(int iacc = 0; iacc < CONFIG_T::n_out; iacc++) {
         if (CONFIG_T::io_type == io_serial){
             #pragma HLS UNROLL
@@ -112,6 +118,7 @@ void dense_latency(
     }
 
     // Accumulate multiplication result
+    // std::cout << "before accum" << std::endl;
     Accum1: for(int ii = 0; ii < CONFIG_T::n_in; ii++) {
         if (CONFIG_T::io_type == io_serial){
             #pragma HLS PIPELINE
@@ -124,6 +131,7 @@ void dense_latency(
     }
 
     // Cast to "res_t" type
+    // std::cout << "before cast" << std::endl;
     Result: for(int ires = 0; ires < CONFIG_T::n_out; ires++){
         if (CONFIG_T::io_type == io_serial){
             #pragma HLS UNROLL

@@ -66,13 +66,13 @@
 //------- TOP -------
 
 struct embedded_config : nnet::dense_config {
-    static const unsigned n_in = N_INPUT;
-    static const unsigned n_out = N_EMBEDDED;
+    static const unsigned n_in = N_FEATURES;
+    static const unsigned n_out = N_EMBEDDED_DIM;
     static const unsigned io_type = nnet::io_parallel;
     static const unsigned strategy = nnet::latency;
     static const unsigned reuse_factor = 1;
     static const unsigned n_zeros = 0;
-    static const unsigned n_nonzeros = (N_EMBEDDED * N_EMBEDDED);
+    static const unsigned n_nonzeros = (N_FEATURES * N_EMBEDDED_DIM);
     static const bool store_weights_in_bram = false;
     typedef top_embedded_a_t accum_t;
     typedef top_embedded_b_t bias_t;
@@ -82,15 +82,15 @@ struct embedded_config : nnet::dense_config {
     using product = nnet::product::mult<x_T, y_T, res_T>;
 };
 
-struct concat_config0 : nnet::concat_config {
-    static const unsigned n_elem1_0 = N_EMBEDDED_DIM;
-    static const unsigned n_elem1_1 = 1;
+// struct concat_config0 : nnet::concat_config {
+//     static const unsigned n_elem1_0 = N_EMBEDDED_DIM;
+//     static const unsigned n_elem1_1 = 1;
 
-    static const unsigned n_elem2_0 = N_EMBEDDED;
-    static const unsigned n_elem2_1 = 1;
+//     static const unsigned n_elem2_0 = N_EMBEDDED;
+//     static const unsigned n_elem2_1 = 1;
 
-    static const unsigned axis = -1;
-};
+//     static const unsigned axis = -1;
+// };
 
 struct normalize_config0 : nnet::batchnorm_config {
     // Internal data type definitions
@@ -414,13 +414,14 @@ struct sa_dense_config0 : nnet::dense_config {
     using product = nnet::product::mult<x_T, y_T, res_T>;
 };
 
-struct sa_transpose_config0 : nnet::transpose_config {
-    static const unsigned height = (N_EMBEDDED_DIM / 2);
-    static const unsigned width = 2;
-};
+// struct sa_transpose_config0 : nnet::transpose_config {
+//     static const unsigned height = (N_EMBEDDED_DIM / 2);
+//     static const unsigned width = 2;
+// };
 
 struct sa_softmax_config0 : nnet::activ_config {
-    static const unsigned n_in = 2;
+    static const unsigned n_in = (N_PARTICLES + 1);
+    // static const unsigned n_in = (N_PARTICLES + 1); // TODO!
     static const unsigned table_size = N_BIG_TABLE_SIZE;
     static const unsigned io_type = nnet::io_parallel;
     static const unsigned reuse_factor = 1;

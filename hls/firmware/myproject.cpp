@@ -132,16 +132,21 @@ void myproject(
     }
 #endif
 
+    // std::cout << "In myproject(...)" << std::endl;
+    // nnet::print_result<input_t, N_FEATURES>(data_in[0], std::cout);
+
     PRETTY_PRINT_2D(data_in, N_PARTICLES, N_FEATURES);
 
     // Input embedding
     top_embedded_t embedded_input[N_PARTICLES][N_EMBEDDED_DIM];
     for (unsigned ipart = 0; ipart < N_PARTICLES; ipart++) {
+        // std::cout << "Input embedding " << ipart << std::endl;
         nnet::dense<input_t, top_embedded_t, embedded_config>(data_in[ipart], embedded_input[ipart], inp_layer_weight, inp_layer_bias);
     }
     PRETTY_PRINT_2D(embedded_input, N_PARTICLES, N_EMBEDDED_DIM);
 
     // Class token
+    // std::cout << "Before cls token concat" << std::endl;
     top_cls_token_t embedded_with_cls[N_PARTICLES+1][N_EMBEDDED_DIM];
     PRETTY_PRINT(cls_token, N_EMBEDDED_DIM);
     for (unsigned icls = 0; icls < N_EMBEDDED_DIM; icls++) {
@@ -155,8 +160,9 @@ void myproject(
     PRETTY_PRINT_2D(embedded_with_cls, N_PARTICLES+1, N_EMBEDDED_DIM);
 
     // Jet transformers
+    // std::cout << "Before transformer 0" << std::endl;
     input_t transformer_0_out[N_PARTICLES+1][N_EMBEDDED_DIM];
-    nnet::transformer<input_t, input_t, transformer_config0, self_attention_config0, sa_norm_config0, sa_dense_config0, sa_transpose_config0, sa_softmax_config0, sa_dense_config3, normalize_config1, sigmoid_config0, transformer_dense_config0, normalize_config2, sigmoid_config1, transformer_dense_config1>(
+    nnet::transformer<input_t, input_t, transformer_config0, self_attention_config0, sa_norm_config0, sa_dense_config0, sa_softmax_config0, sa_dense_config3, normalize_config1, sigmoid_config0, transformer_dense_config0, normalize_config2, sigmoid_config1, transformer_dense_config1>(
         embedded_with_cls,
         transformer_0_out,
         transformers_0_self_attention_norm_weight,
@@ -174,8 +180,9 @@ void myproject(
     PRETTY_PRINT_2D(transformer_0_out, N_PARTICLES+1, N_EMBEDDED_DIM);
 
 #if N_TRANSFORMER_LAYERS > 1
+    // std::cout << "Before transformer 1" << std::endl;
     input_t transformer_1_out[N_PARTICLES+1][N_EMBEDDED_DIM];
-    nnet::transformer<input_t, input_t, transformer_config0, self_attention_config0, sa_norm_config0, sa_dense_config0, sa_transpose_config0, sa_softmax_config0, sa_dense_config3, normalize_config1, sigmoid_config0, transformer_dense_config0, normalize_config2, sigmoid_config1, transformer_dense_config1>(
+    nnet::transformer<input_t, input_t, transformer_config0, self_attention_config0, sa_norm_config0, sa_dense_config0, sa_softmax_config0, sa_dense_config3, normalize_config1, sigmoid_config0, transformer_dense_config0, normalize_config2, sigmoid_config1, transformer_dense_config1>(
         transformer_0_out,
         transformer_1_out,
         transformers_1_self_attention_norm_weight,
@@ -194,8 +201,9 @@ void myproject(
 #endif
 
 #if N_TRANSFORMER_LAYERS > 2
+    // std::cout << "Before transformer 2" << std::endl;
     input_t transformer_2_out[N_PARTICLES+1][N_EMBEDDED_DIM];
-    nnet::transformer<input_t, input_t, transformer_config0, self_attention_config0, sa_norm_config0, sa_dense_config0, sa_transpose_config0, sa_softmax_config0, sa_dense_config3, normalize_config1, sigmoid_config0, transformer_dense_config0, normalize_config2, sigmoid_config1, transformer_dense_config1>(
+    nnet::transformer<input_t, input_t, transformer_config0, self_attention_config0, sa_norm_config0, sa_dense_config0, sa_softmax_config0, sa_dense_config3, normalize_config1, sigmoid_config0, transformer_dense_config0, normalize_config2, sigmoid_config1, transformer_dense_config1>(
         transformer_1_out,
         transformer_2_out,
         transformers_2_self_attention_norm_weight,

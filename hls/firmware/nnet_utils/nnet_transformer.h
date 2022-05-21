@@ -89,7 +89,7 @@ struct transformer_config
 
 // TODO make input_t and data_t be used consistently
 
-template<class data_T, class res_T, typename CONFIG_T, typename SA_CONFIG_T, typename SA_NORM_CONFIG_T, typename SA_DENSE0_CONFIG_T, typename SA_TRANSPOSE0_CONFIG_T, typename SA_SOFTMAX_CONFIG_T, typename SA_DENSE3_CONFIG_T, typename NORM0_CONFIG_T, typename SIG0_CONFIG_T, typename DENSE0_CONFIG_T, typename NORM1_CONFIG_T, typename SIG1_CONFIG_T, typename DENSE1_CONFIG_T>
+template<class data_T, class res_T, typename CONFIG_T, typename SA_CONFIG_T, typename SA_NORM_CONFIG_T, typename SA_DENSE0_CONFIG_T, typename SA_SOFTMAX_CONFIG_T, typename SA_DENSE3_CONFIG_T, typename NORM0_CONFIG_T, typename SIG0_CONFIG_T, typename DENSE0_CONFIG_T, typename NORM1_CONFIG_T, typename SIG1_CONFIG_T, typename DENSE1_CONFIG_T>
 void transformer(
     data_T                               data[CONFIG_T::n_particles][CONFIG_T::n_el],
     res_T                                res[CONFIG_T::n_particles][CONFIG_T::n_el],
@@ -113,7 +113,7 @@ void transformer(
     // Self-attention
     data_T self_attention_out[CONFIG_T::n_particles][CONFIG_T::n_el];
     #pragma HLS ARRAY_PARTITION variable=self_attention_out complete dim=0
-    self_attention<data_T, data_T, SA_CONFIG_T, SA_NORM_CONFIG_T, SA_DENSE0_CONFIG_T, SA_TRANSPOSE0_CONFIG_T, SA_SOFTMAX_CONFIG_T, SA_DENSE3_CONFIG_T>(
+    self_attention<data_T, data_T, SA_CONFIG_T, SA_NORM_CONFIG_T, SA_DENSE0_CONFIG_T, SA_SOFTMAX_CONFIG_T, SA_DENSE3_CONFIG_T>(
         data,
         self_attention_out,
         SA_norm_weight,

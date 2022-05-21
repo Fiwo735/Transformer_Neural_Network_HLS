@@ -654,6 +654,7 @@ def main(
     compute_roc_auc(targets=labels, predictions=results)
 
     if do_generate_in_out_hls_tb:
+      print(f'Creating HLS TB data (input: {hls_tb_in_path}, output: {hls_tb_out_path})')
       assert len(data) - 1 == len(results) == len(test_loader) - 2, 'Number of captured samples and predictions must match DataLoader size'
       
       with open(hls_tb_in_path, 'w') as f_in, open(hls_tb_out_path, 'w') as f_out, open(hls_tb_labels_path, 'w') as f_labels:
@@ -663,20 +664,34 @@ def main(
           results_list = results_batch.tolist()
           labels_list = labels_batch.tolist()
 
+          # print(f'{data_batch.shape=}, {results_batch.shape=}, {labels_batch.shape=}')
+
+          # Iterate over each element in a batch
           for sub_index, (curr_data, curr_results, curr_labels) in enumerate(zip(data_list, results_list, labels_list)):
-            # TODO this only handles 1 x 16 for now
-            data_str = ' '.join([str(el) for el in curr_data[0]]) + '\n'
+
+            # print(f'{len(curr_data)=}, {len(curr_data[0])=}, {len(curr_results)=}, {curr_labels=}')
+
             results_str = ' '.join([str(el) for el in curr_results]) + '\n'
             curr_str = str(curr_labels) + '\n'#' '.join([str(el) for el in curr_labels]) + '\n'
+
+            # if num_particles == 1:
+            #   data_str = ' '.join([str(el) for el in curr_data[0]]) + '\n'
+            # else:
+            data_str = ''
+            for i in range(num_particles):
+              data_str += ' '.join([str(el) for el in curr_data[i]]) + ' , '
+            data_str += '\n'
+
+            # print(data_str.replace(' , ', '\n') + '\n')
 
             f_in.write(data_str)
             f_out.write(results_str)
             f_labels.write(curr_str)
 
-            # if sub_index >= 5:
-            #   break
+            if sub_index >= 1:
+              break
           
-          if index >= 39:
+          if index >= 0:
             break
   else:
     _, _, _ = evaluate(test_loader=tiny_loader, model=model, criterion=criterion, print_predictions=True, num_particles=num_particles)
