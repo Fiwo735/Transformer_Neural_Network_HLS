@@ -102,15 +102,17 @@ struct self_attention_config
     using product = product::mult<x_T, y_T, res_T>;
 };
 
-template<class data_T, class res_T, typename CONFIG_T, typename NORM_CONFIG_T, typename DENSE0_CONFIG_T, typename SOFTMAX_CONFIG_T, typename DENSE3_CONFIG_T>
+template<class data_T, class res_T, typename CONFIG_T, typename NORM_CONFIG_T, typename DENSE0_CONFIG_T, typename SOFTMAX_CONFIG_T, typename DENSE3_CONFIG_T, typename EXP_NORM_CONFIG_T>
 void self_attention(
-    data_T                            data[CONFIG_T::n_particles][CONFIG_T::n_qkv_in_el],
-    res_T                             res[CONFIG_T::n_particles][CONFIG_T::n_qkv_in_el],
-    typename CONFIG_T::norm_weight_t  norm_weight[CONFIG_T::n_qkv_in_el],
-    typename CONFIG_T::norm_bias_t    norm_bias[CONFIG_T::n_qkv_in_el],
-    typename CONFIG_T::QKV_weight_t   QKV_weight[CONFIG_T::n_QKV_weight],
-    typename CONFIG_T::dense_weight_t dense_weight[CONFIG_T::n_dense_weight],
-    typename CONFIG_T::dense_bias_t   dense_bias[CONFIG_T::n_dense_bias]
+    data_T                               data[CONFIG_T::n_particles][CONFIG_T::n_qkv_in_el],
+    res_T                                res[CONFIG_T::n_particles][CONFIG_T::n_qkv_in_el],
+    typename CONFIG_T::norm_weight_t     norm_weight[CONFIG_T::n_qkv_in_el],
+    typename CONFIG_T::norm_bias_t       norm_bias[CONFIG_T::n_qkv_in_el],
+    typename CONFIG_T::QKV_weight_t      QKV_weight[CONFIG_T::n_QKV_weight],
+    typename CONFIG_T::dense_weight_t    dense_weight[CONFIG_T::n_dense_weight],
+    typename CONFIG_T::dense_bias_t      dense_bias[CONFIG_T::n_dense_bias],
+    typename CONFIG_T::exp_norm_weight_t exp_norm_weight[CONFIG_T::n_exp_norm_weight],
+    typename CONFIG_T::exp_norm_bias_t   exp_norm_bias[CONFIG_T::n_exp_norm_bias]
 ){
     #pragma HLS ARRAY_PARTITION variable=data complete dim=0
     #pragma HLS ARRAY_PARTITION variable=res complete dim=0
@@ -166,19 +168,41 @@ void self_attention(
 
     // Einsum(qhc, khc -> hqk)
     data_T energy[CONFIG_T::n_heads][CONFIG_T::n_particles][CONFIG_T::n_particles];
+    // data_T energy[CONFIG_T::n_heads][CONFIG_T::n_particles * CONFIG_T::n_particles];
     #pragma HLS ARRAY_PARTITION variable=energy complete dim=0
     for (unsigned cc = 0; cc < CONFIG_T::n_el/CONFIG_T::n_heads; cc++) {
         for (unsigned hh = 0; hh < CONFIG_T::n_heads; hh++) {
             for (unsigned qq = 0; qq < CONFIG_T::n_particles; qq++) {
                 for (unsigned kk = 0; kk < CONFIG_T::n_particles; kk++) {
                     if (cc == 0) energy[hh][kk][qq] = 0;
-                    energy[hh][kk][qq] += (keys[qq][hh + cc * CONFIG_T::n_heads] * queries[kk][hh + cc * CONFIG_T::n_heads]) >> SCALE_SHIFT;
+                    // if (cc == 0) energy[hh][kk*CONFIG_T::n_particles + qq] = 0;
+                    // energy[hh][kk][qq] += (keys[qq][hh + cc * CONFIG_T::n_heads] * queries[kk][hh + cc * CONFIG_T::n_heads]) >> SCALE_SHIFT;
+                    energy[hh][kk][qq] += keys[qq][hh + cc * CONFIG_T::n_heads] * queries[kk][hh + cc * CONFIG_T::n_heads];
+                    // energy[hh][kk*CONFIG_T::n_particles + qq] += keys[qq][hh + cc * CONFIG_T::n_heads] * queries[kk][hh + cc * CONFIG_T::n_heads];
                     // if (hh == 0 && kk == 0 && qq == 0) std::cout << "energy[" << hh << "][" << kk << "][" << qq << "]: " << energy[hh][kk][qq] << std::endl;
                 }
             }
         }
     }
     PRETTY_PRINT_3D(energy, CONFIG_T::n_heads, CONFIG_T::n_particles, CONFIG_T::n_particles);
+    // PRETTY_PRINT_2D(energy, CONFIG_T::n_heads, CONFIG_T::n_particles * CONFIG_T::n_particles);
+
+    data_T energy_reshaped[CONFIG_T::n_heads][CONFIG_T::n_particles * CONFIG_T::n_particles];
+    for (unsigned hh = 0; hh < CONFIG_T::n_heads; hh++) {
+        for (unsigned qq = 0; qq < CONFIG_T::n_particles; qq++) {
+            for (unsigned kk = 0; kk < CONFIG_T::n_particles; kk++) {
+                energy_reshaped[hh][qq*CONFIG_T::n_particles + kk] = energy[hh][qq][kk];
+            }
+        }
+    }
+    PRETTY_PRINT_2D(energy_reshaped, CONFIG_T::n_heads, CONFIG_T::n_particles * CONFIG_T::n_particles);
+
+    data_T energy_norm[CONFIG_T::n_heads][CONFIG_T::n_particles * CONFIG_T::n_particles];
+    for (unsigned ii = 0; ii < CONFIG_T::n_heads; ii++) {
+        // normalize<data_T, data_T, EXP_NORM_CONFIG_T>(energy[ii], energy_norm[ii], exp_norm_weight, exp_norm_bias);
+        normalize<data_T, data_T, EXP_NORM_CONFIG_T>(energy_reshaped[ii], energy_norm[ii], exp_norm_weight, exp_norm_bias);
+    }
+    PRETTY_PRINT_2D(energy_norm, CONFIG_T::n_heads, CONFIG_T::n_particles * CONFIG_T::n_particles);
 
     // Scale and reduce precision for more accurate results of softmax
     data_T_red energy_scaled_red[CONFIG_T::n_heads][CONFIG_T::n_particles][CONFIG_T::n_particles];
@@ -188,7 +212,8 @@ void self_attention(
     for (int jj = 0; jj < CONFIG_T::n_heads; jj++) {
         for (int ii = 0; ii < CONFIG_T::n_particles; ii++) {
             for (int kk = 0; kk < CONFIG_T::n_particles; kk++) {
-                energy_scaled_red[jj][ii][kk] = cast<data_T, data_T_red, CONFIG_T>(energy[jj][ii][kk]);
+                // energy_scaled_red[jj][ii][kk] = cast<data_T, data_T_red, CONFIG_T>(energy[jj][ii][kk]);
+                energy_scaled_red[jj][ii][kk] = cast<data_T, data_T_red, CONFIG_T>(energy_norm[jj][ii*CONFIG_T::n_particles + kk]);
             }
 
             softmax<data_T_red, data_T, SOFTMAX_CONFIG_T>(energy_scaled_red[jj][ii], attention[jj][ii]);

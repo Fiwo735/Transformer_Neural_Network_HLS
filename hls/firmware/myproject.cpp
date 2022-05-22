@@ -99,6 +99,8 @@ void myproject(
         nnet::load_weights_from_txt<model_default_t, 12288>(transformers_0_self_attention_qkv_weight, "transformers_0_self_attention_qkv_weight.txt");
         nnet::load_weights_from_txt<model_default_t, 4096>(transformers_0_self_attention_out_weight, "transformers_0_self_attention_out_weight.txt");
         nnet::load_weights_from_txt<model_default_t, 64>(transformers_0_self_attention_out_bias, "transformers_0_self_attention_out_bias.txt");
+        nnet::load_weights_from_txt<model_default_t, 961>(transformers_0_self_attention_pre_exp_norm_weight, "transformers_0_self_attention_pre_exp_norm_weight.txt");
+        nnet::load_weights_from_txt<model_default_t, 961>(transformers_0_self_attention_pre_exp_norm_bias, "transformers_0_self_attention_pre_exp_norm_bias.txt");
         nnet::load_weights_from_txt<model_default_t, 64>(transformers_0_linear_0_weight, "transformers_0_linear_0_weight.txt");
         nnet::load_weights_from_txt<model_default_t, 64>(transformers_0_linear_0_bias, "transformers_0_linear_0_bias.txt");
         nnet::load_weights_from_txt<model_default_t, 8192>(transformers_0_linear_2_weight, "transformers_0_linear_2_weight.txt");
@@ -110,6 +112,8 @@ void myproject(
         nnet::load_weights_from_txt<model_default_t, 12288>(transformers_1_self_attention_qkv_weight, "transformers_1_self_attention_qkv_weight.txt");
         nnet::load_weights_from_txt<model_default_t, 4096>(transformers_1_self_attention_out_weight, "transformers_1_self_attention_out_weight.txt");
         nnet::load_weights_from_txt<model_default_t, 64>(transformers_1_self_attention_out_bias, "transformers_1_self_attention_out_bias.txt");
+        nnet::load_weights_from_txt<model_default_t, 961>(transformers_1_self_attention_pre_exp_norm_weight, "transformers_1_self_attention_pre_exp_norm_weight.txt");
+        nnet::load_weights_from_txt<model_default_t, 961>(transformers_1_self_attention_pre_exp_norm_bias, "transformers_1_self_attention_pre_exp_norm_bias.txt");
         nnet::load_weights_from_txt<model_default_t, 64>(transformers_1_linear_0_weight, "transformers_1_linear_0_weight.txt");
         nnet::load_weights_from_txt<model_default_t, 64>(transformers_1_linear_0_bias, "transformers_1_linear_0_bias.txt");
         nnet::load_weights_from_txt<model_default_t, 8192>(transformers_1_linear_2_weight, "transformers_1_linear_2_weight.txt");
@@ -121,6 +125,8 @@ void myproject(
         nnet::load_weights_from_txt<model_default_t, 12288>(transformers_2_self_attention_qkv_weight, "transformers_2_self_attention_qkv_weight.txt");
         nnet::load_weights_from_txt<model_default_t, 4096>(transformers_2_self_attention_out_weight, "transformers_2_self_attention_out_weight.txt");
         nnet::load_weights_from_txt<model_default_t, 64>(transformers_2_self_attention_out_bias, "transformers_2_self_attention_out_bias.txt");
+        nnet::load_weights_from_txt<model_default_t, 961>(transformers_2_self_attention_pre_exp_norm_weight, "transformers_2_self_attention_pre_exp_norm_weight.txt");
+        nnet::load_weights_from_txt<model_default_t, 961>(transformers_2_self_attention_pre_exp_norm_bias, "transformers_2_self_attention_pre_exp_norm_bias.txt");
         nnet::load_weights_from_txt<model_default_t, 64>(transformers_2_linear_0_weight, "transformers_2_linear_0_weight.txt");
         nnet::load_weights_from_txt<model_default_t, 64>(transformers_2_linear_0_bias, "transformers_2_linear_0_bias.txt");
         nnet::load_weights_from_txt<model_default_t, 8192>(transformers_2_linear_2_weight, "transformers_2_linear_2_weight.txt");
@@ -162,7 +168,7 @@ void myproject(
     // Jet transformers
     // std::cout << "Before transformer 0" << std::endl;
     input_t transformer_0_out[N_PARTICLES+1][N_EMBEDDED_DIM];
-    nnet::transformer<input_t, input_t, transformer_config0, self_attention_config0, sa_norm_config0, sa_dense_config0, sa_softmax_config0, sa_dense_config3, normalize_config1, sigmoid_config0, transformer_dense_config0, normalize_config2, sigmoid_config1, transformer_dense_config1>(
+    nnet::transformer<input_t, input_t, transformer_config0, self_attention_config0, sa_norm_config0, sa_dense_config0, sa_softmax_config0, sa_dense_config3, sa_exp_norm_config, normalize_config1, sigmoid_config0, transformer_dense_config0, normalize_config2, sigmoid_config1, transformer_dense_config1>(
         embedded_with_cls,
         transformer_0_out,
         transformers_0_self_attention_norm_weight,
@@ -170,6 +176,8 @@ void myproject(
         transformers_0_self_attention_qkv_weight,
         transformers_0_self_attention_out_weight,
         transformers_0_self_attention_out_bias,
+        transformers_0_self_attention_pre_exp_norm_weight,
+        transformers_0_self_attention_pre_exp_norm_bias,
         transformers_0_linear_0_weight,
         transformers_0_linear_0_bias,
         transformers_0_linear_2_weight,
@@ -182,7 +190,7 @@ void myproject(
 #if N_TRANSFORMER_LAYERS > 1
     // std::cout << "Before transformer 1" << std::endl;
     input_t transformer_1_out[N_PARTICLES+1][N_EMBEDDED_DIM];
-    nnet::transformer<input_t, input_t, transformer_config0, self_attention_config0, sa_norm_config0, sa_dense_config0, sa_softmax_config0, sa_dense_config3, normalize_config1, sigmoid_config0, transformer_dense_config0, normalize_config2, sigmoid_config1, transformer_dense_config1>(
+    nnet::transformer<input_t, input_t, transformer_config0, self_attention_config0, sa_norm_config0, sa_dense_config0, sa_softmax_config0, sa_dense_config3, sa_exp_norm_config, normalize_config1, sigmoid_config0, transformer_dense_config0, normalize_config2, sigmoid_config1, transformer_dense_config1>(
         transformer_0_out,
         transformer_1_out,
         transformers_1_self_attention_norm_weight,
@@ -190,6 +198,8 @@ void myproject(
         transformers_1_self_attention_qkv_weight,
         transformers_1_self_attention_out_weight,
         transformers_1_self_attention_out_bias,
+        transformers_1_self_attention_pre_exp_norm_weight,
+        transformers_1_self_attention_pre_exp_norm_bias,
         transformers_1_linear_0_weight,
         transformers_1_linear_0_bias,
         transformers_1_linear_2_weight,
@@ -203,7 +213,7 @@ void myproject(
 #if N_TRANSFORMER_LAYERS > 2
     // std::cout << "Before transformer 2" << std::endl;
     input_t transformer_2_out[N_PARTICLES+1][N_EMBEDDED_DIM];
-    nnet::transformer<input_t, input_t, transformer_config0, self_attention_config0, sa_norm_config0, sa_dense_config0, sa_softmax_config0, sa_dense_config3, normalize_config1, sigmoid_config0, transformer_dense_config0, normalize_config2, sigmoid_config1, transformer_dense_config1>(
+    nnet::transformer<input_t, input_t, transformer_config0, self_attention_config0, sa_norm_config0, sa_dense_config0, sa_softmax_config0, sa_dense_config3, sa_exp_norm_config, normalize_config1, sigmoid_config0, transformer_dense_config0, normalize_config2, sigmoid_config1, transformer_dense_config1>(
         transformer_1_out,
         transformer_2_out,
         transformers_2_self_attention_norm_weight,
@@ -211,6 +221,8 @@ void myproject(
         transformers_2_self_attention_qkv_weight,
         transformers_2_self_attention_out_weight,
         transformers_2_self_attention_out_bias,
+        transformers_2_self_attention_pre_exp_norm_weight,
+        transformers_2_self_attention_pre_exp_norm_bias,
         transformers_2_linear_0_weight,
         transformers_2_linear_0_bias,
         transformers_2_linear_2_weight,

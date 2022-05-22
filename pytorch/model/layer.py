@@ -126,6 +126,10 @@ class SelfAttention(nn.Module):
         self.qkv = nn.Linear(in_dim, 2*self.latent_dim + in_dim, bias=False)
         self.out = nn.Linear(in_dim, in_dim)
 
+        # TODO can this be done better?
+        self.num_particles = 30
+        self.pre_exp_norm = nn.BatchNorm1d((self.num_particles + 1) * (self.num_particles + 1))
+
         # self.curr_mean = 0.0
         # self.curr_var = 0.0
         self.curr_mean = None
@@ -220,7 +224,15 @@ class SelfAttention(nn.Module):
         self.debug_print('energy', energy)
 
         # attention = torch.softmax(energy / (C ** (1 / 2)), dim=-1) # (batch_m, num_heads, seq_len, seq_len)
-        attention = torch.softmax(energy / C, dim=-1) # (batch_m, num_heads, seq_len, seq_len)
+        # attention = torch.softmax(energy / C, dim=-1) # (batch_m, num_heads, seq_len, seq_len)
+        energy_norm_pre = energy.view(m_batch, self.heads, -1).transpose(1,2)
+        self.debug_print('energy_norm_pre', energy_norm_pre)
+        energy_norm = self.pre_exp_norm(energy_norm_pre)
+        self.debug_print('energy_norm', energy_norm)
+        energy_post = energy_norm.transpose(1,2).view(m_batch, self.heads, self.num_particles+1, self.num_particles+1)
+        self.debug_print('energy_post', energy_post)
+
+        attention = torch.softmax(energy_post, dim=-1) # (batch_m, num_heads, seq_len, seq_len)
         self.debug_print('attention', attention)
 
         # Output

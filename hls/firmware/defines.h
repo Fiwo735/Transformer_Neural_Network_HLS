@@ -61,9 +61,9 @@ typedef ap_fixed<30,18> model_default_t;
 typedef ap_fixed<30,18> input_t;
 typedef ap_fixed<30,18> result_t;
 
-typedef ap_fixed<18,8> general_table_t;
-typedef ap_fixed<18,8> data_T_red;
-typedef ap_fixed<18,8> input_t_red;
+typedef ap_fixed<19,9> general_table_t;
+typedef ap_fixed<19,9> data_T_red;
+typedef ap_fixed<19,9> input_t_red;
 
 // Top
 typedef ap_fixed<30,18> input_t;
@@ -87,7 +87,7 @@ typedef ap_fixed<30,18> top_mlp_weight_t;
 typedef ap_fixed<30,18> top_mlp_bias_t;
 typedef ap_fixed<30,18> top_mlp_t;
 
-typedef ap_fixed<18,8> top_mlp_red_t;
+typedef ap_fixed<19,9> top_mlp_red_t;
 
 typedef ap_fixed<30,18> result_t;
 

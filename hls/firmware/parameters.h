@@ -32,6 +32,8 @@
 #include "weights/transformers_0_self_attention_qkv_weight.h"
 #include "weights/transformers_0_self_attention_out_weight.h"
 #include "weights/transformers_0_self_attention_out_bias.h"
+#include "weights/transformers_0_self_attention_pre_exp_norm_weight.h"
+#include "weights/transformers_0_self_attention_pre_exp_norm_bias.h"
 #include "weights/transformers_0_linear_0_weight.h"
 #include "weights/transformers_0_linear_0_bias.h"
 #include "weights/transformers_0_linear_2_weight.h"
@@ -43,6 +45,8 @@
 #include "weights/transformers_1_self_attention_qkv_weight.h"
 #include "weights/transformers_1_self_attention_out_weight.h"
 #include "weights/transformers_1_self_attention_out_bias.h"
+#include "weights/transformers_1_self_attention_pre_exp_norm_weight.h"
+#include "weights/transformers_1_self_attention_pre_exp_norm_bias.h"
 #include "weights/transformers_1_linear_0_weight.h"
 #include "weights/transformers_1_linear_0_bias.h"
 #include "weights/transformers_1_linear_2_weight.h"
@@ -54,6 +58,8 @@
 #include "weights/transformers_2_self_attention_qkv_weight.h"
 #include "weights/transformers_2_self_attention_out_weight.h"
 #include "weights/transformers_2_self_attention_out_bias.h"
+#include "weights/transformers_2_self_attention_pre_exp_norm_weight.h"
+#include "weights/transformers_2_self_attention_pre_exp_norm_bias.h"
 #include "weights/transformers_2_linear_0_weight.h"
 #include "weights/transformers_2_linear_0_bias.h"
 #include "weights/transformers_2_linear_2_weight.h"
@@ -158,6 +164,9 @@ struct transformer_config0 : nnet::transformer_config {
     static const unsigned n_SA_QKV_weight = (N_EMBEDDED_DIM * 3 * N_EMBEDDED_DIM); // 3 x N_EMBEDDED_DIM -> N_EMBEDDED_DIM
     static const unsigned n_SA_dense_weight = (N_EMBEDDED_DIM * N_EMBEDDED_DIM); // N_EMBEDDED_DIM -> N_EMBEDDED_DIM
     static const unsigned n_SA_dense_bias = N_EMBEDDED_DIM;
+    static const unsigned n_SA_exp_norm_weight = ((N_PARTICLES + 1) * (N_PARTICLES + 1));
+    static const unsigned n_SA_exp_norm_bias = ((N_PARTICLES + 1) * (N_PARTICLES + 1));
+
 
     static const unsigned n_norm0_weight = N_EMBEDDED_DIM;
     static const unsigned n_norm0_bias = N_EMBEDDED_DIM;
@@ -178,6 +187,8 @@ struct transformer_config0 : nnet::transformer_config {
     typedef model_default_t SA_QKV_weight_t;
     typedef model_default_t SA_dense_weight_t;
     typedef model_default_t SA_dense_bias_t;
+    typedef model_default_t SA_exp_norm_weight_t;
+    typedef model_default_t SA_exp_norm_bias_t;
 
     typedef model_default_t norm0_weight_t;
     typedef model_default_t norm0_bias_t;
@@ -328,12 +339,16 @@ struct self_attention_config0 : nnet::self_attention_config {
     typedef model_default_t QKV_weight_t;
     typedef model_default_t dense_weight_t;
     typedef model_default_t dense_bias_t;
+    typedef model_default_t exp_norm_weight_t;
+    typedef model_default_t exp_norm_bias_t;
 
     static const unsigned n_norm_weight = N_EMBEDDED_DIM;
     static const unsigned n_norm_bias = N_EMBEDDED_DIM;
     static const unsigned n_QKV_weight = (N_EMBEDDED_DIM * 3 * N_EMBEDDED_DIM);
     static const unsigned n_dense_weight = (N_EMBEDDED_DIM * N_EMBEDDED_DIM);
     static const unsigned n_dense_bias = N_EMBEDDED_DIM;
+    static const unsigned n_exp_norm_weight = ((N_PARTICLES + 1) * (N_PARTICLES + 1));
+    static const unsigned n_exp_norm_bias = ((N_PARTICLES + 1) * (N_PARTICLES + 1));
 
     // Internal data type definitions
     typedef model_default_t bias_t;
@@ -444,6 +459,26 @@ struct sa_dense_config3 : nnet::dense_config {
     typedef model_default_t bias_t;
     typedef model_default_t weight_t;
     typedef ap_uint<1> index_t;
+    template<class x_T, class y_T, class res_T>
+    using product = nnet::product::mult<x_T, y_T, res_T>;
+};
+
+struct sa_exp_norm_config : nnet::batchnorm_config {
+    // Internal data type definitions
+    typedef model_default_t bias_t;
+    typedef model_default_t scale_t;
+
+    // Layer Sizes
+    static const unsigned n_in = ((N_PARTICLES + 1) * (N_PARTICLES + 1));
+    static const unsigned n_filt = -1;
+    // static const unsigned n_layers = (N_PARTICLES + 1);
+    
+    // Resource reuse info
+    static const unsigned io_type = nnet::io_parallel;
+    static const unsigned reuse_factor = 1;
+    static const bool store_weights_in_bram = false;
+    static const unsigned n_zeros = 0;
+    // partitioning arrays cyclically to go with roll factors?
     template<class x_T, class y_T, class res_T>
     using product = nnet::product::mult<x_T, y_T, res_T>;
 };
