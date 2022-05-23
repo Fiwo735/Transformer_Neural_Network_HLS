@@ -23,8 +23,8 @@
 #define N_HEADS 2
 #define N_EMBEDDED_DIM 64
 // SCALE_SHIFT is log2(sqrt(N_EMBEDDED_DIM))
-// #define SCALE_SHIFT 3
-#define SCALE_SHIFT 6
+#define SCALE_SHIFT 3
+// #define SCALE_SHIFT 6
 
 // Derived configuration options
 #define N_INPUT (N_PARTICLES * N_FEATURES)
@@ -32,6 +32,7 @@
 // N_TRANSFORMER uses N_PARTICLES + 1 to account for the hidden class tokens
 #define N_TRANSFORMER ((N_PARTICLES + 1) * N_EMBEDDED_DIM)
 
+#define EXP_TARGET_IWIDTH 4
 
 // #if N_EMBEDDED_DIM == 1
 //   #define N_SA_INV_SQRT_SIZE0 1.0000000000000000
@@ -54,42 +55,42 @@
 // #endif
 
 // Hardware precision (ap_fixed<total, int>)
-#define N_BIG_TABLE_SIZE 1024
+#define N_BIG_TABLE_SIZE 2048
 // #define N_SMALL_TABLE_SIZE 1024
 
-typedef ap_fixed<30,18> model_default_t;
-typedef ap_fixed<30,18> input_t;
-typedef ap_fixed<30,18> result_t;
+typedef ap_fixed<44,18> model_default_t;
+typedef ap_fixed<44,18> input_t;
+typedef ap_fixed<44,18> result_t;
 
-typedef ap_fixed<19,9> general_table_t;
-typedef ap_fixed<19,9> data_T_red;
-typedef ap_fixed<19,9> input_t_red;
+typedef ap_fixed<31,11> general_table_t;
+typedef ap_fixed<31,11> data_T_red;
+typedef ap_fixed<31,11> input_t_red;
 
 // Top
-typedef ap_fixed<30,18> input_t;
+typedef ap_fixed<44,18> input_t;
 
-typedef ap_fixed<30,18> top_embedded_weight_t;
-typedef ap_fixed<30,18> top_embedded_bias_t;
-typedef ap_fixed<30,18> top_embedded_t;
-typedef ap_fixed<30,18> top_embedded_a_t;
-typedef ap_fixed<30,18> top_embedded_b_t;
-typedef ap_fixed<30,18> top_embedded_w_t;
+typedef ap_fixed<44,18> top_embedded_weight_t;
+typedef ap_fixed<44,18> top_embedded_bias_t;
+typedef ap_fixed<44,18> top_embedded_t;
+typedef ap_fixed<44,18> top_embedded_a_t;
+typedef ap_fixed<44,18> top_embedded_b_t;
+typedef ap_fixed<44,18> top_embedded_w_t;
 
-typedef ap_fixed<30,18> top_cls_token_t;
+typedef ap_fixed<44,18> top_cls_token_t;
 
-typedef ap_fixed<30,18> top_mlp_dim_red_t;
+typedef ap_fixed<44,18> top_mlp_dim_red_t;
 
-typedef ap_fixed<30,18> top_norm_weight_t;
-typedef ap_fixed<30,18> top_norm_bias_t;
-typedef ap_fixed<30,18> top_norm_t;
+typedef ap_fixed<44,18> top_norm_weight_t;
+typedef ap_fixed<44,18> top_norm_bias_t;
+typedef ap_fixed<44,18> top_norm_t;
 
-typedef ap_fixed<30,18> top_mlp_weight_t;
-typedef ap_fixed<30,18> top_mlp_bias_t;
-typedef ap_fixed<30,18> top_mlp_t;
+typedef ap_fixed<44,18> top_mlp_weight_t;
+typedef ap_fixed<44,18> top_mlp_bias_t;
+typedef ap_fixed<44,18> top_mlp_t;
 
-typedef ap_fixed<19,9> top_mlp_red_t;
+typedef ap_fixed<31,11> top_mlp_red_t;
 
-typedef ap_fixed<30,18> result_t;
+typedef ap_fixed<44,18> result_t;
 
 // Transformer
 

@@ -219,6 +219,18 @@ inline float softmax_real_val_from_idx(unsigned i){
     return (float) x;
 }
 
+template<class data_T, typename CONFIG_T, size_t target>
+inline float softmax_real_val_from_idx(unsigned i){
+    // std::ofstream fout("tb_data/csim_layers.log", std::ios_base::app); //TODO remove
+    // Treat the index as the top N bits
+    static constexpr int N = ceillog2(CONFIG_T::table_size); // number of address bits for table
+    data_T x(0);
+    x(x.width-1-x.iwidth+target, x.width-N-x.iwidth+target) = i;
+    // fout << "N: " << N << " x.width: " << x.width << " i: " << i << " x: " << x << "\n";
+    // fout.close(); //TODO removes
+    return (float) x;
+}
+
 template<class data_T, typename CONFIG_T>
 inline float softmax_real_val_from_idx_pos(unsigned i){
     // std::ofstream fout("tb_data/csim_layers.log", std::ios_base::app); //TODO remove
@@ -239,6 +251,16 @@ inline unsigned softmax_idx_from_real_val(data_T x){
     return (unsigned) y(N-1, 0);
 }
 
+template<class data_T, typename CONFIG_T, size_t target>
+inline unsigned softmax_idx_from_real_val(data_T x){
+    // Slice the top N bits to get an index into the table
+    static constexpr int N = ceillog2(CONFIG_T::table_size); // number of address bits for table
+    ap_uint<N> y = x(x.width-1-x.iwidth+target, x.width-N-x.iwidth+target); // slice the top N bits of input
+    // if (y < CONFIG_T::table_size / 2) return (unsigned) y(N-1, 0);
+    // else return (unsigned) y(N-1, 0) + CONFIG_T::table_size / 2;
+    return (unsigned) y(N-1, 0);
+}
+
 template<class data_T, typename CONFIG_T>
 inline unsigned softmax_idx_from_real_val_pos(data_T x){
     // Slice the top N bits to get an index into the table
@@ -253,10 +275,23 @@ void init_exp_table(typename CONFIG_T::exp_table_t table_out[CONFIG_T::table_siz
     // The template data_T is the data type used to address the table
     for(unsigned i = 0; i < CONFIG_T::table_size; i++){
         // Slicing bits for address is going to round towards 0, so take the central value
-        float x = softmax_real_val_from_idx<data_T, CONFIG_T>(i);
-        typename CONFIG_T::exp_table_t exp_x = exp_fcn_float(x);
-        table_out[i] = exp_x;
-        // fout << "x: " << x << " exp_fcn_float(x): " << exp_fcn_float(x) << " exp_x: " << exp_x << " table_out[i]: " << table_out[i] << "\n";
+        // float x = softmax_real_val_from_idx<data_T, CONFIG_T, EXP_TARGET_IWIDTH>(i);
+        // typename CONFIG_T::exp_table_t exp_x = exp_fcn_float(x);
+        // table_out[i] = exp_x;
+        float x;
+        typename CONFIG_T::exp_table_t exp_x;
+        unsigned index;
+        if (i < CONFIG_T::table_size / 2) {
+            x = softmax_real_val_from_idx<data_T, CONFIG_T, EXP_TARGET_IWIDTH>(i);
+            index = i;
+        } else {
+            x = -softmax_real_val_from_idx<data_T, CONFIG_T, EXP_TARGET_IWIDTH>(i - CONFIG_T::table_size / 2);
+            index = 3 * CONFIG_T::table_size / 2 - i - 1;
+        }
+        exp_x = exp_fcn_float(x);
+        table_out[index] = exp_x;
+        // fout << "i: " << i << " index: " << index << " x: " << x << " exp(x): " << exp_fcn_float(x) << " exp_x: " << exp_x << " table_out[index]: " << table_out[index] << "\n";
+        
     }
     // fout.close(); //TODO removes
 }
@@ -295,7 +330,9 @@ void init_invert_table(typename CONFIG_T::inv_table_t table_out[CONFIG_T::table_
 
 template <class data_T, class res_T, typename CONFIG_T>
 void softmax_latency(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in]){
-    std::ofstream fout("tb_data/csim_layers.log", std::ios_base::app); //TODO remove
+    // std::cout << "in softmax latency" << std::endl;
+    // std::ofstream fout("tb_data/csim_layers.log", std::ios_base::app); //TODO remove
+    // std::cout << "ofstream initialized" << std::endl;
     #pragma HLS pipeline
 
     // Initialize the lookup tables
@@ -304,11 +341,15 @@ void softmax_latency(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in]){
     typename CONFIG_T::exp_table_t exp_table[CONFIG_T::table_size];
     typename CONFIG_T::inv_table_t invert_table[CONFIG_T::table_size];
 #else
+    // std::cout << "before initialized" << std::endl;
     static bool initialized = false;
+    // std::cout << "before exp table" << std::endl;
     static typename CONFIG_T::exp_table_t exp_table[CONFIG_T::table_size];
+    // std::cout << "before inv table" << std::endl;
     static typename CONFIG_T::inv_table_t invert_table[CONFIG_T::table_size];
 
 #endif
+    // std::cout << "initialized: " << initialized << std::endl;
     if (!initialized) {
         // Note we are exponentiating the inputs, which have type data_T
         init_exp_table<data_T, CONFIG_T>(exp_table);
@@ -317,9 +358,9 @@ void softmax_latency(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in]){
         initialized = true;
     }
 
-    nnet::print_full_result<general_table_t, CONFIG_T::table_size>("\nexp_table", exp_table, fout);
-    nnet::print_full_result<general_table_t, CONFIG_T::table_size>("\ninvert_table:", invert_table, fout);
-    nnet::print_full_result<data_T, CONFIG_T::n_in>("\nafter table initialization, data:", data, fout);
+    // nnet::print_full_result<general_table_t, CONFIG_T::table_size>("\nexp_table", exp_table, fout);
+    // nnet::print_full_result<general_table_t, CONFIG_T::table_size>("\ninvert_table:", invert_table, fout);
+    // nnet::print_full_result<data_T, CONFIG_T::n_in>("\nafter table initialization, data:", data, fout);
     // nnet::print_full_result<data_T, CONFIG_T::n_in>("after table initialization, data:", data, std::cout);
 
     // Calculate all the e^x's
@@ -331,18 +372,18 @@ void softmax_latency(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in]){
             #pragma HLS unroll
             // softmax(a) == softmax(-a).flip() -> seems to improve stability when taking the inverse later on
             // Only works when len(data) == 2
-            unsigned x = softmax_idx_from_real_val<data_T, CONFIG_T>(-data[i]);
+            unsigned x = softmax_idx_from_real_val<data_T, CONFIG_T, EXP_TARGET_IWIDTH>(-data[i]);
             exp_res[CONFIG_T::n_in - i - 1] = exp_table[x];
         }
     } else{
         for(unsigned i = 0; i < CONFIG_T::n_in; i++){
             #pragma HLS unroll
-            unsigned x = softmax_idx_from_real_val<data_T, CONFIG_T>(data[i]);
+            unsigned x = softmax_idx_from_real_val<data_T, CONFIG_T, EXP_TARGET_IWIDTH>(data[i]);
             exp_res[i] = exp_table[x];
         }
     }
 
-    nnet::print_full_result<general_table_t, CONFIG_T::n_in>("exp_res", exp_res, fout);
+    // nnet::print_full_result<general_table_t, CONFIG_T::n_in>("exp_res", exp_res, fout);
     // nnet::print_full_result<general_table_t, CONFIG_T::n_in>("exp_res", exp_res, std::cout);
 
     // Explicitly sum the results with an adder tree.
@@ -350,12 +391,12 @@ void softmax_latency(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in]){
     Op_add<typename CONFIG_T::exp_table_t> op_add;
     exp_sum = reduce<typename CONFIG_T::exp_table_t, CONFIG_T::n_in, Op_add<typename CONFIG_T::exp_table_t>>(exp_res, op_add);
 
-    fout << "exp_sum: " << exp_sum << "\n";
+    // fout << "exp_sum: " << exp_sum << "\n";
     // std::cout << "exp_sum: " << exp_sum << "\n";
 
     typename CONFIG_T::inv_table_t inv_exp_sum = invert_table[softmax_idx_from_real_val<typename CONFIG_T::exp_table_t,CONFIG_T>(exp_sum)];
 
-    fout << "inv_exp_sum: " << inv_exp_sum << "\n";
+    // fout << "inv_exp_sum: " << inv_exp_sum << "\n";
     // std::cout << "inv_exp_sum: " << inv_exp_sum << "\n";
 
     for(unsigned i = 0; i < CONFIG_T::n_in; i++){
@@ -363,7 +404,7 @@ void softmax_latency(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in]){
         res[i] = exp_res[i] * inv_exp_sum;
     }
 
-    nnet::print_full_result<res_T, CONFIG_T::n_in>("res", res, fout);
+    // nnet::print_full_result<res_T, CONFIG_T::n_in>("res", res, fout);
     // nnet::print_full_result<res_T, CONFIG_T::n_in>("res", res, std::cout);
 
     // fout.close(); //TODO removes

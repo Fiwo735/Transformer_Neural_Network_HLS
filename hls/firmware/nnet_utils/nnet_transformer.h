@@ -176,8 +176,14 @@ void transformer(
         }
     }
     PRETTY_PRINT_2D(self_attention_sum, CONFIG_T::n_particles, CONFIG_T::n_el);
+#if SKIP_NORM == 0
+    PRETTY_PRINT_2D(normalized0, CONFIG_T::n_particles, CONFIG_T::n_el);
+#endif
     PRETTY_PRINT_2D(activ0, CONFIG_T::n_particles, CONFIG_T::n_el);
     PRETTY_PRINT_2D(dense0_out, CONFIG_T::n_particles, CONFIG_T::n_el_doubled);
+#if SKIP_NORM == 0
+    PRETTY_PRINT_2D(normalized1, CONFIG_T::n_particles, CONFIG_T::n_el_doubled);
+#endif
     PRETTY_PRINT_2D(activ1, CONFIG_T::n_particles, CONFIG_T::n_el_doubled);
     PRETTY_PRINT_2D(dense1_out, CONFIG_T::n_particles, CONFIG_T::n_el);
     PRETTY_PRINT_2D(res, CONFIG_T::n_particles, CONFIG_T::n_el);

@@ -213,10 +213,12 @@ void self_attention(
         for (int ii = 0; ii < CONFIG_T::n_particles; ii++) {
             for (int kk = 0; kk < CONFIG_T::n_particles; kk++) {
                 // energy_scaled_red[jj][ii][kk] = cast<data_T, data_T_red, CONFIG_T>(energy[jj][ii][kk]);
-                energy_scaled_red[jj][ii][kk] = cast<data_T, data_T_red, CONFIG_T>(energy_norm[jj][ii*CONFIG_T::n_particles + kk]);
+                // energy_scaled_red[jj][ii][kk] = cast<data_T, data_T_red, CONFIG_T>(energy_norm[jj][ii*CONFIG_T::n_particles + kk]);
+                energy_scaled_red[jj][ii][kk] = cast<data_T, data_T_red, CONFIG_T>((energy_norm[jj][ii*CONFIG_T::n_particles + kk]) >> SCALE_SHIFT);
             }
-
+            // std::cout << "calculating softmax for energy_scaled_red[" << jj << "][" << ii << "]" << std::endl;
             softmax<data_T_red, data_T, SOFTMAX_CONFIG_T>(energy_scaled_red[jj][ii], attention[jj][ii]);
+            // std::cout << "calculated softmax for energy_scaled_red[" << jj << "][" << ii << "]" << std::endl;
             // TODO maybe manually recast the type into full precision? as currently it happens implicitly in softmax
         }
     }
@@ -226,13 +228,16 @@ void self_attention(
     // Einsum(hql, lhc -> qhc) then reshape
     data_T scaled_attention_reshaped[CONFIG_T::n_particles][CONFIG_T::n_scaled_attention];
     #pragma HLS ARRAY_PARTITION variable=scaled_attention_reshaped complete dim=0
-    for (unsigned qq = 0; qq < CONFIG_T::n_particles; qq++) {
-        for (unsigned ll = 0; ll < CONFIG_T::n_particles; ll++) {
-            for (unsigned hh = 0; hh < CONFIG_T::n_heads; hh++) {
+    for (unsigned ll = 0; ll < CONFIG_T::n_particles; ll++) {
+        for (unsigned hh = 0; hh < CONFIG_T::n_heads; hh++) {
+            for (unsigned qq = 0; qq < CONFIG_T::n_particles; qq++) {
                 for (unsigned cc = 0; cc < CONFIG_T::n_el/CONFIG_T::n_heads; cc++) {
-                    if (ll == 0) scaled_attention_reshaped[qq][cc + hh * CONFIG_T::n_scaled_attention/CONFIG_T::n_heads] = 0;
+                    // if (ll == 0) scaled_attention_reshaped[qq][cc + hh * CONFIG_T::n_scaled_attention/CONFIG_T::n_heads] = 0;
+                    if (ll == 0) scaled_attention_reshaped[qq][hh + cc * CONFIG_T::n_heads] = 0;
                     // scaled_attention_reshaped[qq][cc + hh * CONFIG_T::n_scaled_attention/CONFIG_T::n_heads] += attention[hh][qq][ll] * values[ll][hh + cc * CONFIG_T::n_particles];
-                    scaled_attention_reshaped[qq][cc + hh * CONFIG_T::n_scaled_attention/CONFIG_T::n_heads] += attention[hh][qq][ll] * values[ll][cc + hh * CONFIG_T::n_scaled_attention/CONFIG_T::n_heads];
+                    // scaled_attention_reshaped[qq][cc + hh * CONFIG_T::n_scaled_attention/CONFIG_T::n_heads] += attention[hh][qq][ll] * values[ll][cc + hh * CONFIG_T::n_scaled_attention/CONFIG_T::n_heads];
+                    // scaled_attention_reshaped[qq][hh + cc * CONFIG_T::n_heads] += attention[hh][qq][ll] * values[ll][hh + cc * CONFIG_T::n_heads];
+                    scaled_attention_reshaped[qq][cc + hh * CONFIG_T::n_el/CONFIG_T::n_heads] += attention[hh][qq][ll] * values[ll][hh + cc * CONFIG_T::n_heads];
                 }
             }
         }

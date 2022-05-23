@@ -232,7 +232,8 @@ class SelfAttention(nn.Module):
         energy_post = energy_norm.transpose(1,2).view(m_batch, self.heads, self.num_particles+1, self.num_particles+1)
         self.debug_print('energy_post', energy_post)
 
-        attention = torch.softmax(energy_post, dim=-1) # (batch_m, num_heads, seq_len, seq_len)
+        # attention = torch.softmax(energy_post, dim=-1) # (batch_m, num_heads, seq_len, seq_len)
+        attention = torch.softmax(energy_post / (C ** (1 / 2)), dim=-1) # (batch_m, num_heads, seq_len, seq_len)
         self.debug_print('attention', attention)
 
         # Output
