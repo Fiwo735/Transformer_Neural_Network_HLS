@@ -727,8 +727,8 @@ def generateTable(size: int, func, max_val: int) -> np.array:
   return table
 
 def case_4():
-  table_size = 1024
-  table = generateTable(size=table_size, func=log, max_val=64)
+  table_size = 1024 * 4
+  table = generateTable(size=table_size, func=log, max_val=32)
 
   name = 'log_table'
   guard = name.upper() + '_H_'
@@ -1042,4 +1042,4 @@ def case_8():
   print(f'\n\n{res=}')
 
 if __name__ == '__main__':
-  case_8()
+  case_4()

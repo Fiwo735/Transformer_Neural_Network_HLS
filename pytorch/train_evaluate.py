@@ -547,7 +547,7 @@ def main(
   only_predictions: bool = False,
   tiny_size: int = 1,
   num_epochs: int = 3,
-  do_generate_in_out_hls_tb: bool = False,
+  generate_in_out_hls_tb: int = 0,
   hls_tb_in_path: Optional[str] = None,
   hls_tb_out_path: Optional[str] = None,
   hls_tb_labels_path: Optional[str] = None,
@@ -653,10 +653,22 @@ def main(
     print(f'Test accuracy: {accuracy*100:.2f}% in {total_time:.2f} s')
     compute_roc_auc(targets=labels, predictions=results)
 
-    if do_generate_in_out_hls_tb:
-      print(f'Creating HLS TB data (input: {hls_tb_in_path}, output: {hls_tb_out_path})')
+    if generate_in_out_hls_tb > 0:
+      print(f'Creating HLS TB data of size {generate_in_out_hls_tb} (input: {hls_tb_in_path}, output: {hls_tb_out_path})')
       assert len(data) - 1 == len(results) == len(test_loader) - 2, 'Number of captured samples and predictions must match DataLoader size'
       
+      if generate_in_out_hls_tb >= batch_size:
+        batches_limit = generate_in_out_hls_tb // batch_size
+        in_batch_limit = batch_size
+        print(f'Requested HLS TB size {generate_in_out_hls_tb} is bigger than {batch_size}, so rounding to {batches_limit*batch_size}')
+
+      else:
+        batches_limit = 0
+        in_batch_limit = generate_in_out_hls_tb % batch_size
+
+      # print(f'{batches_limit=}, {in_batch_limit=}')
+
+
       with open(hls_tb_in_path, 'w') as f_in, open(hls_tb_out_path, 'w') as f_out, open(hls_tb_labels_path, 'w') as f_labels:
         # Iterate until shorter ends and print to corresponding files
         for index, (data_batch, results_batch, labels_batch) in enumerate(zip(data, results, labels)):
@@ -688,10 +700,10 @@ def main(
             f_out.write(results_str)
             f_labels.write(curr_str)
 
-            if sub_index >= 1:
+            if sub_index >= in_batch_limit-1:
               break
           
-          if index >= 0:
+          if index >= batches_limit-1:
             break
   else:
     _, _, _ = evaluate(test_loader=tiny_loader, model=model, criterion=criterion, print_predictions=True, num_particles=num_particles)
@@ -742,7 +754,7 @@ def parse():
   parser.add_argument('--tiny_size', action='store', type=int, default=1)
   parser.add_argument('--epochs', action='store', type=int)
   parser.add_argument('--cuda', action='store', type=int, default=0)
-  parser.add_argument('--generate_hls_tb', action='store_true')
+  parser.add_argument('--generate_hls_tb', action='store', type=int, default=0)
   parser.add_argument('--flops', action='store_true')
   parser.add_argument('--norm_info', action='store', type=str, default=None)
 
@@ -788,7 +800,7 @@ if __name__ == "__main__":
     only_predictions=args.only_predictions,
     tiny_size=args.tiny_size,
     num_epochs=args.epochs,
-    do_generate_in_out_hls_tb=args.generate_hls_tb,
+    generate_in_out_hls_tb=args.generate_hls_tb,
     hls_tb_in_path='hls/tb_data/tb_input_features.dat',
     hls_tb_out_path='hls/tb_data/tb_output_predictions.dat',
     hls_tb_labels_path='hls/tb_data/tb_labels.dat',

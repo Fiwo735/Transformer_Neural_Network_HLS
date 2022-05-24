@@ -50,6 +50,7 @@ def prepare_files(
   norm_layer_base_names_index: int=0,
   running_mean_dict = None,
   running_var_dict = None,
+  type_dict: Dict = None,
 ) -> tuple:
 
   h_file_name = layer_name.replace('.', '_')
@@ -145,6 +146,7 @@ def prepare_files(
 
   # print(values)
   elements_count = len(values)
+  var_type = type_dict[h_file_name + '.h']
   declaration = var_type + " " + h_file_name + "[" + str(elements_count) + "]"
   load_weights_from_txt.append(f'nnet::load_weights_from_txt<{var_type}, {elements_count}>({h_file_name}, "{h_file_name}.txt");')
 
@@ -175,6 +177,7 @@ def extract_weights_biases(
   norm_layer_base_names: Dict[str, Tuple[float, float]],
   var_type: str = "model_default_t",
   flatten_order: str = "C",
+  type_dict: Dict = None,
 ) -> None:
 
   # Custom compare so that running stats are processed first, as weights and biases depend on them
@@ -235,6 +238,7 @@ def extract_weights_biases(
         previous_was_weight=previous_was_weight,
         previous_weights=previous_weights,
         norm_layer_base_names_index=0,
+        type_dict=type_dict,
       )
 
       previous_base, previous_was_weight, previous_weights = prepare_files(
@@ -250,6 +254,7 @@ def extract_weights_biases(
         previous_was_weight=previous_was_weight,
         previous_weights=previous_weights,
         norm_layer_base_names_index=1,
+        type_dict=type_dict,
       )
 
     else:
@@ -267,6 +272,7 @@ def extract_weights_biases(
         previous_weights=previous_weights,
         running_mean_dict=running_mean_dict,
         running_var_dict=running_var_dict,
+        type_dict=type_dict,
       )
     
     # if i == 2:
@@ -317,5 +323,71 @@ if __name__ == "__main__":
     # 'transformers.2.self_attention.norm':
     #   [(-0.04117840528488159, 1.3190522193908691), (-0.04152524471282959, 126.24896240234375)],
   }
-  extract_weights_biases(state_dict_path=state_dict_path, result_path=result_path, norm_layer_base_names=norm_layer_base_names)
+
+  # Code to generate type_dict template
+  # from os import listdir
+  # from os.path import isfile, join
+  # mypath = 'hls/firmware/weights'
+  # onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f))]
+  # c = '\n'.join([f"'{el}': 'xxx'," for el in sorted(onlyfiles) if el[-1] == 'h'])
+
+  type_dict = {
+    'log_table.h': 'top_log_softmax_log_t',
+
+    'cls_token.h': 'top_cls_token_t',
+    'inp_layer_bias.h': 'top_embedded_bias_t',
+    'inp_layer_weight.h': 'top_embedded_weight_t',
+    'out_layer_0_bias.h': 'top_norm_bias_t',
+    'out_layer_0_weight.h': 'top_norm_weight_t',
+    'out_layer_1_bias.h': 'top_mlp_bias_t',
+    'out_layer_1_weight.h': 'top_mlp_weight_t',
+
+    'transformers_0_linear_0_bias.h': 'T_norm0_bias_t',
+    'transformers_0_linear_0_weight.h': 'T_norm0_weight_t',
+    'transformers_0_linear_2_weight.h': 'T_dense0_weight_t',
+    'transformers_0_linear_3_bias.h': 'T_norm1_bias_t',
+    'transformers_0_linear_3_weight.h': 'T_norm1_weight_t',
+    'transformers_0_linear_5_weight.h': 'T_dense1_weight_t',
+
+    'transformers_0_self_attention_norm_bias.h': 'SA_norm_bias_t',
+    'transformers_0_self_attention_norm_weight.h': 'SA_norm_weight_t',
+    'transformers_0_self_attention_out_bias.h': 'SA_dense_bias_t',
+    'transformers_0_self_attention_out_weight.h': 'SA_dense_weight_t',
+    'transformers_0_self_attention_pre_exp_norm_bias.h': 'T_norm1_bias_t',
+    'transformers_0_self_attention_pre_exp_norm_weight.h': 'SA_exp_norm_weight_t',
+    'transformers_0_self_attention_qkv_weight.h': 'SA_QKV_weight_t',
+
+    'transformers_1_linear_0_bias.h': 'T_norm0_bias_t',
+    'transformers_1_linear_0_weight.h': 'T_norm0_weight_t',
+    'transformers_1_linear_2_weight.h': 'T_dense0_weight_t',
+    'transformers_1_linear_3_bias.h': 'T_norm1_bias_t',
+    'transformers_1_linear_3_weight.h': 'T_norm1_weight_t',
+    'transformers_1_linear_5_weight.h': 'T_dense1_weight_t',
+
+    'transformers_1_self_attention_norm_bias.h': 'SA_norm_bias_t',
+    'transformers_1_self_attention_norm_weight.h': 'SA_norm_weight_t',
+    'transformers_1_self_attention_out_bias.h': 'SA_dense_bias_t',
+    'transformers_1_self_attention_out_weight.h': 'SA_dense_weight_t',
+    'transformers_1_self_attention_pre_exp_norm_bias.h': 'T_norm1_bias_t',
+    'transformers_1_self_attention_pre_exp_norm_weight.h': 'SA_exp_norm_weight_t',
+    'transformers_1_self_attention_qkv_weight.h': 'SA_QKV_weight_t',
+
+    'transformers_2_linear_0_bias.h': 'T_norm0_bias_t',
+    'transformers_2_linear_0_weight.h': 'T_norm0_weight_t',
+    'transformers_2_linear_2_weight.h': 'T_dense0_weight_t',
+    'transformers_2_linear_3_bias.h': 'T_norm1_bias_t',
+    'transformers_2_linear_3_weight.h': 'T_norm1_weight_t',
+    'transformers_2_linear_5_weight.h': 'T_dense1_weight_t',
+
+    'transformers_2_self_attention_norm_bias.h': 'SA_norm_bias_t',
+    'transformers_2_self_attention_norm_weight.h': 'SA_norm_weight_t',
+    'transformers_2_self_attention_out_bias.h': 'SA_dense_bias_t',
+    'transformers_2_self_attention_out_weight.h': 'SA_dense_weight_t',
+    'transformers_2_self_attention_pre_exp_norm_bias.h': 'T_norm1_bias_t',
+    'transformers_2_self_attention_pre_exp_norm_weight.h': 'SA_exp_norm_weight_t',
+    'transformers_2_self_attention_qkv_weight.h': 'SA_QKV_weight_t',
+  }
+
+
+  extract_weights_biases(state_dict_path=state_dict_path, result_path=result_path, norm_layer_base_names=norm_layer_base_names, type_dict=type_dict)
 

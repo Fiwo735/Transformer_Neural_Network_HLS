@@ -30,8 +30,8 @@
 
 //hls-fpga-machine-learning insert bram
 
-// #define CHECKPOINT (128*10)
-#define CHECKPOINT 1
+#define CHECKPOINT 4
+// #define CHECKPOINT 1
 
 namespace nnet {
     bool trace_enabled = true;
