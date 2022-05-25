@@ -29,7 +29,9 @@
 #include "weights/out_layer_1_bias.h"
 #include "weights/transformers_0_self_attention_norm_weight.h"
 #include "weights/transformers_0_self_attention_norm_bias.h"
-#include "weights/transformers_0_self_attention_qkv_weight.h"
+#include "weights/transformers_0_self_attention_q_weight.h"
+#include "weights/transformers_0_self_attention_k_weight.h"
+#include "weights/transformers_0_self_attention_v_weight.h"
 #include "weights/transformers_0_self_attention_out_weight.h"
 #include "weights/transformers_0_self_attention_out_bias.h"
 #include "weights/transformers_0_self_attention_pre_exp_norm_weight.h"
@@ -42,7 +44,9 @@
 #include "weights/transformers_0_linear_5_weight.h"
 #include "weights/transformers_1_self_attention_norm_weight.h"
 #include "weights/transformers_1_self_attention_norm_bias.h"
-#include "weights/transformers_1_self_attention_qkv_weight.h"
+#include "weights/transformers_1_self_attention_q_weight.h"
+#include "weights/transformers_1_self_attention_k_weight.h"
+#include "weights/transformers_1_self_attention_v_weight.h"
 #include "weights/transformers_1_self_attention_out_weight.h"
 #include "weights/transformers_1_self_attention_out_bias.h"
 #include "weights/transformers_1_self_attention_pre_exp_norm_weight.h"
@@ -55,7 +59,9 @@
 #include "weights/transformers_1_linear_5_weight.h"
 #include "weights/transformers_2_self_attention_norm_weight.h"
 #include "weights/transformers_2_self_attention_norm_bias.h"
-#include "weights/transformers_2_self_attention_qkv_weight.h"
+#include "weights/transformers_2_self_attention_q_weight.h"
+#include "weights/transformers_2_self_attention_k_weight.h"
+#include "weights/transformers_2_self_attention_v_weight.h"
 #include "weights/transformers_2_self_attention_out_weight.h"
 #include "weights/transformers_2_self_attention_out_bias.h"
 #include "weights/transformers_2_self_attention_pre_exp_norm_weight.h"
@@ -153,7 +159,10 @@ struct transformer_config0 : nnet::transformer_config {
 
     static const unsigned n_SA_norm_weight = N_EMBEDDED_DIM;
     static const unsigned n_SA_norm_bias = N_EMBEDDED_DIM;
-    static const unsigned n_SA_QKV_weight = (N_EMBEDDED_DIM * 3 * N_EMBEDDED_DIM); // 3 x N_EMBEDDED_DIM -> N_EMBEDDED_DIM
+    // static const unsigned n_SA_QKV_weight = (N_EMBEDDED_DIM * 3 * N_EMBEDDED_DIM); // 3 x N_EMBEDDED_DIM -> N_EMBEDDED_DIM
+    static const unsigned n_SA_Q_weight = (N_EMBEDDED_DIM * N_EMBEDDED_DIM);
+    static const unsigned n_SA_K_weight = (N_EMBEDDED_DIM * N_EMBEDDED_DIM);
+    static const unsigned n_SA_V_weight = (N_EMBEDDED_DIM * N_EMBEDDED_DIM);
     static const unsigned n_SA_dense_weight = (N_EMBEDDED_DIM * N_EMBEDDED_DIM); // N_EMBEDDED_DIM -> N_EMBEDDED_DIM
     static const unsigned n_SA_dense_bias = N_EMBEDDED_DIM;
     static const unsigned n_SA_exp_norm_weight = ((N_PARTICLES + 1) * (N_PARTICLES + 1));
@@ -174,7 +183,10 @@ struct transformer_config0 : nnet::transformer_config {
 
     typedef SA_norm_weight_t     S_norm_weight_t;
     typedef SA_norm_bias_t       S_norm_bias_t;
-    typedef SA_QKV_weight_t      S_QKV_weight_t;
+    // typedef SA_QKV_weight_t      S_QKV_weight_t;
+    typedef SA_Q_weight_t        S_Q_weight_t;
+    typedef SA_K_weight_t        S_K_weight_t;
+    typedef SA_V_weight_t        S_V_weight_t;
     typedef SA_dense_weight_t    S_dense_weight_t;
     typedef SA_dense_bias_t      S_dense_bias_t;
     typedef SA_exp_norm_weight_t S_exp_norm_weight_t;
@@ -324,19 +336,25 @@ struct transformer_dense_config1 : nnet::dense_config {
 
 //------- SELF ATTENTION -------
 struct self_attention_config0 : nnet::self_attention_config {
+    typedef SA_norm_t norm_t;
     typedef SA_norm_weight_t norm_weight_t;
     typedef SA_norm_bias_t norm_bias_t;
-    typedef SA_QKV_weight_t QKV_weight_t;
+
+    // typedef SA_QKV_t QKV_t;
+    // typedef SA_QKV_weight_t QKV_weight_t;
+
     typedef SA_dense_weight_t dense_weight_t;
     typedef SA_dense_bias_t dense_bias_t;
+    
     typedef SA_exp_norm_weight_t exp_norm_weight_t;
     typedef SA_exp_norm_bias_t exp_norm_bias_t;
 
-    typedef SA_norm_t norm_t;
-    typedef SA_QKV_t QKV_t;
     typedef SA_Q_t Q_t;
+    typedef SA_Q_weight_t Q_weight_t;
     typedef SA_K_t K_t;
+    typedef SA_K_weight_t K_weight_t;
     typedef SA_V_t V_t;
+    typedef SA_V_weight_t V_weight_t;
 
     typedef SA_energy_t energy_t;
     typedef SA_exp_norm_t exp_norm_t;
@@ -346,7 +364,10 @@ struct self_attention_config0 : nnet::self_attention_config {
 
     static const unsigned n_norm_weight = N_EMBEDDED_DIM;
     static const unsigned n_norm_bias = N_EMBEDDED_DIM;
-    static const unsigned n_QKV_weight = (N_EMBEDDED_DIM * 3 * N_EMBEDDED_DIM);
+    // static const unsigned n_QKV_weight = (N_EMBEDDED_DIM * 3 * N_EMBEDDED_DIM);
+    static const unsigned n_Q_weight = (N_EMBEDDED_DIM * N_EMBEDDED_DIM);
+    static const unsigned n_K_weight = (N_EMBEDDED_DIM * N_EMBEDDED_DIM);
+    static const unsigned n_V_weight = (N_EMBEDDED_DIM * N_EMBEDDED_DIM);
     static const unsigned n_dense_weight = (N_EMBEDDED_DIM * N_EMBEDDED_DIM);
     static const unsigned n_dense_bias = N_EMBEDDED_DIM;
     static const unsigned n_exp_norm_weight = ((N_PARTICLES + 1) * (N_PARTICLES + 1));
@@ -364,7 +385,7 @@ struct self_attention_config0 : nnet::self_attention_config {
     static const unsigned n_qkv_in_el = N_EMBEDDED_DIM;
     static const unsigned n_qkv_out_el = (N_EMBEDDED_DIM * 3);
 
-    static const unsigned n_qkv = (N_EMBEDDED_DIM * 3 * (N_PARTICLES + 1));
+    // static const unsigned n_qkv = (N_EMBEDDED_DIM * 3 * (N_PARTICLES + 1));
     static const unsigned n_q = N_EMBEDDED_DIM;
     static const unsigned n_k = N_EMBEDDED_DIM;
     static const unsigned n_v = N_EMBEDDED_DIM;
@@ -404,18 +425,72 @@ struct sa_norm_config0 : nnet::batchnorm_config {
     using product = nnet::product::mult<x_T, y_T, res_T>;
 };
 
-struct sa_dense_config0 : nnet::dense_config {
+// struct sa_dense_config0 : nnet::dense_config {
+//     static const unsigned n_in = N_EMBEDDED_DIM;
+//     static const unsigned n_out = (N_EMBEDDED_DIM * 3);
+//     static const unsigned io_type = nnet::io_parallel;
+//     static const unsigned strategy = nnet::latency;
+//     static const unsigned reuse_factor = 1;
+//     static const unsigned n_zeros = 0;
+//     static const unsigned n_nonzeros = (N_EMBEDDED_DIM * 3 * N_EMBEDDED_DIM);
+//     static const bool store_weights_in_bram = false;
+
+//     typedef SA_QKV_accum_t accum_t;
+//     typedef SA_QKV_weight_t weight_t;
+
+//     typedef ap_uint<1> index_t;
+//     template<class x_T, class y_T, class res_T>
+//     using product = nnet::product::mult<x_T, y_T, res_T>;
+// };
+
+struct sa_dense_q_config0 : nnet::dense_config {
     static const unsigned n_in = N_EMBEDDED_DIM;
-    static const unsigned n_out = (N_EMBEDDED_DIM * 3);
+    static const unsigned n_out = N_EMBEDDED_DIM;
     static const unsigned io_type = nnet::io_parallel;
     static const unsigned strategy = nnet::latency;
     static const unsigned reuse_factor = 1;
     static const unsigned n_zeros = 0;
-    static const unsigned n_nonzeros = (N_EMBEDDED_DIM * 3 * N_EMBEDDED_DIM);
+    static const unsigned n_nonzeros = (N_EMBEDDED_DIM * N_EMBEDDED_DIM);
     static const bool store_weights_in_bram = false;
 
-    typedef SA_QKV_accum_t accum_t;
-    typedef SA_QKV_weight_t weight_t;
+    typedef SA_Q_accum_t accum_t;
+    typedef SA_Q_weight_t weight_t;
+
+    typedef ap_uint<1> index_t;
+    template<class x_T, class y_T, class res_T>
+    using product = nnet::product::mult<x_T, y_T, res_T>;
+};
+
+struct sa_dense_k_config0 : nnet::dense_config {
+    static const unsigned n_in = N_EMBEDDED_DIM;
+    static const unsigned n_out = N_EMBEDDED_DIM;
+    static const unsigned io_type = nnet::io_parallel;
+    static const unsigned strategy = nnet::latency;
+    static const unsigned reuse_factor = 1;
+    static const unsigned n_zeros = 0;
+    static const unsigned n_nonzeros = (N_EMBEDDED_DIM * N_EMBEDDED_DIM);
+    static const bool store_weights_in_bram = false;
+
+    typedef SA_K_accum_t accum_t;
+    typedef SA_K_weight_t weight_t;
+
+    typedef ap_uint<1> index_t;
+    template<class x_T, class y_T, class res_T>
+    using product = nnet::product::mult<x_T, y_T, res_T>;
+};
+
+struct sa_dense_v_config0 : nnet::dense_config {
+    static const unsigned n_in = N_EMBEDDED_DIM;
+    static const unsigned n_out = N_EMBEDDED_DIM;
+    static const unsigned io_type = nnet::io_parallel;
+    static const unsigned strategy = nnet::latency;
+    static const unsigned reuse_factor = 1;
+    static const unsigned n_zeros = 0;
+    static const unsigned n_nonzeros = (N_EMBEDDED_DIM * N_EMBEDDED_DIM);
+    static const bool store_weights_in_bram = false;
+
+    typedef SA_V_accum_t accum_t;
+    typedef SA_V_weight_t weight_t;
 
     typedef ap_uint<1> index_t;
     template<class x_T, class y_T, class res_T>

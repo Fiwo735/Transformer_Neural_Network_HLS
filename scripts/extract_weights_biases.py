@@ -1,4 +1,5 @@
 import torch
+import argparse
 import numpy as np
 from typing import Optional, List, Dict, Tuple
 
@@ -296,9 +297,20 @@ def extract_weights_biases(
   print('\nContents of myproject.cpp')
   print("\n".join(load_weights_from_txt))
 
+def parse():
+  parser = argparse.ArgumentParser(description='Extract weights and biases from a Pytorch model')
+  parser.add_argument('--debug', action='store_true')
+
+  return parser.parse_args()
 
 if __name__ == "__main__":
-  state_dict_path = "pytorch/best.pth.tar"
+  args = parse()
+
+  if args.debug:
+    state_dict_path = "pytorch/debug_best.pth.tar"
+  else:
+    state_dict_path = "pytorch/best.pth.tar"
+    
   # result_path = "extracted_weights_biases/"
   result_path = "hls/firmware/weights/"
   norm_layer_base_names = {
@@ -355,7 +367,10 @@ if __name__ == "__main__":
     'transformers_0_self_attention_out_weight.h': 'SA_dense_weight_t',
     'transformers_0_self_attention_pre_exp_norm_bias.h': 'T_norm1_bias_t',
     'transformers_0_self_attention_pre_exp_norm_weight.h': 'SA_exp_norm_weight_t',
-    'transformers_0_self_attention_qkv_weight.h': 'SA_QKV_weight_t',
+    # 'transformers_0_self_attention_qkv_weight.h': 'SA_QKV_weight_t',
+    'transformers_0_self_attention_q_weight.h': 'SA_Q_weight_t',
+    'transformers_0_self_attention_k_weight.h': 'SA_K_weight_t',
+    'transformers_0_self_attention_v_weight.h': 'SA_V_weight_t',
 
     'transformers_1_linear_0_bias.h': 'T_norm0_bias_t',
     'transformers_1_linear_0_weight.h': 'T_norm0_weight_t',
@@ -370,7 +385,10 @@ if __name__ == "__main__":
     'transformers_1_self_attention_out_weight.h': 'SA_dense_weight_t',
     'transformers_1_self_attention_pre_exp_norm_bias.h': 'T_norm1_bias_t',
     'transformers_1_self_attention_pre_exp_norm_weight.h': 'SA_exp_norm_weight_t',
-    'transformers_1_self_attention_qkv_weight.h': 'SA_QKV_weight_t',
+    # 'transformers_1_self_attention_qkv_weight.h': 'SA_QKV_weight_t',
+    'transformers_1_self_attention_q_weight.h': 'SA_Q_weight_t',
+    'transformers_1_self_attention_k_weight.h': 'SA_K_weight_t',
+    'transformers_1_self_attention_v_weight.h': 'SA_V_weight_t',
 
     'transformers_2_linear_0_bias.h': 'T_norm0_bias_t',
     'transformers_2_linear_0_weight.h': 'T_norm0_weight_t',
@@ -385,7 +403,10 @@ if __name__ == "__main__":
     'transformers_2_self_attention_out_weight.h': 'SA_dense_weight_t',
     'transformers_2_self_attention_pre_exp_norm_bias.h': 'T_norm1_bias_t',
     'transformers_2_self_attention_pre_exp_norm_weight.h': 'SA_exp_norm_weight_t',
-    'transformers_2_self_attention_qkv_weight.h': 'SA_QKV_weight_t',
+    # 'transformers_2_self_attention_qkv_weight.h': 'SA_QKV_weight_t',
+    'transformers_2_self_attention_q_weight.h': 'SA_Q_weight_t',
+    'transformers_2_self_attention_k_weight.h': 'SA_K_weight_t',
+    'transformers_2_self_attention_v_weight.h': 'SA_V_weight_t',
   }
 
 

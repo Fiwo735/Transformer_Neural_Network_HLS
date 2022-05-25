@@ -123,7 +123,10 @@ class SelfAttention(nn.Module):
 
         # self.norm = nn.LayerNorm(in_dim)
         self.norm = nn.BatchNorm1d(in_dim)
-        self.qkv = nn.Linear(in_dim, 2*self.latent_dim + in_dim, bias=False)
+        # self.qkv = nn.Linear(in_dim, 2*self.latent_dim + in_dim, bias=False)
+        self.q = nn.Linear(in_dim, in_dim, bias=False)
+        self.k = nn.Linear(in_dim, in_dim, bias=False)
+        self.v = nn.Linear(in_dim, in_dim, bias=False)
         self.out = nn.Linear(in_dim, in_dim)
 
         # TODO can this be done better?
@@ -206,15 +209,22 @@ class SelfAttention(nn.Module):
         self.debug_print('out (after norm)', out)
 
         # Queries, keys, and values
-        out = self.qkv(out)
+        # out = self.qkv(out)
+        out_q = self.q(out)
+        out_k = self.k(out)
+        out_v = self.v(out)
         # out = self.qkv(x)
-        self.debug_print('out (after qkv)', out)
+        # self.debug_print('out (after qkv)', out)
+        self.debug_print('out_q', out_q)
+        self.debug_print('out_k', out_k)
+        self.debug_print('out_v', out_v)
         # self.debug_print(f'weight of qkv {self.qkv.weight.size()}')
 
-        out = out.view(m_batch, seq_len, self.heads, -1)   # (batch_m, seq_len, num_heads, 2*C_head + C//num_head )
-        self.debug_print('out (after view)', out)
+        # out = out.view(m_batch, seq_len, self.heads, -1)   # (batch_m, seq_len, num_heads, 2*C_head + C//num_head )
+        # self.debug_print('out (after view)', out)
 
-        queries, keys, values = torch.split(out, [C_H, C_H, C // self.heads], dim=-1)
+        # queries, keys, values = torch.split(out, [C_H, C_H, C // self.heads], dim=-1)
+        queries, keys, values = out_q.view(m_batch, seq_len, self.heads, -1), out_k.view(m_batch, seq_len, self.heads, -1), out_v.view(m_batch, seq_len, self.heads, -1)
         self.debug_print('queries', queries)
         self.debug_print('keys', keys)
         self.debug_print('values', values)

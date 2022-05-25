@@ -31,11 +31,11 @@ struct transformer_config
     static const unsigned n_norm1_bias = 256;
     static const unsigned n_dense1_weight = 32768;
 
-    typedef float SA_norm_weight_t;
-    typedef float SA_norm_bias_t;
-    typedef float SA_QKV_weight_t;
-    typedef float SA_dense_weight_t;
-    typedef float SA_dense_bias_t;
+    typedef float S_norm_weight_t;
+    typedef float S_norm_bias_t;
+    typedef float S_QKV_weight_t;
+    typedef float S_dense_weight_t;
+    typedef float S_dense_bias_t;
 
     typedef float norm0_weight_t;
     typedef float norm0_bias_t;
@@ -89,13 +89,16 @@ struct transformer_config
 
 // TODO make input_t and data_t be used consistently
 
-template<class data_T, class res_T, typename CONFIG_T, typename SA_CONFIG_T, typename SA_NORM_CONFIG_T, typename SA_DENSE0_CONFIG_T, typename SA_SOFTMAX_CONFIG_T, typename SA_DENSE3_CONFIG_T, typename SA_EXP_NORM_CONFIG_T, typename NORM0_CONFIG_T, typename SIG0_CONFIG_T, typename DENSE0_CONFIG_T, typename NORM1_CONFIG_T, typename SIG1_CONFIG_T, typename DENSE1_CONFIG_T>
+template<class data_T, class res_T, typename CONFIG_T, typename SA_CONFIG_T, typename SA_NORM_CONFIG_T, typename SA_DENSE0_Q_CONFIG_T, typename SA_DENSE0_K_CONFIG_T, typename SA_DENSE0_V_CONFIG_T, typename SA_SOFTMAX_CONFIG_T, typename SA_DENSE3_CONFIG_T, typename SA_EXP_NORM_CONFIG_T, typename NORM0_CONFIG_T, typename SIG0_CONFIG_T, typename DENSE0_CONFIG_T, typename NORM1_CONFIG_T, typename SIG1_CONFIG_T, typename DENSE1_CONFIG_T>
 void transformer(
     data_T                                  data[CONFIG_T::n_particles][CONFIG_T::n_el],
     res_T                                   res[CONFIG_T::n_particles][CONFIG_T::n_el],
     typename CONFIG_T::S_norm_weight_t      SA_norm_weight[CONFIG_T::n_el],
     typename CONFIG_T::S_norm_bias_t        SA_norm_bias[CONFIG_T::n_el],
-    typename CONFIG_T::S_QKV_weight_t       SA_QKV_weight[CONFIG_T::n_SA_QKV_weight],
+    // typename CONFIG_T::S_QKV_weight_t       SA_QKV_weight[CONFIG_T::n_SA_QKV_weight],
+    typename CONFIG_T::S_Q_weight_t         SA_Q_weight[CONFIG_T::n_SA_Q_weight],
+    typename CONFIG_T::S_K_weight_t         SA_K_weight[CONFIG_T::n_SA_K_weight],
+    typename CONFIG_T::S_V_weight_t         SA_V_weight[CONFIG_T::n_SA_V_weight],
     typename CONFIG_T::S_dense_weight_t     SA_dense_weight[CONFIG_T::n_SA_dense_weight],
     typename CONFIG_T::S_dense_bias_t       SA_dense_bias[CONFIG_T::n_SA_dense_bias],
     typename CONFIG_T::S_exp_norm_weight_t  SA_exp_norm_weight[CONFIG_T::n_SA_exp_norm_weight],
@@ -109,18 +112,22 @@ void transformer(
 ){
     #pragma HLS ARRAY_PARTITION variable=data complete dim=0
     #pragma HLS ARRAY_PARTITION variable=res complete dim=0
-    #pragma HLS FUNCTION_INSTANTIATE variable=SA_QKV_weight,SA_dense_weight,SA_dense_bias,dense0_weight,dense1_weight
+    #pragma HLS FUNCTION_INSTANTIATE variable=SA_norm_weight,SA_norm_bias,SA_Q_weight,SA_K_weight,SA_V_weight,SA_dense_weight,SA_dense_bias,SA_exp_norm_weight,SA_exp_norm_bias
+    #pragma HLS FUNCTION_INSTANTIATE variable=norm0_weight,norm0_bias,dense0_weight,norm1_weight,norm1_bias,dense1_weight
     #pragma HLS PIPELINE
 
     // Self-attention
     typename CONFIG_T::S_result_t self_attention_out[CONFIG_T::n_particles][CONFIG_T::n_el];
     #pragma HLS ARRAY_PARTITION variable=self_attention_out complete dim=0
-    self_attention<data_T, typename CONFIG_T::S_result_t, SA_CONFIG_T, SA_NORM_CONFIG_T, SA_DENSE0_CONFIG_T, SA_SOFTMAX_CONFIG_T, SA_DENSE3_CONFIG_T, SA_EXP_NORM_CONFIG_T>(
+    self_attention<data_T, typename CONFIG_T::S_result_t, SA_CONFIG_T, SA_NORM_CONFIG_T, SA_DENSE0_Q_CONFIG_T, SA_DENSE0_K_CONFIG_T, SA_DENSE0_V_CONFIG_T, SA_SOFTMAX_CONFIG_T, SA_DENSE3_CONFIG_T, SA_EXP_NORM_CONFIG_T>(
         data,
         self_attention_out,
         SA_norm_weight,
         SA_norm_bias,
-        SA_QKV_weight,
+        // SA_QKV_weight,
+        SA_Q_weight,
+        SA_K_weight,
+        SA_V_weight,
         SA_dense_weight,
         SA_dense_bias,
         SA_exp_norm_weight,

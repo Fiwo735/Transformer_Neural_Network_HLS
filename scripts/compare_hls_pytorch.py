@@ -175,7 +175,6 @@ def modify_defines(
     with open(path) as old_file:
       
       for index, line in enumerate(old_file):
-
         for key, value in options.items():
           if index == key - 1:
             if line_type == 'ap_fixed':
@@ -234,7 +233,7 @@ def set_hls_output_predictions(path, results):
 
 def custom_plot(data, pickle_path):
   fig = plt.figure()
-  plt.scatter([next(iter(p.values()))[0] for p, _, _ in data], [accuracy * 100. for _, _, accuracy in data], marker='D', label='Test accuracy')
+  plt.scatter([next(iter(p.values()))[0] for p, _, _ in data], [accuracy * 100. for _, accuracy, _ in data], marker='D', label='Test accuracy')
   plt.axhline(y=20, color='r', linestyle='--', label='Baseline accuracy')
   plt.xticks(ticks=[next(iter(p.values()))[0] for p, _, _ in data], labels=[f'<{next(iter(p.values()))[0]},{next(iter(p.values()))[1]}>' for p, _, _ in data], rotation=90)
   plt.title('Accuracy against fixed-point precision')
@@ -277,10 +276,15 @@ if __name__ == '__main__':
       print(f'Loaded pickled results from {args.load}')
       print(f'Collected results:\n')
 
-      for general_type_option, reduced_type_option, accuracy in loaded_results:
+      # for general_type_option, reduced_type_option, accuracy in loaded_results:
+      #   print('Options:')
+      #   print(f'{opt_fmt(general_type_option)}\n{opt_fmt(reduced_type_option)}')
+      #   print(f'Accuracy: {accuracy * 100:.2f}%\n')
+
+      for type_option, accuracy_hls, accuracy_pytorch in loaded_results:
         print('Options:')
-        print(f'{opt_fmt(general_type_option)}\n{opt_fmt(reduced_type_option)}')
-        print(f'Accuracy: {accuracy * 100:.2f}%\n')
+        print(f'{opt_fmt(type_option)}\n')
+        print(f'Accuracy (HLS): {accuracy_hls*100:.2f}%, accuracy (PyTorch): {accuracy_pytorch*100:.2f}%\n')
 
     custom_plot(data=loaded_results, pickle_path=args.load)
 
@@ -298,73 +302,47 @@ if __name__ == '__main__':
     pytorch_results = get_pytorch_results(path='hls/tb_data/tb_output_predictions.dat')
 
   # set_hls_output_predictions(path=hls_output_predictions_path, results=pytorch_results)
-  
-  general_type_options = [
-    # {
-    #   54: (30, 15), 55: (30, 15), 56: (30, 15),
-    # },
-    # {
-    #   54: (29, 15), 55: (29, 15), 56: (29, 15),
-    # },
-    # {
-    #   54: (28, 15), 55: (28, 15), 56: (28, 15),
-    # },
-    {
-      54: (27, 15), 55: (27, 15), 56: (27, 15),
-    },
-    # {
-    #   54: (26, 15), 55: (26, 15), 56: (26, 15),
-    # },
-    # {
-    #   54: (25, 15), 55: (25, 15), 56: (25, 15),
-    # },
-    # {
-    #   54: (24, 15), 55: (24, 15), 56: (24, 15),
-    # },
-    # {
-    #   54: (23, 15), 55: (23, 15), 56: (23, 15),
-    # },
-    # {
-    #   54: (22, 15), 55: (22, 15), 56: (22, 15),
-    # },
-    # {
-    #   54: (21, 15), 55: (21, 15), 56: (21, 15),
-    # },
-    # {
-    #   54: (20, 15), 55: (20, 15), 56: (20, 15),
-    # },
-    # {
-    #   54: (19, 15), 55: (19, 15), 56: (19, 15),
-    # },
-    # {
-    #   54: (18, 15), 55: (18, 15), 56: (18, 15),
-    # },
-    # {
-    #   54: (17, 15), 55: (17, 15), 56: (17, 15),
-    # },
-    # {
-    #   54: (16, 15), 55: (16, 15), 56: (16, 15),
-    # },
-  ]
 
-  reduced_type_options = [
-    {
-      58: (17, 7), 59: (17, 7), 60: (17, 7),
-    },
-  ]
 
-  embedded_dims_options = [
-    # {
-    #   19: 4, 20: 1,
-    # },
+  type_options = [
     {
-      19: 16, 20: 2,
+      47: (34, 18),
     },
     # {
-    #   19: 64, 20: 4,
+    #   47: (33, 18),
     # },
     # {
-    #   19: 256, 20: 8,
+    #   47: (32, 18),
+    # },
+    # {
+    #   47: (31, 18),
+    # },
+    # {
+    #   47: (30, 18),
+    # },
+    # {
+    #   47: (29, 18),
+    # },
+    # {
+    #   47: (28, 18),
+    # },
+    # {
+    #   47: (27, 18),
+    # },
+    # {
+    #   47: (26, 18),
+    # },
+    # {
+    #   47: (25, 18),
+    # },
+    # {
+    #   47: (24, 18),
+    # },
+    # {
+    #   47: (23, 18),
+    # },
+    # {
+    #   47: (22, 18),
     # },
   ]
 
@@ -372,7 +350,8 @@ if __name__ == '__main__':
 
   
 
-  for general_type_option, reduced_type_option, embedded_dims in product(general_type_options, reduced_type_options, embedded_dims_options):
+  # for general_type_option, reduced_type_option, embedded_dims in product(general_type_options, reduced_type_options, embedded_dims_options):
+  for type_option in type_options:
     # print(f'\n{opt_fmt(embedded_dims)}\n{opt_fmt(general_type_option)}\n{opt_fmt(reduced_type_option)}')
 
     if run_hls:
@@ -382,6 +361,8 @@ if __name__ == '__main__':
       # modify_defines(path=defines_path, options=general_type_option, line_type='ap_fixed')
       # modify_defines(path=defines_path, options=reduced_type_option, line_type='ap_fixed')
       # modify_defines(path=defines_path, options=embedded_dims, line_type='#define')
+
+      modify_defines(path=defines_path, options=type_option, line_type='ap_fixed')
 
       clean_file(path=hls_layers_log_path)
       run_vivado_hls(hls_dir_path=hls_dir_path, build_tcl_path=build_tcl_path, quiet=args.quiet)
@@ -396,9 +377,9 @@ if __name__ == '__main__':
       labels = get_hls_results(path=labels_path)
       average_MSE, accuracy_pytorch, accuracy_hls = compare_results(hls_results=csim_results, pytorch_results=pytorch_results, labels=labels, quiet=args.quiet)
 
-      # print(f'\tAverage MSE: {average_MSE:.5f}, accuracy (PyTorch): {accuracy_pytorch*100:.2f}% , accuracy (HLS): {accuracy_hls*100:.2f}%')
-      print(f'accuracy (HLS): {accuracy_hls*100:.2f}%')
-      all_hls_accuracy.append((general_type_option, reduced_type_option, accuracy_hls))
+      print(f'\tAverage MSE: {average_MSE:.5f}, accuracy (PyTorch): {accuracy_pytorch*100:.2f}% , accuracy (HLS): {accuracy_hls*100:.2f}%')
+      # print(f'accuracy (HLS): {accuracy_hls*100:.2f}%, accuracy (PyTorch): {accuracy_pytorch*100:.2f}%')
+      all_hls_accuracy.append((type_option, accuracy_hls, accuracy_pytorch))
 
     if args.cosim:
       print('\nRTL Co-simulation ')
@@ -408,7 +389,8 @@ if __name__ == '__main__':
       labels = get_hls_results(path=labels_path)
       average_MSE, accuracy_pytorch, accuracy_hls = compare_results(hls_results=cosim_results, pytorch_results=pytorch_results, labels=labels, quiet=args.quiet)
 
-      print(f'\tAverage MSE: {average_MSE:.5f}, accuracy (PyTorch): {accuracy_pytorch*100:.2f}% , accuracy (HLS): {accuracy_hls*100:.2f}%')
+      # print(f'\tAverage MSE: {average_MSE:.5f}, accuracy (PyTorch): {accuracy_pytorch*100:.2f}% , accuracy (HLS): {accuracy_hls*100:.2f}%')
+      print(f'accuracy (HLS): {accuracy_hls*100:.2f}%, accuracy (PyTorch): {accuracy_pytorch*100:.2f}%')
 
   date = datetime.now().strftime('%d-%m_%H-%M')
   with open(f'logs/type_exploration_{date}.pickle', 'wb') as f:

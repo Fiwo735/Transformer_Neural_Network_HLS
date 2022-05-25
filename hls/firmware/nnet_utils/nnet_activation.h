@@ -269,6 +269,32 @@ inline unsigned softmax_idx_from_real_val_pos(data_T x){
     return (unsigned) y(N-1, 0);
 }
 
+template<class data_T, typename CONFIG_T>
+void init_exp_table(typename CONFIG_T::exp_table_t table_out[CONFIG_T::table_size]){
+    // std::ofstream fout("tb_data/csim_layers.log", std::ios_base::app); //TODO remove
+    // The template data_T is the data type used to address the table
+    for(unsigned i = 0; i < CONFIG_T::table_size; i++){
+        // Slicing bits for address is going to round towards 0, so take the central value
+        // float x = softmax_real_val_from_idx<data_T, CONFIG_T, EXP_TARGET_IWIDTH>(i);
+        // typename CONFIG_T::exp_table_t exp_x = exp_fcn_float(x);
+        // table_out[i] = exp_x;
+        float x;
+        unsigned index;
+        if (i < CONFIG_T::table_size / 2) {
+            x = softmax_real_val_from_idx<data_T, CONFIG_T>(i);
+            index = i;
+        } else {
+            x = -softmax_real_val_from_idx<data_T, CONFIG_T>(i - CONFIG_T::table_size / 2);
+            index = 3 * CONFIG_T::table_size / 2 - i - 1;
+        }
+        typename CONFIG_T::exp_table_t exp_x = exp_fcn_float(x);
+        table_out[index] = exp_x;
+        // fout << "i: " << i << " index: " << index << " x: " << x << " exp(x): " << exp_fcn_float(x) << " exp_x: " << exp_x << " table_out[index]: " << table_out[index] << "\n";
+        
+    }
+    // fout.close(); //TODO removes
+}
+
 template<class data_T, typename CONFIG_T, size_t TARGET_IWIDTH>
 void init_exp_table(typename CONFIG_T::exp_table_t table_out[CONFIG_T::table_size]){
     // std::ofstream fout("tb_data/csim_layers.log", std::ios_base::app); //TODO remove
@@ -295,6 +321,23 @@ void init_exp_table(typename CONFIG_T::exp_table_t table_out[CONFIG_T::table_siz
     // fout.close(); //TODO removes
 }
 
+template<class data_T, typename CONFIG_T>
+void init_log_table(typename CONFIG_T::log_table_t table_out[CONFIG_T::table_size]){
+    // std::ofstream fout("tb_data/csim_layers.log", std::ios_base::app); //TODO remove
+    // The template data_T is the data type used to address the table
+    for(unsigned i = 0; i < CONFIG_T::table_size; i++){
+        // Slicing bits for address is going to round towards 0, so take the central value
+        float x = softmax_real_val_from_idx<data_T, CONFIG_T>(i);
+        unsigned index = i;
+        typename CONFIG_T::log_table_t log_x = std::log(x);
+        table_out[index] = log_x;
+        // table_out[i] = log(i);
+        // std::cout << " log_fcn_float(x): " << log_fcn_float(x) << " log_x: " << log_x << " table_out[i]: " << table_out[i] << std::endl;
+        // fout << "i: " << i << " index: " << index << " x: " << x << " log(x): " << log_fcn_float(x) << " log_x: " << log_x << " table_out[index]: " << table_out[index] << "\n";
+    }
+    // fout.close(); //TODO removes
+}
+
 template<class data_T, typename CONFIG_T, size_t TARGET_IWIDTH>
 void init_log_table(typename CONFIG_T::log_table_t table_out[CONFIG_T::table_size]){
     // std::ofstream fout("tb_data/csim_layers.log", std::ios_base::app); //TODO remove
@@ -312,6 +355,19 @@ void init_log_table(typename CONFIG_T::log_table_t table_out[CONFIG_T::table_siz
     // fout.close(); //TODO removes
 }
 
+template<class data_T, typename CONFIG_T>
+void init_invert_table(typename CONFIG_T::inv_table_t table_out[CONFIG_T::table_size]){
+    // std::ofstream fout("tb_data/csim_layers.log", std::ios_base::app); //TODO remove
+    // The template data_T is the data type used to address the table
+    for(unsigned i = 0; i < CONFIG_T::table_size; i++){
+        float x = softmax_real_val_from_idx<data_T, CONFIG_T>(i);
+        typename CONFIG_T::inv_table_t inv_x = 1 / x;
+        table_out[i] = inv_x;
+        // fout << "i: " << i << " softmax_real_val_from_idx(i): " << x << " inv_x: " << inv_x << " table_out[i]: " << table_out[i] << "\n";
+    }
+    // fout.close(); //TODO removes
+}
+
 template<class data_T, typename CONFIG_T, size_t TARGET_IWIDTH>
 void init_invert_table(typename CONFIG_T::inv_table_t table_out[CONFIG_T::table_size]){
     // std::ofstream fout("tb_data/csim_layers.log", std::ios_base::app); //TODO remove
@@ -320,7 +376,7 @@ void init_invert_table(typename CONFIG_T::inv_table_t table_out[CONFIG_T::table_
         float x = softmax_real_val_from_idx<data_T, CONFIG_T, TARGET_IWIDTH>(i);
         typename CONFIG_T::inv_table_t inv_x = 1 / x;
         table_out[i] = inv_x;
-        // fout << "i: " << i << " softmax_real_val_from_idx(i): " << x << " inv_x: " << inv_x << " table_out[i]: " << table_out[i] << "\n";
+        // fout << "i: " << i << " x: " << x << " inv_x: " << inv_x << " table_out[i]: " << table_out[i] << "\n";
     }
     // fout.close(); //TODO removes
 }
@@ -355,8 +411,8 @@ void softmax_latency(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in]){
         initialized = true;
     }
 
-    // nnet::print_full_result<general_table_t, CONFIG_T::table_size>("\nexp_table", exp_table, fout);
-    // nnet::print_full_result<general_table_t, CONFIG_T::table_size>("\ninvert_table:", invert_table, fout);
+    // nnet::print_full_result<typename CONFIG_T::exp_table_t, CONFIG_T::table_size>("\nexp_table", exp_table, fout);
+    // nnet::print_full_result<typename CONFIG_T::inv_table_t, CONFIG_T::table_size>("\ninvert_table:", invert_table, fout);
     // nnet::print_full_result<data_T, CONFIG_T::n_in>("\nafter table initialization, data:", data, fout);
     // nnet::print_full_result<data_T, CONFIG_T::n_in>("after table initialization, data:", data, std::cout);
 
@@ -380,7 +436,7 @@ void softmax_latency(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in]){
         }
     }
 
-    // nnet::print_full_result<general_table_t, CONFIG_T::n_in>("exp_res", exp_res, fout);
+    // nnet::print_full_result<typename CONFIG_T::exp_table_t, CONFIG_T::n_in>("exp_res", exp_res, fout);
     // nnet::print_full_result<general_table_t, CONFIG_T::n_in>("exp_res", exp_res, std::cout);
 
     // Explicitly sum the results with an adder tree.

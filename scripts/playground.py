@@ -732,7 +732,7 @@ def case_4():
 
   name = 'log_table'
   guard = name.upper() + '_H_'
-  var_type = 'general_table_t'
+  var_type = 'top_log_softmax_log_t'
   
   table_values = ', '.join(['\n' * (n % 7 == 6) + f'{el:.16f}' for n, el in enumerate(table)])
   

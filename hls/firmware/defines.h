@@ -83,13 +83,21 @@ typedef ap_fixed<34,18> SA_norm_t;
 typedef ap_fixed<34,18> SA_norm_weight_t;
 typedef ap_fixed<34,18> SA_norm_bias_t;
 
-typedef ap_fixed<34,18> SA_QKV_t;
-typedef ap_fixed<34,18> SA_QKV_weight_t;
-typedef ap_fixed<34,18> SA_QKV_accum_t;
+// typedef ap_fixed<34,18> SA_QKV_t;
+// typedef ap_fixed<34,18> SA_QKV_weight_t;
+// typedef ap_fixed<34,18> SA_QKV_accum_t;
 
 typedef ap_fixed<34,18> SA_Q_t;
+typedef ap_fixed<34,18> SA_Q_weight_t;
+typedef ap_fixed<34,18> SA_Q_accum_t;
+
 typedef ap_fixed<34,18> SA_K_t;
+typedef ap_fixed<34,18> SA_K_weight_t;
+typedef ap_fixed<34,18> SA_K_accum_t;
+
 typedef ap_fixed<34,18> SA_V_t;
+typedef ap_fixed<34,18> SA_V_weight_t;
+typedef ap_fixed<34,18> SA_V_accum_t;
 
 typedef ap_fixed<34,18> SA_energy_t;
 
@@ -102,7 +110,7 @@ typedef ap_fixed<31,11> SA_softmax_exp_t;
 typedef ap_fixed<31,11> SA_softmax_inv_t;
 #define N_SOFTMAX_TABLE 4096
 #define EXP_TARGET_IWIDTH 4
-#define INV_TARGET_IWIDTH 4
+#define INV_TARGET_IWIDTH 7
 
 typedef ap_fixed<34,18> SA_attention_t;
 
