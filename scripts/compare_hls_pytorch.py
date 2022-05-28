@@ -16,8 +16,9 @@ from datetime import datetime
 from typing import Dict, List
 from itertools import product
 from colorama import Fore, Style
+from math import sqrt
 
-def run_vivado_hls(hls_dir_path, build_tcl_path, quiet=True):
+def run_vivado_hls(hls_dir_path, build_tcl_path, log_path=None, quiet=True):
   hls_command = 'vivado_hls -f ' + build_tcl_path
 
   if quiet:
@@ -26,8 +27,13 @@ def run_vivado_hls(hls_dir_path, build_tcl_path, quiet=True):
   else:
     print('Running Vivado HLS, this might take a while...')
 
-    start_time = time()
-    result = subprocess.run(hls_command, shell=True, cwd=hls_dir_path)
+    if log_path is not None:
+      with open(log_path, 'a') as f:
+        start_time = time()
+        result = subprocess.run(hls_command, shell=True, cwd=hls_dir_path, stdout=f)
+    else:
+      start_time = time()
+      result = subprocess.run(hls_command, shell=True, cwd=hls_dir_path)
     end_time = time()
 
     print(f'Running Vivado HLS took {(end_time - start_time) / 3600:.3f} h')
@@ -86,13 +92,14 @@ def get_pytorch_results(path):
 
 
 def compare_results(hls_results, pytorch_results, labels, quiet=True):
-  total_MSE = 0.
+  total_L2 = 0.
+  total_L1 = 0.
   elements_count = 0
   correct_predictions_pytorch = 0
   correct_predictions_hls = 0
   predictions_count = 0
 
-  assert len(hls_results) == len(pytorch_results), f'{hls_results=}, {pytorch_results=}'
+  assert len(hls_results) == len(pytorch_results), f'{len(hls_results)=}, {len(pytorch_results)=}'
 
   if not quiet:
     print('Results:')
@@ -103,11 +110,15 @@ def compare_results(hls_results, pytorch_results, labels, quiet=True):
     if not quiet:
       print(hls_result, pytorch_result)
 
+    current_L2 = 0.
     for hls_val, pytorch_val in zip(hls_result, pytorch_result):
       # print(hls_val, pytorch_val)
       diff = hls_val - pytorch_val
-      total_MSE += diff * diff
+      current_L2 += diff * diff
+      total_L1 += abs(diff)
       elements_count += 1
+
+    total_L2 += sqrt(current_L2)
 
     label = int(label[0])
     correct_predictions_pytorch += int(np.argmax(pytorch_result) == label)
@@ -116,7 +127,15 @@ def compare_results(hls_results, pytorch_results, labels, quiet=True):
     #   print(f'hls: {int(np.argmax(hls_result))}, pytorch: {int(np.argmax(pytorch_result))}, label: {label}')
     predictions_count += 1
 
-  return (total_MSE / float(elements_count), correct_predictions_pytorch / predictions_count, correct_predictions_hls / predictions_count)
+  assert elements_count == len(hls_results) * len(hls_results[0]), 'Wrong number of elements was counted'
+
+  classes_num = 5
+  average_L1 = total_L1 / float(elements_count)
+  average_L2 = total_L2 / len(hls_results)
+  pytorch_accuracy = correct_predictions_pytorch / predictions_count
+  hls_accuracy = correct_predictions_hls / predictions_count
+
+  return (average_L1, average_L2, pytorch_accuracy, hls_accuracy)
 
 
 def clean_file(path):
@@ -163,15 +182,17 @@ def modify_defines(
   path: str,
   options: Dict,
   line_type: str,
+  quiet: bool = False,
 ) -> None:
 
   def pretty_print(line):
-    line_to_print = line.replace('\n', '')
-    # Only use colors when not run in nohup mode
-    if signal.getsignal(signal.SIGHUP) == signal.SIG_DFL:  # default action
-      print(f'{Fore.GREEN}L{key}:{Style.RESET_ALL} {line_to_print}', end=f' {Fore.RED}|{Style.RESET_ALL} ')
-    else:
-      print(f'L{key}: {line_to_print}', end=f' | ')
+    if not quiet:
+      line_to_print = line.replace('\n', '')
+      # Only use colors when not run in nohup mode
+      if signal.getsignal(signal.SIGHUP) == signal.SIG_DFL:  # default action
+        print(f'{Fore.GREEN}L{key}:{Style.RESET_ALL} {line_to_print}', end=f' {Fore.RED}|{Style.RESET_ALL} ')
+      else:
+        print(f'L{key}: {line_to_print}', end=f' | ')
 
   fh, abs_path = mkstemp()
 
@@ -269,8 +290,12 @@ def estimate_run_time(tb_path: str, options: List[Dict]) -> float:
   samples_num = lines_in_file(tb_path)
   options_num = len(options)
   # Some very rough time estimates given experiments so far
-  samples_per_hour = 631.16 if samples_num > 10 else 421.05
-  print(samples_num, options_num, samples_per_hour)
+  if samples_num < 10:
+    samples_per_hour = 421.05 # 4
+  elif samples_num < 650:
+    samples_per_hour = 631.16 # 640
+  else:
+    samples_per_hour = 897.49 # 1280
   return options_num * samples_num / samples_per_hour
 
 
@@ -659,6 +684,9 @@ def main(args, run_hls: bool = True):
   ]
   all_hls_accuracies = []
   all_pytorch_accuracies = []
+
+  def print_results(l1, l2, acc_pytorch, acc_hls):
+    print(f'\tAverage L1: {l1:.5f}, Average L2: {l2:.5f}, accuracy (PyTorch): {acc_pytorch*100:.2f}% , accuracy (HLS): {acc_hls*100:.2f}%')
   
   if args.csim:
     print(f'Estimated total run time: {estimate_run_time(tb_path=hls_output_predictions_path, options=type_options):.3f} h')
@@ -683,9 +711,9 @@ def main(args, run_hls: bool = True):
 
         csim_results = get_hls_results(path=csim_results_log_path)
         labels = get_hls_results(path=labels_path)
-        average_MSE, accuracy_pytorch, accuracy_hls = compare_results(hls_results=csim_results, pytorch_results=pytorch_results, labels=labels, quiet=args.quiet)
-
-        print(f'\tAverage MSE: {average_MSE:.5f}, accuracy (PyTorch): {accuracy_pytorch*100:.2f}% , accuracy (HLS): {accuracy_hls*100:.2f}%')
+        average_L1, average_L2, accuracy_pytorch, accuracy_hls = compare_results(hls_results=csim_results, pytorch_results=pytorch_results, labels=labels, quiet=args.quiet)
+        print_results(average_L1, average_L2, accuracy_pytorch, accuracy_hls)
+        
         all_hls_accuracies.append(accuracy_hls)
         all_pytorch_accuracies.append(accuracy_pytorch)
 
@@ -696,9 +724,8 @@ def main(args, run_hls: bool = True):
         cosim_results = get_hls_results(path=rtl_cosim_results_log_path)
         pytorch_results = get_pytorch_results(path=pytorch_results_log_path)
         labels = get_hls_results(path=labels_path)
-        average_MSE, accuracy_pytorch, accuracy_hls = compare_results(hls_results=cosim_results, pytorch_results=pytorch_results, labels=labels, quiet=args.quiet)
-
-        print(f'\tAverage MSE: {average_MSE:.5f}, accuracy (PyTorch): {accuracy_pytorch*100:.2f}% , accuracy (HLS): {accuracy_hls*100:.2f}%')
+        average_L1, average_L2, accuracy_pytorch, accuracy_hls = compare_results(hls_results=cosim_results, pytorch_results=pytorch_results, labels=labels, quiet=args.quiet)
+        print_results(average_L1, average_L2, accuracy_pytorch, accuracy_hls)
 
     except KeyboardInterrupt:
       print('Skipping run since KeyboardInterrupt was raised')

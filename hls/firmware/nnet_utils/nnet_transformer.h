@@ -179,7 +179,7 @@ void transformer(
         dense_latency_no_bias<typename CONFIG_T::activ1_t, typename CONFIG_T::dense1_t, DENSE1_CONFIG_T>(activ1[jj], dense1_out[jj], dense1_weight);
 
         Main_0_2: for (int ii = 0; ii < CONFIG_T::n_el; ii++) {
-            res[jj][ii] = dense1_out[jj][ii] + self_attention_sum[jj][ii];
+            res[jj][ii] = (res_T) (dense1_out[jj][ii] + self_attention_sum[jj][ii]);
         }
     }
     PRETTY_PRINT_2D(self_attention_sum, CONFIG_T::n_particles, CONFIG_T::n_el);

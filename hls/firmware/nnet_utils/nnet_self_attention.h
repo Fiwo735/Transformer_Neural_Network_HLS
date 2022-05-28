@@ -274,7 +274,7 @@ void self_attention(
 
     // Dense
     Out_dense: for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
-        dense<typename CONFIG_T::scaled_attention_t, data_T, DENSE3_CONFIG_T>(scaled_attention_reshaped[jj], res[jj], dense_weight, dense_bias);
+        dense<typename CONFIG_T::scaled_attention_t, res_T, DENSE3_CONFIG_T>(scaled_attention_reshaped[jj], res[jj], dense_weight, dense_bias);
     }
     PRETTY_PRINT_2D(res, CONFIG_T::n_particles, CONFIG_T::n_scaled_attention);
 }

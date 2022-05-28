@@ -30,7 +30,7 @@
 
 //hls-fpga-machine-learning insert bram
 
-#define CHECKPOINT 64
+#define CHECKPOINT 10
 // #define CHECKPOINT 1
 
 namespace nnet {
