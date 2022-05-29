@@ -490,7 +490,7 @@ void log_softmax_latency(data_T data[CONFIG_T::n_in], res_T res[CONFIG_T::n_in],
         // Note we are inverting the exponentials, which have type exp_table_t
         // init_invert_table<typename CONFIG_T::exp_table_t, CONFIG_T>(invert_table);
 #ifndef __HLS_SYN__
-        init_log_table<data_T, CONFIG_T, CONFIG_T::log_target_iwidth>(log_table_sim);
+        init_log_table<typename CONFIG_T::exp_table_t, CONFIG_T, CONFIG_T::log_target_iwidth>(log_table_sim);
 #endif
         initialized = true;
     }

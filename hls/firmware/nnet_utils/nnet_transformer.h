@@ -114,7 +114,6 @@ void transformer(
     #pragma HLS ARRAY_PARTITION variable=res complete dim=0
     #pragma HLS FUNCTION_INSTANTIATE variable=SA_norm_weight,SA_norm_bias,SA_Q_weight,SA_K_weight,SA_V_weight,SA_dense_weight,SA_dense_bias,SA_exp_norm_weight,SA_exp_norm_bias
     #pragma HLS FUNCTION_INSTANTIATE variable=norm0_weight,norm0_bias,dense0_weight,norm1_weight,norm1_bias,dense1_weight
-    #pragma HLS PIPELINE
 
     // Self-attention
     typename CONFIG_T::S_result_t self_attention_out[CONFIG_T::n_particles][CONFIG_T::n_el];
@@ -156,6 +155,7 @@ void transformer(
 
 
     Main_0: for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
+        #pragma HLS PIPELINE II=1
         Main_0_1: for (int iendsum = 0; iendsum < CONFIG_T::n_el; iendsum++) {
             self_attention_sum[jj][iendsum] = data[jj][iendsum] + self_attention_out[jj][iendsum];
         }

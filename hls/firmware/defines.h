@@ -44,7 +44,7 @@
 // typedef ap_fixed<31,11> input_t_red;
 
 //--------------------Top--------------------
-typedef ap_fixed<29,18> input_t;
+typedef ap_fixed<30,18> input_t;
 
 typedef ap_fixed<30,18> top_embedded_t;
 typedef ap_fixed<30,18> top_embedded_weight_t;
@@ -58,10 +58,6 @@ typedef ap_fixed<30,18> top_cls_token_t;
 typedef ap_fixed<30,18> SA_norm_t;
 typedef ap_fixed<30,18> SA_norm_weight_t;
 typedef ap_fixed<30,18> SA_norm_bias_t;
-
-// typedef ap_fixed<34,18> SA_QKV_t;
-// typedef ap_fixed<34,18> SA_QKV_weight_t;
-// typedef ap_fixed<34,18> SA_QKV_accum_t;
 
 typedef ap_fixed<30,18> SA_Q_t;
 typedef ap_fixed<30,18> SA_Q_weight_t;
@@ -81,9 +77,9 @@ typedef ap_fixed<30,18> SA_exp_norm_t;
 typedef ap_fixed<30,18> SA_exp_norm_weight_t;
 typedef ap_fixed<30,18> SA_exp_norm_bias_t;
 
-typedef ap_fixed<30,18> SA_exp_norm_red_t;
-typedef ap_fixed<30,18> SA_softmax_exp_t;
-typedef ap_fixed<30,18> SA_softmax_inv_t;
+typedef ap_fixed<30,18> SA_exp_norm_red_t; // N=12, T=4
+typedef ap_fixed<30,18> SA_softmax_exp_t; // N=12, T=4
+typedef ap_fixed<30,18> SA_softmax_inv_t; // N=12, T=7
 #define N_SOFTMAX_TABLE 4096
 #define EXP_TARGET_IWIDTH 4
 #define INV_TARGET_IWIDTH 7
@@ -139,9 +135,9 @@ typedef ap_fixed<30,18> top_mlp_weight_t;
 typedef ap_fixed<30,18> top_mlp_bias_t;
 typedef ap_fixed<30,18> top_mlp_accum_t;
 
-typedef ap_fixed<30,18> top_mlp_red_t;
-typedef ap_fixed<30,18> top_log_softmax_exp_t;
-typedef ap_fixed<30,18> top_log_softmax_log_t;
+typedef ap_fixed<30,18> top_mlp_red_t; // N=12, T=5
+typedef ap_fixed<30,18> top_log_softmax_exp_t; // N=12, T=5
+typedef ap_fixed<30,18> top_log_softmax_log_t; // N=12, T=4
 #define N_LOG_SOFTMAX_TABLE 4096
 #define LOG_TARGET_IWIDTH 5
 #define LOG_EXP_TARGET_IWIDTH 4

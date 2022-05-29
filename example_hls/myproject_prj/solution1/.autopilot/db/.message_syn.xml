@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Messages>
+	<Message severity="INFO" prefix="[SCHED 204-61]" key="SCHED_PIPELINING_STATUS_631" tag="SCHEDULE" content="Option &apos;relax_ii_for_timing&apos; is enabled, will increase II to preserve clock frequency constraints."/>
+	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1312" tag="" content="Analyzing design file &apos;myproject.cpp&apos; ..."/>
+	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_965" tag="" content="Finished Linking Time (s): cpu = 00:00:20 ; elapsed = 00:00:27 . Memory (MB): peak = 1049.250 ; gain = 527.164 ; free physical = 104320 ; free virtual = 185399"/>
+	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_965" tag="" content="Finished Checking Pragmas Time (s): cpu = 00:00:20 ; elapsed = 00:00:27 . Memory (MB): peak = 1049.250 ; gain = 527.164 ; free physical = 104320 ; free virtual = 185399"/>
+	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1467" tag="" content="Starting code transformations ..."/>
+	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_965" tag="" content="Finished Standard Transforms Time (s): cpu = 00:00:21 ; elapsed = 00:00:29 . Memory (MB): peak = 1049.250 ; gain = 527.164 ; free physical = 104312 ; free virtual = 185391"/>
+	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1472" tag="" content="Checking synthesizability ..."/>
+	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_965" tag="" content="Finished Checking Synthesizability Time (s): cpu = 00:00:21 ; elapsed = 00:00:29 . Memory (MB): peak = 1049.250 ; gain = 527.164 ; free physical = 104306 ; free virtual = 185385"/>
+	<Message severity="INFO" prefix="[XFORM 203-502]" key="XFORM_AUTO_UNROLL_STATUS_246" tag="" content="Unrolling all sub-loops inside loop &apos;Main_1&apos; (myproject.cpp:36) in function &apos;myproject&apos; for pipelining."/>
+	<Message severity="INFO" prefix="[HLS 200-489]" key="HLS 200-489" tag="" content="Unrolling loop &apos;Main_0&apos; (myproject.cpp:34) in function &apos;myproject&apos; completely with a factor of 5."/>
+	<Message severity="INFO" prefix="[HLS 200-489]" key="HLS 200-489" tag="" content="Unrolling loop &apos;Main_2&apos; (myproject.cpp:38) in function &apos;myproject&apos; completely with a factor of 30."/>
+	<Message severity="INFO" prefix="[HLS 200-489]" key="HLS 200-489" tag="" content="Unrolling loop &apos;Main_3&apos; (myproject.cpp:39) in function &apos;myproject&apos; completely with a factor of 30."/>
+	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_965" tag="" content="Finished Pre-synthesis Time (s): cpu = 00:03:03 ; elapsed = 00:03:11 . Memory (MB): peak = 1050.262 ; gain = 528.176 ; free physical = 104181 ; free virtual = 185261"/>
+	<Message severity="INFO" prefix="[HLS 200-472]" key="HLS 200-472" tag="" content="Inferring partial write operation for &apos;accum.V&apos; (myproject.cpp:15:44)"/>
+	<Message severity="INFO" prefix="[HLS 200-472]" key="HLS 200-472" tag="" content="Inferring partial write operation for &apos;accum.V&apos; (myproject.cpp:40:55)"/>
+	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_965" tag="" content="Finished Architecture Synthesis Time (s): cpu = 00:04:22 ; elapsed = 00:04:30 . Memory (MB): peak = 1177.250 ; gain = 655.164 ; free physical = 104150 ; free virtual = 185229"/>
+	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1317" tag="" content="Starting hardware synthesis ..."/>
+	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1385" tag="" content="Synthesizing &apos;myproject&apos; ..."/>
+	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1477" tag="" content="----------------------------------------------------------------"/>
+	<Message severity="INFO" prefix="[HLS 200-42]" key="HLS_42_1438" tag="" content="-- Implementing module &apos;myproject&apos;"/>
+	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1478" tag="" content="----------------------------------------------------------------"/>
+	<Message severity="INFO" prefix="[SCHED 204-11]" key="SCHED_SCHED_STATUS_597" tag="" content="Starting scheduling ..."/>
+	<Message severity="INFO" prefix="[SCHED 204-61]" key="SCHED_PIPELINING_STATUS_41" tag="" content="Pipelining loop &apos;Main_1&apos;."/>
+	<Message severity="WARNING" prefix="[SCHED 204-68]" key="SCHED_CARRIED_CONSTRAINT_NOT_MET_32" tag="LOOP,SDX_LOOP,SCHEDULE" content="The II Violation in module &apos;myproject&apos; (Loop: Main_1): Unable to enforce a carried dependence constraint (II = 1, distance = 1, offset = 1)
+   between &apos;store&apos; operation (&apos;accum_V_addr_write_ln40&apos;, myproject.cpp:40) of variable &apos;trunc_ln708_s&apos;, myproject.cpp:40 on array &apos;accum.V&apos;, myproject.cpp:15 and &apos;load&apos; operation (&apos;accum_V_load_1&apos;, myproject.cpp:40) on array &apos;accum.V&apos;, myproject.cpp:15."/>
+</Messages>

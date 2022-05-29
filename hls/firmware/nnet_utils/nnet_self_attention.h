@@ -120,13 +120,13 @@ void self_attention(
     #pragma HLS ARRAY_PARTITION variable=data complete dim=0
     #pragma HLS ARRAY_PARTITION variable=res complete dim=0
     #pragma HLS FUNCTION_INSTANTIATE variable=norm_weight_t,norm_bias_t,Q_weight,K_weight,V_weight,dense_weight,dense_bias,exp_norm_weight,exp_norm_bias
-    #pragma HLS PIPELINE
 
 #if SKIP_NORM == 0
     // Normalize
     typename CONFIG_T::norm_t normalized[CONFIG_T::n_particles][CONFIG_T::n_qkv_in_el];
     #pragma HLS ARRAY_PARTITION variable=normalized complete dim=0
     Norm_0: for (unsigned inorm = 0; inorm < CONFIG_T::n_particles; inorm++) {
+        #pragma HLS PIPELINE II=1
         normalize<data_T, typename CONFIG_T::norm_t, NORM_CONFIG_T>(data[inorm], normalized[inorm], norm_weight, norm_bias);
     }
     PRETTY_PRINT_2D(normalized, CONFIG_T::n_particles, CONFIG_T::n_qkv_in_el);
@@ -147,6 +147,7 @@ void self_attention(
     typename CONFIG_T::Q_t queries[CONFIG_T::n_particles][CONFIG_T::n_q];
     #pragma HLS ARRAY_PARTITION variable=queries complete dim=0
     Q_dense: for (unsigned iq = 0; iq < CONFIG_T::n_particles; iq++) {
+        #pragma HLS PIPELINE II=1
 #if SKIP_NORM == 0
         dense_latency_no_bias<typename CONFIG_T::norm_t, typename CONFIG_T::Q_t, DENSE0_Q_CONFIG_T>(normalized[iq], queries[iq], Q_weight);
 #else
@@ -158,6 +159,7 @@ void self_attention(
     typename CONFIG_T::K_t keys[CONFIG_T::n_particles][CONFIG_T::n_k];
     #pragma HLS ARRAY_PARTITION variable=keys complete dim=0
     K_dense: for (unsigned ik = 0; ik < CONFIG_T::n_particles; ik++) {
+        #pragma HLS PIPELINE II=1
 #if SKIP_NORM == 0
         dense_latency_no_bias<typename CONFIG_T::norm_t, typename CONFIG_T::K_t, DENSE0_K_CONFIG_T>(normalized[ik], keys[ik], K_weight);
 #else
@@ -166,9 +168,10 @@ void self_attention(
     }
     PRETTY_PRINT_2D(keys, CONFIG_T::n_particles, CONFIG_T::n_k);
 
-    typename CONFIG_T::Q_t values[CONFIG_T::n_particles][CONFIG_T::n_v];
+    typename CONFIG_T::V_t values[CONFIG_T::n_particles][CONFIG_T::n_v];
     #pragma HLS ARRAY_PARTITION variable=values complete dim=0
     V_dense: for (unsigned iv = 0; iv < CONFIG_T::n_particles; iv++) {
+        #pragma HLS PIPELINE II=1
 #if SKIP_NORM == 0
         dense_latency_no_bias<typename CONFIG_T::norm_t, typename CONFIG_T::V_t, DENSE0_V_CONFIG_T>(normalized[iv], values[iv], V_weight);
 #else
@@ -195,15 +198,10 @@ void self_attention(
     // Einsum(qhc, khc -> hqk)
     typename CONFIG_T::energy_t energy[CONFIG_T::n_heads][CONFIG_T::n_particles][CONFIG_T::n_particles];
     #pragma HLS ARRAY_PARTITION variable=energy complete dim=0
-    #pragma HLS PIPELINE II=61504
     Einsum_0_c: for (unsigned cc = 0; cc < CONFIG_T::n_el/CONFIG_T::n_heads; cc++) {
-        #pragma HLS PIPELINE II=61504
         Einsum_0_h: for (unsigned hh = 0; hh < CONFIG_T::n_heads; hh++) {
-            #pragma HLS PIPELINE II=61504
             Einsum_0_q: for (unsigned qq = 0; qq < CONFIG_T::n_particles; qq++) {
-                #pragma HLS PIPELINE II=61504
                 Einsum_0_k: for (unsigned kk = 0; kk < CONFIG_T::n_particles; kk++) {
-                    #pragma HLS PIPELINE II=61504
                     if (cc == 0) energy[hh][kk][qq] = 0;
                     // energy[hh][kk][qq] += keys[qq][hh + cc * CONFIG_T::n_heads] * queries[kk][hh + cc * CONFIG_T::n_heads];
                     energy[hh][kk][qq] += keys[qq][hh * CONFIG_T::n_el/CONFIG_T::n_heads + cc] * queries[kk][hh * CONFIG_T::n_el/CONFIG_T::n_heads + cc];
@@ -211,13 +209,13 @@ void self_attention(
             }
         }
     }
-    #pragma HLS PIPELINE
     PRETTY_PRINT_3D(energy, CONFIG_T::n_heads, CONFIG_T::n_particles, CONFIG_T::n_particles);
 
     // Reshape
     typename CONFIG_T::energy_t energy_reshaped[CONFIG_T::n_heads][CONFIG_T::n_particles * CONFIG_T::n_particles];
     #pragma HLS ARRAY_PARTITION variable=energy_reshaped complete dim=0
     Reshape_h: for (unsigned hh = 0; hh < CONFIG_T::n_heads; hh++) {
+       #pragma HLS PIPELINE II=1
         Reshape_q: for (unsigned qq = 0; qq < CONFIG_T::n_particles; qq++) {
             Reshape_k: for (unsigned kk = 0; kk < CONFIG_T::n_particles; kk++) {
                 energy_reshaped[hh][qq*CONFIG_T::n_particles + kk] = energy[hh][qq][kk];
@@ -230,6 +228,7 @@ void self_attention(
     typename CONFIG_T::exp_norm_t energy_norm[CONFIG_T::n_heads][CONFIG_T::n_particles * CONFIG_T::n_particles];
     #pragma HLS ARRAY_PARTITION variable=energy_norm complete dim=0
     Norm_1: for (unsigned ii = 0; ii < CONFIG_T::n_heads; ii++) {
+        #pragma HLS PIPELINE II=1
         normalize<typename CONFIG_T::energy_t, typename CONFIG_T::exp_norm_t, EXP_NORM_CONFIG_T>(energy_reshaped[ii], energy_norm[ii], exp_norm_weight, exp_norm_bias);
     }
     PRETTY_PRINT_2D(energy_norm, CONFIG_T::n_heads, CONFIG_T::n_particles * CONFIG_T::n_particles);
@@ -240,6 +239,7 @@ void self_attention(
     typename CONFIG_T::attention_t attention[CONFIG_T::n_heads][CONFIG_T::n_particles][CONFIG_T::n_particles];
     #pragma HLS ARRAY_PARTITION variable=attention complete dim=0
     Softmax_0_j: for (int jj = 0; jj < CONFIG_T::n_heads; jj++) {
+        #pragma HLS PIPELINE II=1
         Softmax_0_i: for (int ii = 0; ii < CONFIG_T::n_particles; ii++) {
             Scale_cast: for (int kk = 0; kk < CONFIG_T::n_particles; kk++) {
                 energy_scaled_red[jj][ii][kk] = cast<typename CONFIG_T::exp_norm_t, typename CONFIG_T::exp_norm_red_t, CONFIG_T>((energy_norm[jj][ii*CONFIG_T::n_particles + kk]) >> SCALE_SHIFT);
@@ -253,15 +253,10 @@ void self_attention(
     // Einsum(hql, lhc -> qhc) then reshape
     typename CONFIG_T::scaled_attention_t scaled_attention_reshaped[CONFIG_T::n_particles][CONFIG_T::n_scaled_attention];
     #pragma HLS ARRAY_PARTITION variable=scaled_attention_reshaped complete dim=0
-    #pragma HLS PIPELINE II=61504
     Einsum_1_l: for (unsigned ll = 0; ll < CONFIG_T::n_particles; ll++) {
-        #pragma HLS PIPELINE II=61504
         Einsum_1_h: for (unsigned hh = 0; hh < CONFIG_T::n_heads; hh++) {
-            #pragma HLS PIPELINE II=61504
             Einsum_1_q: for (unsigned qq = 0; qq < CONFIG_T::n_particles; qq++) {
-                #pragma HLS PIPELINE II=61504
                 Einsum_1_c: for (unsigned cc = 0; cc < CONFIG_T::n_el/CONFIG_T::n_heads; cc++) {
-                    #pragma HLS PIPELINE II=61504
                     if (ll == 0) scaled_attention_reshaped[qq][hh + cc * CONFIG_T::n_heads] = 0;
                     // scaled_attention_reshaped[qq][cc + hh * CONFIG_T::n_el/CONFIG_T::n_heads] += attention[hh][qq][ll] * values[ll][hh + cc * CONFIG_T::n_heads];
                     scaled_attention_reshaped[qq][cc + hh * CONFIG_T::n_el/CONFIG_T::n_heads] += attention[hh][qq][ll] * values[ll][hh * CONFIG_T::n_el/CONFIG_T::n_heads + cc];
@@ -269,11 +264,11 @@ void self_attention(
             }
         }
     }
-    #pragma HLS PIPELINE
     PRETTY_PRINT_2D(scaled_attention_reshaped, CONFIG_T::n_particles, CONFIG_T::n_scaled_attention);
 
     // Dense
     Out_dense: for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
+        #pragma HLS PIPELINE II=1
         dense<typename CONFIG_T::scaled_attention_t, res_T, DENSE3_CONFIG_T>(scaled_attention_reshaped[jj], res[jj], dense_weight, dense_bias);
     }
     PRETTY_PRINT_2D(res, CONFIG_T::n_particles, CONFIG_T::n_scaled_attention);

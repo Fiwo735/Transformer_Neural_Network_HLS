@@ -1,0 +1,23 @@
+<InterfaceSummary>
+<RtlPorts>
+<name>data_in_V</name>
+<CType>
+<TypeName>ap_fixed 30 18 5 3 0</TypeName>
+<TypeWidth>30</TypeWidth>
+<PhysicalWidth>30</PhysicalWidth>
+</CType>
+<CFractionWidth>12</CFractionWidth>
+<InvalidType>0</InvalidType>
+</RtlPorts>
+<RtlPorts>
+<name>data_out_V</name>
+<CType>
+<TypeName>ap_fixed 30 18 5 3 0</TypeName>
+<TypeWidth>30</TypeWidth>
+<PhysicalWidth>30</PhysicalWidth>
+</CType>
+<CFractionWidth>12</CFractionWidth>
+<InvalidType>0</InvalidType>
+</RtlPorts>
+</InterfaceSummary>
+

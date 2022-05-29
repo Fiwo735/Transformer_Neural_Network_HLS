@@ -65,6 +65,8 @@ class TypeParameter(LineParameter):
     name: str,
     total_width: str,
     int_width: str,
+    log_table_size: Optional[int] = None,
+    table_int_target: Optional[int] = None,
     negative_accuracy_tolerance: float = 0.001,
     positive_accuracy_tolerance: float = 0.002,
   ):
@@ -76,6 +78,21 @@ class TypeParameter(LineParameter):
     )
     self._total_width = int(total_width)
     self._int_width = int(int_width)
+
+    assert self._total_width > self._int_width >= 1
+
+    if log_table_size is not None:
+      assert table_int_target is not None
+
+      self._N = int(log_table_size)
+      self._T = int(table_int_target)
+
+      assert self._N > self._T >= 1
+      assert self._total_width - self._int_width >= self._N - self._T
+
+    else:
+      self._N = None
+      self._T = None
 
   def get_total_width(self) -> int:
     return self._total_width
@@ -93,21 +110,36 @@ class TypeParameter(LineParameter):
     self._total_width += val
 
   def dec_frac_width(self, val: int = 1):
-    if self._total_width > self._int_width + 1:
-      self._total_width -= val
+    if self._N is None:
+      if self._total_width - self._int_width > 1:
+        self._total_width -= val
+      else:
+        raise OverflowError('Fractional bit width cannot be 0')
+
     else:
-      raise ValueError('Fractional bit width cannot be 0')
+      if self._total_width - self._int_width > self._N - self._T:
+        self._total_width -= val
+      else:
+        raise OverflowError('Fractional bit width cannot be smaller than log_table_size - table_int_target')
 
   def inc_int_width(self, val: int = 1):
     self._int_width += val
     self._total_width += val
 
   def dec_int_width(self, val: int = 1):
-    if self._int_width > 1:
-      self._int_width -= val
-      self._total_width -= val
+    if self._N is None:
+      if self._int_width > 1:
+        self._int_width -= val
+        self._total_width -= val
+      else:
+        raise OverflowError('Integer bit width cannot be 0')
+    
     else:
-      raise ValueError('Integer bit width cannot be 0')
+      if self._int_width > self._T and self._total_width > self._N:
+        self._int_width -= val
+        self._total_width -= val
+      else:
+        raise OverflowError('Integer bit width cannot be smaller than table_int_target and total bit width cannot be smaller than log_table_size')
 
   def inc_width(self, part: str, val: int = 1):
     if part == 'int':
@@ -122,7 +154,8 @@ class TypeParameter(LineParameter):
       self.dec_int_width(val)
 
   def __str__(self):
-    return super(TypeParameter, self).__str__() + f' <{self.get_total_width()},{self.get_int_width()}>'
+    ending = '' if self._N is None else f' (N={self._N}, T={self._T})'
+    return super(TypeParameter, self).__str__() + f' <{self.get_total_width()},{self.get_int_width()}>{ending}'
 
   def to_dict(self) -> Dict:
     return {self.get_line_num(): self.get_widths()}
@@ -212,11 +245,18 @@ def scan_file(path: str, negative_accuracy_tolerance: float, positive_accuracy_t
 
       type_result = re.search(r'^typedef ap_fixed<([\d]+),([\d]+)> (.*);', line)
       if type_result is not None:
+
+        type_constraints = re.search(r'N=([\d]+), T=([\d]+)', line)
+        log_table_size = None if type_constraints is None else type_constraints.group(1)
+        table_int_target = None if type_constraints is None else type_constraints.group(2)
+
         type_parameter = TypeParameter(
           line_num=index,
           name=type_result.group(3),
           total_width=type_result.group(1),
           int_width=type_result.group(2),
+          log_table_size=log_table_size,
+          table_int_target=table_int_target,
           negative_accuracy_tolerance=negative_accuracy_tolerance,
           positive_accuracy_tolerance=positive_accuracy_tolerance,
         )
@@ -329,6 +369,11 @@ def quantization_search(hls_dir_path: str, build_tcl_path: str, quiet: bool = Fa
     negative_accuracy_tolerance=negative_accuracy_tolerance,
     positive_accuracy_tolerance=positive_accuracy_tolerance,
   )
+
+  # print(f'All parameters configuration:')
+  # for parameter in all_parameters:
+  #   print(parameter)
+
   best_parameters = deque()
   previous_widths = None
 
@@ -356,7 +401,7 @@ def quantization_search(hls_dir_path: str, build_tcl_path: str, quiet: bool = Fa
     starting_total_bits = get_total_bits(all_parameters)
     print(f'Starting number of fixed precision bits: {starting_total_bits}')
 
-    start_time = time()
+    start_time = datetime.now()
 
     while all_parameters:
       try:
@@ -372,14 +417,30 @@ def quantization_search(hls_dir_path: str, build_tcl_path: str, quiet: bool = Fa
 
         # Start with the configuration of the previous type
         if previous_widths is not None:
+          original_widths = current_parameter.get_widths() # store in case using previous widhts leads to big accuracy drop
+          print(f'Starting exploration for this parameter using previously found widths: {previous_widths}')
           current_parameter.set_widths(previous_widths)
+
+          modify_defines(
+            path=defines_path,
+            options=current_parameter.to_dict(),
+            line_type=current_parameter.get_line_type(),
+            quiet=quiet,
+          )
+          _, _, _, accuracy_hls = metrics_handler.get_metrics()
+          if accuracy_hls < optimal_accuracy - per_parameter_decrement_budget:
+            print(f'Found accuracy: {format_accuracy(accuracy_hls)}, which dropped too much, so revert to original values: {original_widths}')
+            current_parameter.set_widths(original_widths)
+          else:
+            print(f'Found accuracy {format_accuracy(accuracy_hls)} is similar enough to {format_accuracy(optimal_accuracy)}, so exploration begins with previously found widths')
+            optimal_accuracy = accuracy_hls
 
         for part in ['int', 'frac']:
 
           # Try to increase, just in case there is a significant accuracy difference
           try_increase = True
           significant_improvement_found = False
-          print(f'Starting to increase {part} parameter = {current_parameter}')
+          print(f'Starting to increase {part} part of parameter = {current_parameter}')
           while try_increase:
 
             try:
@@ -400,18 +461,40 @@ def quantization_search(hls_dir_path: str, build_tcl_path: str, quiet: bool = Fa
                 optimal_accuracy = accuracy_hls
                 current_parameter.set_accuracy(optimal_accuracy)
               else:
-                try_increase = False
-                current_parameter.dec_width(part)
-
-                modify_defines(
-                  path=defines_path,
-                  options=current_parameter.to_dict(),
-                  line_type=current_parameter.get_line_type(),
-                  quiet=True,
-                )
-            except ValueError:
-              print('Cannot remove any more bits')
+                raise ValueError('Accuracy is too low')
+                
+            # Overflow error so simply exit the while loop as no more bits can be removed
+            except OverflowError as e:
+              # print('Cannot remove any more bits')
+              print(e)
               try_increase = False
+
+            # Value error, i.e. the accuracy got too low, so revert changes and exit the while loop
+            except ValueError as e:
+              print(e)
+              try_increase = False
+              current_parameter.dec_width(part)
+
+              modify_defines(
+                path=defines_path,
+                options=current_parameter.to_dict(),
+                line_type=current_parameter.get_line_type(),
+                quiet=True,
+              )
+
+            # Any other exception means HLS has failed, so revert changes and pass control to the outer block
+            except Exception as e:
+              print(e)
+              try_increase = False
+              current_parameter.dec_width(part)
+
+              modify_defines(
+                path=defines_path,
+                options=current_parameter.to_dict(),
+                line_type=current_parameter.get_line_type(),
+                quiet=True,
+              )
+              raise e
 
           if significant_improvement_found:
             print(f'Significant improvement was found when increasing, so skipping decreasing')
@@ -420,7 +503,7 @@ def quantization_search(hls_dir_path: str, build_tcl_path: str, quiet: bool = Fa
             # Try to decrease as long as the accuracy doesn't decrement too much
             try_decrease = True
             accuracy_before_decrease = optimal_accuracy
-            print(f'Starting to decrease {part} parameter = {current_parameter}')
+            print(f'Starting to decrease {part} part of parameter = {current_parameter}')
             while try_decrease:
 
               try:
@@ -437,16 +520,7 @@ def quantization_search(hls_dir_path: str, build_tcl_path: str, quiet: bool = Fa
 
                 # Too much total accuracy drop caused by this parameter
                 if accuracy_before_decrease - accuracy_hls > per_parameter_decrement_budget:
-                  try_decrease = False
-
-                  current_parameter.inc_width(part)
-
-                  modify_defines(
-                    path=defines_path,
-                    options=current_parameter.to_dict(),
-                    line_type=current_parameter.get_line_type(),
-                    quiet=True,
-                  )
+                  raise ValueError('Accuracy is too low')
 
                 # Successful change
                 elif current_parameter.check_and_update(accuracy_hls) >= -1:
@@ -455,20 +529,40 @@ def quantization_search(hls_dir_path: str, build_tcl_path: str, quiet: bool = Fa
 
                 # Failed change
                 else:
-                  try_decrease = False
+                  raise ValueError('Accuracy is too low')
 
-                  current_parameter.inc_width(part)
-
-                  modify_defines(
-                    path=defines_path,
-                    options=current_parameter.to_dict(),
-                    line_type=current_parameter.get_line_type(),
-                    quiet=True,
-                  )
-
-              except ValueError:
-                print('Cannot remove any more bits')
+              # Overflow error so simply exit the while loop as no more bits can be removed
+              except OverflowError as e:
+                print(e)
+                # print('Cannot remove any more bits')
                 try_decrease = False
+
+              # Value error, i.e. the accuracy got too low, so revert changes and exit the while loop
+              except ValueError as e:
+                print(e)
+                try_decrease = False
+                current_parameter.inc_width(part)
+
+                modify_defines(
+                  path=defines_path,
+                  options=current_parameter.to_dict(),
+                  line_type=current_parameter.get_line_type(),
+                  quiet=True,
+                )
+
+              # Any other exception means HLS has failed, so revert changes and pass control to the outer block
+              except Exception as e:
+                print(e)
+                try_decrease = False
+                current_parameter.inc_width(part)
+
+                modify_defines(
+                  path=defines_path,
+                  options=current_parameter.to_dict(),
+                  line_type=current_parameter.get_line_type(),
+                  quiet=True,
+                )
+                raise e
 
       except KeyboardInterrupt:
         print('Skipping run since KeyboardInterrupt was raised')
@@ -482,14 +576,15 @@ def quantization_search(hls_dir_path: str, build_tcl_path: str, quiet: bool = Fa
       search_path.append((current_parameter, optimal_accuracy))
       previous_widths = current_parameter.get_widths()
 
-  print(f'Analysis finished in {time() - start_time:.3f} h')
+  end_time = datetime.now()
 
   # Save results
-  date = datetime.now().strftime('%d-%m_%H-%M')
+  date = end_time.strftime('%d-%m_%H-%M')
   pickle_path = f'logs/quantization_search_{date}.pickle'
   with open(pickle_path, 'wb') as f:
     pickle.dump((search_path, best_parameters), f)
 
+  print(f'Analysis finished in {(end_time - start_time).seconds/3600:.3f} h')
   print(f'All parameters analysed, accuracy: {format_accuracy(starting_accuracy)} -> {format_accuracy(optimal_accuracy)}')
   
   final_total_bits = get_total_bits(best_parameters)
@@ -511,7 +606,7 @@ def parse():
 if __name__ == '__main__':
   args = parse()
 
-  hls_dir_path = 'hls/'
+  hls_dir_path = 'hls_copy/'
   build_tcl_path = 'build_prj.tcl'
 
   quantization_search(hls_dir_path=hls_dir_path, build_tcl_path=build_tcl_path, quiet=args.quiet)

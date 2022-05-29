@@ -52,6 +52,10 @@ hls/myproject_prj/solution1/*
 
 # nohup - for long running jobs
 nohup.out
+nohup2.out
 
 # Dataset H5 files
 *.h5
+
+# Temporary copy of hls directory
+hls_copy
