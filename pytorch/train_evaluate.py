@@ -23,6 +23,7 @@ from sklearn.metrics import roc_curve, auc, roc_auc_score
 from scipy import interpolate
 
 from model.net import ConstituentNet
+from model.quant_brevitas import ConstituentNetQuantBrevitas
 
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -553,6 +554,7 @@ def main(
   hls_tb_labels_path: Optional[str] = None,
   measure_flops: bool = False,
   norm_info_path: Optional[str] = None,
+  quant: bool = False,
 ) -> None:
 
   # if measure_flops:
@@ -576,15 +578,27 @@ def main(
 
   if do_train:
     # Instantiate model
-    model = ConstituentNet(
-      in_dim=16,
-      embbed_dim=embbed_dim,
-      num_heads=num_heads,
-      num_classes=len(classes), # 5
-      num_transformers=num_transformers,
-      dropout=dropout,
-      is_debug=is_debug,
-    ).to(DEVICE)
+    if not quant:
+      model = ConstituentNet(
+        in_dim=16,
+        embbed_dim=embbed_dim,
+        num_heads=num_heads,
+        num_classes=len(classes), # 5
+        num_transformers=num_transformers,
+        dropout=dropout,
+        is_debug=is_debug,
+      ).to(DEVICE)
+
+    else:
+      model = ConstituentNetQuantBrevitas(
+        in_dim=16,
+        embbed_dim=embbed_dim,
+        num_heads=num_heads,
+        num_classes=len(classes), # 5
+        num_transformers=num_transformers,
+        dropout=dropout,
+        is_debug=is_debug,
+      ).to(DEVICE)
 
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
 
@@ -757,6 +771,7 @@ def parse():
   parser.add_argument('--generate_hls_tb', action='store', type=int, default=0)
   parser.add_argument('--flops', action='store_true')
   parser.add_argument('--norm_info', action='store', type=str, default=None)
+  parser.add_argument('--quant', action='store_true')
 
   return parser.parse_args()
 
@@ -787,13 +802,14 @@ if __name__ == "__main__":
       fetch_N_dataset(num_particles=args.particles)
 
   debug_prefix = 'debug_' if args.debug else ''
+  quant_prefix = 'quant_' if args.quant else ''
 
   main(
     num_particles=args.particles,
     do_train=args.train,
-    model_path=os.path.join(DIR_NAME, debug_prefix + 'best.model.pth'),
-    script_path=os.path.join(DIR_NAME, debug_prefix + 'best.script.pth'),
-    state_path=os.path.join(DIR_NAME, debug_prefix + 'best.pth.tar'),
+    model_path=os.path.join(DIR_NAME, quant_prefix + debug_prefix + 'best.model.pth'),
+    script_path=os.path.join(DIR_NAME, quant_prefix + debug_prefix + 'best.script.pth'),
+    state_path=os.path.join(DIR_NAME, quant_prefix + debug_prefix + 'best.pth.tar'),
     debug_path=os.path.join(DIR_NAME, 'layers_output.txt'),
     is_debug=args.debug,
     is_timing=args.timing,
@@ -806,4 +822,5 @@ if __name__ == "__main__":
     hls_tb_labels_path='hls/tb_data/tb_labels.dat',
     measure_flops=args.flops,
     norm_info_path=args.norm_info,
+    quant=args.quant,
   )

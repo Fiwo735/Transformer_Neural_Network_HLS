@@ -58,4 +58,4 @@ nohup2.out
 *.h5
 
 # Temporary copy of hls directory
-hls_copy
+hls_copy*

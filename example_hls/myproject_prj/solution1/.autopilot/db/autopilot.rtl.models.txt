@@ -1,4 +1,2 @@
-myproject_mul_mul_15ns_15ns_29_1_1
-myproject_value1
 myproject_accum_V
 myproject

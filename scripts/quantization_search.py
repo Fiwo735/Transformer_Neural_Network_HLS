@@ -389,7 +389,7 @@ def quantization_search(hls_dir_path: str, build_tcl_path: str, quiet: bool = Fa
     hls_results_path=hls_dir_path+'tb_data/csim_results.log',
     pytorch_results_path=pytorch_results_path,
     labels_path=hls_dir_path+'tb_data/tb_labels.dat',
-    hls_logs_path='logs/vivado_hls_run.log',
+    hls_logs_path='logs/vivado_hls_run4.log',
     quiet=quiet,
   ) as metrics_handler:
 
@@ -606,7 +606,7 @@ def parse():
 if __name__ == '__main__':
   args = parse()
 
-  hls_dir_path = 'hls_copy/'
+  hls_dir_path = 'hls_copy4/'
   build_tcl_path = 'build_prj.tcl'
 
   quantization_search(hls_dir_path=hls_dir_path, build_tcl_path=build_tcl_path, quiet=args.quiet)

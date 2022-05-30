@@ -52,7 +52,7 @@
     "ClockPeriod": "5",
     "IsCombLogic": "0",
     "II": "x",
-    "Latency": "418829",
+    "Latency": "323",
     "Uncertainty": "0.625"
   },
   "Xdc": {"OocClocks": ["create_clock -name ap_clk -period 5.000 [get_ports ap_clk]"]},
@@ -71,15 +71,10 @@
     "CSource": ["..\/..\/myproject.cpp"],
     "Vhdl": [
       "impl\/vhdl\/myproject_accum_V.vhd",
-      "impl\/vhdl\/myproject_mul_mul_15ns_15ns_29_1_1.vhd",
-      "impl\/vhdl\/myproject_value1.vhd",
       "impl\/vhdl\/myproject.vhd"
     ],
     "Verilog": [
       "impl\/verilog\/myproject_accum_V.v",
-      "impl\/verilog\/myproject_mul_mul_15ns_15ns_29_1_1.v",
-      "impl\/verilog\/myproject_value1.v",
-      "impl\/verilog\/myproject_value1_rom.dat",
       "impl\/verilog\/myproject.v"
     ],
     "Misc": ["impl\/misc\/logo.png"],
@@ -227,61 +222,68 @@
       }},
     "Metrics": {"myproject": {
         "Latency": {
-          "LatencyBest": "418829",
-          "LatencyAvg": "418829",
-          "LatencyWorst": "418829",
-          "PipelineII": "418830",
+          "LatencyBest": "323",
+          "LatencyAvg": "323",
+          "LatencyWorst": "323",
+          "PipelineII": "324",
           "PipelineDepth": "",
           "PipelineType": "none"
         },
         "Timing": {
           "Target": "5.00",
           "Uncertainty": "0.62",
-          "Estimate": "3.691"
+          "Estimate": "629.950"
         },
         "Loops": [
           {
-            "Name": "Main_0",
-            "TripCount": "5",
-            "Latency": "418815",
-            "PipelineII": "",
-            "PipelineDepth": "83763",
-            "Loops": [{
-                "Name": "Main_1",
-                "TripCount": "30",
-                "Latency": "83760",
-                "PipelineII": "",
-                "PipelineDepth": "2792",
-                "Loops": [{
-                    "Name": "Main_2",
-                    "TripCount": "30",
-                    "Latency": "2790",
-                    "PipelineII": "",
-                    "PipelineDepth": "93",
-                    "Loops": [{
-                        "Name": "Main_3",
-                        "TripCount": "30",
-                        "Latency": "90",
-                        "PipelineII": "",
-                        "PipelineDepth": "3"
-                      }]
-                  }]
-              }]
+            "Name": "Main_1",
+            "TripCount": "30",
+            "Latency": "60",
+            "PipelineII": "2",
+            "PipelineDepth": "2"
+          },
+          {
+            "Name": "Main_1",
+            "TripCount": "30",
+            "Latency": "60",
+            "PipelineII": "2",
+            "PipelineDepth": "2"
+          },
+          {
+            "Name": "Main_1",
+            "TripCount": "30",
+            "Latency": "60",
+            "PipelineII": "2",
+            "PipelineDepth": "2"
+          },
+          {
+            "Name": "Main_1",
+            "TripCount": "30",
+            "Latency": "60",
+            "PipelineII": "2",
+            "PipelineDepth": "2"
+          },
+          {
+            "Name": "Main_1",
+            "TripCount": "30",
+            "Latency": "60",
+            "PipelineII": "2",
+            "PipelineDepth": "2"
           },
           {
             "Name": "Result",
             "TripCount": "5",
-            "Latency": "10",
-            "PipelineII": "",
+            "Latency": "5",
+            "PipelineII": "1",
             "PipelineDepth": "2"
           }
         ],
         "Area": {
           "BRAM_18K": "2",
-          "DSP48E": "1",
-          "FF": "166",
-          "LUT": "392",
-          "URAM": "0"
+          "FF": "2253",
+          "LUT": "206322",
+          "URAM": "0",
+          "DSP48E": "0"
         }
       }}
   },
@@ -295,7 +297,7 @@
   },
   "GenData": {
     "DataVersion": "0.2",
-    "Time": "2022-05-29 05:23:51 BST",
+    "Time": "2022-05-29 08:21:07 BST",
     "ToolName": "vivado_hls",
     "ToolVersion": "2019.2"
   }

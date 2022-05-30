@@ -75,6 +75,7 @@ void myproject(
     #pragma HLS ARRAY_RESHAPE variable=data_in complete dim=0
     #pragma HLS ARRAY_PARTITION variable=data_out complete dim=0
     #pragma HLS INTERFACE ap_vld port=data_in,data_out
+    #pragma HLS DATAFLOW
 
     const_size_in_1 = N_PARTICLES * N_FEATURES;
     const_size_out_1 = N_LABELS;
