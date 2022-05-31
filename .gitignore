@@ -59,3 +59,6 @@ nohup2.out
 
 # Temporary copy of hls directory
 hls_copy*
+
+# ScaleHLS
+scalehls

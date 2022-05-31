@@ -365,19 +365,25 @@ def train_test_loop(
   return (accuracy, end_time - start_time, (all_data, all_predicted, all_labels))
 
 
-def save_model(model: nn.Module, model_path: str, script_path: str, state_path: str) -> None:
+def save_model(model: nn.Module, model_path: str, script_path: str, state_path: str, quant: bool) -> None:
   model.eval()
-  model_script = torch.jit.script(model)
-  model_script.save(script_path)
+  
+  print(f'Model saved successfully (', end ='')
 
-  torch.save(model, model_path)
+  if not quant:
+    model_script = torch.jit.script(model)
+    model_script.save(script_path)
+
+    torch.save(model, model_path)
+
+    print(f'{model_path}, {script_path}, ', end='')
 
   torch.save(
     {'state_dict': model.state_dict()},
     state_path,
   )
 
-  print(f'Model saved successfully ({model_path}, {script_path}, {state_path})')
+  print(f'{state_path})')
 
 
 def evaluate(
@@ -452,6 +458,8 @@ def time_evaluate(
 
 def compute_roc_auc(targets, predictions):
   def find_FPR_TPR_AUC(curr_targets, curr_predictions):
+    # print(type(curr_targets), type(curr_predictions))
+    # print(curr_targets, curr_predictions)
     FPRs, TPRs, _ = roc_curve(curr_targets, curr_predictions)
     return FPRs, TPRs, auc(FPRs, TPRs)
 
@@ -615,29 +623,34 @@ def main(
     )
     print(f'Training took {total_time:.2f} s')
 
-    save_model(model=model, model_path=model_path, script_path=script_path, state_path=state_path)
+    save_model(model=model, model_path=model_path, script_path=script_path, state_path=state_path, quant=quant)
   
   else:
     # Load from script
     # model = torch.jit.load(script_path, map_location=DEVICE)
 
     # Load from state_dict
-    # model = ConstituentNet(
-    #   in_dim=16,
-    #   embbed_dim=embbed_dim,
-    #   num_heads=num_heads,
-    #   num_classes=len(classes), # 5
-    #   num_transformers=num_transformers,
-    #   dropout=dropout,
-    #   is_debug=is_debug,
-    # )
-    # state_dict = torch.load(state_path)['state_dict']
-    # model.load_state_dict(state_dict, strict=True)
-    # model.to(DEVICE)
+    if quant:
+      model = ConstituentNetQuantBrevitas(
+        in_dim=16,
+        embbed_dim=embbed_dim,
+        num_heads=num_heads,
+        num_classes=len(classes), # 5
+        num_transformers=num_transformers,
+        dropout=dropout,
+        is_debug=is_debug,
+      )
+      state_dict = torch.load(state_path)['state_dict']
+      model.load_state_dict(state_dict, strict=True)
+      model.to(DEVICE)
+      # print(f'{model.cls_token=}')
+      print(f'Model loaded from {state_path}')
 
     # Load from model
-    model = torch.load(model_path)
-    model.to(DEVICE)
+    else:
+      model = torch.load(model_path)
+      model.to(DEVICE)
+      print(f'Model loaded from {model_path}')
 
     model.eval()
 

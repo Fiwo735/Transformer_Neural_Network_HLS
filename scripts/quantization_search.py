@@ -148,7 +148,7 @@ class TypeParameter(LineParameter):
       self.inc_int_width(val)
 
   def dec_width(self, part: str, val: int = 1):
-    if part == 'int':
+    if part == 'frac':
       self.dec_frac_width(val)
     else:
       self.dec_int_width(val)
