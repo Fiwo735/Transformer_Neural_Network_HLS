@@ -305,14 +305,14 @@ def train_test_loop(
           all_labels.append(labels.detach().cpu())
           all_predicted.append(predicted.detach().cpu())
 
-        # if idx > 100:
-        #   break
+        if idx > 100:
+          break
 
         if idx % 128 == 0:
           tepoch.set_postfix(loss=loss.item() / batch_size)
 
-        if idx == loader_length - 2: # issue with ConsitutentNet mean/var summation with last batch
-          break
+        # if idx == loader_length - 2: # issue with ConsitutentNet mean/var summation with last batch
+        #   break
 
     # Temporary evaluation after each epoch
     ##############
@@ -340,8 +340,11 @@ def train_test_loop(
         e_all_labels.append(labels.detach().cpu())
         e_all_predicted.append(predicted.detach().cpu())
 
-        if idx == loader_length - 128: # issue with ConsitutentNet mean/var summation with last batch
+        if idx > 100:
           break
+
+        # if idx == loader_length - 128: # issue with ConsitutentNet mean/var summation with last batch
+        #   break
 
       model.train()
       e_all_labels = torch.stack(e_all_labels) if len(e_all_labels) == 1 else torch.stack(e_all_labels[:-1])
@@ -646,7 +649,7 @@ def main(
       is_train=True,
       num_particles=num_particles,
       num_epochs=num_epochs,
-      # secondary_loader=test_loader,
+      secondary_loader=test_loader,
     )
     print(f'Training took {total_time:.2f} s')
 
