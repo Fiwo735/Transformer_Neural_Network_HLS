@@ -69,4 +69,7 @@ torch-mlir
 mlir_venv
 
 # Vivado logs
-logs/vivado_hls_run*
+logs/vivado_hls_run.log
+logs/vivado_hls_run2.log
+logs/vivado_hls_run3.log
+logs/vivado_hls_run4.log
