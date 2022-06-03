@@ -16,14 +16,17 @@ from torch.utils.data import TensorDataset, DataLoader
 from sklearn.datasets import fetch_openml
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder, StandardScaler, normalize
+from sklearn.metrics import roc_curve, auc, roc_auc_score
 from tqdm import tqdm
 from time import time
 from fvcore.nn import FlopCountAnalysis
-from sklearn.metrics import roc_curve, auc, roc_auc_score
 from scipy import interpolate
+from qtorch.optim import OptimLP
 
 from model.net import ConstituentNet
 from model.quant_brevitas import ConstituentNetQuantBrevitas
+from model.quant_qpytorch import ConstituentNetQuantQPyTorch
+from model.quant_qpytorch import WEIGHT_QUANT, GRAD_QUANT, MOMENTUM_QUANT, ACC_QUANT
 
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -302,6 +305,9 @@ def train_test_loop(
           all_labels.append(labels.detach().cpu())
           all_predicted.append(predicted.detach().cpu())
 
+        # if idx > 100:
+        #   break
+
         if idx % 128 == 0:
           tepoch.set_postfix(loss=loss.item() / batch_size)
 
@@ -459,7 +465,7 @@ def time_evaluate(
 def compute_roc_auc(targets, predictions):
   def find_FPR_TPR_AUC(curr_targets, curr_predictions):
     # print(type(curr_targets), type(curr_predictions))
-    # print(curr_targets, curr_predictions)
+    print(curr_targets, curr_predictions)
     FPRs, TPRs, _ = roc_curve(curr_targets, curr_predictions)
     return FPRs, TPRs, auc(FPRs, TPRs)
 
@@ -578,7 +584,7 @@ def main(
   batch_size = 128
   criterion = torch.nn.NLLLoss()
   num_transformers = 3
-  embbed_dim = 64
+  embbed_dim = 32
   num_heads = 2
   dropout = 0.0
 
@@ -586,6 +592,7 @@ def main(
 
   if do_train:
     # Instantiate model
+    # if not quant:
     if not quant:
       model = ConstituentNet(
         in_dim=16,
@@ -598,7 +605,17 @@ def main(
       ).to(DEVICE)
 
     else:
-      model = ConstituentNetQuantBrevitas(
+      # model = ConstituentNetQuantBrevitas(
+      #   in_dim=16,
+      #   embbed_dim=embbed_dim,
+      #   num_heads=num_heads,
+      #   num_classes=len(classes), # 5
+      #   num_transformers=num_transformers,
+      #   dropout=dropout,
+      #   is_debug=is_debug,
+      # ).to(DEVICE)
+
+      model = ConstituentNetQuantQPyTorch(
         in_dim=16,
         embbed_dim=embbed_dim,
         num_heads=num_heads,
@@ -609,6 +626,16 @@ def main(
       ).to(DEVICE)
 
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
+    if quant:
+      optimizer = OptimLP(
+        optimizer,
+        weight_quant=WEIGHT_QUANT,
+        grad_quant=GRAD_QUANT,
+        momentum_quant=MOMENTUM_QUANT,
+        acc_quant=ACC_QUANT,
+        grad_scaling=1/1000,
+      )
+
 
     # Train model
     _, total_time, _ = train_test_loop(
@@ -631,7 +658,16 @@ def main(
 
     # Load from state_dict
     if quant:
-      model = ConstituentNetQuantBrevitas(
+      # model = ConstituentNetQuantBrevitas(
+      #   in_dim=16,
+      #   embbed_dim=embbed_dim,
+      #   num_heads=num_heads,
+      #   num_classes=len(classes), # 5
+      #   num_transformers=num_transformers,
+      #   dropout=dropout,
+      #   is_debug=is_debug,
+      # )
+      model = ConstituentNetQuantQPyTorch(
         in_dim=16,
         embbed_dim=embbed_dim,
         num_heads=num_heads,
@@ -639,7 +675,7 @@ def main(
         num_transformers=num_transformers,
         dropout=dropout,
         is_debug=is_debug,
-      )
+      ).to(DEVICE)
       state_dict = torch.load(state_path)['state_dict']
       model.load_state_dict(state_dict, strict=True)
       model.to(DEVICE)
@@ -796,9 +832,13 @@ if __name__ == "__main__":
   args = parse()
 
   if args.use_cpu:
+    num_threads = 8
+    torch.set_num_threads(num_threads)
     DEVICE = torch.device('cpu')
     print(f'{DEVICE=}')
   else:
+    if not torch.cuda.is_available():
+      quit('No CUDA found!')
     assert 0 <= args.cuda < torch.cuda.device_count(), f'CUDA index outside [0, {torch.cuda.device_count()})'
     DEVICE = torch.device(f'cuda:{args.cuda}')
     print(f'{DEVICE=}, name={torch.cuda.get_device_name(DEVICE)}')
@@ -814,7 +854,8 @@ if __name__ == "__main__":
       Path(DATA_30_DIR).mkdir(parents=True, exist_ok=True) # TODO add other dirs if implemented
       fetch_N_dataset(num_particles=args.particles)
 
-  debug_prefix = 'debug_' if args.debug else ''
+  # debug_prefix = 'debug_' if args.debug else ''
+  debug_prefix = ''
   quant_prefix = 'quant_' if args.quant else ''
 
   main(

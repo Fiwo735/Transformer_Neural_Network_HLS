@@ -1,0 +1,25 @@
+channels:
+  - conda-forge
+dependencies:
+  - cxx-compiler
+  - make
+  - cmake
+  - clang
+  - clangxx
+  - boost-cpp
+  - torchvision
+  - torchaudio
+  - cudatoolkit=11.1
+  - pytorch
+  - ninja
+  - lld
+  - python=3.9.7
+  - numpy
+  - h5py
+  - matplotlib
+  - scikit-learn
+  - tqdm
+  - fvcore
+  - iopath
+  - typing
+  - colorama
