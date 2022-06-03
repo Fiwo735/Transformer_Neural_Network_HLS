@@ -305,8 +305,8 @@ def train_test_loop(
           all_labels.append(labels.detach().cpu())
           all_predicted.append(predicted.detach().cpu())
 
-        if idx > 100:
-          break
+        # if idx > 100:
+        #   break
 
         if idx % 128 == 0:
           tepoch.set_postfix(loss=loss.item() / batch_size)
@@ -340,8 +340,8 @@ def train_test_loop(
         e_all_labels.append(labels.detach().cpu())
         e_all_predicted.append(predicted.detach().cpu())
 
-        if idx > 100:
-          break
+        # if idx > 100:
+        #   break
 
         # if idx == loader_length - 128: # issue with ConsitutentNet mean/var summation with last batch
         #   break
@@ -468,7 +468,7 @@ def time_evaluate(
 def compute_roc_auc(targets, predictions):
   def find_FPR_TPR_AUC(curr_targets, curr_predictions):
     # print(type(curr_targets), type(curr_predictions))
-    print(curr_targets, curr_predictions)
+    # print(curr_targets, curr_predictions)
     FPRs, TPRs, _ = roc_curve(curr_targets, curr_predictions)
     return FPRs, TPRs, auc(FPRs, TPRs)
 
