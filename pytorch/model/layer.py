@@ -133,34 +133,16 @@ class SelfAttention(nn.Module):
         self.num_particles = 30
         self.pre_exp_norm = nn.BatchNorm1d((self.num_particles + 1) * (self.num_particles + 1))
 
-        # self.curr_mean = 0.0
-        # self.curr_var = 0.0
-        self.curr_mean = None
-        self.curr_var = None
-        self.counter = 0
-
         assert  (in_dim // num_heads) * num_heads == in_dim, "Embedding dim needs to be divisible by num_heads"
         assert  self.head_dim * num_heads ==  self.latent_dim, "Latent dim needs to be divisible by num_heads."
 
         torch.set_printoptions(precision=5, threshold=2097152, linewidth=1000, sci_mode=False)
 
-    def get_avg_mean(self):
-        # return self.curr_mean / self.counter
-        # return torch.div(self.curr_mean, self.counter)
-        return self.norm.running_mean
-
-    def get_avg_var(self):
-        # return self.curr_var / self.counter
-        # return torch.div(self.curr_var, self.counter)
-        return self.norm.running_var
-    
-    def get_counter(self):
-        return self.counter
-    
     def debug_print(self, name: str, t):
-        if self.is_debug and not self.training:
-            print(f"\nSA: {name} -> {t.size()}")
-            print(t)
+        pass
+        # if self.is_debug and not self.training:
+        #     print(f"\nSA: {name} -> {t.size()}")
+        #     print(t)
 
     def forward(self, x):
 
@@ -178,30 +160,6 @@ class SelfAttention(nn.Module):
 
         C_H = self.head_dim
         # self.debug_print(f'self.head_dim {C_H}')
-
-        # For normalization calculation embedding
-        with torch.no_grad():
-            if self.training:
-                cur_var = torch.var(x, dim=0, unbiased=False)
-                if self.curr_var is not None:
-                    if self.curr_var.shape == cur_var.shape:
-                        self.curr_var = self.curr_var + cur_var
-                    else:
-                        pass
-                        # print(f'{self.curr_var.shape=}, {curr_var.shape=}')
-                else:
-                    self.curr_var = cur_var
-
-                cur_mean = torch.mean(x, dim=0)
-                if self.curr_mean is not None:
-                    if self.curr_mean.shape == cur_mean.shape:
-                        self.curr_mean = self.curr_mean + cur_mean
-                    else:
-                        pass
-                        # print(f'{self.curr_mean.shape=}, {cur_mean.shape=}')
-                else:
-                    self.curr_mean = cur_mean
-                self.counter += 1
             
         # Normalization across channels
         # out = self.norm(x)
@@ -389,49 +347,13 @@ class Transformer(nn.Module):
 
         self.dropout = nn.Dropout(dropout)
 
-        # self.curr_mean0 = 0.0
-        # self.curr_var0 = 0.0
-        self.curr_mean0 = None
-        self.curr_var0 = None
-        self.counter0 = 0
-        # self.curr_mean3 = 0.0
-        # self.curr_var3 = 0.0
-        self.curr_mean3 = None
-        self.curr_var3 = None
-        self.counter3 = 0
-
         torch.set_printoptions(precision=5, threshold=2097152, linewidth=1000, sci_mode=False)
 
-    def get_avg_mean0(self):
-        # return self.curr_mean0 / self.counter0
-        # return torch.div(self.curr_mean0, self.counter0)
-        return self.linear_0.running_mean
-
-    def get_avg_var0(self):
-        # return self.curr_var0 / self.counter0
-        # return torch.div(self.curr_var0, self.counter0)
-        return self.linear_0.running_var
-
-    def get_counter0(self):
-        return self.counter0
-
-    def get_avg_mean3(self):
-        # return self.curr_mean3 / self.counter3
-        # return torch.div(self.curr_mean3, self.counter3)
-        return self.linear_3.running_mean
-
-    def get_avg_var3(self):
-        # return self.curr_var3 / self.counter3
-        # return torch.div(self.curr_var3, self.counter3)
-        return self.linear_3.running_var
-
-    def get_counter3(self):
-        return self.counter3
-
     def debug_print(self, name: str, t):
-        if self.is_debug and not self.training:
-            print(f"\nT: {name} -> {t.size()}")
-            print(t)
+        pass
+        # if self.is_debug and not self.training:
+        #     print(f"\nT: {name} -> {t.size()}")
+        #     print(t)
 
     def forward(self, x):
 
@@ -448,21 +370,6 @@ class Transformer(nn.Module):
         x = self.self_attention(x)
         self.debug_print('x (after self-attention)', x)
 
-        # For normalization calculation embedding
-        with torch.no_grad():
-            if self.training:
-                # self.curr_var0 += torch.var(x, unbiased=False)
-                # self.curr_mean0 += torch.mean(x)
-                # self.counter0 += 1
-                # print(f'{x.shape=}')
-                cur_var0 = torch.var(x, dim=0, unbiased=False)
-                self.curr_var0 = (self.curr_var0 + cur_var0) if self.curr_var0 is not None else (cur_var0)
-                cur_mean0 = torch.mean(x, dim=0)
-                self.curr_mean0 = (self.curr_mean0 + cur_mean0) if self.curr_mean0 is not None else (cur_mean0)
-                self.counter0 += 1
-                # print(f'{cur_var0.shape=}')
-                # print(f'{cur_mean0.shape=}')
-
         # out0 = self.linear_0(x)
         out0 = self.linear_0(x.transpose(1,2)).transpose(1,2)
         self.debug_print('out0 (after linear_0)', out0)
@@ -473,19 +380,6 @@ class Transformer(nn.Module):
 
         out2 = self.linear_2(out1)
         self.debug_print('out2 (after linear_2)', out2)
-
-        # For normalization calculation embedding
-        with torch.no_grad():
-            if self.training:
-                # self.curr_var3 += torch.var(out2, unbiased=False)
-                # self.curr_mean3 += torch.mean(out2)
-                # self.counter3 += 1
-
-                cur_var3 = torch.var(out2, dim=0, unbiased=False)
-                self.curr_var3 = (self.curr_var3 + cur_var3) if self.curr_var3 is not None else (cur_var3)
-                cur_mean3 = torch.mean(out2, dim=0)
-                self.curr_mean3 = (self.curr_mean3 + cur_mean3) if self.curr_mean3 is not None else (cur_mean3)
-                self.counter3 += 1
 
         # out3 = self.linear_3(out2)
         out3 = self.linear_3(out2.transpose(1,2)).transpose(1,2)

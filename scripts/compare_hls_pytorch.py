@@ -236,6 +236,8 @@ def parse():
   parser.add_argument('--cosim', action='store_true')
   parser.add_argument('--reset', action='store_true')
 
+  parser.add_argument('--hls_dir', action='store', type=str, default='hls')
+
   parser.add_argument('--pytorch', action='store_true')
 
   parser.add_argument('--load', action='store', type=str, default=None)
@@ -302,7 +304,7 @@ def estimate_run_time(tb_path: str, options: List[Dict]) -> float:
 def main(args, run_hls: bool = True):
 
   # Paths
-  hls_dir_path = 'hls/'
+  hls_dir_path = args.hls_dir + '/'
 
   defines_path = hls_dir_path + 'firmware/defines.h'
   labels_path = hls_dir_path + 'tb_data/tb_labels.dat'
