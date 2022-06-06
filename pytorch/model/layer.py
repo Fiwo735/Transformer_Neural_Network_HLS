@@ -122,6 +122,7 @@ class SelfAttention(nn.Module):
         self.gamma = 1  # self.gamma = nn.Parameter(torch.zeros(1))
 
         # self.norm = nn.LayerNorm(in_dim)
+<<<<<<< HEAD
         # self.norm = nn.BatchNorm1d(in_dim) 
         self.qkv = nn.Linear(in_dim, 2*self.latent_dim + in_dim, bias=False)
         self.out = nn.Linear(in_dim, in_dim)
@@ -131,12 +132,25 @@ class SelfAttention(nn.Module):
         self.curr_mean = None
         self.curr_var = None
         self.counter = 0
+=======
+        self.norm = nn.BatchNorm1d(in_dim)
+        # self.qkv = nn.Linear(in_dim, 2*self.latent_dim + in_dim, bias=False)
+        self.q = nn.Linear(in_dim, in_dim, bias=False)
+        self.k = nn.Linear(in_dim, in_dim, bias=False)
+        self.v = nn.Linear(in_dim, in_dim, bias=False)
+        self.out = nn.Linear(in_dim, in_dim)
+
+        # TODO can this be done better?
+        self.num_particles = 30
+        self.pre_exp_norm = nn.BatchNorm1d((self.num_particles + 1) * (self.num_particles + 1))
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
 
         assert  (in_dim // num_heads) * num_heads == in_dim, "Embedding dim needs to be divisible by num_heads"
         assert  self.head_dim * num_heads ==  self.latent_dim, "Latent dim needs to be divisible by num_heads."
 
         torch.set_printoptions(precision=5, threshold=2097152, linewidth=1000, sci_mode=False)
 
+<<<<<<< HEAD
     def get_avg_mean(self):
         # return self.curr_mean / self.counter
         return torch.div(self.curr_mean, self.counter)
@@ -152,6 +166,13 @@ class SelfAttention(nn.Module):
         if self.is_debug and not self.training:
             print(f"\nSA: {name} -> {t.size()}")
             print(t)
+=======
+    def debug_print(self, name: str, t):
+        pass
+        # if self.is_debug and not self.training:
+        #     print(f"\nSA: {name} -> {t.size()}")
+        #     print(t)
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
 
     def forward(self, x):
 
@@ -164,6 +185,7 @@ class SelfAttention(nn.Module):
 
         m_batch, seq_len, C = x.size()
         self.debug_print('input', x)
+<<<<<<< HEAD
 
         C_H = self.head_dim
         # self.debug_print(f'self.head_dim {C_H}')
@@ -206,6 +228,36 @@ class SelfAttention(nn.Module):
         self.debug_print('out (after view)', out)
 
         queries, keys, values = torch.split(out, [C_H, C_H, C // self.heads], dim=-1)
+=======
+        # self.debug_print('x mean', torch.mean(x, dim=0))
+        # self.debug_print('x var', torch.var(x, dim=0, unbiased=False))
+
+        C_H = self.head_dim
+        # self.debug_print(f'self.head_dim {C_H}')
+            
+        # Normalization across channels
+        # out = self.norm(x)
+        out = self.norm(x.transpose(1,2)).transpose(1,2)
+        self.debug_print('out (after norm)', out)
+
+        # Queries, keys, and values
+        # out = self.qkv(out)
+        out_q = self.q(out)
+        out_k = self.k(out)
+        out_v = self.v(out)
+        # out = self.qkv(x)
+        # self.debug_print('out (after qkv)', out)
+        self.debug_print('out_q', out_q)
+        self.debug_print('out_k', out_k)
+        self.debug_print('out_v', out_v)
+        # self.debug_print(f'weight of qkv {self.qkv.weight.size()}')
+
+        # out = out.view(m_batch, seq_len, self.heads, -1)   # (batch_m, seq_len, num_heads, 2*C_head + C//num_head )
+        # self.debug_print('out (after view)', out)
+
+        # queries, keys, values = torch.split(out, [C_H, C_H, C // self.heads], dim=-1)
+        queries, keys, values = out_q.view(m_batch, seq_len, self.heads, -1), out_k.view(m_batch, seq_len, self.heads, -1), out_v.view(m_batch, seq_len, self.heads, -1)
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
         self.debug_print('queries', queries)
         self.debug_print('keys', keys)
         self.debug_print('values', values)
@@ -214,7 +266,21 @@ class SelfAttention(nn.Module):
         energy = torch.einsum("nqhc,nkhc->nhqk", [queries, keys])  # (batch_m, num_heads, seq_len, seq_len)
         self.debug_print('energy', energy)
 
+<<<<<<< HEAD
         attention = torch.softmax(energy / (C ** (1 / 2)), dim=-1) # (batch_m, num_heads, seq_len, seq_len)
+=======
+        # attention = torch.softmax(energy / (C ** (1 / 2)), dim=-1) # (batch_m, num_heads, seq_len, seq_len)
+        # attention = torch.softmax(energy / C, dim=-1) # (batch_m, num_heads, seq_len, seq_len)
+        energy_norm_pre = energy.view(m_batch, self.heads, -1).transpose(1,2)
+        self.debug_print('energy_norm_pre', energy_norm_pre)
+        energy_norm = self.pre_exp_norm(energy_norm_pre)
+        self.debug_print('energy_norm', energy_norm)
+        energy_post = energy_norm.transpose(1,2).view(m_batch, self.heads, self.num_particles+1, self.num_particles+1)
+        self.debug_print('energy_post', energy_post)
+
+        # attention = torch.softmax(energy_post, dim=-1) # (batch_m, num_heads, seq_len, seq_len)
+        attention = torch.softmax(energy_post / (C ** (1 / 2)), dim=-1) # (batch_m, num_heads, seq_len, seq_len)
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
         self.debug_print('attention', attention)
 
         # Output
@@ -347,12 +413,20 @@ class Transformer(nn.Module):
         #     nn.Linear(in_dim*2, in_dim, bias=False),
         # )
         # self.linear_0 = nn.LayerNorm(in_dim)
+<<<<<<< HEAD
         # self.linear_0 = nn.BatchNorm1d(in_dim)
+=======
+        self.linear_0 = nn.BatchNorm1d(in_dim)
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
         # self.linear_1 = nn.SiLU()
         self.linear_1 = nn.ReLU()
         self.linear_2 = nn.Linear(in_dim, in_dim*2, bias=False)
         # self.linear_3 = nn.LayerNorm(in_dim*2)
+<<<<<<< HEAD
         # self.linear_3 = nn.BatchNorm1d(in_dim*2)
+=======
+        self.linear_3 = nn.BatchNorm1d(in_dim*2)
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
         # self.linear_4 = nn.SiLU()
         self.linear_4 = nn.ReLU()
         self.linear_5 = nn.Linear(in_dim*2, in_dim, bias=False)
@@ -360,6 +434,7 @@ class Transformer(nn.Module):
 
         self.dropout = nn.Dropout(dropout)
 
+<<<<<<< HEAD
         # self.curr_mean0 = 0.0
         # self.curr_var0 = 0.0
         self.curr_mean0 = None
@@ -399,6 +474,15 @@ class Transformer(nn.Module):
         if self.is_debug and not self.training:
             print(f"\nT: {name} -> {t.size()}")
             print(t)
+=======
+        torch.set_printoptions(precision=5, threshold=2097152, linewidth=1000, sci_mode=False)
+
+    def debug_print(self, name: str, t):
+        pass
+        # if self.is_debug and not self.training:
+        #     print(f"\nT: {name} -> {t.size()}")
+        #     print(t)
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
 
     def forward(self, x):
 
@@ -415,6 +499,7 @@ class Transformer(nn.Module):
         x = self.self_attention(x)
         self.debug_print('x (after self-attention)', x)
 
+<<<<<<< HEAD
         # For normalization calculation embedding
         with torch.no_grad():
             if self.training:
@@ -432,11 +517,20 @@ class Transformer(nn.Module):
 
         # out1 = self.linear_1(out0)
         out1 = self.linear_1(x)
+=======
+        # out0 = self.linear_0(x)
+        out0 = self.linear_0(x.transpose(1,2)).transpose(1,2)
+        self.debug_print('out0 (after linear_0)', out0)
+
+        out1 = self.linear_1(out0)
+        # out1 = self.linear_1(x)
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
         self.debug_print('out1 (after linear_1)', out1)
 
         out2 = self.linear_2(out1)
         self.debug_print('out2 (after linear_2)', out2)
 
+<<<<<<< HEAD
         # For normalization calculation embedding
         with torch.no_grad():
             if self.training:
@@ -455,6 +549,14 @@ class Transformer(nn.Module):
 
         # out4 = self.linear_4(out3)
         out4 = self.linear_4(out2)
+=======
+        # out3 = self.linear_3(out2)
+        out3 = self.linear_3(out2.transpose(1,2)).transpose(1,2)
+        self.debug_print('out3 (after linear_3)', out3)
+
+        out4 = self.linear_4(out3)
+        # out4 = self.linear_4(out2)
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
         self.debug_print('out4 (after linear_4)', out4)
 
         out5 = self.linear_5(out4)

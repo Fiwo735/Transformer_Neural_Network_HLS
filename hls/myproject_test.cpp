@@ -30,7 +30,12 @@
 
 //hls-fpga-machine-learning insert bram
 
+<<<<<<< HEAD
 #define CHECKPOINT 128
+=======
+#define CHECKPOINT 10
+// #define CHECKPOINT 1
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
 
 namespace nnet {
     bool trace_enabled = true;
@@ -61,6 +66,7 @@ int main(int argc, char **argv)
   if (fin.is_open() && fpr.is_open()) {
     while ( std::getline(fin,iline) && std::getline (fpr,pline) ) {
       if (e % CHECKPOINT == 0) std::cout << "\nProcessing input " << e << std::endl;
+<<<<<<< HEAD
       char* cstr=const_cast<char*>(iline.c_str());
       char* current;
       std::vector<float> in;
@@ -73,10 +79,34 @@ int main(int argc, char **argv)
       std::vector<float> pr;
       current=strtok(cstr," ");
       while(current!=NULL) {
+=======
+
+      char* cstr=const_cast<char*>(iline.c_str());
+      char* current;
+      std::vector<std::vector<float>> in(N_PARTICLES);
+      unsigned i_particle = 0;
+      // std::vector<float> in;
+      current=strtok(cstr," ");
+      while (current != NULL) {
+        // std::cout << *current << std::endl;
+        if (*current == ','){
+          i_particle++;
+        } else {
+          in[i_particle].push_back(atof(current));
+        }
+        current=strtok(NULL," ");
+      }
+
+      cstr=const_cast<char*>(pline.c_str());
+      std::vector<float> pr;
+      current=strtok(cstr," ");
+      while (current != NULL) {
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
         pr.push_back(atof(current));
         current=strtok(NULL," ");
       }
 
+<<<<<<< HEAD
       size_t input_size = in.size();
       size_t input_feature_dimensions = 16;
       if (input_size % input_feature_dimensions == 0) {
@@ -89,14 +119,44 @@ int main(int argc, char **argv)
         }
       } else {
         std::cout << "Number of input data is not multiple of " << input_feature_dimensions << std::endl;
+=======
+      size_t particle_count = in.size();
+      if (!(particle_count == N_PARTICLES)) {
+        std::cout << "Number of particles is not " << N_PARTICLES << std::endl;
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
         std::cout << "Halting the operation!" << std::endl;
         break;
       }
 
+<<<<<<< HEAD
+=======
+      if (e % CHECKPOINT == 0) {
+        std::cout << "Input [" << particle_count << "][" << in[0].size() << "]:" << std::endl;
+      }
+      for (unsigned particle = 0; particle < N_PARTICLES; particle++) {
+        size_t input_size = in[particle].size();
+        if (input_size == N_FEATURES) {
+          if (e % CHECKPOINT == 0) {
+            // std::cout << "Input data [" << input_size << "]:" << std::endl; 
+            for (size_t i = 0; i < input_size; i++) {
+              std::cout << in[particle].at(i) << " ";
+            }
+            std::cout << std::endl;
+          }
+        } else {
+          std::cout << "Number of input data is not " << N_FEATURES << std::endl;
+          std::cout << "Halting the operation!" << std::endl;
+          break;
+        }
+      }
+      // std::cout << "Copying data" << std::endl;
+
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
       //hls-fpga-machine-learning insert data
       // input_t fc1_input[N_INPUT];
       input_t fc1_input[N_PARTICLES][N_FEATURES];
       // nnet::copy_data<float, input_t, 0, N_INPUT>(in, fc1_input);
+<<<<<<< HEAD
       nnet::copy_data<float, input_t, 0, N_INPUT>(in, fc1_input[0]);
       result_t layer13_out[N_LABELS];
 
@@ -104,6 +164,20 @@ int main(int argc, char **argv)
       unsigned short size_in1,size_out1;
       // std::cout << "Starting myproject(...)" << std::endl;
       myproject(fc1_input,layer13_out,size_in1,size_out1);
+=======
+      for (unsigned particle = 0; particle < N_PARTICLES; particle++) {
+        // std::cout << "Copying data for particle " << particle << std::endl;
+        nnet::copy_data<float, input_t, 0, N_FEATURES>(in[particle], fc1_input[particle]);
+      }
+      // std::cout << "Copying data finished" << std::endl;
+      result_t layer13_out[N_LABELS];
+
+      //hls-fpga-machine-learning insert top-level-function
+      unsigned short size_in1, size_out1;
+      // std::cout << "Starting myproject(...)" << std::endl;
+      myproject(fc1_input,layer13_out,size_in1,size_out1);
+      // std::cout << "Finished myproject(...)" << std::endl;
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
 
       if (e % CHECKPOINT == 0) {
         std::cout << "Predictions" << std::endl;

@@ -48,6 +48,10 @@ class ConstituentNet(nn.Module):
         #     nn.Linear(embbed_dim, num_classes)
         # )
         # self.out_layer_0 = nn.LayerNorm(embbed_dim)
+<<<<<<< HEAD
+=======
+        self.out_layer_0 = nn.BatchNorm1d(embbed_dim)
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
         self.out_layer_1 = nn.Linear(embbed_dim, num_classes)
         
         self.cls_token = nn.Parameter(torch.randn(1, 1, embbed_dim)) # learned classification token, (1, 1, C)
@@ -55,6 +59,7 @@ class ConstituentNet(nn.Module):
             Transformer(embbed_dim, num_heads=num_heads, dropout=dropout, is_debug=self.is_debug) for _ in range(num_transformers)
         ])
 
+<<<<<<< HEAD
         # self.curr_mean = 0.0
         # self.curr_var = 0.0
         self.curr_mean = None
@@ -78,6 +83,15 @@ class ConstituentNet(nn.Module):
         if self.is_debug and not self.training:
             print(f"\n{name} -> {t.size()}")
             print(t)
+=======
+        torch.set_printoptions(precision=5, threshold=2097152, linewidth=1000, sci_mode=False)
+
+    def debug_print(self, name: str, t):
+        pass
+        # if self.is_debug and not self.training:
+        #     print(f"\n{name} -> {t.size()}")
+        #     print(t)
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
 
     def forward(self, x):
 
@@ -103,6 +117,7 @@ class ConstituentNet(nn.Module):
         out = out[:, 0]                           # (m_batch, 1, C
         self.debug_print('out (after out[:, 0])', out)
 
+<<<<<<< HEAD
         # For normalization calculation embedding
         with torch.no_grad():
             if self.training:
@@ -114,6 +129,10 @@ class ConstituentNet(nn.Module):
 
         # out = self.out_layer_0(out)
         # self.debug_print('out (after out layer 0)', out)
+=======
+        out = self.out_layer_0(out)
+        self.debug_print('out (after out layer 0)', out)
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
 
         out = self.out_layer_1(out)
         self.debug_print('out (after out layer 1)', out)

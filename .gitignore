@@ -51,7 +51,32 @@ hls/myproject_prj/solution1/*
 *.pyc
 
 # nohup - for long running jobs
+<<<<<<< HEAD
 nohup.out
 
 # Dataset H5 files
 *.h5
+=======
+nohup*
+
+# Dataset H5 files
+*.h5
+
+# Temporary copy of hls directory
+hls_*
+
+# ScaleHLS
+scalehls
+
+# Torch-MLIR
+torch-mlir
+
+# Environments
+mlir_venv
+
+# Vivado logs
+logs/vivado_hls_run.log
+logs/vivado_hls_run2.log
+logs/vivado_hls_run3.log
+logs/vivado_hls_run4.log
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c

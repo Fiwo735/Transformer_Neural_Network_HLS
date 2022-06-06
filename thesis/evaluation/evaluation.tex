@@ -1,5 +1,7 @@
-\chapter{Evaluation Plan}\label{evaluation}
+\chapter{Evaluation}\label{evaluation}
 This chapter outlines the proposed evaluation plan for the project. The first objective of developing and optimizing a state-of-the-art neural network in hardware can be evaluated quantitatively, while integrating it into the \textit{hls4ml} library and making it easy for new users to use requires a more qualitative approach.
+
+\indo{Analytical models for latency/resources?}
 
 \section{Quantitative results}
 The following describes the quantities to be measured for each neural network design:
@@ -19,5 +21,14 @@ In the early stages of the project, the above quantities will be measured from t
 Apart from clear design improvements, it is predicted that most evaluated designs will offer trade-offs between classification accuracy, AUC, inference throughput and hardware utilization. It is not possible to find a design that is superior in every way, hence a Pareto front and the Roofline model will play the key roles in understanding the overall performance and selecting configuration with specific needs in mind.
 
 
-\section{Qualitative results}
+\section{Qualitative Results}
 To assess the success of enhancing the \textit{hls4ml} library, qualitative comparisons will be drawn between it and the already existing neural network components and architectures. Depending on the project's timeline, it is possible that the improvements can get official approval and get merged into the main repository, however if this is not feasible before the final deadline, current users of the library will be surveyed and their opinion will be taken into consideration instead.
+
+\section{Quantization Results}
+\todofig{pre-training quantization compared to varying floating-point widths}
+\indo{float16 doesnt learn anything (acc 20\%) as its range is too small and we cannot consider normalizing inputs coz its real time system}
+\indo{brevitas only gets 34\% accuracy}
+\indo{pytorch quantization is too experimental and doesnt support the model}
+\indo{post-training quantization}
+
+\indo{somewhere: fuse batch norm to linear???}

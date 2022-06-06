@@ -7,6 +7,10 @@ import torch.nn as nn
 import torch.nn.functional as F
 import argparse
 import h5py
+<<<<<<< HEAD
+=======
+import matplotlib.pyplot as plt
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
 
 from tracemalloc import start
 from pathlib import Path
@@ -15,10 +19,24 @@ from torch.utils.data import TensorDataset, DataLoader
 from sklearn.datasets import fetch_openml
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder, StandardScaler, normalize
+<<<<<<< HEAD
 from tqdm import tqdm
 from time import time
 
 from model.net import ConstituentNet
+=======
+from sklearn.metrics import roc_curve, auc, roc_auc_score
+from tqdm import tqdm
+from time import time
+from fvcore.nn import FlopCountAnalysis
+from scipy import interpolate
+from qtorch.optim import OptimLP
+
+from model.net import ConstituentNet
+from model.quant_brevitas import ConstituentNetQuantBrevitas
+from model.quant_qpytorch import ConstituentNetQuantQPyTorch
+from model.quant_qpytorch import WEIGHT_QUANT, GRAD_QUANT, MOMENTUM_QUANT, ACC_QUANT
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
 
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -51,6 +69,11 @@ CLASSES_FILENAMES = {
   1: os.path.join(DATA_DIR, 'classes.npy'),
 }
 
+<<<<<<< HEAD
+=======
+CLASSES = ['Gluon', 'Light quark', 'W boson', 'Z boson', 'Top quark']
+
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
 def set_seed(seed=0):
   np.random.seed(seed)
   torch.manual_seed(seed)
@@ -169,6 +192,14 @@ def load_dataset(
 
   tensor_X_train_val = torch.Tensor(X_train_val)
   tensor_X_test = torch.Tensor(X_test)
+<<<<<<< HEAD
+=======
+
+  if num_particles == 1:
+    tensor_X_train_val = tensor_X_train_val.unsqueeze(dim=1)
+    tensor_X_test = tensor_X_test.unsqueeze(dim=1)
+  
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
   tensor_y_train_val = torch.Tensor(y_train_val)
   tensor_y_test = torch.Tensor(y_test)
 
@@ -199,11 +230,37 @@ def load_dataset(
   )
 
   # Dataloader for printing layer-by-layer evaluation of (1, tiny_size, 16)
+<<<<<<< HEAD
   tiny_tensor_X_test = tensor_X_test[:1,:tiny_size,:] if num_particles != 1 else tensor_X_test[:1,:]
   tiny_loader = DataLoader(
     TensorDataset(tiny_tensor_X_test, tensor_y_test[:1]),
     batch_size=1
   )
+=======
+  # print(f'{tensor_X_test.shape=}')
+
+  # tiny_tensor_X_test = tensor_X_test[:1,:tiny_size,:] if num_particles != 1 else tensor_X_test[:tiny_size,:]
+  # print(f'{tiny_size=}')
+
+  if num_particles == 1:
+    tiny_tensor_X_test = tensor_X_test[:tiny_size+1,:,:]
+    # print(f'{tiny_tensor_X_test.shape=}')
+
+    tiny_loader = DataLoader(
+      TensorDataset(tiny_tensor_X_test, tensor_y_test[:tiny_size+1]),
+      batch_size=1
+    )
+
+  else:
+    assert tiny_size <= num_particles
+    tiny_tensor_X_test = tensor_X_test[:1,:tiny_size+1,:]
+    # print(f'{tiny_tensor_X_test.shape=}')
+
+    tiny_loader = DataLoader(
+      TensorDataset(tiny_tensor_X_test, tensor_y_test[:1]),
+      batch_size=1
+    )
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
 
   return train_loader, test_loader, tiny_loader, classes
 
@@ -226,7 +283,12 @@ def train_test_loop(
   num_particles: int = 1,
   num_epochs: int = 5,
   print_predictions: bool = False,
+<<<<<<< HEAD
 ) -> Tuple[Optional[float], float, Tuple[List[float], List[float]]]:
+=======
+  secondary_loader: Optional[DataLoader] = None
+) -> Tuple[Optional[float], float, Tuple[List[float], List[float], List[float]]]:
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
 
   is_eval = not is_train
 
@@ -251,8 +313,13 @@ def train_test_loop(
       tepoch.set_description(f'{prefix} epoch {epoch+1}/{num_epochs}')
       for idx, (data, labels) in enumerate(tepoch):
 
+<<<<<<< HEAD
         if num_particles == 1:
           data = torch.unsqueeze(data, dim=1)
+=======
+        # if num_particles == 1:
+        #   data = torch.unsqueeze(data, dim=1)
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
 
         if is_eval:
           all_data.append(data.detach())
@@ -271,11 +338,64 @@ def train_test_loop(
           all_labels.append(labels.detach().cpu())
           all_predicted.append(predicted.detach().cpu())
 
+<<<<<<< HEAD
         if idx % 128 == 0:
           tepoch.set_postfix(loss=loss.item() / batch_size)
 
         if idx == loader_length - 2: # issue with ConsitutentNet mean/var summation with last batch
           break
+=======
+        # if idx > 100:
+        #   break
+
+        if idx % 128 == 0:
+          tepoch.set_postfix(loss=loss.item() / batch_size)
+
+        # if idx == loader_length - 2: # issue with ConsitutentNet mean/var summation with last batch
+        #   break
+
+    # Temporary evaluation after each epoch
+    ##############
+    if secondary_loader is not None:
+      # print(f'Evaluating on test dataset...')
+      e_all_data = []
+      e_all_labels = []
+      e_all_predicted = []
+      e_accuracy = None
+      e_loader_length = len(secondary_loader)
+      model.eval()
+      for idx, (data, labels) in enumerate(secondary_loader):
+
+        # if num_particles == 1:
+        #   data = torch.unsqueeze(data, dim=1)
+
+        e_all_data.append(data.detach())
+
+        labels = labels.to(DEVICE)
+        data = data.to(DEVICE)
+
+        predicted = model(data)
+        loss = criterion(predicted, labels)
+
+        e_all_labels.append(labels.detach().cpu())
+        e_all_predicted.append(predicted.detach().cpu())
+
+        # if idx > 100:
+        #   break
+
+        # if idx == loader_length - 128: # issue with ConsitutentNet mean/var summation with last batch
+        #   break
+
+      model.train()
+      e_all_labels = torch.stack(e_all_labels) if len(e_all_labels) == 1 else torch.stack(e_all_labels[:-1])
+      e_all_predicted = torch.stack(e_all_predicted) if len(e_all_predicted) == 1 else torch.stack(e_all_predicted[:-1])
+
+      e_all_predicted_argmax = torch.argmax(e_all_predicted, dim=2)
+      e_correct_predictions = (e_all_predicted_argmax == e_all_labels).sum()
+      e_accuracy = e_correct_predictions / torch.numel(e_all_predicted_argmax)
+      ##############
+      print(f'Accuracy after epoch {epoch+1}: {e_accuracy*100:.2f}')
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
 
   end_time = time()
 
@@ -292,6 +412,7 @@ def train_test_loop(
     accuracy = correct_predictions / torch.numel(all_predicted_argmax)
 
 
+<<<<<<< HEAD
   return (accuracy, end_time - start_time, (all_data, all_predicted))
 
 
@@ -299,13 +420,34 @@ def save_model(model: nn.Module, script_path: str, state_path: str) -> None:
   model.eval()
   model_script = torch.jit.script(model)
   model_script.save(script_path)
+=======
+  return (accuracy, end_time - start_time, (all_data, all_predicted, all_labels))
+
+
+def save_model(model: nn.Module, model_path: str, script_path: str, state_path: str, quant: bool) -> None:
+  model.eval()
+  
+  print(f'Model saved successfully (', end ='')
+
+  if not quant:
+    model_script = torch.jit.script(model)
+    model_script.save(script_path)
+
+    torch.save(model, model_path)
+
+    print(f'{model_path}, {script_path}, ', end='')
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
 
   torch.save(
     {'state_dict': model.state_dict()},
     state_path,
   )
 
+<<<<<<< HEAD
   print(f'Model saved successfully ({script_path}, {state_path})')
+=======
+  print(f'{state_path})')
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
 
 
 def evaluate(
@@ -315,7 +457,11 @@ def evaluate(
   filepath: Optional[str] = None,
   print_predictions: bool = False,
   num_particles: int = 1,
+<<<<<<< HEAD
 ) -> Tuple[float, float, Tuple[List[float], List[float]]]:
+=======
+) -> Tuple[float, float, Tuple[List[float], List[float], List[float]]]:
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
 
   with torch.inference_mode():
     if filepath is None:
@@ -378,9 +524,104 @@ def time_evaluate(
   return (accuracy, times.mean(), times.std())
 
 
+<<<<<<< HEAD
 def main(
   num_particles: int,
   do_train: bool = True,
+=======
+def compute_roc_auc(targets, predictions):
+  def find_FPR_TPR_AUC(curr_targets, curr_predictions):
+    # print(type(curr_targets), type(curr_predictions))
+    # print(curr_targets, curr_predictions)
+    FPRs, TPRs, _ = roc_curve(curr_targets, curr_predictions)
+    return FPRs, TPRs, auc(FPRs, TPRs)
+
+  num_classes = len(CLASSES)
+
+  targets = np.vstack([F.one_hot(target, num_classes) for target in targets])
+  predictions = np.vstack(predictions)
+
+  FPRs = [-1] * num_classes
+  TPRs = [-1] * num_classes
+  AUCs = [-1] * num_classes
+  interpolated_10s = [-1] * num_classes
+  interpolated_1s = [-1] * num_classes
+
+  # print('\n' + '-'*22 + 'AUC Analysis' + '-'*21)
+  print('-'*55)
+  print('Particle' + ' '*8 + 'AUC' + ' '*8 + 'TPR @ FPR=10%' + ' '*3 + 'TPR @ FPR=1%')
+  print('-'*55)
+
+  fig = plt.figure()
+  plt.plot([0, 1], [0, 1], linestyle='--')
+  
+  for i in range(num_classes):
+    FPRs[i], TPRs[i], AUCs[i] = find_FPR_TPR_AUC(targets[:, i], predictions[:, i])
+    interpolated = interpolate.interp1d(FPRs[i], TPRs[i])
+    interpolated_10s[i] = interpolated(0.1)
+    interpolated_1s[i] = interpolated(0.01)
+    particle = CLASSES[i]
+
+    print(f'{particle + ":" :<13} {AUCs[i]:<15.4f} {interpolated_10s[i]:<15.4f} {interpolated_1s[i]:<8.4f}')
+    plt.plot(FPRs[i], TPRs[i], label=f'{particle} (AUC={AUCs[i]:.4f})')
+  
+  plt.xlim([-0.01, 1.0])
+  plt.ylim([0.0, 1.01])
+  plt.xlabel('False Positive Rate')
+  plt.ylabel('True Positive Rate')
+  plt.title('Receiver operating characteristic curve')
+  plt.grid()
+  handles, labels = plt.gca().get_legend_handles_labels()
+  labels, handles = zip(*sorted(zip(labels, handles), key=lambda t: t[0]))
+  plt.gca().legend(handles, labels, loc='lower right')
+  fig.tight_layout()
+  plt.savefig('logs/ROC.png', format='png', dpi=200)
+
+  print('-'*55)
+  print('Average:' + ' '*6 + f'{sum(AUCs)/num_classes:<15.4f} {sum(interpolated_10s)/num_classes:<15.4f} {sum(interpolated_1s)/num_classes:<8.4f}')
+  print('-'*55)
+    
+  FPR_micro, TPR_micro, AUC_micro = find_FPR_TPR_AUC(targets.ravel(), predictions.ravel())
+
+
+def mean_var_info(name: str, index: int, mean: torch.Tensor, var: torch.Tensor, ctr: int, sub_index: str='') -> str:
+  result = f"{name}{index}\n"
+  result += f"mean{sub_index}: {mean.size()}\n\t"
+
+  # curr_mean = torch.mean(mean, dim=0)
+  curr_mean = mean
+  if len(mean.size()) > 1:
+    for i in range(curr_mean.shape[0]):
+      result += f"[{i}]: {curr_mean[i]}\n\t"
+    # result += f"[0]: {curr_mean[0]}\n\t"
+    # result += f"[1:]: {torch.mean(curr_mean[1:])}\n"
+  else:
+    result += f"{curr_mean}\n"
+
+  result += f"var{sub_index}: {var.size()}\n\t"
+
+  # curr_var = torch.mean(var, dim=0)
+  curr_var = var
+  if len(var.size()) > 1:
+    for i in range(curr_var.shape[0]):
+      result += f"[{i}]: {curr_var[i]}\n\t"
+    # result += f"[0]: {curr_var[0]}\n\t"
+    # result += f"[1:]: {torch.mean(curr_var[1:])}\n"
+    # print(f"[({curr_mean[0]}, {curr_var[0]}), ({torch.mean(curr_mean[1:])}, {torch.mean(curr_var[1:])})],")
+  else:
+    result += f"{curr_var}\n"
+    # print(f"[({curr_mean}, {curr_var})],")
+
+  result += f"ctr{sub_index}: {ctr}\n"
+
+  return result
+
+
+def main(
+  num_particles: int,
+  do_train: bool = False,
+  model_path: Optional[str] = None,
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
   script_path: Optional[str] = None,
   state_path: Optional[str] = None,
   debug_path: Optional[str] = None,
@@ -389,6 +630,7 @@ def main(
   only_predictions: bool = False,
   tiny_size: int = 1,
   num_epochs: int = 3,
+<<<<<<< HEAD
   do_generate_in_out_hls_tb: bool = False,
   hls_tb_in_path: Optional[str] = None,
   hls_tb_out_path: Optional[str] = None,
@@ -398,6 +640,31 @@ def main(
   criterion = torch.nn.NLLLoss()
   num_transformers = 1
   embbed_dim = 16
+=======
+  generate_in_out_hls_tb: int = 0,
+  hls_tb_in_path: Optional[str] = None,
+  hls_tb_out_path: Optional[str] = None,
+  hls_tb_labels_path: Optional[str] = None,
+  measure_flops: bool = False,
+  norm_info_path: Optional[str] = None,
+  quant: bool = False,
+) -> None:
+
+  # if measure_flops:
+  #   assert do_train, 'Model has to be retrained for measuring FLOPS, since loading using torch.jit.load() results in RecursiveScriptModule object attribute error.'
+  #   if num_epochs != 1:
+  #     print('This run will measure FLOPS, so epoch number is forced to 1 for faster training')
+  #     num_epochs = 1
+
+  # if norm_info_path is not None:
+  #   assert do_train, 'Model has to be retrained for generating norm_info, since loading using torch.jit.load() results in hook error.'
+
+ 
+  batch_size = 128
+  criterion = torch.nn.NLLLoss()
+  num_transformers = 3
+  embbed_dim = 32
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
   num_heads = 2
   dropout = 0.0
 
@@ -405,6 +672,7 @@ def main(
 
   if do_train:
     # Instantiate model
+<<<<<<< HEAD
     model = ConstituentNet(
       in_dim=16,
       embbed_dim=embbed_dim,
@@ -416,6 +684,52 @@ def main(
     ).to(DEVICE)
 
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
+=======
+    # if not quant:
+    if not quant:
+      model = ConstituentNet(
+        in_dim=16,
+        embbed_dim=embbed_dim,
+        num_heads=num_heads,
+        num_classes=len(classes), # 5
+        num_transformers=num_transformers,
+        dropout=dropout,
+        is_debug=is_debug,
+      ).to(DEVICE)
+
+    else:
+      # model = ConstituentNetQuantBrevitas(
+      #   in_dim=16,
+      #   embbed_dim=embbed_dim,
+      #   num_heads=num_heads,
+      #   num_classes=len(classes), # 5
+      #   num_transformers=num_transformers,
+      #   dropout=dropout,
+      #   is_debug=is_debug,
+      # ).to(DEVICE)
+
+      model = ConstituentNetQuantQPyTorch(
+        in_dim=16,
+        embbed_dim=embbed_dim,
+        num_heads=num_heads,
+        num_classes=len(classes), # 5
+        num_transformers=num_transformers,
+        dropout=dropout,
+        is_debug=is_debug,
+      ).to(DEVICE)
+
+    optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
+    if quant:
+      optimizer = OptimLP(
+        optimizer,
+        weight_quant=WEIGHT_QUANT,
+        grad_quant=GRAD_QUANT,
+        momentum_quant=MOMENTUM_QUANT,
+        acc_quant=ACC_QUANT,
+        grad_scaling=1/1000,
+      )
+
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
 
     # Train model
     _, total_time, _ = train_test_loop(
@@ -426,6 +740,7 @@ def main(
       is_train=True,
       num_particles=num_particles,
       num_epochs=num_epochs,
+<<<<<<< HEAD
     )
     print(f'Training took {total_time:.2f} s')
 
@@ -433,11 +748,62 @@ def main(
   
   else:
     model = torch.jit.load(script_path, map_location=DEVICE)
+=======
+      secondary_loader=test_loader,
+    )
+    print(f'Training took {total_time:.2f} s')
+
+    save_model(model=model, model_path=model_path, script_path=script_path, state_path=state_path, quant=quant)
+  
+  else:
+    # Load from script
+    # model = torch.jit.load(script_path, map_location=DEVICE)
+
+    # Load from state_dict
+    if quant:
+      # model = ConstituentNetQuantBrevitas(
+      #   in_dim=16,
+      #   embbed_dim=embbed_dim,
+      #   num_heads=num_heads,
+      #   num_classes=len(classes), # 5
+      #   num_transformers=num_transformers,
+      #   dropout=dropout,
+      #   is_debug=is_debug,
+      # )
+      model = ConstituentNetQuantQPyTorch(
+        in_dim=16,
+        embbed_dim=embbed_dim,
+        num_heads=num_heads,
+        num_classes=len(classes), # 5
+        num_transformers=num_transformers,
+        dropout=dropout,
+        is_debug=is_debug,
+      ).to(DEVICE)
+      state_dict = torch.load(state_path)['state_dict']
+      model.load_state_dict(state_dict, strict=True)
+      model.to(DEVICE)
+      # print(f'{model.cls_token=}')
+      print(f'Model loaded from {state_path}')
+
+    # Load from model
+    else:
+      model = torch.load(model_path)
+      model.to(DEVICE)
+      print(f'Model loaded from {model_path}')
+
+    model.eval()
+
+
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
 
   print(f'Model parameters: {sum(p.numel() for p in model.parameters() if p.requires_grad)}')
   
   # Test model
   if is_debug:
+<<<<<<< HEAD
+=======
+    print(f'{len(tiny_loader)=}, {tiny_size=}')
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
     _, _, _ = evaluate(test_loader=tiny_loader, model=model, criterion=criterion, filepath=debug_path, print_predictions=True, num_particles=num_particles)
     print(f'Debug output saved to {debug_path}')
     if is_timing:
@@ -453,6 +819,7 @@ def main(
     print(f'{time_mean_batch * 1000:.3f} \u00B1 {time_std_batch * 1000:.3f} ms per batch')
     print(f'{time_mean_sample * 1000000:.3f} \u00B1 {time_std_sample * 1000000:.3f} us per sample')
   elif not only_predictions:
+<<<<<<< HEAD
     accuracy, total_time, (data, results) = evaluate(test_loader=test_loader, model=model, criterion=criterion, num_particles=num_particles)
     print(f'Test accuracy: {accuracy*100:.2f}% in {total_time:.2f} s')
     
@@ -479,6 +846,98 @@ def main(
   else:
     _, _, _ = evaluate(test_loader=tiny_loader, model=model, criterion=criterion, print_predictions=True, num_particles=num_particles)
 
+=======
+    accuracy, total_time, (data, results, labels) = evaluate(test_loader=test_loader, model=model, criterion=criterion, num_particles=num_particles)
+    print(f'Test accuracy: {accuracy*100:.2f}% in {total_time:.2f} s')
+    compute_roc_auc(targets=labels, predictions=results)
+
+    if generate_in_out_hls_tb > 0:
+      print(f'Creating HLS TB data of size {generate_in_out_hls_tb} (input: {hls_tb_in_path}, output: {hls_tb_out_path})')
+      assert len(data) - 1 == len(results) == len(test_loader) - 2, 'Number of captured samples and predictions must match DataLoader size'
+      
+      if generate_in_out_hls_tb >= batch_size:
+        batches_limit = generate_in_out_hls_tb // batch_size
+        in_batch_limit = batch_size
+        print(f'Requested HLS TB size {generate_in_out_hls_tb} is bigger than {batch_size}, so rounding to {batches_limit*batch_size}')
+
+      else:
+        batches_limit = 0
+        in_batch_limit = generate_in_out_hls_tb % batch_size
+
+      # print(f'{batches_limit=}, {in_batch_limit=}')
+
+
+      with open(hls_tb_in_path, 'w') as f_in, open(hls_tb_out_path, 'w') as f_out, open(hls_tb_labels_path, 'w') as f_labels:
+        # Iterate until shorter ends and print to corresponding files
+        for index, (data_batch, results_batch, labels_batch) in enumerate(zip(data, results, labels)):
+          data_list = data_batch.tolist()
+          results_list = results_batch.tolist()
+          labels_list = labels_batch.tolist()
+
+          # print(f'{data_batch.shape=}, {results_batch.shape=}, {labels_batch.shape=}')
+
+          # Iterate over each element in a batch
+          for sub_index, (curr_data, curr_results, curr_labels) in enumerate(zip(data_list, results_list, labels_list)):
+
+            # print(f'{len(curr_data)=}, {len(curr_data[0])=}, {len(curr_results)=}, {curr_labels=}')
+
+            results_str = ' '.join([str(el) for el in curr_results]) + '\n'
+            curr_str = str(curr_labels) + '\n'#' '.join([str(el) for el in curr_labels]) + '\n'
+
+            # if num_particles == 1:
+            #   data_str = ' '.join([str(el) for el in curr_data[0]]) + '\n'
+            # else:
+            data_str = ''
+            for i in range(num_particles):
+              data_str += ' '.join([str(el) for el in curr_data[i]]) + ' , '
+            data_str += '\n'
+
+            # print(data_str.replace(' , ', '\n') + '\n')
+
+            f_in.write(data_str)
+            f_out.write(results_str)
+            f_labels.write(curr_str)
+
+            if sub_index >= in_batch_limit-1:
+              break
+          
+          if index >= batches_limit-1:
+            break
+  else:
+    _, _, _ = evaluate(test_loader=tiny_loader, model=model, criterion=criterion, print_predictions=True, num_particles=num_particles)
+
+  
+
+  if measure_flops:
+    flop_input = torch.rand((batch_size, num_particles, 16)).to(DEVICE)
+    flops = FlopCountAnalysis(model=model, inputs=flop_input)
+    print(f'FLOPS: {flops.total() / 1000} k')
+
+  if norm_info_path is not None:
+    print(f'Generating mean and variance info for norm layers to {norm_info_path}')
+    with open(f'logs/{norm_info_path}', 'w') as afile:
+      afile.write(mean_var_info(name='Net', index=0, mean=model.get_avg_mean(), var=model.get_avg_var(), ctr=model.get_counter()))
+      # afile.write(f"Net mean: {model.get_avg_mean().size()}\n{torch.mean(model.get_avg_mean())}\nvar: {model.get_avg_var().size()}\n{torch.mean(model.get_avg_var())}\nctr: {model.get_counter()}\n")
+      for index, tr in enumerate(model.transformers):
+        afile.write('-'*30 + '\n')
+        afile.write(mean_var_info(name='Trans', index=index, sub_index='0', mean=tr.get_avg_mean0(), var=tr.get_avg_var0(), ctr=tr.get_counter0()))
+        afile.write(mean_var_info(name='Trans', index=index, sub_index='3', mean=tr.get_avg_mean3(), var=tr.get_avg_var3(), ctr=tr.get_counter3()))
+        afile.write(mean_var_info(name='SA', index=index, mean=tr.self_attention.get_avg_mean(), var=tr.self_attention.get_avg_var(), ctr=tr.self_attention.get_counter()))
+        # afile.write(f"Trans{index} mean0: {tr.get_avg_mean0().size()}\n{torch.mean(tr.get_avg_mean0(), dim=0)}\nvar0: {tr.get_avg_var0().size()}\n{torch.mean(tr.get_avg_var0(), dim=0)}\nctr0: {tr.get_counter0()}\n")
+        # afile.write(f"Trans{index} mean3: {tr.get_avg_mean3().size()}\n{torch.mean(tr.get_avg_mean3(), dim=0)}\nvar3: {tr.get_avg_var3().size()}\n{torch.mean(tr.get_avg_var3(), dim=0)}\nctr3: {tr.get_counter3()}\n")
+        # afile.write(f"SA{index} mean: {tr.self_attention.get_avg_mean().size()}\n{torch.mean(tr.self_attention.get_avg_mean(), dim=0)}\nvar: {tr.self_attention.get_avg_var().size()}\n{torch.mean(tr.self_attention.get_avg_var(), dim=0)}\nctr: {tr.self_attention.get_counter()}\n")
+    
+    with open(f'logs/detailed_{norm_info_path}', 'w') as afile:
+      afile.write(f"Net mean: \n{model.get_avg_mean()}\nvar: \n{model.get_avg_var()}\nctr: {model.get_counter()}\n")
+      for index, tr in enumerate(model.transformers):
+        afile.write('-'*30 + '\n')
+        afile.write(f"Trans{index} mean0: \n{tr.get_avg_mean0()}\nvar0: \n{tr.get_avg_var0()}\nctr0: {tr.get_counter0()}\n")
+        afile.write(f"Trans{index} mean3: \n{tr.get_avg_mean3()}\nvar3: \n{tr.get_avg_var3()}\nctr3: {tr.get_counter3()}\n")
+        afile.write(f"SA{index} mean: \n{tr.self_attention.get_avg_mean()}\nvar: \n{tr.self_attention.get_avg_var()}\nctr: {tr.self_attention.get_counter()}\n")
+
+
+
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
 
 def parse():
   parser = argparse.ArgumentParser(description='Train and/or evaluate Pytorch model')
@@ -491,10 +950,20 @@ def parse():
   parser.add_argument('--use_cpu', action='store_true')
   parser.add_argument('--only_predictions', action='store_true')
   parser.add_argument('--fetch', action='store_true')
+<<<<<<< HEAD
   parser.add_argument('--tiny_size', action='store', type=int)
   parser.add_argument('--epochs', action='store', type=int)
   parser.add_argument('--cuda', action='store', type=int, default=0)
   parser.add_argument('--generate_hls_tb', action='store_true')
+=======
+  parser.add_argument('--tiny_size', action='store', type=int, default=1)
+  parser.add_argument('--epochs', action='store', type=int)
+  parser.add_argument('--cuda', action='store', type=int, default=0)
+  parser.add_argument('--generate_hls_tb', action='store', type=int, default=0)
+  parser.add_argument('--flops', action='store_true')
+  parser.add_argument('--norm_info', action='store', type=str, default=None)
+  parser.add_argument('--quant', action='store_true')
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
 
   return parser.parse_args()
 
@@ -506,9 +975,19 @@ if __name__ == "__main__":
   args = parse()
 
   if args.use_cpu:
+<<<<<<< HEAD
     DEVICE = torch.device('cpu')
     print(f'{DEVICE=}')
   else:
+=======
+    num_threads = 8
+    torch.set_num_threads(num_threads)
+    DEVICE = torch.device('cpu')
+    print(f'{DEVICE=}')
+  else:
+    if not torch.cuda.is_available():
+      quit('No CUDA found!')
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
     assert 0 <= args.cuda < torch.cuda.device_count(), f'CUDA index outside [0, {torch.cuda.device_count()})'
     DEVICE = torch.device(f'cuda:{args.cuda}')
     print(f'{DEVICE=}, name={torch.cuda.get_device_name(DEVICE)}')
@@ -524,18 +1003,41 @@ if __name__ == "__main__":
       Path(DATA_30_DIR).mkdir(parents=True, exist_ok=True) # TODO add other dirs if implemented
       fetch_N_dataset(num_particles=args.particles)
 
+<<<<<<< HEAD
   main(
     num_particles=args.particles,
     do_train=args.train,
     script_path=os.path.join(DIR_NAME, 'best.script.pth'),
     state_path=os.path.join(DIR_NAME, 'best.pth.tar'),
+=======
+  # debug_prefix = 'debug_' if args.debug else ''
+  debug_prefix = ''
+  quant_prefix = 'quant_' if args.quant else ''
+
+  main(
+    num_particles=args.particles,
+    do_train=args.train,
+    model_path=os.path.join(DIR_NAME, quant_prefix + debug_prefix + 'best.model.pth'),
+    script_path=os.path.join(DIR_NAME, quant_prefix + debug_prefix + 'best.script.pth'),
+    state_path=os.path.join(DIR_NAME, quant_prefix + debug_prefix + 'best.pth.tar'),
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
     debug_path=os.path.join(DIR_NAME, 'layers_output.txt'),
     is_debug=args.debug,
     is_timing=args.timing,
     only_predictions=args.only_predictions,
     tiny_size=args.tiny_size,
     num_epochs=args.epochs,
+<<<<<<< HEAD
     do_generate_in_out_hls_tb=args.generate_hls_tb,
     hls_tb_in_path='hls/tb_data/tb_input_features.dat',
     hls_tb_out_path='hls/tb_data/tb_output_predictions.dat',
+=======
+    generate_in_out_hls_tb=args.generate_hls_tb,
+    hls_tb_in_path='hls/tb_data/tb_input_features.dat',
+    hls_tb_out_path='hls/tb_data/tb_output_predictions.dat',
+    hls_tb_labels_path='hls/tb_data/tb_labels.dat',
+    measure_flops=args.flops,
+    norm_info_path=args.norm_info,
+    quant=args.quant,
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
   )

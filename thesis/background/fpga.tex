@@ -23,7 +23,11 @@ For many years, FPGAs have been modelled using register-transfer level (RTL) des
 This report's work is based on Xilinx Vivado HLS design suite. When developing a solution, it is important to note, that the synthesis process can take a significant amount of time (a couple of hours on a modern powerful computer), and so there exist two simulation methods - a C-simulation that can quickly and directly evaluate a C/C++ benchmark against the software implementation of the design, and a more truthful, cosimulation that firstly synthesizes the design and the test bench to RTL and then performs an RTL simulation. A final, definitive evaluation of the results requires programming a target FPGA with the generated bit stream of the design and exchanging input/output data with a program that usually runs on a CPU.
 
 
-\subsection{Latency, throughput, and hardware resource utilization}\label{latency-throughput-resources}
+\subsection{\hlsml Codesign Workflow}
+
+
+
+\subsection{Latency, Throughput, and Hardware Resource Utilization}\label{latency-throughput-resources}
 To understand the differences between hardware designs targeted at similar functionality, it is worth considering the following characteristics:
 
 \begin{itemize}
@@ -35,7 +39,7 @@ To understand the differences between hardware designs targeted at similar funct
 To fully understand the trade-offs between designs, one cannot forget about the metric related to the specific task that is accelerated in hardware. In the case of this report, classification accuracy and AUC described in \autoref{ml-accuracy-auc-confusion}, will also play key roles in evaluating various configurations.
 
 
-\subsection{Serial, parallel, and pipelined architectures}\label{serial-parallel-pipelined}
+\subsection{Serial, Parallel, and Pipelined architectures}\label{serial-parallel-pipelined}
 Hardware architectures use components that can be configured in different ways depending on the overall goal or a limiting factor. The high-level configurations  are displayed in figure \ref{fig:serial-parallel-pipelined} and can be described as follows:
 
 \begin{itemize}
@@ -52,7 +56,7 @@ Hardware architectures use components that can be configured in different ways d
 \end{figure}
 
 \pagebreak
-\subsection{Pareto front and Roofline model}
+\subsection{Pareto Front and Roofline Model}
 To make an informed design decision, various architectures can be compared by arranging them on a dependency graph (e.g. latency vs resource usage) and observing the Pareto front - the set of solutions for which there are no better ones in regard to one quality given that the other measure is not worse. The slightly complex definition can be easily understood from figure \ref{fig:pareto}, which also highlights another use of this method - finding design configurations that are yet to be explored.
 
 \begin{figure}[hpt!]
