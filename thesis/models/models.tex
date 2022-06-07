@@ -1,4 +1,4 @@
-\chapter{Models Implementation}
+\chapter{Models Implementation}\label{models}
 
 
 \section{Baseline Software Model}
@@ -18,4 +18,11 @@
 
 \section{Parameter Extraction for Custom Hardware}
 \indo{tool for extracting weight and biases}
+
+In order to generate files with weights and biases that are required for initializing the memory on an FPGA, a tool was developed that takes a PyTorch pre-trained model, extracts all the information, and splits them accordingly with the required format. What is more, layers responsible for normalization can be chosen to have their mean and variance calculation embedded into weights and biases to significantly reduce the processing required on an FPGA by omitting the division and square root operations. The mathematical derivation of this approach starts with the batch norm formula:
+\[ y = \frac{x - E[x]}{\sqrt{Var[x] + \epsilon}} * \gamma + \beta \]
+The expected value and variance are treated as learnable parameter of a dataset and are extracted after the training has been completed. Hence, the calculation becomes:
+\[ y = x * \frac{\gamma}{\sqrt{Var + \epsilon}} + \beta - \frac{\gamma * E}{\sqrt{Var + \epsilon}} = x * W + b\]
+The newly calculated values for \(W\) and \(b\) represent the updated weights and biases of the normalization layer, that can be then implemented in hardware in a much simpler way. Independently of the implementation in this work, a similar idea has been proposed and successfully used as an optimization in the past \cite{46-fan2018real-time}.
+
 \indo{tool for embedding norm stats for layer norm as running stats not collected}

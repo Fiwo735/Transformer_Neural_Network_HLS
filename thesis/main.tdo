@@ -1,25 +1,26 @@
 \contentsline {todo}{\color@fb@x {}{black}{}{orange}{\leavevmode {\color {orange}o}}\ Confirm this number}{1}{section*.1}%
-\contentsline {todo}{\color@fb@x {}{blue}{}{blue!25}{\leavevmode {\color {blue!25}o}}\ some graphics to potentially add: fpga lattice, hls to rtl flow, rtl to bit stream flow}{13}{section*.5}%
-\contentsline {todo}{\color@fb@x {}{blue}{}{blue!25}{\leavevmode {\color {blue!25}o}}\ difficulty: rtl > hls > python hl4ml, draw comparison with assembly}{13}{section*.6}%
-\contentsline {todo}{\color@fb@x {}{blue}{}{blue!25}{\leavevmode {\color {blue!25}o}}\ FPGA are very hard-coded -> make the code deployable on any platform with optimal settings automatically}{13}{section*.7}%
-\contentsline {todo}{\color@fb@x {}{blue}{}{blue!25}{\leavevmode {\color {blue!25}o}}\ HLS is difficult, so coding hardware in Python is desired -> make it easy for engineers and physicists to design systems}{13}{section*.8}%
-\contentsline {todo}{\color@fb@x {}{blue}{}{blue!25}{\leavevmode {\color {blue!25}o}}\ Metaprogramming allows for optimizations and customisability}{13}{section*.9}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ tool for extracting weight and biases}{15}{section*.10}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ tool for embedding norm stats for layer norm as running stats not collected}{15}{section*.11}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ }{16}{section*.12}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ PyTorch Eager Mode}{16}{section*.13}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ PyTorch FX Graph Mode}{16}{section*.14}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Brevitas}{16}{section*.15}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ QPyTorch}{16}{section*.16}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Custom tool}{16}{section*.17}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ ScaleHLS}{16}{section*.18}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ MLIR}{16}{section*.19}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Analytical models for latency/resources?}{19}{section*.20}%
-\contentsline {todo}{\color@fb@x {}{green}{}{green!25}{\leavevmode {\color {green!25}o}}\ pre-training quantization compared to varying floating-point widths}{20}{section*.21}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ float16 doesnt learn anything (acc 20\%) as its range is too small and we cannot consider normalizing inputs coz its real time system}{20}{section*.22}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ brevitas only gets 34\% accuracy}{20}{section*.23}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ pytorch quantization is too experimental and doesnt support the model}{20}{section*.24}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ post-training quantization}{20}{section*.25}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ somewhere: fuse batch norm to linear???}{20}{section*.26}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ bullet points}{21}{section*.27}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ something}{27}{section*.30}%
+\contentsline {todo}{\color@fb@x {}{black}{}{orange}{\leavevmode {\color {orange}o}}\ Possibly clear page}{7}{section*.5}%
+\contentsline {todo}{\color@fb@x {}{blue}{}{blue!25}{\leavevmode {\color {blue!25}o}}\ some graphics to potentially add: fpga lattice, hls to rtl flow, rtl to bit stream flow}{14}{section*.6}%
+\contentsline {todo}{\color@fb@x {}{blue}{}{blue!25}{\leavevmode {\color {blue!25}o}}\ difficulty: rtl > hls > python hl4ml, draw comparison with assembly}{14}{section*.7}%
+\contentsline {todo}{\color@fb@x {}{blue}{}{blue!25}{\leavevmode {\color {blue!25}o}}\ FPGA are very hard-coded -> make the code deployable on any platform with optimal settings automatically}{14}{section*.8}%
+\contentsline {todo}{\color@fb@x {}{blue}{}{blue!25}{\leavevmode {\color {blue!25}o}}\ HLS is difficult, so coding hardware in Python is desired -> make it easy for engineers and physicists to design systems}{14}{section*.9}%
+\contentsline {todo}{\color@fb@x {}{blue}{}{blue!25}{\leavevmode {\color {blue!25}o}}\ Metaprogramming allows for optimizations and customisability}{14}{section*.10}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ tool for extracting weight and biases}{16}{section*.11}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ tool for embedding norm stats for layer norm as running stats not collected}{16}{section*.12}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ }{17}{section*.13}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ PyTorch Eager Mode}{17}{section*.14}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ PyTorch FX Graph Mode}{17}{section*.15}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Brevitas}{17}{section*.16}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ QPyTorch}{17}{section*.17}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Custom tool}{17}{section*.18}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ ScaleHLS}{17}{section*.19}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ MLIR}{17}{section*.20}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Analytical models for latency/resources?}{20}{section*.21}%
+\contentsline {todo}{\color@fb@x {}{green}{}{green!25}{\leavevmode {\color {green!25}o}}\ pre-training quantization compared to varying floating-point widths}{21}{section*.22}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ float16 doesnt learn anything (acc 20\%) as its range is too small and we cannot consider normalizing inputs coz its real time system}{21}{section*.23}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ brevitas only gets 34\% accuracy}{21}{section*.24}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ pytorch quantization is too experimental and doesnt support the model}{21}{section*.25}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ post-training quantization}{21}{section*.26}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ somewhere: fuse batch norm to linear???}{21}{section*.27}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ bullet points}{22}{section*.28}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ something}{28}{section*.31}%
