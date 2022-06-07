@@ -21,7 +21,7 @@ def process_data(data: str):
   splits = []
   names = []
 
-  for index, line in enumerate(data):
+  for line in data:
     if line == '':
       splits.append(len(widths))
     type_result = re.search(r'^typedef ap_fixed<([\d]+),([\d]+)> (.*);', line)
@@ -61,7 +61,7 @@ def main(path: str, data: str):
   # Very hacky way to display negative values without the minus sign on y-axis
   fig.canvas.draw()
   ylabels = [item.get_text() for item in ax.get_yticklabels()]
-  ylabels = [el[1:] if el[0] == '−' else el for el in ylabels ]
+  ylabels = [el[1:] if el[0] == '−' else el for el in ylabels]
   ax.set_yticklabels(ylabels)
 
   # xlabels = [item.get_text() for item in ax.get_xticklabels()]

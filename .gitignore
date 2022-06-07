@@ -52,6 +52,9 @@ hls/myproject_prj/solution1/*
 
 # nohup - for long running jobs
 nohup*
+best_quant_*
+grid_search_*
+search.out
 
 # Dataset H5 files
 *.h5

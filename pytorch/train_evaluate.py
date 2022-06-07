@@ -1,15 +1,14 @@
 import os
-import sys
-import contextlib
-import numpy as np
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
-import argparse
-import h5py
+import numpy as np
 import matplotlib.pyplot as plt
 
-from tracemalloc import start
+# from tracemalloc import start
+from h5py import File as hdf5_file
+from contextlib import redirect_stdout
+from torch.nn.functional import one_hot
+from argparse import ArgumentParser
 from pathlib import Path
 from typing import Tuple, Optional, List
 from torch.utils.data import TensorDataset, DataLoader
@@ -100,7 +99,7 @@ def fetch_h5_dataset(dir_name: str, num_particles: int) -> Tuple[np.array, np.ar
     t_pathlist.set_description(f'{mode}')
     for file_path in t_pathlist:
 
-      with h5py.File(file_path) as f:
+      with hdf5_file(file_path) as f:
         jetConstituentList = np.array(f['jetConstituentList'])
         jets = np.array(f['jets'])
         target = np.argmax(jets[:,-6:-1], axis=1)
@@ -137,32 +136,10 @@ def fetch_N_dataset(num_particles: int) -> None:
 
 def load_dataset(
   num_particles: int,
+  x_type: str,
   batch_size: int = 128,
   tiny_size: int = 1,
 ) -> Tuple[DataLoader, DataLoader, DataLoader, List[str]]:
-
-  def custom_normalize(x):
-    # print(f'{x.shape=}')
-
-    x_reshaped = x.reshape(-1, 16)
-    # print(f'{x_reshaped.shape=}')
-
-    x_normalized = normalize(x_reshaped, axis=0, norm='l1') * 1e10
-    # print(f'{x_normalized.shape=}')
-
-    # axis_sum = np.sum(x_normalized, axis=0)
-    # print(f'{axis_sum=}')
-
-    result = x_normalized.reshape(-1, num_particles, 16)
-    # print(f'{result.shape=}')
-
-    # print(f'{x[0][0]=}')
-    # print(f'{x[0][1]=}')
-    # print(f'{result[0][0]=}')
-    # print(f'{result[0][1]=}')
-    # print()
-
-    return torch.Tensor(result)
 
   X_train_val = np.load(X_TRAIN_FILENAMES[num_particles])
   X_test = np.ascontiguousarray(np.load(X_TEST_FILENAMES[num_particles]))
@@ -174,35 +151,37 @@ def load_dataset(
   else:
     classes = ['Gluon', 'Light_quarks', 'W_boson', 'Z_boson', 'Top_quark']
 
-  # X_train_val = custom_normalize(X_train_val)
-  # X_test = custom_normalize(X_test)
-
+  # X tensors
   tensor_X_train_val = torch.Tensor(X_train_val)
   tensor_X_test = torch.Tensor(X_test)
+
+  if x_type == 'float64':
+    tensor_X_train_val = tensor_X_train_val.type(torch.DoubleTensor)
+    tensor_X_test = tensor_X_test.type(torch.DoubleTensor)
+  elif x_type == 'float32':
+    tensor_X_train_val = tensor_X_train_val.type(torch.FloatTensor)
+    tensor_X_test = tensor_X_test.type(torch.FloatTensor)
+  elif x_type == 'float16':
+    tensor_X_train_val = tensor_X_train_val.type(torch.HalfTensor)
+    tensor_X_test = tensor_X_test.type(torch.HalfTensor)
+  elif x_type == 'bfloat16':
+    tensor_X_train_val = tensor_X_train_val.type(torch.BFloat16Tensor)
+    tensor_X_test = tensor_X_test.type(torch.BFloat16Tensor)
+  else:
+    raise TypeError(f'Unrecognized tensor type: {x_type}')
 
   if num_particles == 1:
     tensor_X_train_val = tensor_X_train_val.unsqueeze(dim=1)
     tensor_X_test = tensor_X_test.unsqueeze(dim=1)
-  
+
+  # Y tensors
   tensor_y_train_val = torch.Tensor(y_train_val)
   tensor_y_test = torch.Tensor(y_test)
 
   tensor_y_train_val = tensor_y_train_val.type(torch.LongTensor)
   tensor_y_test = tensor_y_test.type(torch.LongTensor)
 
-  # tensor_X_train_val = custom_normalize(tensor_X_train_val)
-  # tensor_X_test = custom_normalize(tensor_X_test)
-
-  # print(f'{tensor_X_train_val.shape=}')
-  # print(f'{tensor_y_train_val.shape=}')
-  # print(f'{tensor_X_test.shape=}')
-  # print(f'{tensor_y_test.shape=}')
-
-  # print(f'{tensor_X_train_val[0][0]=}')
-  # print(f'{tensor_X_train_val[0][1]=}')
-
-  # quit()
-
+  # Data loaders
   train_loader = DataLoader(
     TensorDataset(tensor_X_train_val, tensor_y_train_val),
     batch_size=batch_size
@@ -213,15 +192,9 @@ def load_dataset(
     batch_size=batch_size
   )
 
-  # Dataloader for printing layer-by-layer evaluation of (1, tiny_size, 16)
-  # print(f'{tensor_X_test.shape=}')
-
-  # tiny_tensor_X_test = tensor_X_test[:1,:tiny_size,:] if num_particles != 1 else tensor_X_test[:tiny_size,:]
-  # print(f'{tiny_size=}')
-
+  # Tiny loaders
   if num_particles == 1:
     tiny_tensor_X_test = tensor_X_test[:tiny_size+1,:,:]
-    # print(f'{tiny_tensor_X_test.shape=}')
 
     tiny_loader = DataLoader(
       TensorDataset(tiny_tensor_X_test, tensor_y_test[:tiny_size+1]),
@@ -231,7 +204,6 @@ def load_dataset(
   else:
     assert tiny_size <= num_particles
     tiny_tensor_X_test = tensor_X_test[:1,:tiny_size+1,:]
-    # print(f'{tiny_tensor_X_test.shape=}')
 
     tiny_loader = DataLoader(
       TensorDataset(tiny_tensor_X_test, tensor_y_test[:1]),
@@ -259,7 +231,11 @@ def train_test_loop(
   num_particles: int = 1,
   num_epochs: int = 5,
   print_predictions: bool = False,
-  secondary_loader: Optional[DataLoader] = None
+  secondary_loader: Optional[DataLoader] = None,
+  model_path: Optional[str] = None,
+  script_path: Optional[str] = None,
+  state_path: Optional[str] = None,
+  quant: Optional[bool] = None,
 ) -> Tuple[Optional[float], float, Tuple[List[float], List[float], List[float]]]:
 
   is_eval = not is_train
@@ -355,6 +331,14 @@ def train_test_loop(
       e_accuracy = e_correct_predictions / torch.numel(e_all_predicted_argmax)
       ##############
       print(f'Accuracy after epoch {epoch+1}: {e_accuracy*100:.2f}')
+      save_model(
+        model=model,
+        model_path=model_path.replace('best', f'epoch_{epoch}'),
+        script_path=script_path.replace('best', f'epoch_{epoch}'),
+        state_path=state_path.replace('best', f'epoch_{epoch}'),
+        quant=quant
+      )
+      model.train()
 
   end_time = time()
 
@@ -417,7 +401,7 @@ def evaluate(
     
     else:
       with open(filepath, 'w') as f:
-        with contextlib.redirect_stdout(f):
+        with redirect_stdout(f):
           # Write input data in HLS format
           samples = next(iter(test_loader))[0][0].tolist()
           if num_particles != 1:
@@ -474,7 +458,7 @@ def compute_roc_auc(targets, predictions):
 
   num_classes = len(CLASSES)
 
-  targets = np.vstack([F.one_hot(target, num_classes) for target in targets])
+  targets = np.vstack([one_hot(target, num_classes) for target in targets])
   predictions = np.vstack(predictions)
 
   FPRs = [-1] * num_classes
@@ -555,6 +539,7 @@ def mean_var_info(name: str, index: int, mean: torch.Tensor, var: torch.Tensor, 
 
 def main(
   num_particles: int,
+  x_type: str,
   do_train: bool = False,
   model_path: Optional[str] = None,
   script_path: Optional[str] = None,
@@ -572,30 +557,35 @@ def main(
   measure_flops: bool = False,
   norm_info_path: Optional[str] = None,
   quant: bool = False,
+  resume: bool = False,
+  num_transformers: int = 3,
+  embbed_dim: int = 64,
+  num_heads: int = 2,
 ) -> None:
-
-  # if measure_flops:
-  #   assert do_train, 'Model has to be retrained for measuring FLOPS, since loading using torch.jit.load() results in RecursiveScriptModule object attribute error.'
-  #   if num_epochs != 1:
-  #     print('This run will measure FLOPS, so epoch number is forced to 1 for faster training')
-  #     num_epochs = 1
-
-  # if norm_info_path is not None:
-  #   assert do_train, 'Model has to be retrained for generating norm_info, since loading using torch.jit.load() results in hook error.'
-
  
   batch_size = 128
   criterion = torch.nn.NLLLoss()
-  num_transformers = 3
-  embbed_dim = 32
-  num_heads = 2
+  # num_transformers = 3
+  # embbed_dim = 16
+  # num_heads = 2
   dropout = 0.0
 
-  train_loader, test_loader, tiny_loader, classes = load_dataset(num_particles=num_particles, batch_size=batch_size, tiny_size=tiny_size)
+  print('-'*15 + 'Model configuration' + '-'*15)
+  print(f'Batch size: {batch_size}')
+  print(f'Critetion: {criterion}')
+  print(f'# of transformers: {num_transformers}')
+  print(f'# of embedded dimensions: {embbed_dim}')
+  print(f'# of attention heads: {num_heads}')
+  print(f'Dropout rate: {dropout}')
+  print(f'Input and model precision type: {x_type}')
+  print(f'Pre-training quantization: {quant}')
+  print('-'*49)
+
+
+  train_loader, test_loader, tiny_loader, classes = load_dataset(num_particles=num_particles, x_type=x_type, batch_size=batch_size, tiny_size=tiny_size)
 
   if do_train:
     # Instantiate model
-    # if not quant:
     if not quant:
       model = ConstituentNet(
         in_dim=16,
@@ -628,6 +618,23 @@ def main(
         is_debug=is_debug,
       ).to(DEVICE)
 
+    if resume:
+      state_dict = torch.load(state_path)['state_dict']
+      model.load_state_dict(state_dict, strict=True)
+      model.to(DEVICE)
+      print(f'Model loaded from {state_path}')
+
+    if x_type == 'float64':
+      model.double()
+    elif x_type == 'float32':
+      model.float()
+    elif x_type == 'float16':
+      model.half()
+    elif x_type == 'bfloat16':
+      model.bfloat16()
+    else:
+      raise TypeError(f'Unrecognized tensor type: {x_type}')
+
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
     if quant:
       optimizer = OptimLP(
@@ -650,6 +657,10 @@ def main(
       num_particles=num_particles,
       num_epochs=num_epochs,
       secondary_loader=test_loader,
+      model_path=model_path,
+      script_path=script_path,
+      state_path=state_path,
+      quant=quant,
     )
     print(f'Training took {total_time:.2f} s')
 
@@ -682,7 +693,6 @@ def main(
       state_dict = torch.load(state_path)['state_dict']
       model.load_state_dict(state_dict, strict=True)
       model.to(DEVICE)
-      # print(f'{model.cls_token=}')
       print(f'Model loaded from {state_path}')
 
     # Load from model
@@ -807,7 +817,7 @@ def main(
 
 
 def parse():
-  parser = argparse.ArgumentParser(description='Train and/or evaluate Pytorch model')
+  parser = ArgumentParser(description='Train and/or evaluate Pytorch model')
 
   parser.add_argument('--particles', action='store', type=int)
   parser.add_argument('--train', action='store_true')
@@ -824,6 +834,11 @@ def parse():
   parser.add_argument('--flops', action='store_true')
   parser.add_argument('--norm_info', action='store', type=str, default=None)
   parser.add_argument('--quant', action='store_true')
+  parser.add_argument('--x_type', action='store', type=str, default='float32')
+  parser.add_argument('--resume', action='store_true')
+  parser.add_argument('--num_transformers', action='store', type=int, default=3)
+  parser.add_argument('--embbed_dim', action='store', type=int, default=64)
+  parser.add_argument('--num_heads', action='store', type=int, default=2)
 
   return parser.parse_args()
 
@@ -859,10 +874,11 @@ if __name__ == "__main__":
 
   # debug_prefix = 'debug_' if args.debug else ''
   debug_prefix = ''
-  quant_prefix = 'quant_' if args.quant else ''
+  quant_prefix = 'quant_24_40_' if args.quant else ''
 
   main(
     num_particles=args.particles,
+    x_type=args.x_type,
     do_train=args.train,
     model_path=os.path.join(DIR_NAME, quant_prefix + debug_prefix + 'best.model.pth'),
     script_path=os.path.join(DIR_NAME, quant_prefix + debug_prefix + 'best.script.pth'),
@@ -880,4 +896,8 @@ if __name__ == "__main__":
     measure_flops=args.flops,
     norm_info_path=args.norm_info,
     quant=args.quant,
+    resume=args.resume,
+    num_transformers=args.num_transformers,
+    embbed_dim=args.embbed_dim,
+    num_heads=args.num_heads,
   )

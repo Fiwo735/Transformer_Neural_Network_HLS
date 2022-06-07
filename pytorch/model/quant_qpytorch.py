@@ -7,16 +7,16 @@ import typing
 from qtorch import FixedPoint
 from qtorch.quant import Quantizer, quantizer
 
+# ----------------- BIT WIDTHS -----------------
 WL = 64
-FL = 32
+FL = 40
 
-QUANTIZER =  lambda : Quantizer(
+QUANTIZER = lambda : Quantizer(
     forward_number=FixedPoint(wl=WL, fl=FL),
     backward_number=FixedPoint(wl=WL, fl=FL),
     forward_rounding='nearest',
     backward_rounding='stochastic',
 )
-
 WEIGHT_QUANT = quantizer(
     forward_number=FixedPoint(wl=WL, fl=FL),
     backward_number=FixedPoint(wl=WL, fl=FL),
@@ -41,6 +41,7 @@ ACC_QUANT = quantizer(
     forward_rounding='nearest',
     backward_rounding='stochastic',
 )
+# ---------------------------------------------
 
 class SelfAttentionQuantQPyTorch(nn.Module):
 
