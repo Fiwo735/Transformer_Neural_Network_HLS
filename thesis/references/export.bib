@@ -1,3 +1,61 @@
+@misc{RefWorks:RefID:73-alammarillustrated,
+	author={Jay Alammar},
+	title={The Illustrated Transformer},
+	volume={2022},
+	number={Jun 9,},
+	abstract={Discussions:
+Hacker News (65 points, 4 comments), Reddit r/MachineLearning (29 points, 3 comments)
+
+
+Translations: Chinese (Simplified), French 1, French 2, Japanese, Korean, Russian, Spanish, Vietnamese
+
+Watch: MIT’s Deep Learning State of the Art lecture referencing this post
+
+In the previous post, we looked at Attention – a ubiquitous method in modern deep learning models. Attention is a concept that helped improve the performance of neural machine translation applications. In this post, we will look at The Transformer – a model that uses attention to boost the speed with which these models can be trained. The Transformer outperforms the Google Neural Machine Translation model in specific tasks. The biggest benefit, however, comes from how The Transformer lends itself to parallelization. It is in fact Google Cloud’s recommendation to use The Transformer as a reference model to use their Cloud TPU offering. So let’s try to break the model apart and look at how it functions.
+
+The Transformer was proposed in the paper Attention is All You Need. A TensorFlow implementation of it is available as a part of the Tensor2Tensor package. Harvard’s NLP group created a guide annotating the paper with PyTorch implementation. In this post, we will attempt to oversimplify things a bit and introduce the concepts one by one to hopefully make it easier to understand to people without in-depth knowledge of the subject matter.
+
+2020 Update: I’ve created a “Narrated Transformer” video which is a gentler approach to the topic:
+
+
+
+
+A High-Level Look
+Let’s begin by looking at the model as a single black box. In a machine translation application, it would take a sentence in one language, and output its translation in another.},
+	url={https://jalammar.github.io/illustrated-transformer/}
+}
+@inproceedings{RefWorks:RefID:72-keren2016convolutional,
+	author={Gil Keren and Bjorn Schuller},
+	year={Jul 2016},
+	title={Convolutional RNN: An enhanced model for extracting features from sequential data},
+	publisher={IEEE},
+	pages={3412-3419},
+	abstract={Traditional convolutional layers extract features from patches of data by applying a non-linearity on an affine function of the input. We propose a model that enhances this feature extraction process for the case of sequential data, by feeding patches of the data into a recurrent neural network and using the outputs or hidden states of the recurrent units to compute the extracted features. By doing so, we exploit the fact that a window containing a few frames of the sequential data is a sequence itself and this additional structure might encapsulate valuable information. In addition, we allow for more steps of computation in the feature extraction process, which is potentially beneficial as an affine function followed by a non-linearity can result in too simple features. Using our convolutional recurrent layers, we obtain an improvement in performance in two audio classification tasks, compared to traditional convolutional layers.},
+	url={https://ieeexplore.ieee.org/document/7727636},
+	doi={10.1109/IJCNN.2016.7727636}
+}
+@article{RefWorks:RefID:71-chorowski2015attention-based,
+	author={Jan Chorowski and Dzmitry Bahdanau and Dmitriy Serdyuk and Kyunghyun Cho and Yoshua Bengio},
+	year={2015},
+	month={Jun 24,},
+	title={Attention-Based Models for Speech Recognition},
+	abstract={Recurrent sequence generators conditioned on input data through an attention
+mechanism have recently shown very good performance on a range of tasks in-
+cluding machine translation, handwriting synthesis and image caption gen-
+eration. We extend the attention-mechanism with features needed for speech
+recognition. We show that while an adaptation of the model used for machine
+translation in reaches a competitive 18.7% phoneme error rate (PER) on the
+TIMIT phoneme recognition task, it can only be applied to utterances which are
+roughly as long as the ones it was trained on. We offer a qualitative
+explanation of this failure and propose a novel and generic method of adding
+location-awareness to the attention mechanism to alleviate this issue. The new
+method yields a model that is robust to long inputs and achieves 18% PER in
+single utterances and 20% in 10-times longer (repeated) utterances. Finally, we
+propose a change to the at- tention mechanism that prevents it from
+concentrating too much on single frames, which further reduces PER to 17.6%
+level.},
+	url={https://arxiv.org/abs/1506.07503}
+}
 @misc{RefWorks:RefID:70-keanecern's,
 	author={Sean Keane},
 	title={CERN's Large Hadron Collider Restarts After Three-Year Upgrade},
@@ -656,7 +714,7 @@ for machine-learning-accelerated discovery.},
 	author={Luke de Oliveira and Michael Kagan and Lester Mackey and Benjamin Nachman and Ariel Schwartzman},
 	year={2016},
 	month={Jul 13,},
-	title={Jet-images — deep learning edition},
+	title={Jet-images - deep learning edition},
 	journal={The journal of high energy physics},
 	volume={2016},
 	number={7},

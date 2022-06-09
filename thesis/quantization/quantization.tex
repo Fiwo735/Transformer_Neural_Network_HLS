@@ -10,6 +10,26 @@
 
 \section{Post-training Quantization}
 \indo{Custom tool}
+% dummy algo, replace
+\begin{algorithm}
+  \caption{An algorithm with caption}\label{alg:cap}
+  \begin{algorithmic}
+  \Require $n \geq 0$
+  \Ensure $y = x^n$
+  \State $y \gets 1$
+  \State $X \gets x$
+  \State $N \gets n$
+  \While{$N \neq 0$}
+  \If{$N$ is even}
+      \State $X \gets X \times X$
+      \State $N \gets \frac{N}{2}$  \Comment{This is a comment}
+  \ElsIf{$N$ is odd}
+      \State $y \gets y \times X$
+      \State $N \gets N - 1$
+  \EndIf
+  \EndWhile
+  \end{algorithmic}
+  \end{algorithm}
 
 
 \section{High-Level-Synthesis Optimization}

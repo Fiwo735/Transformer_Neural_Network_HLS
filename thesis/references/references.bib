@@ -12,6 +12,64 @@
 	journal = {Journal of Instrumentation},
 	abstract = {The large muon trigger systems based on Resistive Plate Chambers (RPC) at the LHC experiments are currently operated with R134a based mixture. Unfortunately R134a is considered a greenhouse gas with high impact on the enviroment and therefore will be subject to regulations aiming in strongly reducing the available quantity on the market. The immediat effects might be instability on the price and incertitude in the product availability. Alternative gases (HFO-1234yf and HFO-1234ze) have been already identified by industry for specific applications as replacement of R134a. Moreover, HFCs similar to the R134a but with lower global warming potential (GWP) are already available (HFC-245fa, HFC-32, HFC-152a). The present contribution describes the results obtained with RPCs operated with new enviromemtal friendly gases. A particular attention has been addressed to the possibility of maintening the current operation conditions (i.e. currently used applied voltage and front-end electronics) in order to be able to use a new mixture for RPC systems even where the common infrastructure (i.e. high voltage and detector components) cannot be replaced for operation at higher applied voltages.}
 }
+@misc{73-alammarillustrated,
+	author={Jay Alammar},
+	title={The Illustrated Transformer},
+	volume={2022},
+	number={Jun 9,},
+	abstract={Discussions:
+Hacker News (65 points, 4 comments), Reddit r/MachineLearning (29 points, 3 comments)
+
+
+Translations: Chinese (Simplified), French 1, French 2, Japanese, Korean, Russian, Spanish, Vietnamese
+
+Watch: MIT’s Deep Learning State of the Art lecture referencing this post
+
+In the previous post, we looked at Attention – a ubiquitous method in modern deep learning models. Attention is a concept that helped improve the performance of neural machine translation applications. In this post, we will look at The Transformer – a model that uses attention to boost the speed with which these models can be trained. The Transformer outperforms the Google Neural Machine Translation model in specific tasks. The biggest benefit, however, comes from how The Transformer lends itself to parallelization. It is in fact Google Cloud’s recommendation to use The Transformer as a reference model to use their Cloud TPU offering. So let’s try to break the model apart and look at how it functions.
+
+The Transformer was proposed in the paper Attention is All You Need. A TensorFlow implementation of it is available as a part of the Tensor2Tensor package. Harvard’s NLP group created a guide annotating the paper with PyTorch implementation. In this post, we will attempt to oversimplify things a bit and introduce the concepts one by one to hopefully make it easier to understand to people without in-depth knowledge of the subject matter.
+
+2020 Update: I’ve created a “Narrated Transformer” video which is a gentler approach to the topic:
+
+
+
+
+A High-Level Look
+Let’s begin by looking at the model as a single black box. In a machine translation application, it would take a sentence in one language, and output its translation in another.},
+	url={https://jalammar.github.io/illustrated-transformer/}
+}
+@inproceedings{72-keren2016convolutional,
+	author={Gil Keren and Bjorn Schuller},
+	year={Jul 2016},
+	title={Convolutional {RNN}: An enhanced model for extracting features from sequential data},
+	publisher={IEEE},
+	pages={3412-3419},
+	abstract={Traditional convolutional layers extract features from patches of data by applying a non-linearity on an affine function of the input. We propose a model that enhances this feature extraction process for the case of sequential data, by feeding patches of the data into a recurrent neural network and using the outputs or hidden states of the recurrent units to compute the extracted features. By doing so, we exploit the fact that a window containing a few frames of the sequential data is a sequence itself and this additional structure might encapsulate valuable information. In addition, we allow for more steps of computation in the feature extraction process, which is potentially beneficial as an affine function followed by a non-linearity can result in too simple features. Using our convolutional recurrent layers, we obtain an improvement in performance in two audio classification tasks, compared to traditional convolutional layers.},
+	url={https://ieeexplore.ieee.org/document/7727636},
+	doi={10.1109/IJCNN.2016.7727636}
+}
+@article{71-chorowski2015attention-based,
+	author={Jan Chorowski and Dzmitry Bahdanau and Dmitriy Serdyuk and Kyunghyun Cho and others},
+	year={2015},
+	month={Jun 24,},
+	title={Attention-Based Models for Speech Recognition},
+	abstract={Recurrent sequence generators conditioned on input data through an attention
+mechanism have recently shown very good performance on a range of tasks in-
+cluding machine translation, handwriting synthesis and image caption gen-
+eration. We extend the attention-mechanism with features needed for speech
+recognition. We show that while an adaptation of the model used for machine
+translation in reaches a competitive 18.7% phoneme error rate (PER) on the
+TIMIT phoneme recognition task, it can only be applied to utterances which are
+roughly as long as the ones it was trained on. We offer a qualitative
+explanation of this failure and propose a novel and generic method of adding
+location-awareness to the attention mechanism to alleviate this issue. The new
+method yields a model that is robust to long inputs and achieves 18% PER in
+single utterances and 20% in 10-times longer (repeated) utterances. Finally, we
+propose a change to the at- tention mechanism that prevents it from
+concentrating too much on single frames, which further reduces PER to 17.6%
+level.},
+	url={https://arxiv.org/abs/1506.07503}
+}
 @misc{70-keanecern's,
 	author={Sean Keane},
 	title={{CERN}'s Large Hadron Collider Restarts After Three-Year Upgrade},
@@ -21,7 +79,7 @@
 	url={https://www.cnet.com/science/cerns-large-hadron-collider-restarts-after-three-year-upgrade/}
 }
 @techreport{69-pagano2020gravity,
-	author={D. Pagano and M. Caccia and J. Fesel and S. Gerber and C. Malbrunot and S. R. Muller and G. Cerchiari and M. Giammarchi and F. Guatieri and L. Smestad and S. Aghion and E. Widmann and F. Prelz and N. Zurlo and F. Sorrentino and H. Sandaker and J. Robert and A. Evans and S. Haider and P. Yzombard and A. Gligorova and L. Di Noto and P. Lansonneur and O. Khalidova and D. Krasnicky and R. Santoro and P. Lebrun and M. Fani and A. Kellerbauer and Z. Mazzotta and H. Holmestad and V. Petracek and S. Mariazzi and L. Penasa and D. Comparat and M. Prevedelli and G. Nebbia and J. Zmeskal and A. Hinterberger and C. Zimmer and I. C. Tietje and R. Caravita and C. Amsler and N. Pacifico and G. Testera and L. Ravelli and M. Doser and R. Ferragut and A. Rotondi and M. Oberthaler and B. Rienaecker and G. Bonomi and A. Demetrio and P. Nedelec and O. M. Rohne and A. Fontana and R. S. Brusa and F. Castelli and J. Marton and V. Matveev and G. Consolati and V. Lagomarsino},
+	author={D. Pagano and M. Caccia and J. Fesel and S. Gerber and others},
 	year={2020},
 	title={Gravity and antimatter: the {AE}g{IS} experiment at {CERN}},
 	institution={IOP Publishing},
@@ -33,7 +91,7 @@
 	doi={10.1088/1742-6596/1342/1/012016}
 }
 @techreport{68-walz2015gbar,
-	author={J. Walz and P. Grandemange and B. Vallage and P. Debu and Y. Matsuda and N. Sillitoe and M. Charlton and T. Mortensen and A. Husson and F. Nez and Y. Sacquin and F. Biraben and G. Dufour and Y. Yamazaki and O. Dalkarov and P. A. Hervieux and J. M. Rey and R. Guerout and L. Liszkay and S. Wronka and D. Lunney and S. Wolf and A. Voronin and V. Nesvizhevsky and M. Valdes and D. Banerjee and N. Madsen and N. Kuroda and P. Froelich and K. Khabarova and L. Hilico and P. Comini and C. Regenfus and S. Reynaud and S. Jonsell and A. Rubbia and G. Manfredi and J. M. Heinrich and J. P. Karr and C. I. Szabo-Foster and S. Eriksson and M. Staszczak and H. Torii and P. Indelicato and Y. Nagashima and P. Dupre and P. Clade and A. Lambrecht and A. Mohri and J. M. Reymond and D. P. Werf and B. Mansoulie and S. Guellati and A. Douillet and P. Crivelli and A. M. M. Leite and P. Perez and D. Brook-Roberge and F. Schmidt-Kaler and N. Kolachevsky},
+	author={J. Walz and P. Grandemange and B. Vallage and others},
 	year={2015},
 	title={The {GBAR} antimatter gravity experiment},
 	institution={Springer International Publishing},
@@ -59,7 +117,7 @@
 	doi={10.1088/1361-6382/aac58d}
 }
 @inproceedings{66-peng2021accelerating,
-	author={Hongwu Peng and Shaoyi Huang and Tong Geng and Ang Li and Weiwen Jiang and Hang Liu and Shusen Wang and Caiwen Ding},
+	author={Hongwu Peng and Shaoyi Huang and Tong Geng and Ang Li and others},
 	year={2021},
 	title={Accelerating transformer-based deep learning models on fpgas using column balanced block pruning},
 	booktitle={2021 22nd International Symposium on Quality Electronic Design ({ISQED})},
@@ -67,7 +125,7 @@
 	pages={142-148}
 }
 @inproceedings{65-qi2021accommodating,
-	author={Panjie Qi and Yuhong Song and Hongwu Peng and Shaoyi Huang and Qingfeng Zhuge and Edwin Hsing-Mean Sha},
+	author={Panjie Qi and Yuhong Song and Hongwu Peng and Shaoyi Huang and others},
 	year={2021},
 	title={Accommodating transformer onto fpga: Coupling the balanced model compression and fpga-implementation optimization},
 	booktitle={Proceedings of the 2021 on Great Lakes Symposium on {VLSI}},
@@ -83,7 +141,7 @@
 	pages={1-16}
 }
 @inproceedings{63-li2020ftrans:,
-	author={Bingbing Li and Santosh Pandey and Haowen Fang and Yanjun Lyv and Ji Li and Jieyang Chen and Mimi Xie and Lipeng Wan and Hang Liu and Caiwen Ding},
+	author={Bingbing Li and Santosh Pandey and Haowen Fang and others},
 	year={2020},
 	title={Ftrans: energy-efficient acceleration of transformers using fpga},
 	booktitle={Proceedings of the {ACM}/{IEEE} International Symposium on Low Power Electronics and Design},
@@ -98,7 +156,7 @@
 	pages={179-183}
 }
 @article{61-coleman2018importance,
-	author={E. Coleman and M. Freytsis and A. Hinzmann and M. Narain and J. Thaler and N. Tran and C. Vernieri},
+	author={E. Coleman and M. Freytsis and A. Hinzmann and M. Narain and others},
 	year={2018},
 	month={Jan 9,},
 	title={The importance of calorimetry for highly-boosted jet substructure},
@@ -151,7 +209,7 @@
 	doi={10.1109/SPA.2015.7365108}
 }
 @inproceedings{55-solovyev2019fixed-point,
-	author={Roman Solovyev and Alexander Kustov and Dmitry Telpukhov and Vladimir Rukhlov and Alexandr Kalinin},
+	author={Roman Solovyev and Alexander Kustov and Dmitry Telpukhov and others},
 	year={Jan 2019},
 	title={Fixed-Point Convolutional Neural Network for Real-Time Video Processing in {FPGA}},
 	publisher={IEEE},
@@ -161,7 +219,7 @@
 	doi={10.1109/EIConRus.2019.8656778}
 }
 @misc{54-solovyev2018fpga,
-	author = 	 {Roman A. Solovyev and Alexandr A. Kalinin and Alexander G. Kustov and Dmitry V. Telpukhov and Vladimir S. Ruhlov},
+	author = 	 {Roman A. Solovyev and Alexandr A. Kalinin and Alexand others},
 	year = 	 {2018},
 	month = 	 {Aug 29,},
 	title = 	 {{FPGA} Implementation of Convolutional Neural Networks with Fixed-Point Calculations},
@@ -170,7 +228,7 @@
 	doi={10.1109/EIConRus.2019.8656778}
 }
 @techreport{53-kreinar2018fast,
-	author={Edward Kreinar and Jennifer Ngadiuba and Zhenbin Wu and Philip Harris and Maurizio Pierini and Ryan Rivera and Song Han and Javier Duarte and Benjamin Kreis and Nhan Tran and Sergo Jindariani},
+	author={Edward Kreinar and Jennifer Ngadiuba and Zhenbin Wu and Philip Harris and others},
 	year={2018},
 	month={Apr 16,},
 	title={Fast inference of deep neural networks in {FPGA}s for particle physics},
@@ -247,7 +305,7 @@ training time compared with previously published techniques.},
 	url={https://www.smithsonianmag.com/science-nature/how-the-higgs-boson-was-found-4723520/}
 }
 @inproceedings{46-fan2018real-time,
-	author={Hongxiang Fan and Shuanglong Liu and Martin Ferianc and Ho-Cheung Ng and Zhiqiang Que and Shen Liu and Xinyu Niu and Wayne Luk},
+	author={Hongxiang Fan and Shuanglong Liu and Martin Ferianc and Ho-Cheung Ng and others},
 	year={Dec 2018},
 	title={A Real-Time Object Detection Accelerator with Compressed {SSDL}ite on {FPGA}},
 	publisher={IEEE},
@@ -257,7 +315,7 @@ training time compared with previously published techniques.},
 	doi={10.1109/FPT.2018.00014}
 }
 @article{45-liang2021pruning,
-	author={Tailin Liang and John Glossner and Lei Wang and Shaobo Shi and Xiaotong Zhang},
+	author={Tailin Liang and John Glossner and Lei Wang and Shaobo Shi and others},
 	year={2021},
 	month={Oct 21,},
 	title={Pruning and quantization for deep neural network acceleration: A survey},
@@ -270,7 +328,7 @@ training time compared with previously published techniques.},
 	doi={10.1016/j.neucom.2021.07.045}
 }
 @article{44-vaswani2017attention,
-	author={Ashish Vaswani and Noam Shazeer and Niki Parmar and Jakob Uszkoreit and Llion Jones and Aidan N. Gomez and Lukasz Kaiser and Illia Polosukhin},
+	author={Ashish Vaswani and Noam Shazeer and Niki Parmar and Jakob Uszkoreit and others},
 	year={2017},
 	month={Jun 12,},
 	title={Attention Is All You Need},
@@ -292,7 +350,7 @@ English constituency parsing both with large and limited training data.},
 	url={https://arxiv.org/abs/1706.03762}
 }
 @techreport{42-kreinar2020distance-weighted,
-	author={Edward Kreinar and Zhenbin Wu and Gianluca Cerminara and Kinga Wozniak and Gerrit Van Onsem and Marcel Rieger and Giuseppe Di Guglielmo and Jan Kieseler and Shah Rukh Qasim and Sioni Summers and Sergo Jindariani and Jennifer Ngadiuba and Mia Liu and Philip Harris and Maurizio Pierini and Vladimir Loncar and Kevin Pedro and Yutaro Iiyama and Javier Duarte and Dylan Rankin and Nhan Tran and Abhijay Gupta},
+	author={Edward Kreinar and Zhenbin Wu and Gianluca Cerminara and Kinga Wozniak and others},
 	year={2020},
 	title={Distance-Weighted Graph Neural Networks on {FPGA}s for Real-Time Particle Reconstruction in High Energy Physics},
 	institution={Frontiers Media S.A},
@@ -304,7 +362,7 @@ English constituency parsing both with large and limited training data.},
 	doi={10.3389/fdata.2020.598927}
 }
 @article{41-elabd2021graph,
-	author={Abdelrahman Elabd and Vesal Razavimaleki and Shi-Yu Huang and Javier Duarte and Markus Atkinson and Gage DeZoort and Peter Elmer and Jin-Xuan Hu and Shih-Chieh Hsu and Bo-Cheng Lai and Mark Neubauer and Isobel Ojalvo and Savannah Thais},
+	author={Abdelrahman Elabd and Vesal Razavimaleki and Shi-Yu Huang and Javier Duarte and others},
 	year={2021},
 	month={Dec 3,},
 	title={Graph Neural Networks for Charged Particle Tracking on {FPGA}s},
@@ -365,7 +423,7 @@ The superconducting LHC magnets are coupled with an electronic monitoring system
 	doi={10.1109/SAMI.2012.6208988}
 }
 @techreport{36-kreinar2018fast,
-	author={Edward Kreinar and Jennifer Ngadiuba and Zhenbin Wu and Philip Harris and Maurizio Pierini and Ryan Rivera and Song Han and Javier Duarte and Benjamin Kreis and Nhan Tran and Sergo Jindariani},
+	author={Edward Kreinar and Jennifer Ngadiuba and Zhenbin Wu and Philip Harris and others},
 	year={2018},
 	month={Apr 16,},
 	title={Fast inference of deep neural networks in {FPGA}s for particle physics},
@@ -433,7 +491,7 @@ Recent results at the Large Hadron Collider (LHC) have pointed to enhanced physi
 	doi={10.1109/TCAD.2018.2834439}
 }
 @article{28-li2018gpu-outperforming,
-	author={Yixing Li and Zichuan Liu and Kai Xu and Hao Yu and Fengbo Ren},
+	author={Yixing Li and Zichuan Liu and Kai Xu and Hao Yu and others},
 	year={2018},
 	month={Jul 27,},
 	title={A {GPU}-Outperforming {FPGA} Accelerator Architecture for Binary Convolutional Neural Networks},
@@ -447,7 +505,7 @@ Recent results at the Large Hadron Collider (LHC) have pointed to enhanced physi
 	doi={10.1145/3154839}
 }
 @inproceedings{27-nurvitadhi2017fpgas,
-	author={Eriko Nurvitadhi and Ganesh Venkatesh and Jaewoong Sim and Debbie Marr and Randy Huang and Jason Ong Gee Hock and Yeong Tat Liew and Krishnan Srivatsan and Duncan Moss and Suchit Subhaschandra and Guy Boudoukh},
+	author={Eriko Nurvitadhi and Ganesh Venkatesh and Jaewoong Sim and Debbie Marr and others},
 	year={Feb 22, 2017},
 	title={Can {FPGA}s Beat {GPU}s in Accelerating Next-Generation Deep Neural Networks?},
 	series={FPGA '17},
@@ -459,7 +517,7 @@ This paper evaluates a selection of emerging DNN algorithms on two generations o
 	doi={10.1145/3020078.3021740}
 }
 @inproceedings{26-nurvitadhi2016accelerating,
-	author={Eriko Nurvitadhi and David Sheffield and Jaewoong Sim and Asit Mishra and Ganesh Venkatesh and Debbie Marr},
+	author={Eriko Nurvitadhi and David Sheffield and Jaewoong Sim and Asit Mishra and others},
 	year={Dec 2016},
 	title={Accelerating Binarized Neural Networks: Comparison of {FPGA}, {CPU}, {GPU}, and {ASIC}},
 	publisher={IEEE},
@@ -513,7 +571,7 @@ This paper evaluates a selection of emerging DNN algorithms on two generations o
 	url={https://www.graphcore.ai/products/ipu}
 }
 @article{21-zhang2019recent,
-	author={Qianru Zhang and Meng Zhang and Tinghuan Chen and Zhifei Sun and Yuzhe Ma and Bei Yu},
+	author={Qianru Zhang and Meng Zhang and Tinghuan Chen and Zhifei Sun and others},
 	year={2019},
 	month={Jan 5,},
 	title={Recent advances in convolutional neural network acceleration},
@@ -573,7 +631,7 @@ This paper evaluates a selection of emerging DNN algorithms on two generations o
 	doi={10.1023/A:1022677900508}
 }
 @inproceedings{15-nurvitadhi2016accelerating,
-	author={Eriko Nurvitadhi and Jaewoong Sim and David Sheffield and Asit Mishra and Srivatsan Krishnan and Debbie Marr},
+	author={Eriko Nurvitadhi and Jaewoong Sim and David Sheffield and Asit Mishra and others},
 	year={Aug 2016},
 	title={Accelerating recurrent neural networks in analytics servers: Comparison of {FPGA}, {CPU}, {GPU}, and {ASIC}},
 	publisher={EPFL},
@@ -594,7 +652,7 @@ This paper evaluates a selection of emerging DNN algorithms on two generations o
 	doi={10.1109/ICDCS.2017.194}
 }
 @article{11-elabd2021graph,
-	author={Abdelrahman Elabd and Vesal Razavimaleki and Shi-Yu Huang and Javier Duarte and Markus Atkinson and Gage DeZoort and Peter Elmer and Jin-Xuan Hu and Shih-Chieh Hsu and Bo-Cheng Lai and Mark Neubauer and Isobel Ojalvo and Savannah Thais},
+	author={Abdelrahman Elabd and Vesal Razavimaleki and Shi-Yu Huang and Javier Duarte and others},
 	year={2021},
 	month={Dec 3,},
 	title={Graph Neural Networks for Charged Particle Tracking on {FPGA}s},
@@ -618,7 +676,7 @@ experiments.},
 	url={https://arxiv.org/abs/2112.02048}
 }
 @article{9-newman2019jedi-net:,
-	author={Harvey B. Newman and Avikar Periwal and Maria Spiropulu and Javier M. Duarte and Maurizio Pierini and Eric A. Moreno and Aidana Serikova and Olmo Cerri and Jean-Roch Vlimant and Thong Q. Nguyen},
+	author={Harvey B. Newman and Avikar Periwal and Maria Spiropulu and Javier M. Duarte and others},
 	year={2019},
 	month={Aug 14,},
 	title={{JEDI}-net: a jet identification algorithm based on interaction networks},
@@ -632,7 +690,7 @@ experiments.},
 	doi={10.1140/epjc/s10052-020-7608-4}
 }
 @article{8-fahim2021hls4ml:,
-	author={Farah Fahim and Benjamin Hawks and Christian Herwig and James Hirschauer and Sergo Jindariani and Nhan Tran and Luca P. Carloni and Giuseppe Di Guglielmo and Philip Harris and Jeffrey Krupa and Dylan Rankin and Manuel Blanco Valentin and Josiah Hester and Yingyi Luo and John Mamish and Seda Orgrenci-Memik and Thea Aarrestad and Hamza Javed and Vladimir Loncar and Maurizio Pierini and Adrian Alan Pol and Sioni Summers and Javier Duarte and Scott Hauck and Shih-Chieh Hsu and Jennifer Ngadiuba and Mia Liu and Duc Hoang and Edward Kreinar and Zhenbin Wu},
+	author={Farah Fahim and Benjamin Hawks and Christian Herwig and James Hirschauer and others},
 	year={2021},
 	month={Mar 9,},
 	title={hls4ml: An Open-Source Codesign Workflow to Empower Scientific Low-Power Machine Learning Devices},
@@ -667,10 +725,10 @@ for machine-learning-accelerated discovery.},
 	doi={10.21468/SciPostPhys.7.3.036}
 }
 @article{6-de2016jet-images,
-	author={Luke de Oliveira and Michael Kagan and Lester Mackey and Benjamin Nachman and Ariel Schwartzman},
+	author={Luke de Oliveira and Michael Kagan and Lester Mackey and Benjamin Nachman and others},
 	year={2016},
 	month={Jul 13,},
-	title={Jet-images — deep learning edition},
+	title={Jet-images - deep learning edition},
 	journal={The journal of high energy physics},
 	volume={2016},
 	number={7},
@@ -760,4 +818,15 @@ booktitle	= {Deep Learning and Unsupervised Feature Learning Workshop, {NIPS} 20
   pdf = 	 {http://proceedings.mlr.press/v42/chen14.pdf},
   url = 	 {https://proceedings.mlr.press/v42/chen14.html},
   abstract = 	 {The discovery of the Higgs boson is remarkable for its importance in modern Physics research. The next step for physicists is to discover more about the Higgs boson from the data of the Large Hadron Collider&nbsp;(LHC). A fundamental and challenging task is to extract the signal of Higgs boson from background noises. The machine learning technique is one important component in solving this problem. In this paper, we propose to solve the Higgs boson classification problem with a gradient boosting approach. Our model learns ensemble of boosted trees that makes careful tradeoff between classification error and model complexity. Physical meaningful features are further extracted to improve the classification accuracy. Our final solution obtained an \emphAMS of 3.71885 on the private leaderboard, making us the top 2% in the Higgs boson challenge.}
+}
+@article{tensor2tensor,
+  author    = {Ashish Vaswani and Samy Bengio and Eugene Brevdo and
+    Francois Chollet and Aidan N. Gomez and Stephan Gouws and Llion Jones and
+    \L{}ukasz Kaiser and Nal Kalchbrenner and Niki Parmar and Ryan Sepassi and
+    Noam Shazeer and Jakob Uszkoreit},
+  title     = {Tensor2Tensor for Neural Machine Translation},
+  journal   = {CoRR},
+  volume    = {abs/1803.07416},
+  year      = {2018},
+  url       = {http://arxiv.org/abs/1803.07416},
 }
