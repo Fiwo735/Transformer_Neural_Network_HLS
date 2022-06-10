@@ -64,12 +64,20 @@ As layers are tightly connected to each other, this type of neural layer is ofte
 
 
 \subsection{Graph and Recurrent Neural Networks}
-\indo{Quick introduction and visualization of graph and recurrent NNs as other notable jet-tagging algorithms use them and are mentioned in this report}
+\indo{Quick introduction and visualization of graph and recurrent (including GRU and LSTM) NNs as other notable jet-tagging algorithms use them and are mentioned in this report}
 \indo{|}
 \indo{|}
 \indo{|}
 \indo{|}
 \indo{|}
+\indo{|}
+\indo{|}
+\indo{|}
+\indo{|}
+\indo{|}
+
+\subsection{Batch and Layer Normalization}
+\indo{Batch norm vs layer norm as both are used in the architecture}
 \indo{|}
 \indo{|}
 \indo{|}
@@ -109,4 +117,4 @@ A diagram representing the initial implementation of the self-attention can be s
   \label{fig:1-2-8-heads}
 \end{figure}
 
-It has to be mentioned that in terms of the AUC value, a recent implementation of a transformer called ConstituentNet \cite{3-yuan2021constituentnet:} has been shown to outperform previous state-of-the-art GNN implementations like JEDI-net \cite{9-newman2019jedi-net:} and thus serves as an inspiration for a starting point architecture of \cref{models}, which is entirely devoted to a further analysis of the network design and suitability for jet tagging. More specifically, given the strong results of its software implementation, an FPGA-mapped design is believed to have a possibility to be a viable alternative to existing designs for L1Ts at LHC.
+It has to be mentioned that in terms of the AUC value, a recent implementation of a transformer called ConstituentNet \cite{3-yuan2021constituentnet:} has been shown to outperform previous state-of-the-art GNN implementations like JEDI-net \cite{9-newman2019jedi-net:} and thus serves as an inspiration for the starting point architecture of \cref{models}, which is entirely devoted to a further analysis of the network design and suitability for jet tagging. More specifically, given the strong results of its software implementation, an FPGA-mapped design is believed to have a possibility to be a viable alternative to existing designs for L1T at LHC.
