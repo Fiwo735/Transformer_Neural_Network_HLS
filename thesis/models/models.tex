@@ -16,7 +16,7 @@ The straight-forward path between model's input and output highlights the sequen
 
 
 \subsection{Input embedding and Residual Connections}
-Although the model lacks any recurrency, the transformer includes two residual connections which have been widely adopted since their successful application in ResNet neural networks \cite{75-kaiming2016deep}. They offer improvements to training time and resulting accuracy \cite{74-szegedy2016inception-v4}, however, they require standardized data dimensionality to ensure the summation can be logically executed. In this project, this is obtained thanks to input embedding, which transforms the input \(\bm{\hat{x^i}} \in \mathbb{R}^{L \times 16} \) into a shape \(\mathbb{R}^{L \times d}\) that is used through the design, as seen in equation \ref{eq:embedding}.
+Although the model lacks any recurrency, the transformer includes two residual connections which have been widely adopted since their successful application in ResNet neural networks \cite{75-kaiming2016deep}. They offer improvements to training time and resulting accuracy \cite{74-szegedy2016inception-v4}, however, they require standardized data dimensionality to ensure the summation can be logically executed. In this project, this is obtained thanks to input embedding, which transforms the input \(\bm{\hat{x^i}} \in \mathbb{R}^{L \times 16} \) into a shape \(\mathbb{R}^{L \times d}\) that is used through the design, as seen in equation \ref{eq:embedding}. The \(d\) size is referred to as the self-attention latent or embedded dimension.
 
 \begin{equation}\label{eq:embedding}
   \bm{\hat{x^i}_{\text{emb}}} = \text{embedding} ( \bm{\hat{x^i}} ) = w_{\text{embed}}\; \bm{\hat{x^i}} + b_{\text{embed}} \in \mathbb{R}^{L \times d}
@@ -73,25 +73,38 @@ The algorithm behind the parameter extraction is rather simple, and the difficul
 
 
 
-
-
 \section{Ultra-Low Latency Architecture}
-\indo{State the goal and recap the HLF dataset}
-\indo{|}
+The first of the proposed architectures targets the HLF representation dataset, where each sample is of \(\mathbb{R}^{1 \times 16}\) dimensions, making it a better candidate for an \(N\) times faster inference than the constituent list representation with inputs with \(\mathbb{R}^{N \times 16}\) dimensions. The simpler data means that the network can achieve satisfactory classification results with a lower learning capacity, hence allowing for various simplifications of the base architecture.
 
 \subsection{Simplification and Tuning}
-\indo{List optimizations/simplifications and why they happened, back as much as possible with dataset and being hardware-aware}
-\indo{Mention scale changed to shift in self-attention, as explained above}
-\indo{|}
-\indo{|}
-\indo{|}
-\indo{|}
-\indo{|}
+The hypothesis leading the optimization process is that the HLF dataset can be learned by a relatively lower complexity network. The strategy is to start with the accuracy and AUC value of the base architecture and keep applying changes to the network as long as they do lead to significant drops in classification results, with detailed evaluation discussed in 
+\cref{evaluation}. Doing so is inherently beneficial for the later FPGA mapping, as even without hardware-aware changes, a simpler model is likely to require less resources and achieve lower latency.
+
+The architecture features that have the highest influence on the overall performance are the size of the latent dimension and number of transformer layer. In the case of the original transformer model \cite{44-vaswani2017attention}, 12 transformer layers are used, split equally into a decoder and encoder parts of the networks. This, along with latent dimension size of 512 shows that jet tagging requires significantly less complexity compared to natural language processing, as the recent ConstituentNet \cite{3-yuan2021constituentnet:} is based on only 3 transformer layers and embedded dimension of 64. However, as the latter network targets a more complex dataset, the first optimization performed in this project yielded a reduction to only a single transformer layer with latent size of 16. The network complexity is directly proportional to the number of layers, while the self-attention complexities shown in \cref{self-attention} can be simplified given the dimensions of \textit{queries}, \textit{keys}, and \textit{values} are shared and equal to \(\in \mathbb{R}^{N \times d}\) in this work, 
+as shown in equation \ref{eq:qkv-complexity-time-simple} and \ref{eq:qkv-complexity-space-simple} for time and space respectively.
+
+\begin{equation}\label{eq:qkv-complexity-time-simple}
+  \mathcal{O}(h \cdot (N_Q N_K (d_Q + d_V) + d_Q^2 (N_Q + N_K) + d_V^2 N_K + N_Q d_V d_{out}) )) \equiv
+  \mathcal{O}(h N d (N + d + d_{out}) ))
+\end{equation}
+
+\begin{equation}\label{eq:qkv-complexity-space-simple}
+  \mathcal{O}(h \cdot (N_Q (N_K + d_V) + d_Q (N_Q + N_K) + d_V N_K + N_Q d_{out}) )) \equiv
+  \mathcal{O}(h N (N + d + d_{out}) ))
+\end{equation}
+
+Another successful optimization was simplifying the SiLU to ReLU activations, as in hardware, the latter rely on a single comparator to determine whether to pass input to output directly or set the signal to zero. In contrary, SiLU requires computing the sigmoid function as well as performing a multiplication, which has a non-trivial cost on an FPGA.
+
+Interestingly, the layer normalization was first changed to batch normalization to simplify the tracking and embedding the running data statistics. This only leads to a marginal accuracy decrease, however, it is interesting to point out that so does removing the normalization layers from the design. This can be attributed to the "smoother" distribution of elements of the HLF dataset, which tend to average around zero instead of taking values from a wide range as it is the case for the constituent list representation, shown in figure TODO. Hence, the used dataset does not benefit from additional normalization, vastly simplifying the architecture.
+
+\todofig{Simple visualization of the distribution in HLF and constituent list}
+\todofig{|}
+\todofig{|}
+\todofig{|}
+\todofig{|}
 
 \subsection{Summary}
-\indo{Short summary and pointing to diagram}
-\indo{|}
-\indo{|}
+The optimizations described in the previous subsection correspond to a noticeably simpler architecture, which can be seen in figure \ref{fig:constituent-net-simplified}. It is also worth mentioning that the simplifications targeted the components of the transformer block other than the multi-head self-attention block. This is a result of the used mechanism's key role in the learning process as well as the fact that it is difficult to modify it as it uses very basic components, and changing them would impact the underlying, commonly-approved function.
 
 \begin{figure}[hpt!]
   \centering

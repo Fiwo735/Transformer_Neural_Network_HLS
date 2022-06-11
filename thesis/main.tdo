@@ -1,16 +1,16 @@
 \contentsline {todo}{\color@fb@x {}{black}{}{orange}{\leavevmode {\color {orange}o}}\ Confirm this number}{1}{section*.1}%
-\contentsline {todo}{\color@fb@x {}{black}{}{orange}{\leavevmode {\color {orange}o}}\ Possibly clear page}{9}{section*.5}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Give equations for TPR, FPR, AUC etc.}{11}{section*.6}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Explain when accuracy is not enough and AUC and confusion matrix gives a better picture}{11}{section*.7}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{11}{section*.8}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Quick introduction and visualization of CNNs as other notable jet-tagging algorithms use them and are mentioned in this report}{13}{section*.9}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{13}{section*.10}%
+\contentsline {todo}{\color@fb@x {}{black}{}{orange}{\leavevmode {\color {orange}o}}\ Confirm at the end if the sections are still as described here}{8}{section*.5}%
+\contentsline {todo}{\color@fb@x {}{black}{}{orange}{\leavevmode {\color {orange}o}}\ Possibly clear page}{9}{section*.6}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Give equations for TPR, FPR, AUC etc.}{11}{section*.7}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Explain when accuracy is not enough and AUC and confusion matrix gives a better picture}{11}{section*.8}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{11}{section*.9}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Quick introduction and visualization of CNNs as other notable jet-tagging algorithms use them and are mentioned in this report}{13}{section*.10}%
 \contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{13}{section*.11}%
 \contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{13}{section*.12}%
 \contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{13}{section*.13}%
 \contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{13}{section*.14}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Quick introduction and visualization of graph and recurrent (including GRU and LSTM) NNs as other notable jet-tagging algorithms use them and are mentioned in this report}{13}{section*.15}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{13}{section*.16}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{13}{section*.15}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Quick introduction and visualization of graph and recurrent (including GRU and LSTM) NNs as other notable jet-tagging algorithms use them and are mentioned in this report}{13}{section*.16}%
 \contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{13}{section*.17}%
 \contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{13}{section*.18}%
 \contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{13}{section*.19}%
@@ -20,226 +20,221 @@
 \contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{13}{section*.23}%
 \contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{13}{section*.24}%
 \contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{13}{section*.25}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Batch norm vs layer norm as both are used in the architecture}{13}{section*.26}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{13}{section*.27}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{13}{section*.26}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Batch norm vs layer norm as both are used in the architecture}{13}{section*.27}%
 \contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{13}{section*.28}%
 \contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{13}{section*.29}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{14}{section*.30}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{13}{section*.30}%
 \contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{14}{section*.31}%
-\contentsline {todo}{\color@fb@x {}{green}{}{green!25}{\leavevmode {\color {green!25}o}}\ FPGA lattice overview to visualize explain the idea behind this technology}{16}{section*.32}%
-\contentsline {todo}{\color@fb@x {}{green}{}{green!25}{\leavevmode {\color {green!25}o}}\ |}{16}{section*.33}%
-\contentsline {todo}{\color@fb@x {}{green}{}{green!25}{\leavevmode {\color {green!25}o}}\ |}{16}{section*.34}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{14}{section*.32}%
+\contentsline {todo}{\color@fb@x {}{black}{}{orange}{\leavevmode {\color {orange}o}}\ Cite or derive this complexities}{15}{section*.33}%
+\contentsline {todo}{\color@fb@x {}{green}{}{green!25}{\leavevmode {\color {green!25}o}}\ FPGA lattice overview to visualize explain the idea behind this technology}{16}{section*.34}%
 \contentsline {todo}{\color@fb@x {}{green}{}{green!25}{\leavevmode {\color {green!25}o}}\ |}{16}{section*.35}%
-\contentsline {todo}{\color@fb@x {}{green}{}{green!25}{\leavevmode {\color {green!25}o}}\ HLS to RTL flow diagram}{16}{section*.36}%
+\contentsline {todo}{\color@fb@x {}{green}{}{green!25}{\leavevmode {\color {green!25}o}}\ |}{16}{section*.36}%
 \contentsline {todo}{\color@fb@x {}{green}{}{green!25}{\leavevmode {\color {green!25}o}}\ |}{16}{section*.37}%
-\contentsline {todo}{\color@fb@x {}{green}{}{green!25}{\leavevmode {\color {green!25}o}}\ |}{16}{section*.38}%
+\contentsline {todo}{\color@fb@x {}{green}{}{green!25}{\leavevmode {\color {green!25}o}}\ HLS to RTL flow diagram}{16}{section*.38}%
 \contentsline {todo}{\color@fb@x {}{green}{}{green!25}{\leavevmode {\color {green!25}o}}\ |}{16}{section*.39}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ More about hls4ml}{16}{section*.40}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Difficulty: rtl > hls > python hl4ml, draw comparison with assembly}{17}{section*.41}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{17}{section*.42}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{17}{section*.43}%
+\contentsline {todo}{\color@fb@x {}{green}{}{green!25}{\leavevmode {\color {green!25}o}}\ |}{17}{section*.40}%
+\contentsline {todo}{\color@fb@x {}{green}{}{green!25}{\leavevmode {\color {green!25}o}}\ |}{17}{section*.41}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ More about hls4ml}{17}{section*.42}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Difficulty: rtl > hls > python hl4ml, draw comparison with assembly}{17}{section*.43}%
 \contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{17}{section*.44}%
 \contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{17}{section*.45}%
 \contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{17}{section*.46}%
 \contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{17}{section*.47}%
 \contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{17}{section*.48}%
 \contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{17}{section*.49}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ finish}{17}{section*.50}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ finish}{17}{section*.51}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ finish}{17}{section*.52}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{17}{section*.50}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{17}{section*.51}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ finish}{18}{section*.52}%
 \contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ finish}{18}{section*.53}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ State the goal and recap the HLF dataset}{23}{section*.54}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{23}{section*.55}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ List optimizations/simplifications and why they happened, back as much as possible with dataset and being hardware-aware}{23}{section*.56}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Mention scale changed to shift in self-attention, as explained above}{23}{section*.57}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{23}{section*.58}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{23}{section*.59}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{23}{section*.60}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{23}{section*.61}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{23}{section*.62}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Short summary and pointing to diagram}{23}{section*.63}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{23}{section*.64}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{23}{section*.65}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ State the goal and recap the constituent net dataset}{24}{section*.66}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Talk about big value range of inputs and how we cannot preprocess unless it becomes part of the system (which it does for example to combat numerical instability)}{24}{section*.67}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Mention how data could be preprocessed in general and reason most methods are too slow/not worth it}{24}{section*.68}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{24}{section*.69}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{24}{section*.70}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ List optimizations/simplifications and why they happened, back as much as possible with dataset and being hardware-aware}{24}{section*.71}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ stability issues solved by more normalization (coming from wide range of inputs of 30x16)}{24}{section*.72}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ splitting QKV into 3 separate mults}{24}{section*.73}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{24}{section*.74}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{24}{section*.75}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{24}{section*.76}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{24}{section*.77}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{24}{section*.78}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Short summary and pointing to diagram}{24}{section*.79}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{24}{section*.80}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{24}{section*.81}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Explain what it is and why we do pre-training quantization}{25}{section*.82}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{25}{section*.83}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{25}{section*.84}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Mention PyTorch Eager Mode and PyTorch FX Graph Mode, give some explanation and show what they can and cannot, overall they are too experimental and cannot support transformer yet}{25}{section*.85}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{25}{section*.86}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{25}{section*.87}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{25}{section*.88}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{25}{section*.89}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Mention Brevitas, how it compares to PyTorch}{25}{section*.90}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{25}{section*.91}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Mention QPyTorch, how it compares to PyTorch, Brevitas and why it is the best here}{25}{section*.92}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{25}{section*.93}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{25}{section*.94}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Mention post-training quantization explained in the next chapter}{25}{section*.95}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Short introduction}{26}{section*.96}%
-\contentsline {todo}{\color@fb@x {}{green}{}{green!25}{\leavevmode {\color {green!25}o}}\ Code listing showing starting \texttt {PyTorch} code and resulting C++ HLS implementation}{26}{section*.97}%
-\contentsline {todo}{\color@fb@x {}{green}{}{green!25}{\leavevmode {\color {green!25}o}}\ |}{26}{section*.98}%
-\contentsline {todo}{\color@fb@x {}{green}{}{green!25}{\leavevmode {\color {green!25}o}}\ |}{26}{section*.99}%
-\contentsline {todo}{\color@fb@x {}{green}{}{green!25}{\leavevmode {\color {green!25}o}}\ |}{26}{section*.100}%
-\contentsline {todo}{\color@fb@x {}{green}{}{green!25}{\leavevmode {\color {green!25}o}}\ |}{26}{section*.101}%
-\contentsline {todo}{\color@fb@x {}{green}{}{green!25}{\leavevmode {\color {green!25}o}}\ |}{26}{section*.102}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Reason about computational complexity, include a diagram of self-attention tensor multiplications based on contents of Deep Learning lectures}{28}{section*.103}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{28}{section*.104}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{28}{section*.105}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{28}{section*.106}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{28}{section*.107}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{28}{section*.108}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{28}{section*.109}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Derive simple latency and resource (likely only DSP as others are too difficult) model, that will be verified in evaluation chapter}{28}{section*.110}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{28}{section*.111}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{28}{section*.112}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{28}{section*.113}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{28}{section*.114}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Explain my custom algorithm and where it draws inspirations}{28}{section*.115}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Walk through the steps and explain the parameters, pointing to provided algorithm}{28}{section*.116}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Explain how the very long simulation time prevents more mature solutions like Bayesian Optimization or even Grid Search (this solution already took 120+ hours on a medium-sized design with 60 type parameters)}{28}{section*.117}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Talk about correlation of neighboring bit widths and how this is exploited (i.e. by resuming with previous width + the whole idea is based on that instead of a full gradient descent style search)}{28}{section*.118}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{29}{section*.119}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{29}{section*.120}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{29}{section*.121}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{29}{section*.122}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{29}{section*.123}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{29}{section*.124}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{29}{section*.125}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{29}{section*.126}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{29}{section*.127}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{29}{section*.128}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Introduce MLIR and the overall flow of how PyTorch models are mapped, include nice diagrams}{29}{section*.129}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{29}{section*.130}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{29}{section*.131}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{29}{section*.132}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{29}{section*.133}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{29}{section*.134}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Talk about how ScaleHLS extends MLIR to HLS, again diagrams}{29}{section*.135}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{29}{section*.136}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{29}{section*.137}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{29}{section*.138}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{29}{section*.139}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{29}{section*.140}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Talk about potential integration/relation between hls4ml (Python -> HLS) and ScaleHLS (PyTorch/HLS -> Optimized HLS) }{29}{section*.141}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{29}{section*.142}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{29}{section*.143}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Mention SiLU which was experimented with}{31}{section*.144}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Mention Log Softmax that implements the architecture from previous chapter}{31}{section*.145}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{31}{section*.146}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{31}{section*.147}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Briefly mention FC without bias as an optimization that saves initializing accumulators with bias values}{31}{section*.148}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Talk in details about the C++ HLS challenges and achievements of self-attention and transformer}{31}{section*.149}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{31}{section*.150}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{31}{section*.151}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{31}{section*.152}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{31}{section*.153}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Discuss how layer norm and batch norm actually differ}{31}{section*.154}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{31}{section*.155}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{31}{section*.156}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Explain the mechanism of function look up table initialization and how it was automatic}{32}{section*.157}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{32}{section*.158}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Show when automatic precision/range fails and how the new block addresses that by exposing int bit width as a parameter}{32}{section*.159}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{32}{section*.160}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{32}{section*.161}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{32}{section*.162}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Mention tensor einsum and the pragmas it uses}{32}{section*.163}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{32}{section*.164}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Carries on from chapter 3}{33}{section*.165}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{33}{section*.166}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{33}{section*.167}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{33}{section*.168}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Baseline ROC and its meaning}{33}{section*.169}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{33}{section*.170}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Talk about grid search for accuracy-focused model as a quick and easy hyperparameter search, that was done mainly to look for simpler designs given very long synthesis, not hardcore tuning accuracy}{33}{section*.171}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Give estimate of how long is the synthesis and why this is a problem}{33}{section*.172}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{33}{section*.173}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{33}{section*.174}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Ultra-low latency ROC and its meaning}{33}{section*.175}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{33}{section*.176}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Latency on CPUs and GPUs, extend table below with accuracy-focused latency results or just create a second one}{33}{section*.177}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{33}{section*.178}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{33}{section*.179}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{35}{section*.180}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Table with AUC and accuracy}{35}{section*.181}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{35}{section*.182}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{35}{section*.183}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{35}{section*.184}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{35}{section*.185}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{35}{section*.186}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Accuracy-focused ROC and its meaning}{35}{section*.187}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{35}{section*.188}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Table with AUC and accuracy}{35}{section*.189}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{35}{section*.190}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{35}{section*.191}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{36}{section*.192}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{36}{section*.193}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{36}{section*.194}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Small introduction}{36}{section*.195}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Brief info about XCU250}{36}{section*.196}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Discuss hardware resources and latency}{36}{section*.197}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{36}{section*.198}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{36}{section*.199}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{36}{section*.200}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{36}{section*.201}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Small table with cycles, latency, clock frequency}{36}{section*.202}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{36}{section*.203}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{36}{section*.204}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Explain which and how the design changes affected the results below}{36}{section*.205}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{36}{section*.206}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{37}{section*.207}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{37}{section*.208}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Talk about Pareto front and its meaning, maybe use a roofline model if it makes sense}{37}{section*.209}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{37}{section*.210}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{37}{section*.211}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{37}{section*.212}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Verify analytical models for latency/resources}{37}{section*.213}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Recap how this was done and talk about results}{37}{section*.214}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Mention float16 doesnt learn anything (acc 20\%) as its range is too small, and we cannot consider normalizing inputs as its real time system}{37}{section*.215}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Mention problems with fixed-point 32 and reason about both int and frac range being important, give examples at which point which one causes issues (likely input -> int range, after normalization -> frac range)}{37}{section*.216}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Mention brevitas only gets 34\% accuracy and why this is the case and how it could be solved}{38}{section*.217}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{38}{section*.218}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{38}{section*.219}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{38}{section*.220}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ State that the results are very promising (64\% bits reduction), how this should influence synthesis}{38}{section*.221}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{38}{section*.222}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{38}{section*.223}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Maybe talk about how correlation was verified}{38}{section*.224}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{38}{section*.225}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Discuss the used parameters (ratio of positive and negative tolerance etc.) and how they affect the results}{38}{section*.226}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{38}{section*.227}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{38}{section*.228}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Conclude after writing all other sections, recapping the motivation, proposed model use cases, meta-programming approaches, how it all ties together and extends hardware-software co-design}{41}{section*.229}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{41}{section*.230}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{41}{section*.231}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{41}{section*.232}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{41}{section*.233}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{41}{section*.234}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{41}{section*.235}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{41}{section*.236}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{41}{section*.237}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{41}{section*.238}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{41}{section*.239}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{41}{section*.240}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Bullet points or subsections}{41}{section*.241}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ e.g. fuse batch norm to linear, pruning}{41}{section*.242}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{41}{section*.243}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{41}{section*.244}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{42}{section*.245}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{42}{section*.246}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{42}{section*.247}%
-\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ something}{48}{section*.250}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ finish}{18}{section*.54}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ finish}{18}{section*.55}%
+\contentsline {todo}{\color@fb@x {}{green}{}{green!25}{\leavevmode {\color {green!25}o}}\ Simple visualization of the distribution in HLF and constituent list}{24}{section*.56}%
+\contentsline {todo}{\color@fb@x {}{green}{}{green!25}{\leavevmode {\color {green!25}o}}\ |}{24}{section*.57}%
+\contentsline {todo}{\color@fb@x {}{green}{}{green!25}{\leavevmode {\color {green!25}o}}\ |}{24}{section*.58}%
+\contentsline {todo}{\color@fb@x {}{green}{}{green!25}{\leavevmode {\color {green!25}o}}\ |}{24}{section*.59}%
+\contentsline {todo}{\color@fb@x {}{green}{}{green!25}{\leavevmode {\color {green!25}o}}\ |}{24}{section*.60}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ State the goal and recap the constituent net dataset}{24}{section*.61}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Talk about big value range of inputs and how we cannot preprocess unless it becomes part of the system (which it does for example to combat numerical instability)}{24}{section*.62}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Mention how data could be preprocessed in general and reason most methods are too slow/not worth it}{24}{section*.63}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{25}{section*.64}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{25}{section*.65}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ List optimizations/simplifications and why they happened, back as much as possible with dataset and being hardware-aware}{25}{section*.66}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ stability issues solved by more normalization (coming from wide range of inputs of 30x16)}{25}{section*.67}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ splitting QKV into 3 separate mults}{25}{section*.68}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{25}{section*.69}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{25}{section*.70}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{25}{section*.71}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{25}{section*.72}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{25}{section*.73}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Short summary and pointing to diagram}{25}{section*.74}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{25}{section*.75}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{25}{section*.76}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Explain what it is and why we do pre-training quantization}{26}{section*.77}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{26}{section*.78}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{26}{section*.79}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Mention PyTorch Eager Mode and PyTorch FX Graph Mode, give some explanation and show what they can and cannot, overall they are too experimental and cannot support transformer yet}{26}{section*.80}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{26}{section*.81}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{26}{section*.82}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{26}{section*.83}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{26}{section*.84}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Mention Brevitas, how it compares to PyTorch}{26}{section*.85}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{26}{section*.86}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Mention QPyTorch, how it compares to PyTorch, Brevitas and why it is the best here}{26}{section*.87}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{26}{section*.88}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{26}{section*.89}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Mention post-training quantization explained in the next chapter}{26}{section*.90}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Short introduction}{27}{section*.91}%
+\contentsline {todo}{\color@fb@x {}{green}{}{green!25}{\leavevmode {\color {green!25}o}}\ Code listing showing starting \texttt {PyTorch} code and resulting C++ HLS implementation}{27}{section*.92}%
+\contentsline {todo}{\color@fb@x {}{green}{}{green!25}{\leavevmode {\color {green!25}o}}\ |}{27}{section*.93}%
+\contentsline {todo}{\color@fb@x {}{green}{}{green!25}{\leavevmode {\color {green!25}o}}\ |}{27}{section*.94}%
+\contentsline {todo}{\color@fb@x {}{green}{}{green!25}{\leavevmode {\color {green!25}o}}\ |}{27}{section*.95}%
+\contentsline {todo}{\color@fb@x {}{green}{}{green!25}{\leavevmode {\color {green!25}o}}\ |}{27}{section*.96}%
+\contentsline {todo}{\color@fb@x {}{green}{}{green!25}{\leavevmode {\color {green!25}o}}\ |}{27}{section*.97}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Reason about computational complexity, include a diagram of self-attention tensor multiplications based on contents of Deep Learning lectures}{29}{section*.98}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{29}{section*.99}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{29}{section*.100}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{29}{section*.101}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{29}{section*.102}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{29}{section*.103}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{29}{section*.104}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Derive simple latency and resource (likely only DSP as others are too difficult) model, that will be verified in evaluation chapter}{29}{section*.105}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{29}{section*.106}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{29}{section*.107}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{29}{section*.108}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{29}{section*.109}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Explain my custom algorithm and where it draws inspirations}{29}{section*.110}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Walk through the steps and explain the parameters, pointing to provided algorithm}{29}{section*.111}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Explain how the very long simulation time prevents more mature solutions like Bayesian Optimization or even Grid Search (this solution already took 120+ hours on a medium-sized design with 60 type parameters)}{29}{section*.112}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Talk about correlation of neighboring bit widths and how this is exploited (i.e. by resuming with previous width + the whole idea is based on that instead of a full gradient descent style search)}{29}{section*.113}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{30}{section*.114}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{30}{section*.115}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{30}{section*.116}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{30}{section*.117}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{30}{section*.118}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{30}{section*.119}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{30}{section*.120}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{30}{section*.121}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{30}{section*.122}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{30}{section*.123}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Introduce MLIR and the overall flow of how PyTorch models are mapped, include nice diagrams}{30}{section*.124}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{30}{section*.125}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{30}{section*.126}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{30}{section*.127}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{30}{section*.128}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{30}{section*.129}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Talk about how ScaleHLS extends MLIR to HLS, again diagrams}{30}{section*.130}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{30}{section*.131}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{30}{section*.132}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{30}{section*.133}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{30}{section*.134}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{30}{section*.135}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Talk about potential integration/relation between hls4ml (Python -> HLS) and ScaleHLS (PyTorch/HLS -> Optimized HLS) }{30}{section*.136}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{30}{section*.137}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{30}{section*.138}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Mention SiLU which was experimented with}{32}{section*.139}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Mention Log Softmax that implements the architecture from previous chapter}{32}{section*.140}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{32}{section*.141}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{32}{section*.142}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Briefly mention FC without bias as an optimization that saves initializing accumulators with bias values}{32}{section*.143}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Talk in details about the C++ HLS challenges and achievements of self-attention and transformer}{32}{section*.144}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{32}{section*.145}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{32}{section*.146}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{32}{section*.147}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{32}{section*.148}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Discuss how layer norm and batch norm actually differ}{32}{section*.149}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{32}{section*.150}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{32}{section*.151}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Explain the mechanism of function look up table initialization and how it was automatic}{33}{section*.152}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{33}{section*.153}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Show when automatic precision/range fails and how the new block addresses that by exposing int bit width as a parameter}{33}{section*.154}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{33}{section*.155}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{33}{section*.156}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{33}{section*.157}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Mention tensor einsum and the pragmas it uses}{33}{section*.158}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{33}{section*.159}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Carries on from chapter 3}{34}{section*.160}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{34}{section*.161}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{34}{section*.162}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{34}{section*.163}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Baseline ROC and its meaning}{34}{section*.164}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{34}{section*.165}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Talk about grid search for accuracy-focused model as a quick and easy hyperparameter search, that was done mainly to look for simpler designs given very long synthesis, not hardcore tuning accuracy}{35}{section*.166}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Give estimate of how long is the synthesis and why this is a problem}{35}{section*.167}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{35}{section*.168}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{35}{section*.169}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Ultra-low latency ROC and its meaning}{35}{section*.170}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{35}{section*.171}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Table with AUC and accuracy}{35}{section*.172}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{35}{section*.173}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{36}{section*.174}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{36}{section*.175}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{36}{section*.176}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{36}{section*.177}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Accuracy-focused ROC and its meaning}{36}{section*.178}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{36}{section*.179}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Table with AUC and accuracy}{36}{section*.180}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{36}{section*.181}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{36}{section*.182}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{37}{section*.183}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{37}{section*.184}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{37}{section*.185}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Latency on CPUs and GPUs, extend table below with accuracy-focused latency results or just create a second one}{37}{section*.186}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Comment on how little difference there is between all CPUs and GPUs}{37}{section*.187}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{37}{section*.188}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{37}{section*.189}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Small introduction}{37}{section*.190}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Brief info about XCU250}{37}{section*.191}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Discuss hardware resources and latency}{37}{section*.192}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{37}{section*.193}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{37}{section*.194}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{38}{section*.195}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{38}{section*.196}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Small table with cycles, latency, clock frequency}{38}{section*.197}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{38}{section*.198}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{38}{section*.199}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Explain which and how the design changes affected the results below}{38}{section*.200}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{38}{section*.201}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{38}{section*.202}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{38}{section*.203}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Talk about Pareto front and its meaning, maybe use a roofline model if it makes sense}{38}{section*.204}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{38}{section*.205}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{38}{section*.206}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{38}{section*.207}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Verify analytical models for latency/resources}{39}{section*.208}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Recap how this was done and talk about results}{39}{section*.209}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Mention float16 doesnt learn anything (acc 20\%) as its range is too small, and we cannot consider normalizing inputs as its real time system}{39}{section*.210}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Mention problems with fixed-point 32 and reason about both int and frac range being important, give examples at which point which one causes issues (likely input -> int range, after normalization -> frac range)}{39}{section*.211}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Mention brevitas only gets 34\% accuracy and why this is the case and how it could be solved}{39}{section*.212}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{39}{section*.213}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{39}{section*.214}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{39}{section*.215}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ State that the results are very promising (64\% bits reduction), how this should influence synthesis}{39}{section*.216}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{39}{section*.217}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{39}{section*.218}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Maybe talk about how correlation was verified}{41}{section*.219}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{41}{section*.220}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Discuss the used parameters (ratio of positive and negative tolerance etc.) and how they affect the results}{41}{section*.221}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{41}{section*.222}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{41}{section*.223}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Conclude after writing all other sections, recapping the motivation, proposed model use cases, meta-programming approaches, how it all ties together and extends hardware-software co-design}{42}{section*.224}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{42}{section*.225}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{42}{section*.226}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{42}{section*.227}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{42}{section*.228}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{42}{section*.229}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{42}{section*.230}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{42}{section*.231}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{42}{section*.232}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{42}{section*.233}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{42}{section*.234}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{42}{section*.235}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Bullet points or subsections}{42}{section*.236}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ e.g. fuse batch norm to linear, pruning}{42}{section*.237}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ Newer, efficient transformers like e.g. sparse transformer, low-rank transformer}{42}{section*.238}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{42}{section*.239}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{43}{section*.240}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{43}{section*.241}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ |}{43}{section*.242}%
+\contentsline {todo}{\color@fb@x {}{red}{}{red!25}{\leavevmode {\color {red!25}o}}\ something}{49}{section*.245}%

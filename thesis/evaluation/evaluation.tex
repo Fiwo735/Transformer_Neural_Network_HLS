@@ -30,6 +30,32 @@ This chapter starts by evaluating proposed neural network architectures using CP
 \indo{|}
 \indo{|}
 
+\subsection{Existing Solutions}
+
+\begin{table}[!hpt]
+  \centering
+  \caption{Summary of networks' inference time, accuracy, Floating-Point Operations Per Second and parameter number for optimal batch sizes, with best values in bold.}
+  \label{tab:all-networks-comparison}
+  \bgroup
+  \def\arraystretch{1.2}
+  \setlength\tabcolsep{1.5mm}
+  \begin{tabular}{|c|c|c|c|c|}
+  \hline
+  \textbf{\begin{tabular}[c]{@{}c@{}}Neural network\\ \end{tabular}} & \textbf{\begin{tabular}[c]{@{}c@{}}Inference per\\ batch (ms)\end{tabular}} & \textbf{\begin{tabular}[c]{@{}c@{}}Accuracy /\\ aver. AUC\end{tabular}} & \textbf{FLOPS} & \textbf{Parameters} \\ \hline
+  DNN \cite{9-newman2019jedi-net:}                                                                   & \textbf{1.0 $\pm$ 0.2}                                                                    & 0.760 / 0.941            & \textbf{27 k}           & 14,725              \\ \hline
+  CNN \cite{9-newman2019jedi-net:}                                                                   & 57.1 $\pm$ 0.5                                                                   & 0.740 / 0.911           & 400 k           & 205,525             \\ \hline
+  GRU \cite{9-newman2019jedi-net:}                                                                   & 23.2 $\pm$ 0.6                                                                   & 0.750 / 0.912            & 46 k           & 15,575              \\ \hline
+  JEDI-net \cite{9-newman2019jedi-net:}                                                              & 121.2 $\pm$ 0.4                                                                  & TODO / 0.959           & 116 M             & 33,625              \\ \hline
+  JEDI-net with $\sum O$ \cite{9-newman2019jedi-net:}                                                            & 402.0 $\pm$ 1.0                                                                  & TODO / 0.957            & 458 M             & 8,767               \\ \hline
+  ConstituentNet-Base \cite{3-yuan2021constituentnet:}                                                   & $\sim$773.0                                                                         & 0.818 / \textbf{0.966}            & 1,553 M            & 289,000             \\ \hline
+  ConstituentNet-Tiny \cite{3-yuan2021constituentnet:}                                                   & $\sim$17.0                                                                        & 0.805 / 0.960            & 13 M              & \textbf{8,533}               \\ \hline
+  \end{tabular}
+  \egroup
+\end{table}
+
+
+\subsection{Receiver Operating Characteristic Curves}
+
 \indo{Baseline ROC and its meaning}
 \indo{|}
 
@@ -54,35 +80,6 @@ This chapter starts by evaluating proposed neural network architectures using CP
 
 \indo{Ultra-low latency ROC and its meaning}
 \indo{|}
-
-\indo{Latency on CPUs and GPUs, extend table below with accuracy-focused latency results or just create a second one}
-\indo{|}
-\indo{|}
-\indo{|}
-
-\begin{table}[hpt!]
-  \centering
-  \caption{Comparison of simplified model's inference times with batch size of 128}
-  \label{tab:inference-times}
-  \bgroup
-  \def\arraystretch{1.2}
-  \setlength\tabcolsep{3mm}
-  \begin{tabular}{c|l|cc|}
-  \cline{2-4}
-  \multicolumn{1}{l|}{}                               & \multicolumn{1}{c|}{\multirow{2}{*}{\textbf{Device}}}       & \multicolumn{2}{c|}{\textbf{Inference time}}                      \\ \cline{3-4} 
-  \multicolumn{1}{l|}{}                               & \multicolumn{1}{c|}{}                                       & \multicolumn{1}{c|}{per batch (ms)}          & per sample ($\mu$s) \\ \hline
-  \multicolumn{1}{|c|}{\multirow{4}{*}{\textbf{\begin{sideways}CPU\end{sideways}}}} & Intel Xeon Silver 4110 (Dual) & \multicolumn{1}{c|}{1.741 $\pm$ 0.027}       & 13.604 $\pm$ 0.207 \\ \cline{2-4} 
-  \multicolumn{1}{|c|}{}                              & Intel Xeon X5690 (Dual)                                     & \multicolumn{1}{c|}{1.622 $\pm$ 0.026}       & 12.670 $\pm$ 0.206 \\ \cline{2-4} 
-  \multicolumn{1}{|c|}{}                              & Intel Xeon E5-2620 v3                                       & \multicolumn{1}{c|}{1.325 $\pm$ 0.123}       & 10.350 $\pm$ 0.963 \\ \cline{2-4}
-  \multicolumn{1}{|c|}{}                              & Intel Xeon Gold 6154 (Dual)                                 & \multicolumn{1}{c|}{1.167 $\pm$ 0.066}       & 9.112 $\pm$ 0.516  \\ \hline\hline
-  \multicolumn{1}{|c|}{\multirow{3}{*}{\textbf{\begin{sideways}GPU\end{sideways}}}} & Nvidia GTX 1080 Ti            & \multicolumn{1}{c|}{1.166 $\pm$ 0.112}       & 9.111 $\pm$ 0.876  \\ \cline{2-4} 
-  \multicolumn{1}{|c|}{}                              & Nvidia TITAN X                                              & \multicolumn{1}{c|}{1.154 $\pm$ 0.119}       & 9.017 $\pm$ 0.928  \\ \cline{2-4} 
-  \multicolumn{1}{|c|}{}                              & Nvidia TITAN Xp                                             & \multicolumn{1}{c|}{1.062 $\pm$ 0.036}       & 8.296 $\pm$ 0.283  \\ \cline{2-4} 
-  % \multicolumn{1}{|c|}{}                              & Nvidia RTX 2080 Ti                                          & \multicolumn{1}{c|}{xxxxx $\pm$ xxxxx}       & xxxxx $\pm$ xxxxx  \\
-  \hline
-  \end{tabular}
-  \egroup
-\end{table}
 
 \begin{figure}[hpt!]
   \centering
@@ -114,6 +111,49 @@ This chapter starts by evaluating proposed neural network architectures using CP
 \indo{|}
 \indo{|}
 \indo{|}
+
+
+\subsection{Proposed Networks' Latency using CPUs and GPUs}
+
+\indo{Latency on CPUs and GPUs, extend table below with accuracy-focused latency results or just create a second one}
+\indo{Comment on how little difference there is between all CPUs and GPUs}
+\indo{|}
+\indo{|}
+
+The detailed specifications of the machines used for measuring the inference time are listed below. The system specification is shared and includes CentOS 7.0. The first machine that hosts the GPUs has CUDA version 11.5, driver version 495.29.05.
+
+\begin{itemize}
+  \item Dual Intel Xeon Silver 4110 at 2.10GHz with 192 GB DDR4 at 2666 MT/s - GPUs host,
+  \item Dual Intel Xeon X5690 at 3.47GHz with 96 GB DDR3 at 1333 MT/s,
+  \item Intel Xeon E5-2620 v3 at 2.40GHz with 192 GB DDR4 at 2133 MT/s,
+  \item Dual Intel Xeon Gold 6154 CPU at 3.00GHz with 768 GB DDR4 at 2666 MT/s,
+\end{itemize}
+
+
+\begin{table}[hpt!]
+  \centering
+  \caption{Comparison of simplified model's inference times with batch size of 128}
+  \label{tab:inference-times}
+  \bgroup
+  \def\arraystretch{1.2}
+  \setlength\tabcolsep{3mm}
+  \begin{tabular}{c|l|cc|}
+  \cline{2-4}
+  \multicolumn{1}{l|}{}                               & \multicolumn{1}{c|}{\multirow{2}{*}{\textbf{Device}}}       & \multicolumn{2}{c|}{\textbf{Inference time}}                      \\ \cline{3-4} 
+  \multicolumn{1}{l|}{}                               & \multicolumn{1}{c|}{}                                       & \multicolumn{1}{c|}{per batch (ms)}          & per sample ($\mu$s) \\ \hline
+  \multicolumn{1}{|c|}{\multirow{4}{*}{\textbf{\begin{sideways}CPU\end{sideways}}}} & Intel Xeon Silver 4110 (Dual) & \multicolumn{1}{c|}{1.741 $\pm$ 0.027}       & 13.604 $\pm$ 0.207 \\ \cline{2-4} 
+  \multicolumn{1}{|c|}{}                              & Intel Xeon X5690 (Dual)                                     & \multicolumn{1}{c|}{1.622 $\pm$ 0.026}       & 12.670 $\pm$ 0.206 \\ \cline{2-4} 
+  \multicolumn{1}{|c|}{}                              & Intel Xeon E5-2620 v3                                       & \multicolumn{1}{c|}{1.325 $\pm$ 0.123}       & 10.350 $\pm$ 0.963 \\ \cline{2-4}
+  \multicolumn{1}{|c|}{}                              & Intel Xeon Gold 6154 (Dual)                                 & \multicolumn{1}{c|}{1.167 $\pm$ 0.066}       & 9.112 $\pm$ 0.516  \\ \hline\hline
+  \multicolumn{1}{|c|}{\multirow{3}{*}{\textbf{\begin{sideways}GPU\end{sideways}}}} & Nvidia GTX 1080 Ti            & \multicolumn{1}{c|}{1.166 $\pm$ 0.112}       & 9.111 $\pm$ 0.876  \\ \cline{2-4} 
+  \multicolumn{1}{|c|}{}                              & Nvidia TITAN X                                              & \multicolumn{1}{c|}{1.154 $\pm$ 0.119}       & 9.017 $\pm$ 0.928  \\ \cline{2-4} 
+  \multicolumn{1}{|c|}{}                              & Nvidia TITAN Xp                                             & \multicolumn{1}{c|}{1.062 $\pm$ 0.036}       & 8.296 $\pm$ 0.283  \\ \cline{2-4} 
+  \hline
+  \end{tabular}
+  \egroup
+\end{table}
+
+
 
 
 \section{Hardware Implementation}
