@@ -52,13 +52,13 @@ The algorithm behind the parameter extraction is rather simple, and the difficul
   \caption{Mechanism behind model parameter extraction}\label{alg:parameter-extraction}
   \begin{algorithmic}[1]
     \State $state \gets $load\_state(model)
-    \State \texttt{sort(state)}
+    \State sort($state$)
     \State $curr\_weight \gets $null
-    \For{param in state}
+    \For{$param$ in $state$}
       \State $mean \gets $find\_mean(model, param)
       \State $var \gets $find\_var(model, param)
 
-      \If{param is weight}
+      \If{$param$ is weight}
         \State $curr\_weight \gets $param
         \State $new\_param \gets $update\_weight(param, var)
 
@@ -94,7 +94,7 @@ Figure \ref{fig:einsum} shows a visualization for an example notation to give a 
 \todofig{|}
 \todofig{|}
 
-Another simple optimization used alongside the tensor multiplication blocks was the change in size scaling from using division to performing an arithmetic right shift, which requires precomputing the logarithm of the size, seen in equation \ref{eq:log-div}, vastly simplifying the otherwise expensive hardware required at run-time.
+Another simple optimization used alongside the tensor multiplication blocks was the change in size scaling from using division to performing an arithmetic right shift (ASR), which requires precomputing the logarithm of the size, seen in equation \ref{eq:log-div}, vastly simplifying the otherwise computationally expensive hardware required at run-time.
 
 \begin{equation}\label{eq:log-div}
   \frac{x}{\sqrt{\text{size}}} \equiv \text{ASR}(x,\; \log_2 \sqrt{\text{size}}) \equiv \text{ASR}(x,\; \frac{1}{2}\log_2 \text{size})
@@ -147,13 +147,7 @@ Although further simplifications, including approximating the summation by findi
 
 
 \section{Accuracy-Focused Architecture}
+\indo{stability issues solved by more normalization (coming from wide range of inputs of 30x16)}
 
 \subsection{Hardware Mapping}
 
-
-\section{Parameter Extraction for Custom Hardware}
-\indo{tool for extracting weight and biases}
-
-\indo{tool for embedding norm stats for layer norm as running stats not collected}
-
-\indo{stability issues solved by more normalization (coming from wide range of inputs of 30x16)}
