@@ -72,82 +72,78 @@ The algorithm behind the parameter extraction is rather simple, and the difficul
 \end{algorithm}
 
 
-\section{Hardware Mapping}
 
-
-\subsection{Tensor Multiplication and Scaling}
-Each self-attention head performs two tensor multiplications (referred to as \textit{matmul} blocks in figure \ref{fig:self-attention-multi-head}), which are normally expressed using Einstein Summation notation \cite{59-barr1991einstein}, which is supported by mathematical and machine learning libraries like \texttt{NumPy} or \texttt{PyTorch}. However, not present by default in HLS, it required careful design of the calculation loops in order to not cripple the performance by unnecessary computations and pseudo-random data accesses. As part of this research, an efficient and fully-customizable HLS block has been designed, that uses a very similar interface to the Python equivalent.
-
-\begin{figure}[hpt!]
-  \centering
-  \includegraphics[trim={0cm 0cm 0cm 0cm}, width=0.8\textwidth, center]{models/einsum.pdf}
-  \caption{Visualization of a tensor operation expressed in Einstein Summation notation.}
-  \label{fig:einsum}
-\end{figure}
-
-Figure \ref{fig:einsum} shows a visualization for an example notation to give a better understanding of the necessary flexibility of a formula. The translation between notations using the custom tool is showcased in listing TODO. While the \texttt{PyTorch} implementation uses 4-dimensional tensors, the first dimension refers to the batch, which is not present in the hardware implementation that processes input samples one-by-one.
-
-\todofig{Code listing showing starting \texttt{PyTorch} code and resulting C++ HLS implementation}
-\todofig{|}
-\todofig{|}
-\todofig{|}
-\todofig{|}
-\todofig{|}
-
-Another simple optimization used alongside the tensor multiplication blocks was the change in size scaling from using division to performing an arithmetic right shift (ASR), which requires precomputing the logarithm of the size, seen in equation \ref{eq:log-div}, vastly simplifying the otherwise computationally expensive hardware required at run-time.
-
-\begin{equation}\label{eq:log-div}
-  \frac{x}{\sqrt{\text{size}}} \equiv \text{ASR}(x,\; \log_2 \sqrt{\text{size}}) \equiv \text{ASR}(x,\; \frac{1}{2}\log_2 \text{size})
-\end{equation}
-
-
-\subsection{Softmax and Log Softmax Activation}
-Despite an already existing \hlsml implementation of the softmax activation function, computing the logarithm of its result is not as simple as it may seem. This is because the numerical stability and computational efficiency of this operation is often explored in-depth \cite{60-blanchard2019accurate} and varies depending on the programming language and target platform.
-
-\begin{figure}[hpt!]
-  \centering
-  \includegraphics[trim={0cm 0cm 0cm 0cm}, width=0.2\textwidth, center]{models/log_softmax_naive.pdf}
-  \caption{Direct hardware implementations of log softmax.}
-  \label{fig:log-softmax-naive}
-\end{figure}
-
-The naive implementation comes straight from the definition of taking a logarithm of softmax, seen in equation \ref{eq:softmax}, and the required hardware operations are shown in figure \ref{fig:log-softmax-naive}.
-
-\begin{equation} \label{eq:softmax}
-    \sigma (x_i) = e^{x_i} / \sum_{j=1}^{N} e^{x_j}
-\end{equation}
-
-This report proposes a different way of mapping this operation to hardware to improve stability while shortening the critical path and using less resources. It is based on the derivation shown in equation \ref{eq:log-softmax}.
-
-\begin{equation} \label{eq:log-softmax}
-    \log (\sigma (x_i)) = log(e^{x_i} / \sum_{j=1}^{N} e^{x_j}) = \log(e^{x_i}) - \log(\sum_{j=1}^{N} e^{x_j}) = e^{x_i} - \log(\sum_{j=1}^{N} e^{x_j})
-\end{equation}
-
-The resulting hardware operations are depicted in figure \ref{fig:log-softmax-opt}. It is important to note, that operations like exponentiation, division or taking a logarithm usually rely on precomputing a wide range of values and mapping them in BRAMs or LUTs to allow for lookup on run-time. Hence, the optimized design requires one less of such lookups while also replacing multiplication by a subtraction, which can be simpler to express in hardware.
-
-\begin{figure}[hpt!]
-  \centering
-  \includegraphics[trim={0cm 0cm 0cm 0cm}, width=0.2\textwidth, center]{models/log_softmax_opt.pdf}
-  \caption{Optimized hardware implementations of log softmax.}
-  \label{fig:log-softmax-opt}
-\end{figure}
-
-Although further simplifications, including approximating the summation by finding the maximum (see equation \ref{eq:log-softmax-max}) or simply omitting the logarithm portion of the expression, were also explored, they noticeably lowered the final accuracy and were thus abandoned.
-
-\begin{equation} \label{eq:log-softmax-max}
-    \log (\sigma (x_i)) = e^{x_i} - \log(\sum_{j=1}^{N} e^{x_j}) = e^{x_i} - \sum_{j=1}^{N} \log(e^{x_j}) = e^{x_i} - \sum_{j=1}^{N} x_j \approx e^{x_i} - \max(x)
-\end{equation}
 
 
 \section{Ultra-Low Latency Architecture}
+\indo{State the goal and recap the HLF dataset}
+\indo{|}
 
 \subsection{Simplification and Tuning}
+\indo{List optimizations/simplifications and why they happened, back as much as possible with dataset and being hardware-aware}
+\indo{Mention scale changed to shift in self-attention, as explained above}
+\indo{|}
+\indo{|}
+\indo{|}
+\indo{|}
+\indo{|}
 
-\subsection{Hardware Mapping}
+\subsection{Summary}
+\indo{Short summary and pointing to diagram}
+\indo{|}
+\indo{|}
+
+\begin{figure}[hpt!]
+  \centering
+  \includegraphics[trim={0cm 0cm 0cm 0cm}, width=0.45\textwidth, center]{models/constituent_net_simplified.pdf}
+  \caption{Diagram with an overview of the ultra-low latency architecture.}
+  \label{fig:constituent-net-simplified}
+\end{figure}
 
 
 \section{Accuracy-Focused Architecture}
-\indo{stability issues solved by more normalization (coming from wide range of inputs of 30x16)}
+\indo{State the goal and recap the constituent net dataset}
+\indo{Talk about big value range of inputs and how we cannot preprocess unless it becomes part of the system (which it does for example to combat numerical instability)}
+\indo{Mention how data could be preprocessed in general and reason most methods are too slow/not worth it}
+\indo{|}
+\indo{|}
 
-\subsection{Hardware Mapping}
+\subsection{Simplification and Tuning}
+\indo{List optimizations/simplifications and why they happened, back as much as possible with dataset and being hardware-aware}
+\indo{stability issues solved by more normalization (coming from wide range of inputs of 30x16)}
+\indo{splitting QKV into 3 separate mults}
+\indo{|}
+\indo{|}
+\indo{|}
+\indo{|}
+\indo{|}
+
+\subsection{Summary}
+\indo{Short summary and pointing to diagram}
+\indo{|}
+\indo{|}
+
+\begin{figure}[hpt!]
+  \centering
+  \includegraphics[trim={0cm 0cm 0cm 0cm}, width=0.6\textwidth, center]{models/constituent_net_accuracy.pdf}
+  \caption{Diagram with an overview of the accuracy-focused architecture.}
+  \label{fig:constituent-net-accuracy}
+\end{figure}
+
+
+\section{Pre-training Quantization}
+\indo{Explain what it is and why we do pre-training quantization}
+\indo{|}
+\indo{|}
+\indo{Mention PyTorch Eager Mode and PyTorch FX Graph Mode, give some explanation and show what they can and cannot, overall they are too experimental and cannot support transformer yet}
+\indo{|}
+\indo{|}
+\indo{|}
+\indo{|}
+\indo{Mention Brevitas, how it compares to PyTorch}
+\indo{|}
+\indo{Mention QPyTorch, how it compares to PyTorch, Brevitas and why it is the best here}
+\indo{|}
+\indo{|}
+\indo{Mention post-training quantization explained in the next chapter}
 
