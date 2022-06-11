@@ -3,15 +3,33 @@ import sys
 import subprocess
 import argparse
 import re
+<<<<<<< HEAD
+import numpy as np
+=======
 import pickle
 import signal
 import numpy as np
 import matplotlib.pyplot as plt
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
 
 from os import fdopen, remove
 from tempfile import mkstemp
 from shutil import move, copymode
 from time import time
+<<<<<<< HEAD
+from typing import Dict
+
+def run_vivado_hls(hls_dir_path, build_tcl_path, quiet=True):
+  hls_command = 'vivado_hls -f ' + build_tcl_path
+  FNULL = open(os.devnull, 'w')
+  stdout = FNULL if quiet else subprocess.PIPE
+  print('Running Vivado HLS, this might take a while...')
+
+  start_time = time()
+  result = subprocess.run(hls_command, shell=True, cwd=hls_dir_path)
+  # subprocess.call(hls_command, shell=True, stdout=stdout, stderr=subprocess.STDOUT, cwd=hls_dir_path)
+  end_time = time()
+=======
 from datetime import datetime
 from typing import Dict, List
 from itertools import product
@@ -37,10 +55,16 @@ def run_vivado_hls(hls_dir_path, build_tcl_path, log_path=None, quiet=True):
     end_time = time()
 
     print(f'Running Vivado HLS took {(end_time - start_time) / 3600:.3f} h')
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
 
   if result.returncode != 0:
     raise RuntimeError(f'{hls_command} returned {result.returncode}')
 
+<<<<<<< HEAD
+  print(f'Running Vivado HLS took {(end_time - start_time) / 3600:.3f} h')
+
+=======
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
 
 def run_pytorch(script_path, update_path):
   # script_command = f'python3 {script_path} --only_predictions | tail -n 1'
@@ -91,6 +115,15 @@ def get_pytorch_results(path):
   return results
 
 
+<<<<<<< HEAD
+def compare_results(hls_results, pytorch_results, quiet=True):
+  total_MSE = 0.
+  elements_count = 0
+  correct_predictions = 0
+  predictions_count = 0
+
+  assert len(hls_results) == len(pytorch_results), f'{hls_results=}, {pytorch_results=}'
+=======
 def compare_results(hls_results, pytorch_results, labels, quiet=True):
   total_L2 = 0.
   total_L1 = 0.
@@ -100,16 +133,33 @@ def compare_results(hls_results, pytorch_results, labels, quiet=True):
   predictions_count = 0
 
   assert len(hls_results) == len(pytorch_results), f'{len(hls_results)=}, {len(pytorch_results)=}'
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
 
   if not quiet:
     print('Results:')
     print('HLS \t\t\t\t\t\t\t Pytorch')
 
+<<<<<<< HEAD
+  for hls_result, pytorch_result in zip(hls_results, pytorch_results):
+=======
   for hls_result, pytorch_result, label in zip(hls_results, pytorch_results, labels):
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
     assert len(hls_result) == len(pytorch_result)
     if not quiet:
       print(hls_result, pytorch_result)
 
+<<<<<<< HEAD
+    for hls_val, pytorch_val in zip(hls_result, pytorch_result):
+      # print(hls_val, pytorch_val)
+      diff = hls_val - pytorch_val
+      total_MSE += diff * diff
+      elements_count += 1
+
+    correct_predictions += (np.argmax(hls_result) == np.argmax(pytorch_result))
+    predictions_count += 1
+
+  return (total_MSE / float(elements_count), correct_predictions / predictions_count)
+=======
     current_L2 = 0.
     for hls_val, pytorch_val in zip(hls_result, pytorch_result):
       # print(hls_val, pytorch_val)
@@ -136,6 +186,7 @@ def compare_results(hls_results, pytorch_results, labels, quiet=True):
   hls_accuracy = correct_predictions_hls / predictions_count
 
   return (average_L1, average_L2, pytorch_accuracy, hls_accuracy)
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
 
 
 def clean_file(path):
@@ -178,6 +229,8 @@ def set_build_options(
   # Move new file
   move(abs_path, path)
 
+<<<<<<< HEAD
+=======
 def modify_defines(
   path: str,
   options: Dict,
@@ -227,6 +280,7 @@ def modify_defines(
   # Move new file
   move(abs_path, path)
 
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
 
 def parse():
   parser = argparse.ArgumentParser(description='Run Vivado HLS and compare againt Pytorch')
@@ -236,6 +290,10 @@ def parse():
   parser.add_argument('--cosim', action='store_true')
   parser.add_argument('--reset', action='store_true')
 
+<<<<<<< HEAD
+  parser.add_argument('--pytorch', action='store_true')
+
+=======
   parser.add_argument('--hls_dir', action='store', type=str, default='hls')
 
   parser.add_argument('--pytorch', action='store_true')
@@ -243,6 +301,7 @@ def parse():
   parser.add_argument('--load', action='store', type=str, default=None)
   parser.add_argument('--quiet', action='store_true')
 
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
   args = parser.parse_args()
   run_hls = args.csim or args.synth or args.cosim or args.reset
 
@@ -259,6 +318,11 @@ def set_hls_output_predictions(path, results):
     f.write(results_to_write)
 
 
+<<<<<<< HEAD
+if __name__ == '__main__':
+  hls_dir_path = 'hls/'
+
+=======
 def custom_plot(accuracies, widths, use_total_widths: bool, path):
   fig = plt.figure()
 
@@ -308,6 +372,7 @@ def main(args, run_hls: bool = True):
 
   defines_path = hls_dir_path + 'firmware/defines.h'
   labels_path = hls_dir_path + 'tb_data/tb_labels.dat'
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
   hls_output_predictions_path = hls_dir_path + 'tb_data/tb_output_predictions.dat'
   csim_results_log_path = hls_dir_path + 'tb_data/csim_results.log'
   rtl_cosim_results_log_path = hls_dir_path + 'tb_data/rtl_cosim_results.log'
@@ -319,6 +384,46 @@ def main(args, run_hls: bool = True):
   update_weights_script_path = 'scripts/extract_weights_biases.py'
   pytorch_results_log_path = 'logs/pytorch_results.log'
 
+<<<<<<< HEAD
+  args, run_hls = parse()
+
+  if args.pytorch:
+    # pytorch_results = run_pytorch(script_path=pytorch_script_path, update_path=update_weights_script_path)
+    run_pytorch(script_path=pytorch_script_path, update_path=update_weights_script_path)
+    pytorch_results = get_pytorch_results(path='hls/tb_data/tb_output_predictions.dat')
+  else:
+    # pytorch_results = get_pytorch_results(path=pytorch_results_log_path)
+    pytorch_results = get_pytorch_results(path='hls/tb_data/tb_output_predictions.dat')
+
+  # set_hls_output_predictions(path=hls_output_predictions_path, results=pytorch_results)
+  
+  if run_hls:
+    # Set relevant flags in build_prj.tcl
+    set_build_options(path=build_tcl_path_full, options=vars(args))
+
+    clean_file(path=hls_layers_log_path)
+    run_vivado_hls(hls_dir_path=hls_dir_path, build_tcl_path=build_tcl_path, quiet=False)
+    
+    # Set all flags in build_prj.tcl to 0
+    set_build_options(path=build_tcl_path_full, options=vars(args), disable_all=True)
+
+  if args.csim:
+    print('\nCSimulation:')
+
+    csim_results = get_hls_results(path=csim_results_log_path)
+    average_MSE, accuracy = compare_results(hls_results=csim_results, pytorch_results=pytorch_results, quiet=True)
+
+    print(f'\nAverage MSE: {average_MSE:.5f}, accuracy: {accuracy*100:.2f}%')
+
+  if args.cosim:
+    print('\nRTL Co-simulation ')
+
+    cosim_results = get_hls_results(path=rtl_cosim_results_log_path)
+    pytorch_results = get_pytorch_results(path=pytorch_results_log_path)
+    average_MSE, accuracy = compare_results(hls_results=cosim_results, pytorch_results=pytorch_results, quiet=True)
+
+    print(f'\nAverage MSE: {average_MSE:.5f}, accuracy: {accuracy*100:.2f}%')
+=======
   if args.pytorch:
     run_pytorch(script_path=pytorch_script_path, update_path=update_weights_script_path)
     pytorch_results = get_pytorch_results(path=hls_output_predictions_path)
@@ -773,4 +878,5 @@ if __name__ == '__main__':
 
     if not args.quiet:
       print('All results displayed, quitting...')
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
 

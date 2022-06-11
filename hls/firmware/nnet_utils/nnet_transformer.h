@@ -31,11 +31,19 @@ struct transformer_config
     static const unsigned n_norm1_bias = 256;
     static const unsigned n_dense1_weight = 32768;
 
+<<<<<<< HEAD
+    typedef float SA_norm_weight_t;
+    typedef float SA_norm_bias_t;
+    typedef float SA_QKV_weight_t;
+    typedef float SA_dense_weight_t;
+    typedef float SA_dense_bias_t;
+=======
     typedef float S_norm_weight_t;
     typedef float S_norm_bias_t;
     typedef float S_QKV_weight_t;
     typedef float S_dense_weight_t;
     typedef float S_dense_bias_t;
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
 
     typedef float norm0_weight_t;
     typedef float norm0_bias_t;
@@ -89,6 +97,66 @@ struct transformer_config
 
 // TODO make input_t and data_t be used consistently
 
+<<<<<<< HEAD
+template<class data_T, class res_T, typename CONFIG_T, typename SA_CONFIG_T, typename SA_NORM_CONFIG_T, typename SA_DENSE0_CONFIG_T, typename SA_TRANSPOSE0_CONFIG_T, typename SA_SOFTMAX_CONFIG_T, typename SA_DENSE3_CONFIG_T, typename NORM0_CONFIG_T, typename SIG0_CONFIG_T, typename DENSE0_CONFIG_T, typename NORM1_CONFIG_T, typename SIG1_CONFIG_T, typename DENSE1_CONFIG_T>
+void transformer(
+    data_T                               data[CONFIG_T::n_particles][CONFIG_T::n_el],
+    res_T                                res[CONFIG_T::n_particles][CONFIG_T::n_el],
+    typename CONFIG_T::SA_QKV_weight_t   SA_QKV_weight[CONFIG_T::n_SA_QKV_weight],
+    typename CONFIG_T::SA_dense_weight_t SA_dense_weight[CONFIG_T::n_SA_dense_weight],
+    typename CONFIG_T::SA_dense_bias_t   SA_dense_bias[CONFIG_T::n_SA_dense_bias],
+    typename CONFIG_T::dense0_weight_t   dense0_weight[CONFIG_T::n_dense0_weight],
+    typename CONFIG_T::dense1_weight_t   dense1_weight[CONFIG_T::n_dense1_weight]
+){
+    #pragma HLS ARRAY_PARTITION variable=data complete dim=0
+    #pragma HLS ARRAY_PARTITION variable=res complete dim=0
+    #pragma HLS FUNCTION_INSTANTIATE variable=SA_QKV_weight,SA_dense_weight,SA_dense_bias,dense0_weight,dense1_weight
+    #pragma HLS PIPELINE
+
+    // Self-attention
+    data_T self_attention_out[CONFIG_T::n_particles][CONFIG_T::n_el];
+    #pragma HLS ARRAY_PARTITION variable=self_attention_out complete dim=0
+    self_attention<data_T, data_T, SA_CONFIG_T, SA_NORM_CONFIG_T, SA_DENSE0_CONFIG_T, SA_TRANSPOSE0_CONFIG_T, SA_SOFTMAX_CONFIG_T, SA_DENSE3_CONFIG_T>(
+        data,
+        self_attention_out,
+        SA_QKV_weight,
+        SA_dense_weight,
+        SA_dense_bias
+    );
+    PRETTY_PRINT_2D(self_attention_out, CONFIG_T::n_particles, CONFIG_T::n_el);
+
+    data_T self_attention_sum[CONFIG_T::n_particles][CONFIG_T::n_el];
+    #pragma HLS ARRAY_PARTITION variable=self_attention_sum complete dim=0
+    data_T activ0[CONFIG_T::n_particles][CONFIG_T::n_el];
+    #pragma HLS ARRAY_PARTITION variable=activ0 complete dim=0
+    data_T dense0_out[CONFIG_T::n_particles][CONFIG_T::n_el_doubled];
+    #pragma HLS ARRAY_PARTITION variable=dense0_out complete dim=0
+    data_T activ1[CONFIG_T::n_particles][CONFIG_T::n_el_doubled];
+    #pragma HLS ARRAY_PARTITION variable=activ1 complete dim=0
+    data_T dense1_out[CONFIG_T::n_particles][CONFIG_T::n_el];
+    #pragma HLS ARRAY_PARTITION variable=dense1_out complete dim=0
+
+    for (int jj = 0; jj < CONFIG_T::n_particles; jj++) {
+        for (int iendsum = 0; iendsum < CONFIG_T::n_el; iendsum++) {
+            self_attention_sum[jj][iendsum] = data[jj][iendsum] + self_attention_out[jj][iendsum];
+        }
+
+        relu<data_T, data_T, SIG0_CONFIG_T>(self_attention_sum[jj], activ0[jj]);
+
+        dense_latency_no_bias<data_T, data_T, DENSE0_CONFIG_T>(activ0[jj], dense0_out[jj], dense0_weight);
+
+        relu<data_T, data_T, SIG1_CONFIG_T>(dense0_out[jj], activ1[jj]);
+
+        dense_latency_no_bias<data_T, data_T, DENSE1_CONFIG_T>(activ1[jj], dense1_out[jj], dense1_weight);
+
+        for (int ii = 0; ii < CONFIG_T::n_el; ii++) {
+            res[jj][ii] = dense1_out[jj][ii] + self_attention_sum[jj][ii];
+        }
+    }
+    PRETTY_PRINT_2D(self_attention_sum, CONFIG_T::n_particles, CONFIG_T::n_el);
+    PRETTY_PRINT_2D(activ0, CONFIG_T::n_particles, CONFIG_T::n_el);
+    PRETTY_PRINT_2D(dense0_out, CONFIG_T::n_particles, CONFIG_T::n_el_doubled);
+=======
 template<class data_T, class res_T, typename CONFIG_T, typename SA_CONFIG_T, typename SA_NORM_CONFIG_T, typename SA_DENSE0_Q_CONFIG_T, typename SA_DENSE0_K_CONFIG_T, typename SA_DENSE0_V_CONFIG_T, typename SA_SOFTMAX_CONFIG_T, typename SA_DENSE3_CONFIG_T, typename SA_EXP_NORM_CONFIG_T, typename NORM0_CONFIG_T, typename SIG0_CONFIG_T, typename DENSE0_CONFIG_T, typename NORM1_CONFIG_T, typename SIG1_CONFIG_T, typename DENSE1_CONFIG_T>
 void transformer(
     data_T                                  data[CONFIG_T::n_particles][CONFIG_T::n_el],
@@ -191,6 +259,7 @@ void transformer(
 #if SKIP_NORM == 0
     PRETTY_PRINT_2D(normalized1, CONFIG_T::n_particles, CONFIG_T::n_el_doubled);
 #endif
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
     PRETTY_PRINT_2D(activ1, CONFIG_T::n_particles, CONFIG_T::n_el_doubled);
     PRETTY_PRINT_2D(dense1_out, CONFIG_T::n_particles, CONFIG_T::n_el);
     PRETTY_PRINT_2D(res, CONFIG_T::n_particles, CONFIG_T::n_el);

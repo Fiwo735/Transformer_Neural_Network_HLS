@@ -2,8 +2,17 @@ import os
 import sys
 import torch
 import torch.nn as nn
+<<<<<<< HEAD
+import torch.nn.functional as F
+import argparse
+import h5py
+<<<<<<< HEAD
+=======
+=======
 import numpy as np
+>>>>>>> d9990f281a18aac3529b8d623e5eea657fc1f57d
 import matplotlib.pyplot as plt
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
 
 # from tracemalloc import start
 from h5py import File as hdf5_file
@@ -16,6 +25,12 @@ from torch.utils.data import TensorDataset, DataLoader
 from sklearn.datasets import fetch_openml
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder, StandardScaler, normalize
+<<<<<<< HEAD
+from tqdm import tqdm
+from time import time
+
+from model.net import ConstituentNet
+=======
 from sklearn.metrics import roc_curve, auc, roc_auc_score
 from tqdm import tqdm
 from time import time
@@ -27,6 +42,7 @@ from model.net import ConstituentNet
 from model.quant_brevitas import ConstituentNetQuantBrevitas
 from model.quant_qpytorch import ConstituentNetQuantQPyTorch
 from model.quant_qpytorch import WEIGHT_QUANT, GRAD_QUANT, MOMENTUM_QUANT, ACC_QUANT
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
 
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -59,8 +75,11 @@ CLASSES_FILENAMES = {
   1: os.path.join(DATA_DIR, 'classes.npy'),
 }
 
+<<<<<<< HEAD
+=======
 CLASSES = ['Gluon', 'Light quark', 'W boson', 'Z boson', 'Top quark']
 
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
 def set_seed(seed=0):
   np.random.seed(seed)
   torch.manual_seed(seed)
@@ -155,6 +174,8 @@ def load_dataset(
   # X tensors
   tensor_X_train_val = torch.Tensor(X_train_val)
   tensor_X_test = torch.Tensor(X_test)
+<<<<<<< HEAD
+=======
 
   if x_type == 'float64':
     tensor_X_train_val = tensor_X_train_val.type(torch.DoubleTensor)
@@ -174,8 +195,13 @@ def load_dataset(
   if num_particles == 1:
     tensor_X_train_val = tensor_X_train_val.unsqueeze(dim=1)
     tensor_X_test = tensor_X_test.unsqueeze(dim=1)
+<<<<<<< HEAD
+  
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
+=======
 
   # Y tensors
+>>>>>>> d9990f281a18aac3529b8d623e5eea657fc1f57d
   tensor_y_train_val = torch.Tensor(y_train_val)
   tensor_y_test = torch.Tensor(y_test)
 
@@ -193,7 +219,23 @@ def load_dataset(
     batch_size=batch_size
   )
 
+<<<<<<< HEAD
+  # Dataloader for printing layer-by-layer evaluation of (1, tiny_size, 16)
+<<<<<<< HEAD
+  tiny_tensor_X_test = tensor_X_test[:1,:tiny_size,:] if num_particles != 1 else tensor_X_test[:1,:]
+  tiny_loader = DataLoader(
+    TensorDataset(tiny_tensor_X_test, tensor_y_test[:1]),
+    batch_size=1
+  )
+=======
+  # print(f'{tensor_X_test.shape=}')
+
+  # tiny_tensor_X_test = tensor_X_test[:1,:tiny_size,:] if num_particles != 1 else tensor_X_test[:tiny_size,:]
+  # print(f'{tiny_size=}')
+
+=======
   # Tiny loaders
+>>>>>>> d9990f281a18aac3529b8d623e5eea657fc1f57d
   if num_particles == 1:
     tiny_tensor_X_test = tensor_X_test[:tiny_size+1,:,:]
 
@@ -210,6 +252,7 @@ def load_dataset(
       TensorDataset(tiny_tensor_X_test, tensor_y_test[:1]),
       batch_size=1
     )
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
 
   return train_loader, test_loader, tiny_loader, classes
 
@@ -232,12 +275,20 @@ def train_test_loop(
   num_particles: int = 1,
   num_epochs: int = 5,
   print_predictions: bool = False,
+<<<<<<< HEAD
+<<<<<<< HEAD
+) -> Tuple[Optional[float], float, Tuple[List[float], List[float]]]:
+=======
+  secondary_loader: Optional[DataLoader] = None
+=======
   secondary_loader: Optional[DataLoader] = None,
   model_path: Optional[str] = None,
   script_path: Optional[str] = None,
   state_path: Optional[str] = None,
   quant: Optional[bool] = None,
+>>>>>>> d9990f281a18aac3529b8d623e5eea657fc1f57d
 ) -> Tuple[Optional[float], float, Tuple[List[float], List[float], List[float]]]:
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
 
   is_eval = not is_train
 
@@ -262,8 +313,13 @@ def train_test_loop(
       tepoch.set_description(f'{prefix} epoch {epoch+1}/{num_epochs}')
       for idx, (data, labels) in enumerate(tepoch):
 
+<<<<<<< HEAD
+        if num_particles == 1:
+          data = torch.unsqueeze(data, dim=1)
+=======
         # if num_particles == 1:
         #   data = torch.unsqueeze(data, dim=1)
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
 
         if is_eval:
           all_data.append(data.detach())
@@ -282,6 +338,13 @@ def train_test_loop(
           all_labels.append(labels.detach().cpu())
           all_predicted.append(predicted.detach().cpu())
 
+<<<<<<< HEAD
+        if idx % 128 == 0:
+          tepoch.set_postfix(loss=loss.item() / batch_size)
+
+        if idx == loader_length - 2: # issue with ConsitutentNet mean/var summation with last batch
+          break
+=======
         # if idx > 100:
         #   break
 
@@ -332,6 +395,9 @@ def train_test_loop(
       e_accuracy = e_correct_predictions / torch.numel(e_all_predicted_argmax)
       ##############
       print(f'Accuracy after epoch {epoch+1}: {e_accuracy*100:.2f}')
+<<<<<<< HEAD
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
+=======
       save_model(
         model=model,
         model_path=model_path.replace('best', f'epoch_{epoch}'),
@@ -340,6 +406,7 @@ def train_test_loop(
         quant=quant
       )
       model.train()
+>>>>>>> d9990f281a18aac3529b8d623e5eea657fc1f57d
 
   end_time = time()
 
@@ -356,6 +423,15 @@ def train_test_loop(
     accuracy = correct_predictions / torch.numel(all_predicted_argmax)
 
 
+<<<<<<< HEAD
+  return (accuracy, end_time - start_time, (all_data, all_predicted))
+
+
+def save_model(model: nn.Module, script_path: str, state_path: str) -> None:
+  model.eval()
+  model_script = torch.jit.script(model)
+  model_script.save(script_path)
+=======
   return (accuracy, end_time - start_time, (all_data, all_predicted, all_labels))
 
 
@@ -371,13 +447,18 @@ def save_model(model: nn.Module, model_path: str, script_path: str, state_path: 
     torch.save(model, model_path)
 
     print(f'{model_path}, {script_path}, ', end='')
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
 
   torch.save(
     {'state_dict': model.state_dict()},
     state_path,
   )
 
+<<<<<<< HEAD
+  print(f'Model saved successfully ({script_path}, {state_path})')
+=======
   print(f'{state_path})')
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
 
 
 def evaluate(
@@ -387,7 +468,11 @@ def evaluate(
   filepath: Optional[str] = None,
   print_predictions: bool = False,
   num_particles: int = 1,
+<<<<<<< HEAD
+) -> Tuple[float, float, Tuple[List[float], List[float]]]:
+=======
 ) -> Tuple[float, float, Tuple[List[float], List[float], List[float]]]:
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
 
   with torch.inference_mode():
     if filepath is None:
@@ -450,6 +535,11 @@ def time_evaluate(
   return (accuracy, times.mean(), times.std())
 
 
+<<<<<<< HEAD
+def main(
+  num_particles: int,
+  do_train: bool = True,
+=======
 def compute_roc_auc(targets, predictions):
   def find_FPR_TPR_AUC(curr_targets, curr_predictions):
     # print(type(curr_targets), type(curr_predictions))
@@ -543,6 +633,7 @@ def main(
   x_type: str,
   do_train: bool = False,
   model_path: Optional[str] = None,
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
   script_path: Optional[str] = None,
   state_path: Optional[str] = None,
   debug_path: Optional[str] = None,
@@ -551,6 +642,17 @@ def main(
   only_predictions: bool = False,
   tiny_size: int = 1,
   num_epochs: int = 3,
+<<<<<<< HEAD
+  do_generate_in_out_hls_tb: bool = False,
+  hls_tb_in_path: Optional[str] = None,
+  hls_tb_out_path: Optional[str] = None,
+) -> None:
+ 
+  batch_size = 128
+  criterion = torch.nn.NLLLoss()
+  num_transformers = 1
+  embbed_dim = 16
+=======
   generate_in_out_hls_tb: int = 0,
   hls_tb_in_path: Optional[str] = None,
   hls_tb_out_path: Optional[str] = None,
@@ -566,9 +668,16 @@ def main(
  
   batch_size = 128
   criterion = torch.nn.NLLLoss()
+<<<<<<< HEAD
+  num_transformers = 3
+  embbed_dim = 32
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
+  num_heads = 2
+=======
   # num_transformers = 3
   # embbed_dim = 16
   # num_heads = 2
+>>>>>>> d9990f281a18aac3529b8d623e5eea657fc1f57d
   dropout = 0.0
 
   print('-'*15 + 'Model configuration' + '-'*15)
@@ -587,6 +696,23 @@ def main(
 
   if do_train:
     # Instantiate model
+<<<<<<< HEAD
+<<<<<<< HEAD
+    model = ConstituentNet(
+      in_dim=16,
+      embbed_dim=embbed_dim,
+      num_heads=num_heads,
+      num_classes=len(classes), # 5
+      num_transformers=num_transformers,
+      dropout=dropout,
+      is_debug=is_debug,
+    ).to(DEVICE)
+
+    optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
+=======
+    # if not quant:
+=======
+>>>>>>> d9990f281a18aac3529b8d623e5eea657fc1f57d
     if not quant:
       model = ConstituentNet(
         in_dim=16,
@@ -647,6 +773,7 @@ def main(
         grad_scaling=1/1000,
       )
 
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
 
     # Train model
     _, total_time, _ = train_test_loop(
@@ -657,6 +784,15 @@ def main(
       is_train=True,
       num_particles=num_particles,
       num_epochs=num_epochs,
+<<<<<<< HEAD
+    )
+    print(f'Training took {total_time:.2f} s')
+
+    save_model(model=model, script_path=script_path, state_path=state_path)
+  
+  else:
+    model = torch.jit.load(script_path, map_location=DEVICE)
+=======
       secondary_loader=test_loader,
       model_path=model_path,
       script_path=script_path,
@@ -705,12 +841,16 @@ def main(
     model.eval()
 
 
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
 
   print(f'Model parameters: {sum(p.numel() for p in model.parameters() if p.requires_grad)}')
   
   # Test model
   if is_debug:
+<<<<<<< HEAD
+=======
     print(f'{len(tiny_loader)=}, {tiny_size=}')
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
     _, _, _ = evaluate(test_loader=tiny_loader, model=model, criterion=criterion, filepath=debug_path, print_predictions=True, num_particles=num_particles)
     print(f'Debug output saved to {debug_path}')
     if is_timing:
@@ -726,6 +866,34 @@ def main(
     print(f'{time_mean_batch * 1000:.3f} \u00B1 {time_std_batch * 1000:.3f} ms per batch')
     print(f'{time_mean_sample * 1000000:.3f} \u00B1 {time_std_sample * 1000000:.3f} us per sample')
   elif not only_predictions:
+<<<<<<< HEAD
+    accuracy, total_time, (data, results) = evaluate(test_loader=test_loader, model=model, criterion=criterion, num_particles=num_particles)
+    print(f'Test accuracy: {accuracy*100:.2f}% in {total_time:.2f} s')
+    
+    if do_generate_in_out_hls_tb:
+      assert len(data) - 1 == len(results) == len(test_loader) - 2, 'Number of captured samples and predictions must match DataLoader size'
+      
+      with open(hls_tb_in_path, 'w') as f_in, open(hls_tb_out_path, 'w') as f_out:
+        # Iterate until shorter ends and print to corresponding files
+        for index, (data_batch, results_batch) in enumerate(zip(data, results)):
+          data_list = data_batch.tolist()
+          results_list = results_batch.tolist()
+
+          for data, results in zip(data_list, results_list):
+            # TODO this only handles 1 x 16 for now
+            data_str = ' '.join([str(el) for el in data[0]]) + '\n'
+            results_str = ' '.join([str(el) for el in results]) + '\n'
+
+            f_in.write(data_str)
+            f_out.write(results_str)
+          
+          if index > 10:
+            break
+
+  else:
+    _, _, _ = evaluate(test_loader=tiny_loader, model=model, criterion=criterion, print_predictions=True, num_particles=num_particles)
+
+=======
     accuracy, total_time, (data, results, labels) = evaluate(test_loader=test_loader, model=model, criterion=criterion, num_particles=num_particles)
     print(f'Test accuracy: {accuracy*100:.2f}% in {total_time:.2f} s')
     compute_roc_auc(targets=labels, predictions=results)
@@ -816,6 +984,7 @@ def main(
 
 
 
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
 
 def parse():
   parser = ArgumentParser(description='Train and/or evaluate Pytorch model')
@@ -828,6 +997,12 @@ def parse():
   parser.add_argument('--use_cpu', action='store_true')
   parser.add_argument('--only_predictions', action='store_true')
   parser.add_argument('--fetch', action='store_true')
+<<<<<<< HEAD
+  parser.add_argument('--tiny_size', action='store', type=int)
+  parser.add_argument('--epochs', action='store', type=int)
+  parser.add_argument('--cuda', action='store', type=int, default=0)
+  parser.add_argument('--generate_hls_tb', action='store_true')
+=======
   parser.add_argument('--tiny_size', action='store', type=int, default=1)
   parser.add_argument('--epochs', action='store', type=int)
   parser.add_argument('--cuda', action='store', type=int, default=0)
@@ -835,11 +1010,15 @@ def parse():
   parser.add_argument('--flops', action='store_true')
   parser.add_argument('--norm_info', action='store', type=str, default=None)
   parser.add_argument('--quant', action='store_true')
+<<<<<<< HEAD
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
+=======
   parser.add_argument('--x_type', action='store', type=str, default='float32')
   parser.add_argument('--resume', action='store_true')
   parser.add_argument('--num_transformers', action='store', type=int, default=3)
   parser.add_argument('--embbed_dim', action='store', type=int, default=64)
   parser.add_argument('--num_heads', action='store', type=int, default=2)
+>>>>>>> d9990f281a18aac3529b8d623e5eea657fc1f57d
 
   return parser.parse_args()
 
@@ -856,6 +1035,11 @@ if __name__ == "__main__":
   args = parse()
 
   if args.use_cpu:
+<<<<<<< HEAD
+    DEVICE = torch.device('cpu')
+    print(f'{DEVICE=}')
+  else:
+=======
     num_threads = 8
     torch.set_num_threads(num_threads)
     DEVICE = torch.device('cpu')
@@ -863,6 +1047,7 @@ if __name__ == "__main__":
   else:
     if not torch.cuda.is_available():
       quit('No CUDA found!')
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
     assert 0 <= args.cuda < torch.cuda.device_count(), f'CUDA index outside [0, {torch.cuda.device_count()})'
     DEVICE = torch.device(f'cuda:{args.cuda}')
     print(f'{DEVICE=}, name={torch.cuda.get_device_name(DEVICE)}')
@@ -878,6 +1063,13 @@ if __name__ == "__main__":
       Path(DATA_30_DIR).mkdir(parents=True, exist_ok=True) # TODO add other dirs if implemented
       fetch_N_dataset(num_particles=args.particles)
 
+<<<<<<< HEAD
+  main(
+    num_particles=args.particles,
+    do_train=args.train,
+    script_path=os.path.join(DIR_NAME, 'best.script.pth'),
+    state_path=os.path.join(DIR_NAME, 'best.pth.tar'),
+=======
   # debug_prefix = 'debug_' if args.debug else ''
   debug_prefix = ''
   quant_prefix = 'quant_24_40_' if args.quant else ''
@@ -889,12 +1081,18 @@ if __name__ == "__main__":
     model_path=os.path.join(DIR_NAME, quant_prefix + debug_prefix + 'best.model.pth'),
     script_path=os.path.join(DIR_NAME, quant_prefix + debug_prefix + 'best.script.pth'),
     state_path=os.path.join(DIR_NAME, quant_prefix + debug_prefix + 'best.pth.tar'),
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
     debug_path=os.path.join(DIR_NAME, 'layers_output.txt'),
     is_debug=args.debug,
     is_timing=args.timing,
     only_predictions=args.only_predictions,
     tiny_size=args.tiny_size,
     num_epochs=args.epochs,
+<<<<<<< HEAD
+    do_generate_in_out_hls_tb=args.generate_hls_tb,
+    hls_tb_in_path='hls/tb_data/tb_input_features.dat',
+    hls_tb_out_path='hls/tb_data/tb_output_predictions.dat',
+=======
     generate_in_out_hls_tb=args.generate_hls_tb,
     hls_tb_in_path='hls/tb_data/tb_input_features.dat',
     hls_tb_out_path='hls/tb_data/tb_output_predictions.dat',
@@ -902,8 +1100,12 @@ if __name__ == "__main__":
     measure_flops=args.flops,
     norm_info_path=args.norm_info,
     quant=args.quant,
+<<<<<<< HEAD
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
+=======
     resume=args.resume,
     num_transformers=args.num_transformers,
     embbed_dim=args.embbed_dim,
     num_heads=args.num_heads,
+>>>>>>> d9990f281a18aac3529b8d623e5eea657fc1f57d
   )

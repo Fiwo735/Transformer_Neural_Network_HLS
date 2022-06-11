@@ -1,4 +1,51 @@
 # Reconfigurable Acceleration of Transformer Neural Networks with Meta-Programming Strategies for Particle Physics Experiments
+<<<<<<< HEAD
+## How to run
+Train or evaluate the Pytorch model:
+
+`python3 pytorch/train_evaluate.py [-h] [--train] [--debug] [--timing] [--rng_seed] [--use_cpu]`
+
+`--train`: train before evaluating
+
+`--debug`: train/evaluate debug (prints each layer output) model
+
+`--timing`: time evaluation
+
+`--rng_seed`: randomize all seeds
+
+`--use_cpu`: force CPU usage, even if GPU available
+
+<br>
+Extract weights and biases from a trained model:
+
+`python3 scripts/extract_weights_biases.py`
+
+For now no options, hard-coded to the existings paths.
+
+<br>
+Run Vivado HLS:
+
+`python3 scripts/compare_hls_pytorch.py --run_hls`
+
+For now no actual options, hard-coded to existing paths.
+
+<br>
+
+## TODO plan
+- Scale HLS implementation to multiple particles data:
+  - currently: batch size of 1 with 1 particle with 16 dimensions, (1, 1, 16) → (1, 5)
+  - next: batch size of 1 with N particles with 16 dimensions, (1, N, 16) → (1, 5)
+
+- Depending on latency/throughput findings, consider scaling HLS implementation to higher batch size:
+  - planned: batch size of 1 with N particle with 16 dimensions, (1, N, 16) → (1, 5)
+  - next: batch size of B with N particles with 16 dimensions, (B, N, 16) → (B, 5)
+
+- Experiment and optimize with HLS implementation
+
+- Implement self attention and transformer layers as auto generated code in hls4ml
+
+- Instantiate ConstituentNetBase in HLS directly from Pytorch using hls4ml
+=======
 
 ## Available programs
 ### Explore a Pytorch architecture
@@ -89,6 +136,7 @@
 - `--var_type <str>`: HLS type of the table variable
 
 - `--quiet`: supress outputs
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
 
 <br>
 
@@ -96,12 +144,22 @@
 ```
 ├─ fyp21yuan_code/                             # Yuan MSc code
 │
+<<<<<<< HEAD
+├─ hls/
+│   ├─ firmware/
+│   │   ├─ nnet_utils/
+│   │   │   ├─ nnet_activation.h               # SiLU, init_log_table, Log_softmax_latency
+│   │   │   ├─ nnet_helpers.h                  # print_full_results
+│   │   │   ├─ nnet_layernorm.h                # layer_normalize
+│   │   │   ├─ nnet_merge.h                    # split_equally, join_equally, matmul
+=======
 ├─ example_hls/                                # Tiny HLS design for testing Vivado HLS functions
 │
 ├─ hls/
 │   ├─ firmware/
 │   │   ├─ nnet_utils/
 │   │   │   ├─ nnet_activation.h               # log_softmax_latency, softmax_latency
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
 │   │   │   ├─ nnet_self_attention.h           # self_attention
 │   │   │   └─ nnet_transformer.h              # transformer
 │   │   │
@@ -112,6 +170,15 @@
 │   │   └─ parameters.h                        # #include's, nnet struct redefinitions
 │   │
 │   ├─ tb_data/
+<<<<<<< HEAD
+│   │   ├─ csim_layer.log                      # CSimulation layer-by-layer output data
+│   │   ├─ csim_result.log                     # CSimulation final output data (calculated)
+│   │   ├─ tb_input_features.dat               # Input data
+│   │   └─ tb_output_predictions.dat           # Output data (provided)
+│   │
+│   ├─ build_prj.tcl                           # Script for running CSimulation/Synthesis
+│   └─ myproject_test.cpp                      # TB program for CSimulation
+=======
 │   │   ├─ csim_layer.log                      # C Simulation layer-by-layer output data
 │   │   ├─ csim_result.log                     # C Simulation final output data (calculated)
 │   │   ├─ tb_input_features.dat               # Input data
@@ -119,6 +186,7 @@
 │   │
 │   ├─ build_prj.tcl                           # Script for running C Simulation/Synthesis
 │   └─ myproject_test.cpp                      # TB program for C Simulation
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
 │
 ├─ pytorch/
 │   ├─ data/                                   # Particles data
@@ -128,6 +196,10 @@
 ├─ scripts/
 │   ├─ compare_hls_pytorch.py                  # Runs and compares HLS vs Pytorch implementation
 │   ├─ extract_weights_biases.py               # Extracts weights and biases from a Pytorch model
+<<<<<<< HEAD
+│   └─ playground.py                           # Used for testing and debugging Pytorch implementation
+│
+=======
 │   ├─ quantization_search.py                  # Perform post-training quantization search
 │   ├─ generate_log_table.py                   # Generate precomputed log table for HLS
 │   └─ playground.py                           # Used for testing and debugging Pytorch implementation
@@ -136,6 +208,7 @@
 │
 ├─ reports/                                    # Synthesis reports captured at different design stages
 │
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
 ├─ thesis/                                     # Directory used for generating the LaTeX thesis
 │
 ├─ .gitignore                                  # gitignore

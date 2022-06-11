@@ -16,8 +16,11 @@
   \renewcommand{\bibname}{References}
 } % change name from 'Bibliography' to 'References'
 
+\newcommand{\hlsml}[0]{\texttt{hls4ml} }
+
 %% Useful packages
 \usepackage{amsmath}
+\usepackage{bm}
 \usepackage{graphicx}
 \usepackage[table,xcdraw]{xcolor}
 \usepackage[colorlinks=true, allcolors=blue]{hyperref}
@@ -25,6 +28,12 @@
 \usepackage{adjustbox}
 \usepackage{multirow}
 \usepackage{xargs}
+
+% Algorithm description
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+% change numbering to follow section number instead of a global counter
+\renewcommand{\thealgorithm}{\arabic{chapter}.\arabic{algorithm}}
 
 %% Itemize lists with more depth
 \usepackage{enumitem}
@@ -35,8 +44,15 @@
 \renewcommand{\labelitemiii}{$\blacksquare$}
 % \renewcommand{\labelitemiv}{\textendash}
 
+% Appendix
+\usepackage[toc,page]{appendix}
+
+% Clever references from labels
+\usepackage{cleveref}
+
+
 %% Todo notes
-\usepackage[colorinlistoftodos,disable]{todonotes} % todo notes, add [disable] to turn them off
+\usepackage[colorinlistoftodos]{todonotes} % todo notes, add [disable] to turn them off
 \newcommandx{\indo}[2][1=]{\todo[linecolor=red,backgroundcolor=red!25,bordercolor=red,inline,#1]{#2}}
 \newcommandx{\maybe}[2][1=]{\todo[linecolor=blue,backgroundcolor=blue!25,bordercolor=blue,inline,#1]{#2}}
 \newcommandx{\todofig}[2][1=]{\todo[linecolor=green,backgroundcolor=green!25,bordercolor=green,inline,#1]{#2}}
@@ -51,33 +67,50 @@
 \begin{document}
 \input{title/title.tex}
 
-% \begin{abstract}
-% Your abstract goes here
-% \end{abstract}
+\begin{abstract}
+  Particle Physics studies the fundamental forces and elementary particles building the Universe. In order to verify the correctness of the theories, countless experiments have to be designed and carefully executed, with the main driving force of the myriads of engineers, physicists and researchers at the Large Hadron Collider (LHC) operated by the European Organization for Nuclear Research (CERN). With the unprecedented experiments' scale comes the challenge of accurate, ultra-low latency decision-making. Transformer Neural Networks (TNN) have been proven to accomplish cutting-edge accuracy in various domains, including classification for jet tagging, which is the target of this project. However, software-centered solution implemented for CPUs and GPUs lack the inference speed needed for real-time particle triggers.
+  
+  This report proposes two novel TNN-based architectures efficiently mapped to Field-Programmable Gate Arrays (FPGAs). The first one outperforms the current state-of-the-art models' GPU inference capabilities by roughly 1000 \todo{Confirm this number} times while maintaining comparable classification accuracy. The second one trades off some of its speed for accuracy and undergoes a broad design-space exploration, which involves both pre-training and post-training quantization. The latter one leverages a custom-developed tool chain that augments existing solutions in terms of granularity and ease-of-use while following an innovative algorithm for relatively quick convergence.
+
+  In this project, several recently researched neural network components are designed to target FPGAs using High-Level Synthesis (HLS). The resulting open-sourced building blocks are both highly customizable and abstract, and aim to bridge the gap between hardware and software development, effectively reducing the time and complexity needed for creating efficient neural network hardware accelerators.
+\end{abstract}
 
 \renewcommand{\abstractname}{Acknowledgements}
 \begin{abstract}
-Although the project is at an early stage, I would like to express my gratitude to Professor Wayne Luk and Zhiqiang Que for guiding me through the project and always being available to answer any of my questions.
+I would like to express my gratitude to Professor Wayne Luk for his guidance, insightful suggestions and constant encouragement throughout the project.
+\newline
+
+I would like to thank Professor Tapper for giving me a different view on the project's meaning and providing with the behind-the-scenes information about the LHC.
+\newline
+
+I want to thank Zhiqiang Que for his continuous technical support, our weekly meetings and always being available to answer any of my questions.
+\newline
+
+Lastly, I am very grateful for my family whose support was invaluable during this project and the degree as a whole.
 \end{abstract}
 
-{\hypersetup{linkcolor=black} \tableofcontents}
-\listoffigures
-\begingroup % way to display both figure and table lists together
-  \let\clearpage\relax
-  \listoftables
-\endgroup
+{\hypersetup{linkcolor=black}
+  \tableofcontents
+  \listoffigures
+  \begingroup % way to display both figure and table lists together
+    \let\clearpage\relax
+    \listoftables
+  \endgroup
+}
 
-\input{introduction/introduction.tex}
-\input{background/background.tex}
-\input{project/project.tex}
-\input{implementation/implementation.tex}
-\input{evaluation/evaluation.tex}
-\input{ethical/ethical.tex}
-% \input{conclusion/conclusion.tex}
-% \input{appendix/appendix.tex}
+\input{introduction/introduction}
+\input{background/background}
+\input{models/models}
+\input{quantization/quantization}
+% \input{project/project}
+% \input{implementation/implementation}
+\input{evaluation/evaluation}
+\input{conclusion/conclusion}
 
 \bibliographystyle{unsrtnat}
 \bibliography{references/references}
+
+\input{appendix/appendix}
 
 \listoftodos[Notes]
 

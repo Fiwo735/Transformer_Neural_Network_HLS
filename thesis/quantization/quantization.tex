@@ -1,0 +1,77 @@
+\chapter{Design Space Exploration}\label{quantization}
+\indo{}
+
+\section{Pre-training Quantization}
+\indo{PyTorch Eager Mode}
+\indo{PyTorch FX Graph Mode}
+\indo{Brevitas}
+\indo{QPyTorch}
+
+
+\section{Post-training Quantization}
+
+\begin{algorithm}
+  \caption{Algorithm for performing post-training quantization search}\label{alg:post-training-quant}
+  \begin{algorithmic}
+  \Function{PostTrainingQuantization}{neg\_accuracy\_tolerance, pos\_accuracy\_tolerance}
+
+  \State $previous\_width \gets null$
+  \State $max\_decrement \gets neg\_accuracy\_tolerance \cdot 2$ \Comment{Maximum decrement per parameter}
+  \State $optimal\_accuracy \gets$ find\_accuracy()
+  \State $params \gets$ scan\_file($defines\_file$) \Comment{FIFO with scanned parameter objects}
+
+  \While{$params$ not empty}
+    \State $current \gets params$.pop()
+
+    \If{$previous\_width$ exists} \Comment{Try using width from previous parameter}
+      \State $original\_width \gets params.width$
+      \State update($params$, $previous\_width$)
+      \If{find\_accuracy() $< optimal\_accuracy - max\_decrement$}
+        \State update($params$, $original\_width$)
+      \Else
+        \State $optimal\_accuracy \gets$ find\_accuracy()
+      \EndIf
+    \EndIf
+
+    \For{$part$ in $\{int, frac\}$}
+
+      \State $try\_increase \gets True$
+      \State $pos\_improvement\_found \gets False$
+      \While{$try\_increase$} \Comment{Increment to check for high accuracy gain}
+        \State $param$.increment($part$)
+        \If{find\_accuracy() $ > optimal\_accuracy + pos\_accuracy\_tolerance$}
+          \State $optimal\_accuracy \gets$ find\_accuracy()
+          \State $pos\_improvement\_found \gets True$
+        \Else
+          \State $try\_increase \gets False$
+          \State $param$.decrement($part$)
+        \EndIf
+      \EndWhile
+
+      \If{not $pos\_improvement\_found$} \Comment{Decrement if no good increment}
+        \State $try\_decrease \gets True$
+        \State $acc\_before\_decrease \gets optimal\_accuracy$
+        \While{$try\_increase$}
+          \State $param$.decrement($part$)
+          \If{$acc\_before\_decrease -$ find\_accuracy()$ > max\_decrement$}
+            \State $try\_decrease \gets False$
+            \State $param$.increment($part$)
+          \ElsIf{find\_accuracy() $ > optimal\_accuracy - neg\_accuracy\_tolerance$}
+            \State $optimal\_accuracy \gets$ find\_accuracy()
+          \Else
+            \State $try\_decrease \gets False$
+            \State $param$.increment($part$)
+        \EndIf
+        \EndWhile
+      \EndIf
+    \EndFor
+  \EndWhile
+  \State \textbf{return} $params$
+  \EndFunction
+  \end{algorithmic}
+  \end{algorithm}
+
+
+\section{High-Level-Synthesis Optimization}
+\indo{ScaleHLS}
+\indo{MLIR}

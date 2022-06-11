@@ -727,12 +727,20 @@ def generateTable(size: int, func, max_val: int) -> np.array:
   return table
 
 def case_4():
+<<<<<<< HEAD
+  table_size = 1024
+=======
   table_size = 1024 * 4
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
   table = generateTable(size=table_size, func=log, max_val=32)
 
   name = 'log_table'
   guard = name.upper() + '_H_'
+<<<<<<< HEAD
+  var_type = 'general_table_t'
+=======
   var_type = 'top_log_softmax_log_t'
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
   
   table_values = ', '.join(['\n' * (n % 7 == 6) + f'{el:.16f}' for n, el in enumerate(table)])
   
@@ -810,6 +818,11 @@ def case_6():
   print(f'{K=}')
   print(f'{K.shape=}\n')
 
+<<<<<<< HEAD
+  n_particles = 2
+
+=======
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
   q = 2
   h = 2
   c = 8
@@ -821,7 +834,11 @@ def case_6():
   res = torch.zeros((2, 2, 2))
   print(f'{res.shape=}\n')
 
+<<<<<<< HEAD
+  # K * Q^T
+=======
   # K * Q^T qhc,khc->hqk
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
   for cc in range(c):
     for hh in range(h):
       for qq in range(q):
@@ -830,10 +847,38 @@ def case_6():
           # res[hh][kk][qq] += K[qq][hh][cc] * Q[kk][hh][cc]
           res[hh][kk][qq] += K[qq][hh + cc * h] * Q[kk][hh + cc * h]
 
+<<<<<<< HEAD
+          # for hhh in range(h):
+          #   for ccc in range(c):
+          #       res[hh][qq][kk] += K[qq][hhh][ccc] * Q[kk][hhh][ccc]
+                # res[hh][qq][kk] += K[qq][hhh * c + ccc] * Q[kk][hhh * c + ccc]
+                # res[hh][qq][kk] += K[qq][hhh + ccc * h] * Q[kk][hhh + ccc * h]
+
+          # print(f'{res[hh][qq][kk]=}')
+
+=======
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
   print(res)
   print('\n')
   print(torch.einsum("qhc,khc->hqk", [QQ, KK]))
 
+<<<<<<< HEAD
+  quit()
+  -7.70746
+  -1.87252
+  7.62541
+  1.92514 
+  -17.3153
+  5.48813
+  4.07788
+  -0.7246 
+  
+
+
+
+if __name__ == '__main__':
+  case_6()
+=======
 def case_7():
   a = torch.Tensor([[1.56459, 1.51986, -1.29900, 0.24279, 0.24415]])
   print(f'{a=}')
@@ -1043,3 +1088,4 @@ def case_8():
 
 if __name__ == '__main__':
   case_4()
+>>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
