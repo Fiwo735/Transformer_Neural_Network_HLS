@@ -1,4 +1,5 @@
 import os
+import sys
 import torch
 import torch.nn as nn
 import numpy as np
@@ -844,6 +845,11 @@ def parse():
 
 
 if __name__ == "__main__":
+
+  if sys.version_info[0] < 3:
+    raise Exception("Must be using Python 3")
+  if sys.version_info[1] < 9:
+    raise Exception("Must be using Python 3.9")
 
   torch.set_printoptions(precision=5, threshold=2097152, linewidth=1000, sci_mode=False)
 

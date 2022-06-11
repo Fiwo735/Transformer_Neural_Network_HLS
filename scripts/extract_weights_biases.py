@@ -310,9 +310,11 @@ if __name__ == "__main__":
     state_dict_path = "pytorch/debug_best.pth.tar"
   else:
     state_dict_path = "pytorch/best.pth.tar"
+
+  state_dict_path = "pytorch/epoch_8.pth.tar"
     
   # result_path = "extracted_weights_biases/"
-  result_path = "hls_copy_32_embedded_dim/firmware/weights/"
+  result_path = "hls_copy_8_embedded_dim/firmware/weights/"
   norm_layer_base_names = {
     # 'out_layer_0':
     #   [(-0.04077378660440445, 1.673102617263794)],

@@ -1,0 +1,1824 @@
+nohup: ignoring input
+Starting post-training quantization search
+
+The search is expected to take between 33.500 h and 134.000 h
+Starting accuracy: 25.00
+Starting number of fixed precision bits: 1830
+----------------------------------------------------------------------------------------------------
+Current parameter = L47: input_t (25.0%) <30,18>
+Starting to increase int part of parameter = L47: input_t (25.0%) <30,18>
+L47: typedef ap_fixed<31,18> input_t; | 
+Found accuracy: 26.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease int part of parameter = L47: input_t (26.0%) <30,17>
+L47: typedef ap_fixed<29,16> input_t; | 
+Found accuracy: 26.00
+L47: typedef ap_fixed<28,15> input_t; | 
+Found accuracy: 26.00
+L47: typedef ap_fixed<27,14> input_t; | 
+Found accuracy: 26.00
+L47: typedef ap_fixed<26,13> input_t; | 
+Found accuracy: 26.00
+L47: typedef ap_fixed<25,12> input_t; | 
+Found accuracy: 26.00
+L47: typedef ap_fixed<24,11> input_t; | 
+Found accuracy: 26.00
+L47: typedef ap_fixed<23,10> input_t; | 
+Found accuracy: 26.00
+L47: typedef ap_fixed<22,9> input_t; | 
+Found accuracy: 27.00
+L47: typedef ap_fixed<21,8> input_t; | 
+Found accuracy: 26.00
+L47: typedef ap_fixed<20,7> input_t; | 
+Found accuracy: 19.00
+Accuracy is too low
+
+Starting to increase frac part of parameter = L47: input_t (26.0%) <21,7>
+L47: typedef ap_fixed<22,8> input_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease frac part of parameter = L47: input_t (28.000000000000004%) <21,8>
+L47: typedef ap_fixed<20,8> input_t; | 
+Found accuracy: 28.00
+L47: typedef ap_fixed<19,8> input_t; | 
+Found accuracy: 27.00
+L47: typedef ap_fixed<18,8> input_t; | 
+Found accuracy: 27.00
+L47: typedef ap_fixed<17,8> input_t; | 
+Found accuracy: 29.00
+L47: typedef ap_fixed<16,8> input_t; | 
+Found accuracy: 26.00
+Accuracy is too low
+
+Best configuration for this parameter found = L47: input_t (28.999999999999996%) <17,9> (accuracy: 25.00 -> 29.00)
+----------------------------------------------------------------------------------------------------
+Current parameter = L49: top_embedded_t (28.999999999999996%) <30,18>
+Starting exploration for this parameter using previously found widths: (17, 9)
+L49: typedef ap_fixed<17,9> top_embedded_t; | 
+Found accuracy: 20.00, which dropped too much, so revert to original values: (30, 18)
+Starting to increase int part of parameter = L49: top_embedded_t (28.999999999999996%) <30,18>
+L49: typedef ap_fixed<31,18> top_embedded_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease int part of parameter = L49: top_embedded_t (28.000000000000004%) <30,17>
+L49: typedef ap_fixed<29,16> top_embedded_t; | 
+Found accuracy: 28.00
+L49: typedef ap_fixed<28,15> top_embedded_t; | 
+Found accuracy: 28.00
+L49: typedef ap_fixed<27,14> top_embedded_t; | 
+Found accuracy: 28.00
+L49: typedef ap_fixed<26,13> top_embedded_t; | 
+Found accuracy: 33.00
+L49: typedef ap_fixed<25,12> top_embedded_t; | 
+Found accuracy: 25.00
+Accuracy is too low
+
+Starting to increase frac part of parameter = L49: top_embedded_t (33.0%) <26,12>
+L49: typedef ap_fixed<27,13> top_embedded_t; | 
+Found accuracy: 33.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease frac part of parameter = L49: top_embedded_t (33.0%) <26,13>
+L49: typedef ap_fixed<25,13> top_embedded_t; | 
+Found accuracy: 33.00
+L49: typedef ap_fixed<24,13> top_embedded_t; | 
+vivado_hls -f build_prj.tcl returned 1
+
+Skipping run since exception was raised
+Best configuration for this parameter found = L49: top_embedded_t (33.0%) <25,14> (accuracy: 29.00 -> 33.00)
+----------------------------------------------------------------------------------------------------
+Current parameter = L50: top_embedded_weight_t (33.0%) <30,18>
+Starting exploration for this parameter using previously found widths: (25, 14)
+L50: typedef ap_fixed<25,14> top_embedded_weight_t; | 
+Found accuracy: 29.00, which dropped too much, so revert to original values: (30, 18)
+Starting to increase int part of parameter = L50: top_embedded_weight_t (33.0%) <30,18>
+L50: typedef ap_fixed<31,18> top_embedded_weight_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease int part of parameter = L50: top_embedded_weight_t (33.0%) <30,17>
+L50: typedef ap_fixed<29,16> top_embedded_weight_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Starting to increase frac part of parameter = L50: top_embedded_weight_t (33.0%) <30,16>
+L50: typedef ap_fixed<31,17> top_embedded_weight_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease frac part of parameter = L50: top_embedded_weight_t (33.0%) <30,17>
+L50: typedef ap_fixed<29,17> top_embedded_weight_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Best configuration for this parameter found = L50: top_embedded_weight_t (33.0%) <30,18> (accuracy: 33.00 -> 33.00)
+----------------------------------------------------------------------------------------------------
+Current parameter = L51: top_embedded_bias_t (33.0%) <30,18>
+Starting exploration for this parameter using previously found widths: (30, 18)
+L51: typedef ap_fixed<30,18> top_embedded_bias_t; | 
+Found accuracy: 28.00, which dropped too much, so revert to original values: (30, 18)
+Starting to increase int part of parameter = L51: top_embedded_bias_t (33.0%) <30,18>
+L51: typedef ap_fixed<31,18> top_embedded_bias_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease int part of parameter = L51: top_embedded_bias_t (33.0%) <30,17>
+L51: typedef ap_fixed<29,16> top_embedded_bias_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Starting to increase frac part of parameter = L51: top_embedded_bias_t (33.0%) <30,16>
+L51: typedef ap_fixed<31,17> top_embedded_bias_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease frac part of parameter = L51: top_embedded_bias_t (33.0%) <30,17>
+L51: typedef ap_fixed<29,17> top_embedded_bias_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Best configuration for this parameter found = L51: top_embedded_bias_t (33.0%) <30,18> (accuracy: 33.00 -> 33.00)
+----------------------------------------------------------------------------------------------------
+Current parameter = L52: top_embedded_accum_t (33.0%) <30,18>
+Starting exploration for this parameter using previously found widths: (30, 18)
+L52: typedef ap_fixed<30,18> top_embedded_accum_t; | 
+Found accuracy: 28.00, which dropped too much, so revert to original values: (30, 18)
+Starting to increase int part of parameter = L52: top_embedded_accum_t (33.0%) <30,18>
+L52: typedef ap_fixed<31,18> top_embedded_accum_t; | 
+Found accuracy: 29.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease int part of parameter = L52: top_embedded_accum_t (33.0%) <30,17>
+L52: typedef ap_fixed<29,16> top_embedded_accum_t; | 
+Found accuracy: 29.00
+Accuracy is too low
+
+Starting to increase frac part of parameter = L52: top_embedded_accum_t (33.0%) <30,16>
+L52: typedef ap_fixed<31,17> top_embedded_accum_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease frac part of parameter = L52: top_embedded_accum_t (33.0%) <30,17>
+L52: typedef ap_fixed<29,17> top_embedded_accum_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Best configuration for this parameter found = L52: top_embedded_accum_t (33.0%) <30,18> (accuracy: 33.00 -> 33.00)
+----------------------------------------------------------------------------------------------------
+Current parameter = L54: top_cls_token_t (33.0%) <30,18>
+Starting exploration for this parameter using previously found widths: (30, 18)
+L54: typedef ap_fixed<30,18> top_cls_token_t; | 
+Found accuracy: 28.00, which dropped too much, so revert to original values: (30, 18)
+Starting to increase int part of parameter = L54: top_cls_token_t (33.0%) <30,18>
+L54: typedef ap_fixed<31,18> top_cls_token_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease int part of parameter = L54: top_cls_token_t (33.0%) <30,17>
+L54: typedef ap_fixed<29,16> top_cls_token_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Starting to increase frac part of parameter = L54: top_cls_token_t (33.0%) <30,16>
+L54: typedef ap_fixed<31,17> top_cls_token_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease frac part of parameter = L54: top_cls_token_t (33.0%) <30,17>
+L54: typedef ap_fixed<29,17> top_cls_token_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Best configuration for this parameter found = L54: top_cls_token_t (33.0%) <30,18> (accuracy: 33.00 -> 33.00)
+----------------------------------------------------------------------------------------------------
+Current parameter = L58: SA_norm_t (33.0%) <30,18>
+Starting exploration for this parameter using previously found widths: (30, 18)
+L58: typedef ap_fixed<30,18> SA_norm_t; | 
+Found accuracy: 28.00, which dropped too much, so revert to original values: (30, 18)
+Starting to increase int part of parameter = L58: SA_norm_t (33.0%) <30,18>
+L58: typedef ap_fixed<31,18> SA_norm_t; | 
+Found accuracy: 29.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease int part of parameter = L58: SA_norm_t (33.0%) <30,17>
+L58: typedef ap_fixed<29,16> SA_norm_t; | 
+Found accuracy: 29.00
+Accuracy is too low
+
+Starting to increase frac part of parameter = L58: SA_norm_t (33.0%) <30,16>
+L58: typedef ap_fixed<31,17> SA_norm_t; | 
+Found accuracy: 29.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease frac part of parameter = L58: SA_norm_t (33.0%) <30,17>
+L58: typedef ap_fixed<29,17> SA_norm_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Best configuration for this parameter found = L58: SA_norm_t (33.0%) <30,18> (accuracy: 33.00 -> 33.00)
+----------------------------------------------------------------------------------------------------
+Current parameter = L59: SA_norm_weight_t (33.0%) <30,18>
+Starting exploration for this parameter using previously found widths: (30, 18)
+L59: typedef ap_fixed<30,18> SA_norm_weight_t; | 
+Found accuracy: 28.00, which dropped too much, so revert to original values: (30, 18)
+Starting to increase int part of parameter = L59: SA_norm_weight_t (33.0%) <30,18>
+L59: typedef ap_fixed<31,18> SA_norm_weight_t; | 
+Found accuracy: 26.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease int part of parameter = L59: SA_norm_weight_t (33.0%) <30,17>
+L59: typedef ap_fixed<29,16> SA_norm_weight_t; | 
+Found accuracy: 26.00
+Accuracy is too low
+
+Starting to increase frac part of parameter = L59: SA_norm_weight_t (33.0%) <30,16>
+L59: typedef ap_fixed<31,17> SA_norm_weight_t; | 
+Found accuracy: 26.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease frac part of parameter = L59: SA_norm_weight_t (33.0%) <30,17>
+L59: typedef ap_fixed<29,17> SA_norm_weight_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Best configuration for this parameter found = L59: SA_norm_weight_t (33.0%) <30,18> (accuracy: 33.00 -> 33.00)
+----------------------------------------------------------------------------------------------------
+Current parameter = L60: SA_norm_bias_t (33.0%) <30,18>
+Starting exploration for this parameter using previously found widths: (30, 18)
+L60: typedef ap_fixed<30,18> SA_norm_bias_t; | 
+Found accuracy: 28.00, which dropped too much, so revert to original values: (30, 18)
+Starting to increase int part of parameter = L60: SA_norm_bias_t (33.0%) <30,18>
+L60: typedef ap_fixed<31,18> SA_norm_bias_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease int part of parameter = L60: SA_norm_bias_t (33.0%) <30,17>
+L60: typedef ap_fixed<29,16> SA_norm_bias_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Starting to increase frac part of parameter = L60: SA_norm_bias_t (33.0%) <30,16>
+L60: typedef ap_fixed<31,17> SA_norm_bias_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease frac part of parameter = L60: SA_norm_bias_t (33.0%) <30,17>
+L60: typedef ap_fixed<29,17> SA_norm_bias_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Best configuration for this parameter found = L60: SA_norm_bias_t (33.0%) <30,18> (accuracy: 33.00 -> 33.00)
+----------------------------------------------------------------------------------------------------
+Current parameter = L62: SA_Q_t (33.0%) <30,18>
+Starting exploration for this parameter using previously found widths: (30, 18)
+L62: typedef ap_fixed<30,18> SA_Q_t; | 
+Found accuracy: 28.00, which dropped too much, so revert to original values: (30, 18)
+Starting to increase int part of parameter = L62: SA_Q_t (33.0%) <30,18>
+L62: typedef ap_fixed<31,18> SA_Q_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease int part of parameter = L62: SA_Q_t (33.0%) <30,17>
+L62: typedef ap_fixed<29,16> SA_Q_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Starting to increase frac part of parameter = L62: SA_Q_t (33.0%) <30,16>
+L62: typedef ap_fixed<31,17> SA_Q_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease frac part of parameter = L62: SA_Q_t (33.0%) <30,17>
+L62: typedef ap_fixed<29,17> SA_Q_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Best configuration for this parameter found = L62: SA_Q_t (33.0%) <30,18> (accuracy: 33.00 -> 33.00)
+----------------------------------------------------------------------------------------------------
+Current parameter = L63: SA_Q_weight_t (33.0%) <30,18>
+Starting exploration for this parameter using previously found widths: (30, 18)
+L63: typedef ap_fixed<30,18> SA_Q_weight_t; | 
+Found accuracy: 28.00, which dropped too much, so revert to original values: (30, 18)
+Starting to increase int part of parameter = L63: SA_Q_weight_t (33.0%) <30,18>
+L63: typedef ap_fixed<31,18> SA_Q_weight_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease int part of parameter = L63: SA_Q_weight_t (33.0%) <30,17>
+L63: typedef ap_fixed<29,16> SA_Q_weight_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Starting to increase frac part of parameter = L63: SA_Q_weight_t (33.0%) <30,16>
+L63: typedef ap_fixed<31,17> SA_Q_weight_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease frac part of parameter = L63: SA_Q_weight_t (33.0%) <30,17>
+L63: typedef ap_fixed<29,17> SA_Q_weight_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Best configuration for this parameter found = L63: SA_Q_weight_t (33.0%) <30,18> (accuracy: 33.00 -> 33.00)
+----------------------------------------------------------------------------------------------------
+Current parameter = L64: SA_Q_accum_t (33.0%) <30,18>
+Starting exploration for this parameter using previously found widths: (30, 18)
+L64: typedef ap_fixed<30,18> SA_Q_accum_t; | 
+Found accuracy: 28.00, which dropped too much, so revert to original values: (30, 18)
+Starting to increase int part of parameter = L64: SA_Q_accum_t (33.0%) <30,18>
+L64: typedef ap_fixed<31,18> SA_Q_accum_t; | 
+Found accuracy: 29.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease int part of parameter = L64: SA_Q_accum_t (33.0%) <30,17>
+L64: typedef ap_fixed<29,16> SA_Q_accum_t; | 
+Found accuracy: 29.00
+Accuracy is too low
+
+Starting to increase frac part of parameter = L64: SA_Q_accum_t (33.0%) <30,16>
+L64: typedef ap_fixed<31,17> SA_Q_accum_t; | 
+Found accuracy: 29.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease frac part of parameter = L64: SA_Q_accum_t (33.0%) <30,17>
+L64: typedef ap_fixed<29,17> SA_Q_accum_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Best configuration for this parameter found = L64: SA_Q_accum_t (33.0%) <30,18> (accuracy: 33.00 -> 33.00)
+----------------------------------------------------------------------------------------------------
+Current parameter = L66: SA_K_t (33.0%) <30,18>
+Starting exploration for this parameter using previously found widths: (30, 18)
+L66: typedef ap_fixed<30,18> SA_K_t; | 
+Found accuracy: 28.00, which dropped too much, so revert to original values: (30, 18)
+Starting to increase int part of parameter = L66: SA_K_t (33.0%) <30,18>
+L66: typedef ap_fixed<31,18> SA_K_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease int part of parameter = L66: SA_K_t (33.0%) <30,17>
+L66: typedef ap_fixed<29,16> SA_K_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Starting to increase frac part of parameter = L66: SA_K_t (33.0%) <30,16>
+L66: typedef ap_fixed<31,17> SA_K_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease frac part of parameter = L66: SA_K_t (33.0%) <30,17>
+L66: typedef ap_fixed<29,17> SA_K_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Best configuration for this parameter found = L66: SA_K_t (33.0%) <30,18> (accuracy: 33.00 -> 33.00)
+----------------------------------------------------------------------------------------------------
+Current parameter = L67: SA_K_weight_t (33.0%) <30,18>
+Starting exploration for this parameter using previously found widths: (30, 18)
+L67: typedef ap_fixed<30,18> SA_K_weight_t; | 
+Found accuracy: 28.00, which dropped too much, so revert to original values: (30, 18)
+Starting to increase int part of parameter = L67: SA_K_weight_t (33.0%) <30,18>
+L67: typedef ap_fixed<31,18> SA_K_weight_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease int part of parameter = L67: SA_K_weight_t (33.0%) <30,17>
+L67: typedef ap_fixed<29,16> SA_K_weight_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Starting to increase frac part of parameter = L67: SA_K_weight_t (33.0%) <30,16>
+L67: typedef ap_fixed<31,17> SA_K_weight_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease frac part of parameter = L67: SA_K_weight_t (33.0%) <30,17>
+L67: typedef ap_fixed<29,17> SA_K_weight_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Best configuration for this parameter found = L67: SA_K_weight_t (33.0%) <30,18> (accuracy: 33.00 -> 33.00)
+----------------------------------------------------------------------------------------------------
+Current parameter = L68: SA_K_accum_t (33.0%) <30,18>
+Starting exploration for this parameter using previously found widths: (30, 18)
+L68: typedef ap_fixed<30,18> SA_K_accum_t; | 
+Found accuracy: 28.00, which dropped too much, so revert to original values: (30, 18)
+Starting to increase int part of parameter = L68: SA_K_accum_t (33.0%) <30,18>
+L68: typedef ap_fixed<31,18> SA_K_accum_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease int part of parameter = L68: SA_K_accum_t (33.0%) <30,17>
+L68: typedef ap_fixed<29,16> SA_K_accum_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Starting to increase frac part of parameter = L68: SA_K_accum_t (33.0%) <30,16>
+L68: typedef ap_fixed<31,17> SA_K_accum_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease frac part of parameter = L68: SA_K_accum_t (33.0%) <30,17>
+L68: typedef ap_fixed<29,17> SA_K_accum_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Best configuration for this parameter found = L68: SA_K_accum_t (33.0%) <30,18> (accuracy: 33.00 -> 33.00)
+----------------------------------------------------------------------------------------------------
+Current parameter = L70: SA_V_t (33.0%) <30,18>
+Starting exploration for this parameter using previously found widths: (30, 18)
+L70: typedef ap_fixed<30,18> SA_V_t; | 
+Found accuracy: 28.00, which dropped too much, so revert to original values: (30, 18)
+Starting to increase int part of parameter = L70: SA_V_t (33.0%) <30,18>
+L70: typedef ap_fixed<31,18> SA_V_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease int part of parameter = L70: SA_V_t (33.0%) <30,17>
+L70: typedef ap_fixed<29,16> SA_V_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Starting to increase frac part of parameter = L70: SA_V_t (33.0%) <30,16>
+L70: typedef ap_fixed<31,17> SA_V_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease frac part of parameter = L70: SA_V_t (33.0%) <30,17>
+L70: typedef ap_fixed<29,17> SA_V_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Best configuration for this parameter found = L70: SA_V_t (33.0%) <30,18> (accuracy: 33.00 -> 33.00)
+----------------------------------------------------------------------------------------------------
+Current parameter = L71: SA_V_weight_t (33.0%) <30,18>
+Starting exploration for this parameter using previously found widths: (30, 18)
+L71: typedef ap_fixed<30,18> SA_V_weight_t; | 
+Found accuracy: 28.00, which dropped too much, so revert to original values: (30, 18)
+Starting to increase int part of parameter = L71: SA_V_weight_t (33.0%) <30,18>
+L71: typedef ap_fixed<31,18> SA_V_weight_t; | 
+Found accuracy: 29.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease int part of parameter = L71: SA_V_weight_t (33.0%) <30,17>
+L71: typedef ap_fixed<29,16> SA_V_weight_t; | 
+Found accuracy: 29.00
+Accuracy is too low
+
+Starting to increase frac part of parameter = L71: SA_V_weight_t (33.0%) <30,16>
+L71: typedef ap_fixed<31,17> SA_V_weight_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease frac part of parameter = L71: SA_V_weight_t (33.0%) <30,17>
+L71: typedef ap_fixed<29,17> SA_V_weight_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Best configuration for this parameter found = L71: SA_V_weight_t (33.0%) <30,18> (accuracy: 33.00 -> 33.00)
+----------------------------------------------------------------------------------------------------
+Current parameter = L72: SA_V_accum_t (33.0%) <30,18>
+Starting exploration for this parameter using previously found widths: (30, 18)
+L72: typedef ap_fixed<30,18> SA_V_accum_t; | 
+Found accuracy: 28.00, which dropped too much, so revert to original values: (30, 18)
+Starting to increase int part of parameter = L72: SA_V_accum_t (33.0%) <30,18>
+L72: typedef ap_fixed<31,18> SA_V_accum_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease int part of parameter = L72: SA_V_accum_t (33.0%) <30,17>
+L72: typedef ap_fixed<29,16> SA_V_accum_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Starting to increase frac part of parameter = L72: SA_V_accum_t (33.0%) <30,16>
+L72: typedef ap_fixed<31,17> SA_V_accum_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease frac part of parameter = L72: SA_V_accum_t (33.0%) <30,17>
+L72: typedef ap_fixed<29,17> SA_V_accum_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Best configuration for this parameter found = L72: SA_V_accum_t (33.0%) <30,18> (accuracy: 33.00 -> 33.00)
+----------------------------------------------------------------------------------------------------
+Current parameter = L74: SA_energy_t (33.0%) <30,18>
+Starting exploration for this parameter using previously found widths: (30, 18)
+L74: typedef ap_fixed<30,18> SA_energy_t; | 
+Found accuracy: 28.00, which dropped too much, so revert to original values: (30, 18)
+Starting to increase int part of parameter = L74: SA_energy_t (33.0%) <30,18>
+L74: typedef ap_fixed<31,18> SA_energy_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease int part of parameter = L74: SA_energy_t (33.0%) <30,17>
+L74: typedef ap_fixed<29,16> SA_energy_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Starting to increase frac part of parameter = L74: SA_energy_t (33.0%) <30,16>
+L74: typedef ap_fixed<31,17> SA_energy_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease frac part of parameter = L74: SA_energy_t (33.0%) <30,17>
+L74: typedef ap_fixed<29,17> SA_energy_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Best configuration for this parameter found = L74: SA_energy_t (33.0%) <30,18> (accuracy: 33.00 -> 33.00)
+----------------------------------------------------------------------------------------------------
+Current parameter = L76: SA_exp_norm_t (33.0%) <30,18>
+Starting exploration for this parameter using previously found widths: (30, 18)
+L76: typedef ap_fixed<30,18> SA_exp_norm_t; | 
+Found accuracy: 28.00, which dropped too much, so revert to original values: (30, 18)
+Starting to increase int part of parameter = L76: SA_exp_norm_t (33.0%) <30,18>
+L76: typedef ap_fixed<31,18> SA_exp_norm_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease int part of parameter = L76: SA_exp_norm_t (33.0%) <30,17>
+L76: typedef ap_fixed<29,16> SA_exp_norm_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Starting to increase frac part of parameter = L76: SA_exp_norm_t (33.0%) <30,16>
+L76: typedef ap_fixed<31,17> SA_exp_norm_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease frac part of parameter = L76: SA_exp_norm_t (33.0%) <30,17>
+L76: typedef ap_fixed<29,17> SA_exp_norm_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Best configuration for this parameter found = L76: SA_exp_norm_t (33.0%) <30,18> (accuracy: 33.00 -> 33.00)
+----------------------------------------------------------------------------------------------------
+Current parameter = L77: SA_exp_norm_weight_t (33.0%) <30,18>
+Starting exploration for this parameter using previously found widths: (30, 18)
+L77: typedef ap_fixed<30,18> SA_exp_norm_weight_t; | 
+Found accuracy: 28.00, which dropped too much, so revert to original values: (30, 18)
+Starting to increase int part of parameter = L77: SA_exp_norm_weight_t (33.0%) <30,18>
+L77: typedef ap_fixed<31,18> SA_exp_norm_weight_t; | 
+Found accuracy: 23.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease int part of parameter = L77: SA_exp_norm_weight_t (33.0%) <30,17>
+L77: typedef ap_fixed<29,16> SA_exp_norm_weight_t; | 
+Found accuracy: 23.00
+Accuracy is too low
+
+Starting to increase frac part of parameter = L77: SA_exp_norm_weight_t (33.0%) <30,16>
+L77: typedef ap_fixed<31,17> SA_exp_norm_weight_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease frac part of parameter = L77: SA_exp_norm_weight_t (33.0%) <30,17>
+L77: typedef ap_fixed<29,17> SA_exp_norm_weight_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Best configuration for this parameter found = L77: SA_exp_norm_weight_t (33.0%) <30,18> (accuracy: 33.00 -> 33.00)
+----------------------------------------------------------------------------------------------------
+Current parameter = L78: SA_exp_norm_bias_t (33.0%) <30,18>
+Starting exploration for this parameter using previously found widths: (30, 18)
+L78: typedef ap_fixed<30,18> SA_exp_norm_bias_t; | 
+Found accuracy: 28.00, which dropped too much, so revert to original values: (30, 18)
+Starting to increase int part of parameter = L78: SA_exp_norm_bias_t (33.0%) <30,18>
+L78: typedef ap_fixed<31,18> SA_exp_norm_bias_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease int part of parameter = L78: SA_exp_norm_bias_t (33.0%) <30,17>
+L78: typedef ap_fixed<29,16> SA_exp_norm_bias_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Starting to increase frac part of parameter = L78: SA_exp_norm_bias_t (33.0%) <30,16>
+L78: typedef ap_fixed<31,17> SA_exp_norm_bias_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease frac part of parameter = L78: SA_exp_norm_bias_t (33.0%) <30,17>
+L78: typedef ap_fixed<29,17> SA_exp_norm_bias_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Best configuration for this parameter found = L78: SA_exp_norm_bias_t (33.0%) <30,18> (accuracy: 33.00 -> 33.00)
+----------------------------------------------------------------------------------------------------
+Current parameter = L80: SA_exp_norm_red_t (33.0%) <30,18> (N=12, T=4)
+Starting exploration for this parameter using previously found widths: (30, 18)
+L80: typedef ap_fixed<30,18> SA_exp_norm_red_t; // N=12, T=4 | 
+Found accuracy: 28.00, which dropped too much, so revert to original values: (30, 18)
+Starting to increase int part of parameter = L80: SA_exp_norm_red_t (33.0%) <30,18> (N=12, T=4)
+L80: typedef ap_fixed<31,18> SA_exp_norm_red_t; // N=12, T=4 | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease int part of parameter = L80: SA_exp_norm_red_t (33.0%) <30,17> (N=12, T=4)
+L80: typedef ap_fixed<29,16> SA_exp_norm_red_t; // N=12, T=4 | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Starting to increase frac part of parameter = L80: SA_exp_norm_red_t (33.0%) <30,16> (N=12, T=4)
+L80: typedef ap_fixed<31,17> SA_exp_norm_red_t; // N=12, T=4 | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease frac part of parameter = L80: SA_exp_norm_red_t (33.0%) <30,17> (N=12, T=4)
+L80: typedef ap_fixed<29,17> SA_exp_norm_red_t; // N=12, T=4 | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Best configuration for this parameter found = L80: SA_exp_norm_red_t (33.0%) <30,18> (N=12, T=4) (accuracy: 33.00 -> 33.00)
+----------------------------------------------------------------------------------------------------
+Current parameter = L81: SA_softmax_exp_t (33.0%) <30,18> (N=12, T=4)
+Starting exploration for this parameter using previously found widths: (30, 18)
+L81: typedef ap_fixed<30,18> SA_softmax_exp_t; // N=12, T=4 | 
+Found accuracy: 28.00, which dropped too much, so revert to original values: (30, 18)
+Starting to increase int part of parameter = L81: SA_softmax_exp_t (33.0%) <30,18> (N=12, T=4)
+L81: typedef ap_fixed<31,18> SA_softmax_exp_t; // N=12, T=4 | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease int part of parameter = L81: SA_softmax_exp_t (33.0%) <30,17> (N=12, T=4)
+L81: typedef ap_fixed<29,16> SA_softmax_exp_t; // N=12, T=4 | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Starting to increase frac part of parameter = L81: SA_softmax_exp_t (33.0%) <30,16> (N=12, T=4)
+L81: typedef ap_fixed<31,17> SA_softmax_exp_t; // N=12, T=4 | 
+Found accuracy: 30.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease frac part of parameter = L81: SA_softmax_exp_t (33.0%) <30,17> (N=12, T=4)
+L81: typedef ap_fixed<29,17> SA_softmax_exp_t; // N=12, T=4 | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Best configuration for this parameter found = L81: SA_softmax_exp_t (33.0%) <30,18> (N=12, T=4) (accuracy: 33.00 -> 33.00)
+----------------------------------------------------------------------------------------------------
+Current parameter = L82: SA_softmax_inv_t (33.0%) <30,18> (N=12, T=7)
+Starting exploration for this parameter using previously found widths: (30, 18)
+L82: typedef ap_fixed<30,18> SA_softmax_inv_t; // N=12, T=7 | 
+Found accuracy: 28.00, which dropped too much, so revert to original values: (30, 18)
+Starting to increase int part of parameter = L82: SA_softmax_inv_t (33.0%) <30,18> (N=12, T=7)
+L82: typedef ap_fixed<31,18> SA_softmax_inv_t; // N=12, T=7 | 
+Found accuracy: 29.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease int part of parameter = L82: SA_softmax_inv_t (33.0%) <30,17> (N=12, T=7)
+L82: typedef ap_fixed<29,16> SA_softmax_inv_t; // N=12, T=7 | 
+Found accuracy: 29.00
+Accuracy is too low
+
+Starting to increase frac part of parameter = L82: SA_softmax_inv_t (33.0%) <30,16> (N=12, T=7)
+L82: typedef ap_fixed<31,17> SA_softmax_inv_t; // N=12, T=7 | 
+Found accuracy: 29.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease frac part of parameter = L82: SA_softmax_inv_t (33.0%) <30,17> (N=12, T=7)
+L82: typedef ap_fixed<29,17> SA_softmax_inv_t; // N=12, T=7 | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Best configuration for this parameter found = L82: SA_softmax_inv_t (33.0%) <30,18> (N=12, T=7) (accuracy: 33.00 -> 33.00)
+----------------------------------------------------------------------------------------------------
+Current parameter = L83: N_SOFTMAX (33.0%) [4096]
+----------------------------------------------------------------------------------------------------
+Current parameter = L84: EXP_TARGET (33.0%) target = 4
+----------------------------------------------------------------------------------------------------
+Current parameter = L85: INV_TARGET (33.0%) target = 7
+----------------------------------------------------------------------------------------------------
+Current parameter = L87: SA_attention_t (33.0%) <30,18>
+Starting exploration for this parameter using previously found widths: (30, 18)
+L87: typedef ap_fixed<30,18> SA_attention_t; | 
+Found accuracy: 28.00, which dropped too much, so revert to original values: (30, 18)
+Starting to increase int part of parameter = L87: SA_attention_t (33.0%) <30,18>
+L87: typedef ap_fixed<31,18> SA_attention_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease int part of parameter = L87: SA_attention_t (33.0%) <30,17>
+L87: typedef ap_fixed<29,16> SA_attention_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Starting to increase frac part of parameter = L87: SA_attention_t (33.0%) <30,16>
+L87: typedef ap_fixed<31,17> SA_attention_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease frac part of parameter = L87: SA_attention_t (33.0%) <30,17>
+L87: typedef ap_fixed<29,17> SA_attention_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Best configuration for this parameter found = L87: SA_attention_t (33.0%) <30,18> (accuracy: 33.00 -> 33.00)
+----------------------------------------------------------------------------------------------------
+Current parameter = L89: SA_scaled_attention_t (33.0%) <30,18>
+Starting exploration for this parameter using previously found widths: (30, 18)
+L89: typedef ap_fixed<30,18> SA_scaled_attention_t; | 
+Found accuracy: 28.00, which dropped too much, so revert to original values: (30, 18)
+Starting to increase int part of parameter = L89: SA_scaled_attention_t (33.0%) <30,18>
+L89: typedef ap_fixed<31,18> SA_scaled_attention_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease int part of parameter = L89: SA_scaled_attention_t (33.0%) <30,17>
+L89: typedef ap_fixed<29,16> SA_scaled_attention_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Starting to increase frac part of parameter = L89: SA_scaled_attention_t (33.0%) <30,16>
+L89: typedef ap_fixed<31,17> SA_scaled_attention_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease frac part of parameter = L89: SA_scaled_attention_t (33.0%) <30,17>
+L89: typedef ap_fixed<29,17> SA_scaled_attention_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Best configuration for this parameter found = L89: SA_scaled_attention_t (33.0%) <30,18> (accuracy: 33.00 -> 33.00)
+----------------------------------------------------------------------------------------------------
+Current parameter = L91: SA_dense_weight_t (33.0%) <30,18>
+Starting exploration for this parameter using previously found widths: (30, 18)
+L91: typedef ap_fixed<30,18> SA_dense_weight_t; | 
+Found accuracy: 28.00, which dropped too much, so revert to original values: (30, 18)
+Starting to increase int part of parameter = L91: SA_dense_weight_t (33.0%) <30,18>
+L91: typedef ap_fixed<31,18> SA_dense_weight_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease int part of parameter = L91: SA_dense_weight_t (33.0%) <30,17>
+L91: typedef ap_fixed<29,16> SA_dense_weight_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Starting to increase frac part of parameter = L91: SA_dense_weight_t (33.0%) <30,16>
+L91: typedef ap_fixed<31,17> SA_dense_weight_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease frac part of parameter = L91: SA_dense_weight_t (33.0%) <30,17>
+L91: typedef ap_fixed<29,17> SA_dense_weight_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Best configuration for this parameter found = L91: SA_dense_weight_t (33.0%) <30,18> (accuracy: 33.00 -> 33.00)
+----------------------------------------------------------------------------------------------------
+Current parameter = L92: SA_dense_bias_t (33.0%) <30,18>
+Starting exploration for this parameter using previously found widths: (30, 18)
+L92: typedef ap_fixed<30,18> SA_dense_bias_t; | 
+Found accuracy: 28.00, which dropped too much, so revert to original values: (30, 18)
+Starting to increase int part of parameter = L92: SA_dense_bias_t (33.0%) <30,18>
+L92: typedef ap_fixed<31,18> SA_dense_bias_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease int part of parameter = L92: SA_dense_bias_t (33.0%) <30,17>
+L92: typedef ap_fixed<29,16> SA_dense_bias_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Starting to increase frac part of parameter = L92: SA_dense_bias_t (33.0%) <30,16>
+L92: typedef ap_fixed<31,17> SA_dense_bias_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease frac part of parameter = L92: SA_dense_bias_t (33.0%) <30,17>
+L92: typedef ap_fixed<29,17> SA_dense_bias_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Best configuration for this parameter found = L92: SA_dense_bias_t (33.0%) <30,18> (accuracy: 33.00 -> 33.00)
+----------------------------------------------------------------------------------------------------
+Current parameter = L93: SA_dense_accum_t (33.0%) <30,18>
+Starting exploration for this parameter using previously found widths: (30, 18)
+L93: typedef ap_fixed<30,18> SA_dense_accum_t; | 
+Found accuracy: 28.00, which dropped too much, so revert to original values: (30, 18)
+Starting to increase int part of parameter = L93: SA_dense_accum_t (33.0%) <30,18>
+L93: typedef ap_fixed<31,18> SA_dense_accum_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease int part of parameter = L93: SA_dense_accum_t (33.0%) <30,17>
+L93: typedef ap_fixed<29,16> SA_dense_accum_t; | 
+Found accuracy: 29.00
+Accuracy is too low
+
+Starting to increase frac part of parameter = L93: SA_dense_accum_t (33.0%) <30,16>
+L93: typedef ap_fixed<31,17> SA_dense_accum_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease frac part of parameter = L93: SA_dense_accum_t (33.0%) <30,17>
+L93: typedef ap_fixed<29,17> SA_dense_accum_t; | 
+Found accuracy: 29.00
+Accuracy is too low
+
+Best configuration for this parameter found = L93: SA_dense_accum_t (33.0%) <30,18> (accuracy: 33.00 -> 33.00)
+----------------------------------------------------------------------------------------------------
+Current parameter = L95: SA_result_t (33.0%) <30,18>
+Starting exploration for this parameter using previously found widths: (30, 18)
+L95: typedef ap_fixed<30,18> SA_result_t; | 
+Found accuracy: 28.00, which dropped too much, so revert to original values: (30, 18)
+Starting to increase int part of parameter = L95: SA_result_t (33.0%) <30,18>
+L95: typedef ap_fixed<31,18> SA_result_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease int part of parameter = L95: SA_result_t (33.0%) <30,17>
+L95: typedef ap_fixed<29,16> SA_result_t; | 
+Found accuracy: 29.00
+Accuracy is too low
+
+Starting to increase frac part of parameter = L95: SA_result_t (33.0%) <30,16>
+L95: typedef ap_fixed<31,17> SA_result_t; | 
+Found accuracy: 29.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease frac part of parameter = L95: SA_result_t (33.0%) <30,17>
+L95: typedef ap_fixed<29,17> SA_result_t; | 
+Found accuracy: 29.00
+Accuracy is too low
+
+Best configuration for this parameter found = L95: SA_result_t (33.0%) <30,18> (accuracy: 33.00 -> 33.00)
+----------------------------------------------------------------------------------------------------
+Current parameter = L99: SA_result_sum_t (33.0%) <30,18>
+Starting exploration for this parameter using previously found widths: (30, 18)
+L99: typedef ap_fixed<30,18> SA_result_sum_t; | 
+Found accuracy: 28.00, which dropped too much, so revert to original values: (30, 18)
+Starting to increase int part of parameter = L99: SA_result_sum_t (33.0%) <30,18>
+L99: typedef ap_fixed<31,18> SA_result_sum_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease int part of parameter = L99: SA_result_sum_t (33.0%) <30,17>
+L99: typedef ap_fixed<29,16> SA_result_sum_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Starting to increase frac part of parameter = L99: SA_result_sum_t (33.0%) <30,16>
+L99: typedef ap_fixed<31,17> SA_result_sum_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease frac part of parameter = L99: SA_result_sum_t (33.0%) <30,17>
+L99: typedef ap_fixed<29,17> SA_result_sum_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Best configuration for this parameter found = L99: SA_result_sum_t (33.0%) <30,18> (accuracy: 33.00 -> 33.00)
+----------------------------------------------------------------------------------------------------
+Current parameter = L101: T_norm0_t (33.0%) <30,18>
+Starting exploration for this parameter using previously found widths: (30, 18)
+L101: typedef ap_fixed<30,18> T_norm0_t; | 
+Found accuracy: 28.00, which dropped too much, so revert to original values: (30, 18)
+Starting to increase int part of parameter = L101: T_norm0_t (33.0%) <30,18>
+L101: typedef ap_fixed<31,18> T_norm0_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease int part of parameter = L101: T_norm0_t (33.0%) <30,17>
+L101: typedef ap_fixed<29,16> T_norm0_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Starting to increase frac part of parameter = L101: T_norm0_t (33.0%) <30,16>
+L101: typedef ap_fixed<31,17> T_norm0_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease frac part of parameter = L101: T_norm0_t (33.0%) <30,17>
+L101: typedef ap_fixed<29,17> T_norm0_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Best configuration for this parameter found = L101: T_norm0_t (33.0%) <30,18> (accuracy: 33.00 -> 33.00)
+----------------------------------------------------------------------------------------------------
+Current parameter = L102: T_norm0_weight_t (33.0%) <30,18>
+Starting exploration for this parameter using previously found widths: (30, 18)
+L102: typedef ap_fixed<30,18> T_norm0_weight_t; | 
+Found accuracy: 28.00, which dropped too much, so revert to original values: (30, 18)
+Starting to increase int part of parameter = L102: T_norm0_weight_t (33.0%) <30,18>
+L102: typedef ap_fixed<31,18> T_norm0_weight_t; | 
+Found accuracy: 29.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease int part of parameter = L102: T_norm0_weight_t (33.0%) <30,17>
+L102: typedef ap_fixed<29,16> T_norm0_weight_t; | 
+Found accuracy: 29.00
+Accuracy is too low
+
+Starting to increase frac part of parameter = L102: T_norm0_weight_t (33.0%) <30,16>
+L102: typedef ap_fixed<31,17> T_norm0_weight_t; | 
+Found accuracy: 27.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease frac part of parameter = L102: T_norm0_weight_t (33.0%) <30,17>
+L102: typedef ap_fixed<29,17> T_norm0_weight_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Best configuration for this parameter found = L102: T_norm0_weight_t (33.0%) <30,18> (accuracy: 33.00 -> 33.00)
+----------------------------------------------------------------------------------------------------
+Current parameter = L103: T_norm0_bias_t (33.0%) <30,18>
+Starting exploration for this parameter using previously found widths: (30, 18)
+L103: typedef ap_fixed<30,18> T_norm0_bias_t; | 
+Found accuracy: 28.00, which dropped too much, so revert to original values: (30, 18)
+Starting to increase int part of parameter = L103: T_norm0_bias_t (33.0%) <30,18>
+L103: typedef ap_fixed<31,18> T_norm0_bias_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease int part of parameter = L103: T_norm0_bias_t (33.0%) <30,17>
+L103: typedef ap_fixed<29,16> T_norm0_bias_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Starting to increase frac part of parameter = L103: T_norm0_bias_t (33.0%) <30,16>
+L103: typedef ap_fixed<31,17> T_norm0_bias_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease frac part of parameter = L103: T_norm0_bias_t (33.0%) <30,17>
+L103: typedef ap_fixed<29,17> T_norm0_bias_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Best configuration for this parameter found = L103: T_norm0_bias_t (33.0%) <30,18> (accuracy: 33.00 -> 33.00)
+----------------------------------------------------------------------------------------------------
+Current parameter = L105: T_activ0_t (33.0%) <30,18>
+Starting exploration for this parameter using previously found widths: (30, 18)
+L105: typedef ap_fixed<30,18> T_activ0_t; | 
+Found accuracy: 28.00, which dropped too much, so revert to original values: (30, 18)
+Starting to increase int part of parameter = L105: T_activ0_t (33.0%) <30,18>
+L105: typedef ap_fixed<31,18> T_activ0_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease int part of parameter = L105: T_activ0_t (33.0%) <30,17>
+L105: typedef ap_fixed<29,16> T_activ0_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Starting to increase frac part of parameter = L105: T_activ0_t (33.0%) <30,16>
+L105: typedef ap_fixed<31,17> T_activ0_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease frac part of parameter = L105: T_activ0_t (33.0%) <30,17>
+L105: typedef ap_fixed<29,17> T_activ0_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Best configuration for this parameter found = L105: T_activ0_t (33.0%) <30,18> (accuracy: 33.00 -> 33.00)
+----------------------------------------------------------------------------------------------------
+Current parameter = L107: T_dense0_t (33.0%) <30,18>
+Starting exploration for this parameter using previously found widths: (30, 18)
+L107: typedef ap_fixed<30,18> T_dense0_t; | 
+Found accuracy: 28.00, which dropped too much, so revert to original values: (30, 18)
+Starting to increase int part of parameter = L107: T_dense0_t (33.0%) <30,18>
+L107: typedef ap_fixed<31,18> T_dense0_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease int part of parameter = L107: T_dense0_t (33.0%) <30,17>
+L107: typedef ap_fixed<29,16> T_dense0_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Starting to increase frac part of parameter = L107: T_dense0_t (33.0%) <30,16>
+L107: typedef ap_fixed<31,17> T_dense0_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease frac part of parameter = L107: T_dense0_t (33.0%) <30,17>
+L107: typedef ap_fixed<29,17> T_dense0_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Best configuration for this parameter found = L107: T_dense0_t (33.0%) <30,18> (accuracy: 33.00 -> 33.00)
+----------------------------------------------------------------------------------------------------
+Current parameter = L108: T_dense0_weight_t (33.0%) <30,18>
+Starting exploration for this parameter using previously found widths: (30, 18)
+L108: typedef ap_fixed<30,18> T_dense0_weight_t; | 
+Found accuracy: 28.00, which dropped too much, so revert to original values: (30, 18)
+Starting to increase int part of parameter = L108: T_dense0_weight_t (33.0%) <30,18>
+L108: typedef ap_fixed<31,18> T_dense0_weight_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease int part of parameter = L108: T_dense0_weight_t (33.0%) <30,17>
+L108: typedef ap_fixed<29,16> T_dense0_weight_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Starting to increase frac part of parameter = L108: T_dense0_weight_t (33.0%) <30,16>
+L108: typedef ap_fixed<31,17> T_dense0_weight_t; | 
+Found accuracy: 29.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease frac part of parameter = L108: T_dense0_weight_t (33.0%) <30,17>
+L108: typedef ap_fixed<29,17> T_dense0_weight_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Best configuration for this parameter found = L108: T_dense0_weight_t (33.0%) <30,18> (accuracy: 33.00 -> 33.00)
+----------------------------------------------------------------------------------------------------
+Current parameter = L109: T_dense0_accum_t (33.0%) <30,18>
+Starting exploration for this parameter using previously found widths: (30, 18)
+L109: typedef ap_fixed<30,18> T_dense0_accum_t; | 
+Found accuracy: 28.00, which dropped too much, so revert to original values: (30, 18)
+Starting to increase int part of parameter = L109: T_dense0_accum_t (33.0%) <30,18>
+L109: typedef ap_fixed<31,18> T_dense0_accum_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease int part of parameter = L109: T_dense0_accum_t (33.0%) <30,17>
+L109: typedef ap_fixed<29,16> T_dense0_accum_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Starting to increase frac part of parameter = L109: T_dense0_accum_t (33.0%) <30,16>
+L109: typedef ap_fixed<31,17> T_dense0_accum_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease frac part of parameter = L109: T_dense0_accum_t (33.0%) <30,17>
+L109: typedef ap_fixed<29,17> T_dense0_accum_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Best configuration for this parameter found = L109: T_dense0_accum_t (33.0%) <30,18> (accuracy: 33.00 -> 33.00)
+----------------------------------------------------------------------------------------------------
+Current parameter = L111: T_norm1_t (33.0%) <30,18>
+Starting exploration for this parameter using previously found widths: (30, 18)
+L111: typedef ap_fixed<30,18> T_norm1_t; | 
+Found accuracy: 28.00, which dropped too much, so revert to original values: (30, 18)
+Starting to increase int part of parameter = L111: T_norm1_t (33.0%) <30,18>
+L111: typedef ap_fixed<31,18> T_norm1_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease int part of parameter = L111: T_norm1_t (33.0%) <30,17>
+L111: typedef ap_fixed<29,16> T_norm1_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Starting to increase frac part of parameter = L111: T_norm1_t (33.0%) <30,16>
+L111: typedef ap_fixed<31,17> T_norm1_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease frac part of parameter = L111: T_norm1_t (33.0%) <30,17>
+L111: typedef ap_fixed<29,17> T_norm1_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Best configuration for this parameter found = L111: T_norm1_t (33.0%) <30,18> (accuracy: 33.00 -> 33.00)
+----------------------------------------------------------------------------------------------------
+Current parameter = L112: T_norm1_weight_t (33.0%) <30,18>
+Starting exploration for this parameter using previously found widths: (30, 18)
+L112: typedef ap_fixed<30,18> T_norm1_weight_t; | 
+Found accuracy: 28.00, which dropped too much, so revert to original values: (30, 18)
+Starting to increase int part of parameter = L112: T_norm1_weight_t (33.0%) <30,18>
+L112: typedef ap_fixed<31,18> T_norm1_weight_t; | 
+Found accuracy: 29.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease int part of parameter = L112: T_norm1_weight_t (33.0%) <30,17>
+L112: typedef ap_fixed<29,16> T_norm1_weight_t; | 
+Found accuracy: 29.00
+Accuracy is too low
+
+Starting to increase frac part of parameter = L112: T_norm1_weight_t (33.0%) <30,16>
+L112: typedef ap_fixed<31,17> T_norm1_weight_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease frac part of parameter = L112: T_norm1_weight_t (33.0%) <30,17>
+L112: typedef ap_fixed<29,17> T_norm1_weight_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Best configuration for this parameter found = L112: T_norm1_weight_t (33.0%) <30,18> (accuracy: 33.00 -> 33.00)
+----------------------------------------------------------------------------------------------------
+Current parameter = L113: T_norm1_bias_t (33.0%) <30,18>
+Starting exploration for this parameter using previously found widths: (30, 18)
+L113: typedef ap_fixed<30,18> T_norm1_bias_t; | 
+Found accuracy: 28.00, which dropped too much, so revert to original values: (30, 18)
+Starting to increase int part of parameter = L113: T_norm1_bias_t (33.0%) <30,18>
+L113: typedef ap_fixed<31,18> T_norm1_bias_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease int part of parameter = L113: T_norm1_bias_t (33.0%) <30,17>
+L113: typedef ap_fixed<29,16> T_norm1_bias_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Starting to increase frac part of parameter = L113: T_norm1_bias_t (33.0%) <30,16>
+L113: typedef ap_fixed<31,17> T_norm1_bias_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease frac part of parameter = L113: T_norm1_bias_t (33.0%) <30,17>
+L113: typedef ap_fixed<29,17> T_norm1_bias_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Best configuration for this parameter found = L113: T_norm1_bias_t (33.0%) <30,18> (accuracy: 33.00 -> 33.00)
+----------------------------------------------------------------------------------------------------
+Current parameter = L115: T_activ1_t (33.0%) <30,18>
+Starting exploration for this parameter using previously found widths: (30, 18)
+L115: typedef ap_fixed<30,18> T_activ1_t; | 
+Found accuracy: 28.00, which dropped too much, so revert to original values: (30, 18)
+Starting to increase int part of parameter = L115: T_activ1_t (33.0%) <30,18>
+L115: typedef ap_fixed<31,18> T_activ1_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease int part of parameter = L115: T_activ1_t (33.0%) <30,17>
+L115: typedef ap_fixed<29,16> T_activ1_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Starting to increase frac part of parameter = L115: T_activ1_t (33.0%) <30,16>
+L115: typedef ap_fixed<31,17> T_activ1_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease frac part of parameter = L115: T_activ1_t (33.0%) <30,17>
+L115: typedef ap_fixed<29,17> T_activ1_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Best configuration for this parameter found = L115: T_activ1_t (33.0%) <30,18> (accuracy: 33.00 -> 33.00)
+----------------------------------------------------------------------------------------------------
+Current parameter = L117: T_dense1_t (33.0%) <30,18>
+Starting exploration for this parameter using previously found widths: (30, 18)
+L117: typedef ap_fixed<30,18> T_dense1_t; | 
+Found accuracy: 28.00, which dropped too much, so revert to original values: (30, 18)
+Starting to increase int part of parameter = L117: T_dense1_t (33.0%) <30,18>
+L117: typedef ap_fixed<31,18> T_dense1_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease int part of parameter = L117: T_dense1_t (33.0%) <30,17>
+L117: typedef ap_fixed<29,16> T_dense1_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Starting to increase frac part of parameter = L117: T_dense1_t (33.0%) <30,16>
+L117: typedef ap_fixed<31,17> T_dense1_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease frac part of parameter = L117: T_dense1_t (33.0%) <30,17>
+L117: typedef ap_fixed<29,17> T_dense1_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Best configuration for this parameter found = L117: T_dense1_t (33.0%) <30,18> (accuracy: 33.00 -> 33.00)
+----------------------------------------------------------------------------------------------------
+Current parameter = L118: T_dense1_weight_t (33.0%) <30,18>
+Starting exploration for this parameter using previously found widths: (30, 18)
+L118: typedef ap_fixed<30,18> T_dense1_weight_t; | 
+Found accuracy: 28.00, which dropped too much, so revert to original values: (30, 18)
+Starting to increase int part of parameter = L118: T_dense1_weight_t (33.0%) <30,18>
+L118: typedef ap_fixed<31,18> T_dense1_weight_t; | 
+Found accuracy: 29.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease int part of parameter = L118: T_dense1_weight_t (33.0%) <30,17>
+L118: typedef ap_fixed<29,16> T_dense1_weight_t; | 
+Found accuracy: 29.00
+Accuracy is too low
+
+Starting to increase frac part of parameter = L118: T_dense1_weight_t (33.0%) <30,16>
+L118: typedef ap_fixed<31,17> T_dense1_weight_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease frac part of parameter = L118: T_dense1_weight_t (33.0%) <30,17>
+L118: typedef ap_fixed<29,17> T_dense1_weight_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Best configuration for this parameter found = L118: T_dense1_weight_t (33.0%) <30,18> (accuracy: 33.00 -> 33.00)
+----------------------------------------------------------------------------------------------------
+Current parameter = L119: T_dense1_accum_t (33.0%) <30,18>
+Starting exploration for this parameter using previously found widths: (30, 18)
+L119: typedef ap_fixed<30,18> T_dense1_accum_t; | 
+Found accuracy: 28.00, which dropped too much, so revert to original values: (30, 18)
+Starting to increase int part of parameter = L119: T_dense1_accum_t (33.0%) <30,18>
+L119: typedef ap_fixed<31,18> T_dense1_accum_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease int part of parameter = L119: T_dense1_accum_t (33.0%) <30,17>
+L119: typedef ap_fixed<29,16> T_dense1_accum_t; | 
+Found accuracy: 29.00
+Accuracy is too low
+
+Starting to increase frac part of parameter = L119: T_dense1_accum_t (33.0%) <30,16>
+L119: typedef ap_fixed<31,17> T_dense1_accum_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease frac part of parameter = L119: T_dense1_accum_t (33.0%) <30,17>
+L119: typedef ap_fixed<29,17> T_dense1_accum_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Best configuration for this parameter found = L119: T_dense1_accum_t (33.0%) <30,18> (accuracy: 33.00 -> 33.00)
+----------------------------------------------------------------------------------------------------
+Current parameter = L123: top_transformer_0_t (33.0%) <30,18>
+Starting exploration for this parameter using previously found widths: (30, 18)
+L123: typedef ap_fixed<30,18> top_transformer_0_t; | 
+Found accuracy: 28.00, which dropped too much, so revert to original values: (30, 18)
+Starting to increase int part of parameter = L123: top_transformer_0_t (33.0%) <30,18>
+L123: typedef ap_fixed<31,18> top_transformer_0_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease int part of parameter = L123: top_transformer_0_t (33.0%) <30,17>
+L123: typedef ap_fixed<29,16> top_transformer_0_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Starting to increase frac part of parameter = L123: top_transformer_0_t (33.0%) <30,16>
+L123: typedef ap_fixed<31,17> top_transformer_0_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease frac part of parameter = L123: top_transformer_0_t (33.0%) <30,17>
+L123: typedef ap_fixed<29,17> top_transformer_0_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Best configuration for this parameter found = L123: top_transformer_0_t (33.0%) <30,18> (accuracy: 33.00 -> 33.00)
+----------------------------------------------------------------------------------------------------
+Current parameter = L124: top_transformer_1_t (33.0%) <30,18>
+Starting exploration for this parameter using previously found widths: (30, 18)
+L124: typedef ap_fixed<30,18> top_transformer_1_t; | 
+Found accuracy: 28.00, which dropped too much, so revert to original values: (30, 18)
+Starting to increase int part of parameter = L124: top_transformer_1_t (33.0%) <30,18>
+L124: typedef ap_fixed<31,18> top_transformer_1_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease int part of parameter = L124: top_transformer_1_t (33.0%) <30,17>
+L124: typedef ap_fixed<29,16> top_transformer_1_t; | 
+Found accuracy: 27.00
+Accuracy is too low
+
+Starting to increase frac part of parameter = L124: top_transformer_1_t (33.0%) <30,16>
+L124: typedef ap_fixed<31,17> top_transformer_1_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease frac part of parameter = L124: top_transformer_1_t (33.0%) <30,17>
+L124: typedef ap_fixed<29,17> top_transformer_1_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Best configuration for this parameter found = L124: top_transformer_1_t (33.0%) <30,18> (accuracy: 33.00 -> 33.00)
+----------------------------------------------------------------------------------------------------
+Current parameter = L125: top_transformer_2_t (33.0%) <30,18>
+Starting exploration for this parameter using previously found widths: (30, 18)
+L125: typedef ap_fixed<30,18> top_transformer_2_t; | 
+Found accuracy: 28.00, which dropped too much, so revert to original values: (30, 18)
+Starting to increase int part of parameter = L125: top_transformer_2_t (33.0%) <30,18>
+L125: typedef ap_fixed<31,18> top_transformer_2_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease int part of parameter = L125: top_transformer_2_t (33.0%) <30,17>
+L125: typedef ap_fixed<29,16> top_transformer_2_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Starting to increase frac part of parameter = L125: top_transformer_2_t (33.0%) <30,16>
+L125: typedef ap_fixed<31,17> top_transformer_2_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease frac part of parameter = L125: top_transformer_2_t (33.0%) <30,17>
+L125: typedef ap_fixed<29,17> top_transformer_2_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Best configuration for this parameter found = L125: top_transformer_2_t (33.0%) <30,18> (accuracy: 33.00 -> 33.00)
+----------------------------------------------------------------------------------------------------
+Current parameter = L127: top_mlp_dim_red_t (33.0%) <30,18>
+Starting exploration for this parameter using previously found widths: (30, 18)
+L127: typedef ap_fixed<30,18> top_mlp_dim_red_t; | 
+Found accuracy: 28.00, which dropped too much, so revert to original values: (30, 18)
+Starting to increase int part of parameter = L127: top_mlp_dim_red_t (33.0%) <30,18>
+L127: typedef ap_fixed<31,18> top_mlp_dim_red_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease int part of parameter = L127: top_mlp_dim_red_t (33.0%) <30,17>
+L127: typedef ap_fixed<29,16> top_mlp_dim_red_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Starting to increase frac part of parameter = L127: top_mlp_dim_red_t (33.0%) <30,16>
+L127: typedef ap_fixed<31,17> top_mlp_dim_red_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease frac part of parameter = L127: top_mlp_dim_red_t (33.0%) <30,17>
+L127: typedef ap_fixed<29,17> top_mlp_dim_red_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Best configuration for this parameter found = L127: top_mlp_dim_red_t (33.0%) <30,18> (accuracy: 33.00 -> 33.00)
+----------------------------------------------------------------------------------------------------
+Current parameter = L129: top_norm_t (33.0%) <30,18>
+Starting exploration for this parameter using previously found widths: (30, 18)
+L129: typedef ap_fixed<30,18> top_norm_t; | 
+Found accuracy: 28.00, which dropped too much, so revert to original values: (30, 18)
+Starting to increase int part of parameter = L129: top_norm_t (33.0%) <30,18>
+L129: typedef ap_fixed<31,18> top_norm_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease int part of parameter = L129: top_norm_t (33.0%) <30,17>
+L129: typedef ap_fixed<29,16> top_norm_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Starting to increase frac part of parameter = L129: top_norm_t (33.0%) <30,16>
+L129: typedef ap_fixed<31,17> top_norm_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease frac part of parameter = L129: top_norm_t (33.0%) <30,17>
+L129: typedef ap_fixed<29,17> top_norm_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Best configuration for this parameter found = L129: top_norm_t (33.0%) <30,18> (accuracy: 33.00 -> 33.00)
+----------------------------------------------------------------------------------------------------
+Current parameter = L130: top_norm_weight_t (33.0%) <30,18>
+Starting exploration for this parameter using previously found widths: (30, 18)
+L130: typedef ap_fixed<30,18> top_norm_weight_t; | 
+Found accuracy: 28.00, which dropped too much, so revert to original values: (30, 18)
+Starting to increase int part of parameter = L130: top_norm_weight_t (33.0%) <30,18>
+L130: typedef ap_fixed<31,18> top_norm_weight_t; | 
+Found accuracy: 27.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease int part of parameter = L130: top_norm_weight_t (33.0%) <30,17>
+L130: typedef ap_fixed<29,16> top_norm_weight_t; | 
+Found accuracy: 27.00
+Accuracy is too low
+
+Starting to increase frac part of parameter = L130: top_norm_weight_t (33.0%) <30,16>
+L130: typedef ap_fixed<31,17> top_norm_weight_t; | 
+Found accuracy: 27.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease frac part of parameter = L130: top_norm_weight_t (33.0%) <30,17>
+L130: typedef ap_fixed<29,17> top_norm_weight_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Best configuration for this parameter found = L130: top_norm_weight_t (33.0%) <30,18> (accuracy: 33.00 -> 33.00)
+----------------------------------------------------------------------------------------------------
+Current parameter = L131: top_norm_bias_t (33.0%) <30,18>
+Starting exploration for this parameter using previously found widths: (30, 18)
+L131: typedef ap_fixed<30,18> top_norm_bias_t; | 
+Found accuracy: 28.00, which dropped too much, so revert to original values: (30, 18)
+Starting to increase int part of parameter = L131: top_norm_bias_t (33.0%) <30,18>
+L131: typedef ap_fixed<31,18> top_norm_bias_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease int part of parameter = L131: top_norm_bias_t (33.0%) <30,17>
+L131: typedef ap_fixed<29,16> top_norm_bias_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Starting to increase frac part of parameter = L131: top_norm_bias_t (33.0%) <30,16>
+L131: typedef ap_fixed<31,17> top_norm_bias_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease frac part of parameter = L131: top_norm_bias_t (33.0%) <30,17>
+L131: typedef ap_fixed<29,17> top_norm_bias_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Best configuration for this parameter found = L131: top_norm_bias_t (33.0%) <30,18> (accuracy: 33.00 -> 33.00)
+----------------------------------------------------------------------------------------------------
+Current parameter = L133: top_mlp_t (33.0%) <30,18>
+Starting exploration for this parameter using previously found widths: (30, 18)
+L133: typedef ap_fixed<30,18> top_mlp_t; | 
+Found accuracy: 28.00, which dropped too much, so revert to original values: (30, 18)
+Starting to increase int part of parameter = L133: top_mlp_t (33.0%) <30,18>
+L133: typedef ap_fixed<31,18> top_mlp_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease int part of parameter = L133: top_mlp_t (33.0%) <30,17>
+L133: typedef ap_fixed<29,16> top_mlp_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Starting to increase frac part of parameter = L133: top_mlp_t (33.0%) <30,16>
+L133: typedef ap_fixed<31,17> top_mlp_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease frac part of parameter = L133: top_mlp_t (33.0%) <30,17>
+L133: typedef ap_fixed<29,17> top_mlp_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Best configuration for this parameter found = L133: top_mlp_t (33.0%) <30,18> (accuracy: 33.00 -> 33.00)
+----------------------------------------------------------------------------------------------------
+Current parameter = L134: top_mlp_weight_t (33.0%) <30,18>
+Starting exploration for this parameter using previously found widths: (30, 18)
+L134: typedef ap_fixed<30,18> top_mlp_weight_t; | 
+Found accuracy: 28.00, which dropped too much, so revert to original values: (30, 18)
+Starting to increase int part of parameter = L134: top_mlp_weight_t (33.0%) <30,18>
+L134: typedef ap_fixed<31,18> top_mlp_weight_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease int part of parameter = L134: top_mlp_weight_t (33.0%) <30,17>
+L134: typedef ap_fixed<29,16> top_mlp_weight_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Starting to increase frac part of parameter = L134: top_mlp_weight_t (33.0%) <30,16>
+L134: typedef ap_fixed<31,17> top_mlp_weight_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease frac part of parameter = L134: top_mlp_weight_t (33.0%) <30,17>
+L134: typedef ap_fixed<29,17> top_mlp_weight_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Best configuration for this parameter found = L134: top_mlp_weight_t (33.0%) <30,18> (accuracy: 33.00 -> 33.00)
+----------------------------------------------------------------------------------------------------
+Current parameter = L135: top_mlp_bias_t (33.0%) <30,18>
+Starting exploration for this parameter using previously found widths: (30, 18)
+L135: typedef ap_fixed<30,18> top_mlp_bias_t; | 
+Found accuracy: 28.00, which dropped too much, so revert to original values: (30, 18)
+Starting to increase int part of parameter = L135: top_mlp_bias_t (33.0%) <30,18>
+L135: typedef ap_fixed<31,18> top_mlp_bias_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease int part of parameter = L135: top_mlp_bias_t (33.0%) <30,17>
+L135: typedef ap_fixed<29,16> top_mlp_bias_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Starting to increase frac part of parameter = L135: top_mlp_bias_t (33.0%) <30,16>
+L135: typedef ap_fixed<31,17> top_mlp_bias_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease frac part of parameter = L135: top_mlp_bias_t (33.0%) <30,17>
+L135: typedef ap_fixed<29,17> top_mlp_bias_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Best configuration for this parameter found = L135: top_mlp_bias_t (33.0%) <30,18> (accuracy: 33.00 -> 33.00)
+----------------------------------------------------------------------------------------------------
+Current parameter = L136: top_mlp_accum_t (33.0%) <30,18>
+Starting exploration for this parameter using previously found widths: (30, 18)
+L136: typedef ap_fixed<30,18> top_mlp_accum_t; | 
+Found accuracy: 28.00, which dropped too much, so revert to original values: (30, 18)
+Starting to increase int part of parameter = L136: top_mlp_accum_t (33.0%) <30,18>
+L136: typedef ap_fixed<31,18> top_mlp_accum_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease int part of parameter = L136: top_mlp_accum_t (33.0%) <30,17>
+L136: typedef ap_fixed<29,16> top_mlp_accum_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Starting to increase frac part of parameter = L136: top_mlp_accum_t (33.0%) <30,16>
+L136: typedef ap_fixed<31,17> top_mlp_accum_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease frac part of parameter = L136: top_mlp_accum_t (33.0%) <30,17>
+L136: typedef ap_fixed<29,17> top_mlp_accum_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Best configuration for this parameter found = L136: top_mlp_accum_t (33.0%) <30,18> (accuracy: 33.00 -> 33.00)
+----------------------------------------------------------------------------------------------------
+Current parameter = L138: top_mlp_red_t (33.0%) <30,18> (N=12, T=5)
+Starting exploration for this parameter using previously found widths: (30, 18)
+L138: typedef ap_fixed<30,18> top_mlp_red_t; // N=12, T=5 | 
+Found accuracy: 28.00, which dropped too much, so revert to original values: (30, 18)
+Starting to increase int part of parameter = L138: top_mlp_red_t (33.0%) <30,18> (N=12, T=5)
+L138: typedef ap_fixed<31,18> top_mlp_red_t; // N=12, T=5 | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease int part of parameter = L138: top_mlp_red_t (33.0%) <30,17> (N=12, T=5)
+L138: typedef ap_fixed<29,16> top_mlp_red_t; // N=12, T=5 | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Starting to increase frac part of parameter = L138: top_mlp_red_t (33.0%) <30,16> (N=12, T=5)
+L138: typedef ap_fixed<31,17> top_mlp_red_t; // N=12, T=5 | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease frac part of parameter = L138: top_mlp_red_t (33.0%) <30,17> (N=12, T=5)
+L138: typedef ap_fixed<29,17> top_mlp_red_t; // N=12, T=5 | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Best configuration for this parameter found = L138: top_mlp_red_t (33.0%) <30,18> (N=12, T=5) (accuracy: 33.00 -> 33.00)
+----------------------------------------------------------------------------------------------------
+Current parameter = L139: top_log_softmax_exp_t (33.0%) <30,18> (N=12, T=5)
+Starting exploration for this parameter using previously found widths: (30, 18)
+L139: typedef ap_fixed<30,18> top_log_softmax_exp_t; // N=12, T=5 | 
+Found accuracy: 28.00, which dropped too much, so revert to original values: (30, 18)
+Starting to increase int part of parameter = L139: top_log_softmax_exp_t (33.0%) <30,18> (N=12, T=5)
+L139: typedef ap_fixed<31,18> top_log_softmax_exp_t; // N=12, T=5 | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease int part of parameter = L139: top_log_softmax_exp_t (33.0%) <30,17> (N=12, T=5)
+L139: typedef ap_fixed<29,16> top_log_softmax_exp_t; // N=12, T=5 | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Starting to increase frac part of parameter = L139: top_log_softmax_exp_t (33.0%) <30,16> (N=12, T=5)
+L139: typedef ap_fixed<31,17> top_log_softmax_exp_t; // N=12, T=5 | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease frac part of parameter = L139: top_log_softmax_exp_t (33.0%) <30,17> (N=12, T=5)
+L139: typedef ap_fixed<29,17> top_log_softmax_exp_t; // N=12, T=5 | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Best configuration for this parameter found = L139: top_log_softmax_exp_t (33.0%) <30,18> (N=12, T=5) (accuracy: 33.00 -> 33.00)
+----------------------------------------------------------------------------------------------------
+Current parameter = L140: top_log_softmax_log_t (33.0%) <30,18> (N=12, T=4)
+Starting exploration for this parameter using previously found widths: (30, 18)
+L140: typedef ap_fixed<30,18> top_log_softmax_log_t; // N=12, T=4 | 
+Found accuracy: 28.00, which dropped too much, so revert to original values: (30, 18)
+Starting to increase int part of parameter = L140: top_log_softmax_log_t (33.0%) <30,18> (N=12, T=4)
+L140: typedef ap_fixed<31,18> top_log_softmax_log_t; // N=12, T=4 | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease int part of parameter = L140: top_log_softmax_log_t (33.0%) <30,17> (N=12, T=4)
+L140: typedef ap_fixed<29,16> top_log_softmax_log_t; // N=12, T=4 | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Starting to increase frac part of parameter = L140: top_log_softmax_log_t (33.0%) <30,16> (N=12, T=4)
+L140: typedef ap_fixed<31,17> top_log_softmax_log_t; // N=12, T=4 | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease frac part of parameter = L140: top_log_softmax_log_t (33.0%) <30,17> (N=12, T=4)
+L140: typedef ap_fixed<29,17> top_log_softmax_log_t; // N=12, T=4 | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Best configuration for this parameter found = L140: top_log_softmax_log_t (33.0%) <30,18> (N=12, T=4) (accuracy: 33.00 -> 33.00)
+----------------------------------------------------------------------------------------------------
+Current parameter = L141: N_LOG_SOFTMAX (33.0%) [4096]
+----------------------------------------------------------------------------------------------------
+Current parameter = L142: LOG_TARGET (33.0%) target = 5
+----------------------------------------------------------------------------------------------------
+Current parameter = L143: LOG_EXP_TARGET (33.0%) target = 4
+----------------------------------------------------------------------------------------------------
+Current parameter = L145: result_t (33.0%) <30,18>
+Starting exploration for this parameter using previously found widths: (30, 18)
+L145: typedef ap_fixed<30,18> result_t; | 
+Found accuracy: 28.00, which dropped too much, so revert to original values: (30, 18)
+Starting to increase int part of parameter = L145: result_t (33.0%) <30,18>
+L145: typedef ap_fixed<31,18> result_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease int part of parameter = L145: result_t (33.0%) <30,17>
+L145: typedef ap_fixed<29,16> result_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Starting to increase frac part of parameter = L145: result_t (33.0%) <30,16>
+L145: typedef ap_fixed<31,17> result_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+No significant improvement was found when increasing, so decreasing now
+Starting to decrease frac part of parameter = L145: result_t (33.0%) <30,17>
+L145: typedef ap_fixed<29,17> result_t; | 
+Found accuracy: 28.00
+Accuracy is too low
+
+Best configuration for this parameter found = L145: result_t (33.0%) <30,18> (accuracy: 33.00 -> 33.00)
+Analysis finished in 18.579 h
+All parameters analysed, accuracy: 25.00 -> 33.00
+Total fixed precision bits went from 1830 to 1812
+Best parameters configuration:
+L47: input_t (28.999999999999996%) <17,9>
+L49: top_embedded_t (33.0%) <25,14>
+L50: top_embedded_weight_t (33.0%) <30,18>
+L51: top_embedded_bias_t (33.0%) <30,18>
+L52: top_embedded_accum_t (33.0%) <30,18>
+L54: top_cls_token_t (33.0%) <30,18>
+L58: SA_norm_t (33.0%) <30,18>
+L59: SA_norm_weight_t (33.0%) <30,18>
+L60: SA_norm_bias_t (33.0%) <30,18>
+L62: SA_Q_t (33.0%) <30,18>
+L63: SA_Q_weight_t (33.0%) <30,18>
+L64: SA_Q_accum_t (33.0%) <30,18>
+L66: SA_K_t (33.0%) <30,18>
+L67: SA_K_weight_t (33.0%) <30,18>
+L68: SA_K_accum_t (33.0%) <30,18>
+L70: SA_V_t (33.0%) <30,18>
+L71: SA_V_weight_t (33.0%) <30,18>
+L72: SA_V_accum_t (33.0%) <30,18>
+L74: SA_energy_t (33.0%) <30,18>
+L76: SA_exp_norm_t (33.0%) <30,18>
+L77: SA_exp_norm_weight_t (33.0%) <30,18>
+L78: SA_exp_norm_bias_t (33.0%) <30,18>
+L80: SA_exp_norm_red_t (33.0%) <30,18> (N=12, T=4)
+L81: SA_softmax_exp_t (33.0%) <30,18> (N=12, T=4)
+L82: SA_softmax_inv_t (33.0%) <30,18> (N=12, T=7)
+L87: SA_attention_t (33.0%) <30,18>
+L89: SA_scaled_attention_t (33.0%) <30,18>
+L91: SA_dense_weight_t (33.0%) <30,18>
+L92: SA_dense_bias_t (33.0%) <30,18>
+L93: SA_dense_accum_t (33.0%) <30,18>
+L95: SA_result_t (33.0%) <30,18>
+L99: SA_result_sum_t (33.0%) <30,18>
+L101: T_norm0_t (33.0%) <30,18>
+L102: T_norm0_weight_t (33.0%) <30,18>
+L103: T_norm0_bias_t (33.0%) <30,18>
+L105: T_activ0_t (33.0%) <30,18>
+L107: T_dense0_t (33.0%) <30,18>
+L108: T_dense0_weight_t (33.0%) <30,18>
+L109: T_dense0_accum_t (33.0%) <30,18>
+L111: T_norm1_t (33.0%) <30,18>
+L112: T_norm1_weight_t (33.0%) <30,18>
+L113: T_norm1_bias_t (33.0%) <30,18>
+L115: T_activ1_t (33.0%) <30,18>
+L117: T_dense1_t (33.0%) <30,18>
+L118: T_dense1_weight_t (33.0%) <30,18>
+L119: T_dense1_accum_t (33.0%) <30,18>
+L123: top_transformer_0_t (33.0%) <30,18>
+L124: top_transformer_1_t (33.0%) <30,18>
+L125: top_transformer_2_t (33.0%) <30,18>
+L127: top_mlp_dim_red_t (33.0%) <30,18>
+L129: top_norm_t (33.0%) <30,18>
+L130: top_norm_weight_t (33.0%) <30,18>
+L131: top_norm_bias_t (33.0%) <30,18>
+L133: top_mlp_t (33.0%) <30,18>
+L134: top_mlp_weight_t (33.0%) <30,18>
+L135: top_mlp_bias_t (33.0%) <30,18>
+L136: top_mlp_accum_t (33.0%) <30,18>
+L138: top_mlp_red_t (33.0%) <30,18> (N=12, T=5)
+L139: top_log_softmax_exp_t (33.0%) <30,18> (N=12, T=5)
+L140: top_log_softmax_log_t (33.0%) <30,18> (N=12, T=4)
+L145: result_t (33.0%) <30,18>
