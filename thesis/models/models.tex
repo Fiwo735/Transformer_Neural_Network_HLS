@@ -76,12 +76,12 @@ The algorithm behind the parameter extraction is rather simple, and the difficul
 \section{Ultra-Low Latency Architecture}
 The first of the proposed architectures targets the HLF representation dataset, where each sample is of \(\mathbb{R}^{1 \times 16}\) dimensions, making it a better candidate for an \(N\) times faster inference than the constituent list representation with inputs with \(\mathbb{R}^{N \times 16}\) dimensions. The simpler data means that the network can achieve satisfactory classification results with a lower learning capacity, hence allowing for various simplifications of the base architecture.
 
-\subsection{Simplification and Tuning}
+\subsection{Optimization and Tuning}
 The hypothesis leading the optimization process is that the HLF dataset can be learned by a relatively lower complexity network. The strategy is to start with the accuracy and AUC value of the base architecture and keep applying changes to the network as long as they do lead to significant drops in classification results, with detailed evaluation discussed in 
 \cref{evaluation}. Doing so is inherently beneficial for the later FPGA mapping, as even without hardware-aware changes, a simpler model is likely to require less resources and achieve lower latency.
 
 The architecture features that have the highest influence on the overall performance are the size of the latent dimension and number of transformer layer. In the case of the original transformer model \cite{44-vaswani2017attention}, 12 transformer layers are used, split equally into a decoder and encoder parts of the networks. This, along with latent dimension size of 512 shows that jet tagging requires significantly less complexity compared to natural language processing, as the recent ConstituentNet \cite{3-yuan2021constituentnet:} is based on only 3 transformer layers and embedded dimension of 64. However, as the latter network targets a more complex dataset, the first optimization performed in this project yielded a reduction to only a single transformer layer with latent size of 16. The network complexity is directly proportional to the number of layers, while the self-attention complexities shown in \cref{self-attention} can be simplified given the dimensions of \textit{queries}, \textit{keys}, and \textit{values} are shared and equal to \(\in \mathbb{R}^{N \times d}\) in this work, 
-as shown in equation \ref{eq:qkv-complexity-time-simple} and \ref{eq:qkv-complexity-space-simple} for time and space respectively.
+as shown in equation \ref{eq:qkv-complexity-time-simple} and \ref{eq:qkv-complexity-space-simple} for time and space respectively. It is worth mentioning that the shared dimension \(d\) is purposefully represented this way as it is equal to the model embedded dimension \(d\).
 
 \begin{equation}\label{eq:qkv-complexity-time-simple}
   \mathcal{O}(h \cdot (N_Q N_K (d_Q + d_V) + d_Q^2 (N_Q + N_K) + d_V^2 N_K + N_Q d_V d_{out}) )) \equiv
@@ -114,32 +114,33 @@ The optimizations described in the previous subsection correspond to a noticeabl
 \end{figure}
 
 
-\section{Accuracy-Focused Architecture}
-\indo{State the goal and recap the constituent net dataset}
-\indo{Talk about big value range of inputs and how we cannot preprocess unless it becomes part of the system (which it does for example to combat numerical instability)}
-\indo{Mention how data could be preprocessed in general and reason most methods are too slow/not worth it}
-\indo{|}
-\indo{|}
+\section{Accuracy-Focused Architecture}\label{accuracy-focused-model}
+The aim of the second architecture is to exploit a bigger design along with the more complex constituent list dataset to achieve a higher accuracy and AUC value that the ultra-low latency model while still meeting the latency constraints of L1T at LHC. In addition, this design undergoes a design space exploration to compare and reason about a number of existing and novel techniques.
 
-\subsection{Simplification and Tuning}
-\indo{List optimizations/simplifications and why they happened, back as much as possible with dataset and being hardware-aware}
-\indo{stability issues solved by more normalization (coming from wide range of inputs of 30x16)}
-\indo{splitting QKV into 3 separate mults}
-\indo{|}
-\indo{|}
-\indo{|}
-\indo{|}
-\indo{|}
+\subsection{Optimization and Tuning}
+Aside from the increase in computational complexity, the biggest difference caused by changing the datasets is the vastly different range and distribution of samples, showcased in figure TODO. While the network could perform normalization as its first layer, this approach was tested to significantly degrade the results quality. This is likely due to the fact that each samples' feature follows a distinct distribution and lays within a different range, so normalizing causes a loss in the provided information. These distributions can be seen in figure TODO. \maybe{Maybe claim visual differences between distributions of HLF and constituent list}
+
+Normalization and data distribution also need to be discussed for a different reason in the context of this architecture. The layer normalization layers present in the base design are not completely omitted this time, and instead changed to batch normalization. Although the layer normalization characteristic of not tracking running statistics and relying on per-layer normalization during evaluation can yield improvement to classification results, it is not a desired behavior for FPGA mapping due to the lack of hardware support for the square root and division operations. This could be resolved in an analogous way to batch norm by simply manually tracking the statistics, but this was experimentally proven to substantially affect the accuracy. What is more, the less clustered and more diverse distributions of constituent list dataset features lead to numerical instability in softmax calculations of the exponential function. Even though this was a marginal issue for the PyTorch implementation, it was quickly observed to drastically change the expected outcome of the early HLS prototype implementations. A solution to this issue lays in using additional normalization layers just before the self-attention softmax blocks, which not only solved this problem, but also very slightly increased the learning capacity of the network.
+
+\todofig{Diagram of weight merging and splitting for QKV}
+\todofig{|}
+\todofig{|}
+\todofig{|}
+\todofig{|}
+\todofig{|}
+\todofig{|}
+
+It is a common for GPU training to merge together adequately shaped fully-connected layers, as seen in figure TODO. This allows the GPU to more optimally use its resources for the computation, potentially decreasing the training time without affecting the results. Nonetheless, this approach was dropped for this architecture to avoid generating one bigger weight matrix in favor of several smaller ones. Contrary to GPUs, the synthesis process for FPGAs benefits from smaller precomputed matrices as it is easier for the algorithm the map them to certain BRAMs or LUTs that are close to the components that read from or write to them. With the significantly smaller dimension sizes for the ultra-low latency model, this aspect generated negligible difference, while in this architecture the merged weight matrix size would exceed a reasonable size and lead to an extremely long synthesis process and likely suboptimal hardware mapping.
+
+Lastly, some optimizations are inherited from the ultra-low latency architecture. The SiLU are replaced by ReLU activations, while embedding and encoding are simply implemented by a fully-connected layer and a learnable parameter. When it comes to the transformer layer count and latent dimension size, they follow the configuration of ConstituentNet of 3 and 64, however, a closer evaluation and discussion about these are carried in \cref{evaluation}.
 
 \subsection{Summary}
-\indo{Short summary and pointing to diagram}
-\indo{|}
-\indo{|}
+In this case, the resulting architecture is much more similar to the base one in terms of its overall structure, however it differs from it with the crucial changes to normalization layers, activation function and modifications to the multi-head self-attention block. The overview of this design can be seen in figure \ref{fig:constituent-net-accuracy}.
 
 \begin{figure}[hpt!]
   \centering
   \includegraphics[trim={0cm 0cm 0cm 0cm}, width=0.6\textwidth, center]{models/constituent_net_accuracy.pdf}
-  \caption{Diagram with an overview of the accuracy-focused architecture.}
+  \caption{Diagram with an overview of the accuracy-focused architecture; the inclusion of batch normalization before softmax within the multi-head self-attention block is not showcased for the sake of clarity.}
   \label{fig:constituent-net-accuracy}
 \end{figure}
 
