@@ -1,5 +1,5 @@
 \chapter{Architecture Exploration}\label{models}
-This chapter presents the proposed neural network architectures. It starts with a baseline TNN network implemented in \texttt{PyTorch}, which then undergoes a series of hardware-aware adaptions specific to jet tagging. During this process two separate architectures are developed, which differ by the input type and design goal. The first one, referred to as the \textit{ultra-low latency} one, targets the HLF jet representation and aims to achieve the lowest possible latency at the cost of accuracy and AUC values. The second one, called \textit{accuracy-focused}, is based on the constituent list jet representation and trade-offs latency for quality of classification while still remaining within L1T timing constraints.
+This chapter presents the proposed neural network architectures. It starts with a baseline TNN network implemented in \texttt{PyTorch}, which then undergoes a series of hardware-aware adaptions specific to jet tagging. During this process two separate architectures are developed, which differ by the input type and design goal. The first one, referred to as the \textit{ultra-low latency} one, targets the HLF jet representation and aims to achieve the lowest possible latency at the cost of accuracy and AUC values. The second one, called \textit{accuracy-focused}, is based on the constituent list jet representation and trade-offs latency for quality of classification while still remaining within L1T timing constraints. In the end, the mechanism of quantization-aware training is explained, with a proposed way of implementing it in this project.
 
 
 \section{Base Architecture}
@@ -122,15 +122,14 @@ Aside from the increase in computational complexity, the biggest difference caus
 
 Normalization and data distribution also need to be discussed for a different reason in the context of this architecture. The layer normalization layers present in the base design are not completely omitted this time, and instead changed to batch normalization. Although the layer normalization characteristic of not tracking running statistics and relying on per-layer normalization during evaluation can yield improvement to classification results, it is not a desired behavior for FPGA mapping due to the lack of hardware support for the square root and division operations. This could be resolved in an analogous way to batch norm by simply manually tracking the statistics, but this was experimentally proven to substantially affect the accuracy. What is more, the less clustered and more diverse distributions of constituent list dataset features lead to numerical instability in softmax calculations of the exponential function. Even though this was a marginal issue for the PyTorch implementation, it was quickly observed to drastically change the expected outcome of the early HLS prototype implementations. A solution to this issue lays in using additional normalization layers just before the self-attention softmax blocks, which not only solved this problem, but also very slightly increased the learning capacity of the network.
 
-\todofig{Diagram of weight merging and splitting for QKV}
-\todofig{|}
-\todofig{|}
-\todofig{|}
-\todofig{|}
-\todofig{|}
-\todofig{|}
+\begin{figure}[hpt!]
+  \centering
+  \includegraphics[trim={0cm 0cm 0cm 0cm}, width=0.7\textwidth, center]{models/weight_merging.pdf}
+  \caption{Simple illustration for equivalency between matrix multiplication using merged and unmerged weights on the example of \textit{queries}, \textit{keys}, and \textit{values} used in self-attention.}
+  \label{fig:weight-merging}
+\end{figure}
 
-It is a common for GPU training to merge together adequately shaped fully-connected layers, as seen in figure TODO. This allows the GPU to more optimally use its resources for the computation, potentially decreasing the training time without affecting the results. Nonetheless, this approach was dropped for this architecture to avoid generating one bigger weight matrix in favor of several smaller ones. Contrary to GPUs, the synthesis process for FPGAs benefits from smaller precomputed matrices as it is easier for the algorithm the map them to certain BRAMs or LUTs that are close to the components that read from or write to them. With the significantly smaller dimension sizes for the ultra-low latency model, this aspect generated negligible difference, while in this architecture the merged weight matrix size would exceed a reasonable size and lead to an extremely long synthesis process and likely suboptimal hardware mapping.
+It is a common for GPU training to merge together adequately shaped fully-connected layers, as seen in figure \ref{fig:weight-merging}. This allows the GPU to more optimally use its resources for the computation, potentially decreasing the training time without affecting the results. Nonetheless, this approach was dropped for this architecture to avoid generating one bigger weight matrix in favor of several smaller ones. Contrary to GPUs, the synthesis process for FPGAs benefits from smaller precomputed matrices as it is easier for the algorithm the map them to certain BRAMs or LUTs that are close to the components that read from or write to them. With the significantly smaller dimension sizes for the ultra-low latency model, this aspect generated negligible difference, while in this architecture the merged weight matrix size would exceed a reasonable size and lead to an extremely long synthesis process and likely suboptimal hardware mapping.
 
 Lastly, some optimizations are inherited from the ultra-low latency architecture. The SiLU are replaced by ReLU activations, while embedding and encoding are simply implemented by a fully-connected layer and a learnable parameter. When it comes to the transformer layer count and latent dimension size, they follow the configuration of ConstituentNet of 3 and 64, however, a closer evaluation and discussion about these are carried in \cref{evaluation}.
 
@@ -145,19 +144,67 @@ In this case, the resulting architecture is much more similar to the base one in
 \end{figure}
 
 
-\section{Pre-training Quantization}
-\indo{Explain what it is and why we do pre-training quantization}
-\indo{|}
-\indo{|}
-\indo{Mention PyTorch Eager Mode and PyTorch FX Graph Mode, give some explanation and show what they can and cannot, overall they are too experimental and cannot support transformer yet}
-\indo{|}
-\indo{|}
-\indo{|}
-\indo{|}
-\indo{Mention Brevitas, how it compares to PyTorch}
-\indo{|}
-\indo{Mention QPyTorch, how it compares to PyTorch, Brevitas and why it is the best here}
-\indo{|}
-\indo{|}
+\section{Quantization-Aware Training}
+The use of the term \textit{quantization} in the topic of machine learning and reconfigurable hardware might appear as a misnomer if one follows the definition used in signal processing, where it refers to constraining continuous values to a set of discrete ones. However, this definition can be extended for converting values from a very large set of discrete values to a 
+significantly smaller ones. This is the case when half (16 bits), single (32 bits) or double (64 bits) precision floating-point numbers are expressed using a fixed-point representation. This leads to an inherent quantization noise because many distinct values in floating-point representation map to the same number when stored as fixed-point, which can be seen in figure \ref{fig:float-to-fixed} \cite{76-shaumontfixed}. Although this work exploits fixed-point arithmetic for its efficient hardware representation, it has to be noted that quantizing is also used for time and space efficient GPU inference as it can vastly lower the total bits used across model's weights, hence reducing the required memory and computational complexity.
+
+\begin{figure}[hpt!]
+  \centering
+  \includegraphics[trim={0cm 0cm 0cm 0cm}, width=0.6\textwidth, center]{models/float_to_fixed.jpg}
+  \caption{Quantization noise from 32-bit floating-point to 3-bit (2-bit integer, 1-bit fractional) fixed-point representation; widths selected to highlight the behavior. Two methods of handling values outside representable range are showed: classic overflow as well as saturation to minimum or maximum value.}
+  \label{fig:float-to-fixed}
+\end{figure}
+
+\subsection{Floating-point and Fixed-point Representations}
+To bring more perspective to this topic, let's start by observing the 16-bit wide floating-point notation with an example seen in equation \ref{eq:floating-point}. \textit{SIGN}, \textit{EXP} and \textit{FRAC} stand for the sign, exponent and fractional\footnote{Also referred to as \textit{significand precision}} fields (sequences of 1's and 0's) of a number.
+
+\begin{equation}\label{eq:floating-point}
+  \{\text{SIGN | EXP | FRAC}\} = 
+  \begin{cases}
+    (-1)^{\text{SIGN}} \cdot 2^{-14} \cdot (0.\text{FRAC}_2) & \text{EXP} = 00\_000_2 \\
+    (-1)^{\text{SIGN}} \cdot 2^{\text{EXP}-15} \cdot (1.\text{FRAC}_2) & \text{EXP} \in [00\_000_2,\; 11\_110_2] \\
+    \pm \infty & \text{EXP} = 11\_111_2
+  \end{cases}
+\end{equation}
+
+The widths of the fields for standard floating-point width can be seen in table \ref{tab:floating-point-widths}, however, the particular details in the example do not need to be fully understood to notice the required complexity of the hardware design to perform operations using floating-point values. It has to first decode each of the fields, check for special values, normalize inputs to a common base, perform the computation, and lastly normalize again and decode the fields. As it can be expected, this comes with a significant overhead compared to integer numbers.
+
+\begin{table}[hpt!]
+  \centering
+  \caption{Comparison of standard precision types for floating-point values. Note the difference in half precisions, where \textit{Brain} offers same the exponent width as single precision, and \textit{binary} priorities fractional precision.}
+  \label{tab:floating-point-widths}
+  \begin{tabular}{|c|c|ccc|}
+  \hline
+  \multirow{2}{*}{\textbf{Precision}} & \multirow{2}{*}{\textbf{Total width}} & \multicolumn{3}{c|}{\textbf{Field width}}                                    \\ \cline{3-5} 
+                                      &                                       & \multicolumn{1}{c|}{sign} & \multicolumn{1}{c|}{exponent} & fractional \\ \hline
+  \textbf{Double}                     & 64                                    & \multicolumn{1}{c|}{1}    & \multicolumn{1}{c|}{11}       & 52         \\ \hline
+  \textbf{Single}                     & 32                                    & \multicolumn{1}{c|}{1}    & \multicolumn{1}{c|}{8}        & 23         \\ \hline
+  \textbf{Half} (\textit{Brain})               & 16                                    & \multicolumn{1}{c|}{1}    & \multicolumn{1}{c|}{8}        & 7          \\ \hline
+  \textbf{Half} \textit{(binary})              & 16                                    & \multicolumn{1}{c|}{1}    & \multicolumn{1}{c|}{5}        & 10         \\ \hline
+  \end{tabular}
+\end{table}
+
+While dedicated circuits exits in CPUs and GPUs to accelerate floating-point calculations, FPGAs tend to use fixed-point representation to achieve superior latency with relatively simple hardware resources. It comprises a sequence of \textit{P} binary digits representing the integer part, then a virtual decimal point, followed by \textit{R} binary digits representing the fractional part, according to equation \ref{eq:fixed-point}.
+
+\begin{equation}\label{eq:fixed-point}
+  \{ I_{P-1} | ... | I_0 | F_{R-1} | ... | F_0 \} = I_{P-1} \cdot 2^{P-1} + ... + I_{0} \cdot 2^{0} + F_{R-1} \cdot 2^{-1} + ... + F_{0} \cdot 2^{-R}
+\end{equation}
+
+The virtual decimal point is not explicitly present in the number, instead the lengths of the sequences are stored which allows for correct handling. There are also no widely adopted standards for the internal widths of fixed-point numbers, as they are often implementation-specific. Fixed-point hardware is only responsible for correctly aligning the inputs in case they vary in width, which is an information know at compile-time, as opposed to run-time for floating-point numbers, which makes it very suitable for FPGAs.
+
+\subsection{Existing Implementations}
+Quantization-aware training refers to training a model using the fixed-point representation of numbers to allow the model to reduce the impact of the quantization noise by learning the underlying data characteristics with less precision. However, approaches differ in the degree to which the quantization is used as it can be applied to training data, weights and biases, intermediate results or any combination of these. It also has to be noted that existing implementations have been designed with different objectives, although to the best of our knowledge, the most widely used ones are still in their very experimental phases at the time of writing this report. The approaches considered for this work are listed below:
+
+\begin{itemize}
+  \item \textbf{PyTorch Eager Mode Quantization} \cite{77-krishnamoorthistatic} - currently in its \textit{beta} version, this method is based on very manual operation
+
+  \item \textbf{PyTorch FX Graph Mode Quantization} \cite{78-zhangfx} - 
+
+  \item \textbf{Brevitas} \cite{brevitas} - 
+
+  \item \textbf{QPyTorch} \cite{zhang2019qpytorch} - 
+\end{itemize}
+
+\indo{which to use, which not and why}
 \indo{Mention post-training quantization explained in the next chapter}
 
