@@ -1,5 +1,5 @@
 \chapter{Hardware Implementation}\label{quantization}
-\indo{Short introduction}
+In this chapter, the hardware-aware optimizations used in the FPGA implementations are first presented and then their application in the proposed architectures is explained. Other elements of the hardware design and configuration process are then described which results in a comprehensive picture of the FPGA-mapped architectures. Afterwards, two analytical models are considered - one for the latency and the other for the resource utilization. The custom post-training quantization tool is discussed along with its suitability for this project. Then, existing infrastructure that ties together higher and lower-level code representation is introduced along with its synergy with a High-Level Synthesis optimization tool chain. Lastly, the technical contributions to \hlsml library are listed and explained.
 
 \section{Hardware-Aware Optimizations}
 
@@ -8,19 +8,15 @@ Each self-attention head performs two tensor multiplications (referred to as \te
 
 \begin{figure}[hpt!]
   \centering
-  \includegraphics[trim={0cm 0cm 0cm 0cm}, width=0.8\textwidth, center]{models/einsum.pdf}
+  \includegraphics[trim={0cm 0cm 0cm 0cm}, width=0.75\textwidth, center]{models/einsum.pdf}
   \caption{Visualization of a tensor operation expressed in Einstein Summation notation.}
   \label{fig:einsum}
 \end{figure}
 
-Figure \ref{fig:einsum} shows a visualization for an example notation to give a better understanding of the necessary flexibility of a formula. The translation between notations using the custom tool is showcased in listing TODO. While the \texttt{PyTorch} implementation uses 4-dimensional tensors, the first dimension refers to the batch, which is not present in the hardware implementation that processes input samples one-by-one.
+Figure \ref{fig:einsum} shows a visualization for an example notation to give a better understanding of the necessary flexibility of a formula. The translation between notations using the custom tool is showcased in listing \ref{list:einsum}. While the \texttt{PyTorch} implementation uses 4-dimensional tensors, the first dimension refers to the batch, which is not present in the hardware implementation that processes input samples one-by-one.\todo{Verify if page breaks correctly.}
 
-\todofig{Code listing showing starting \texttt{PyTorch} code and resulting C++ HLS implementation}
-\todofig{|}
-\todofig{|}
-\todofig{|}
-\todofig{|}
-\todofig{|}
+\clearpage
+\lstinputlisting[language={[GNU]C++}, caption={Translation from PyTorch \texttt{result = torch.einsum("qhc,khc->hqk", [A, B])} to HLS C++ code.}, captionpos=b, label={list:einsum}]{quantization/einsum_example.cpp}
 
 Another simple optimization used alongside the tensor multiplication blocks was the change in size scaling from using division to performing an arithmetic right shift (ASR), which requires precomputing the logarithm of the size, seen in equation \ref{eq:log-div}, vastly simplifying the otherwise computationally expensive hardware required at run-time.
 
@@ -69,9 +65,9 @@ Although further simplifications, including approximating the summation by findi
 
 \section{Neural Network Architectures Design}
 
-\section{Ultra-Low Latency Architecture}
+\subsection{Ultra-Low Latency Architecture}
 
-\section{Accuracy-Focused Architecture}
+\subsection{Accuracy-Focused Architecture}
 
 
 \section{Analytical Latency and Resource Models}
@@ -95,7 +91,7 @@ Although further simplifications, including approximating the summation by findi
 \indo{Explain how the very long simulation time prevents more mature solutions like Bayesian Optimization or even Grid Search (this solution already took 120+ hours on a medium-sized design with 60 type parameters)}
 \indo{Talk about correlation of neighboring bit widths and how this is exploited (i.e. by resuming with previous width + the whole idea is based on that instead of a full gradient descent style search)}
 \indo{Mention Pytorch 2 modes also have experimental support for post-training but not used for the same reason as pre-training}
-\indo{|}
+\indo{List N, W, T etc constraints showing a diagram of fixed-point number and integer/fractional range}
 \indo{|}
 \indo{|}
 \indo{|}
