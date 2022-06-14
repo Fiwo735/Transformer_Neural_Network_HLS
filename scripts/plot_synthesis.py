@@ -5,6 +5,8 @@ from tabulate import tabulate
 from typing import Dict, List, Tuple
 from adjustText import adjust_text
 
+import matplotlib.pyplot as plt
+
 
 def main(path: str, data: List[Dict], resources_limit: Dict):
   def get_stat(name: str):
@@ -114,6 +116,7 @@ def plot_pareto(path: str, cycles: List[int], hardware_averages: List[float]):
     ax[1].set_yticks(ticks=linspace(y_lim[0], y_lim[1], y_lim[2], endpoint=True))
     ax[1].set_yscale('log')
     
+    ax[0].set(ylabel='Latency (cycles)')
     
     if legend:
       ax[1].legend()
@@ -136,6 +139,8 @@ def plot_pareto(path: str, cycles: List[int], hardware_averages: List[float]):
 
 
   sub_plot(pareto=pareto, ax=ax, legend=True, x_lim=(12.5, 25, 8), y_lim=(0, 2330000, 7))
+  # Alligment and x value needed to center between two axes
+  plt.xlabel('Resource utilization (%)', horizontalalignment='right', x=0.25)
 
   # -------------------- Inset --------------------
   # a = axes([0.4, 0.25, 0.35, 0.45], facecolor='linen')
