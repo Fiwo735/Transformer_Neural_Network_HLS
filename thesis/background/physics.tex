@@ -90,4 +90,22 @@ Using the 30 jet dataset as an example, each sample has between 1 and 30 constit
   \end{bmatrix} \in \mathbb{R}^{N \times L \times 16}
 \end{equation}
 
-The main jet datasets contain \(880,000\) samples regardless of the number of jets per sample, while the HLF dataset contains \(830,000\) examples, which are split into training and test samples in \(70:30\) and \(80:20\) proportions accordingly.
+The main jet datasets contain \(880,000\) samples regardless of the number of jets per sample, while the HLF dataset contains \(830,000\) examples, which are split into training and test samples in \(70:30\) and \(80:20\) proportions accordingly. In both cases, the datasets are balanced, meaning that they contain all available particle classes in near identical proportions. This is a desired characteristic of data as it avoids having to introduce weighted results as a measure of protecting the model from not learning the underrepresented classes properly. When it comes to the distribution and range of values for each feature, the visualizations can be seen in figure \ref{fig:distributions-hlf}\maybe{Maybe city the OpenML website} and TODO for HLF and constituent list datasets respectively.
+
+\begin{figure}[hpt!]
+  \centering
+  \includegraphics[trim={0cm 0cm 0cm 0cm}, width=1.0\textwidth, center]{background/distributions.png}
+  \caption{Representation of the distributions of feature values in HLF dataset.}
+  \label{fig:distributions-hlf}
+\end{figure}
+
+It is also worth mentioning that normalization\footnote{Process of subtracting mean and dividing by standard deviation, sometimes referred to as "standardization".} is the only preprocessing measure used in this work, and it is only applied to the HLF dataset, and not the constituent list one, which is discussed in details in \cref{accuracy-focused-model}. Both dataset samples are simulated and do not contain any illegal or null values that would require dropping or substituting. There is also no need for data augmentation because of the simulated origin of data.
+
+\todofig{Constituent list feature distribution}
+\todofig{|}
+\todofig{|}
+\todofig{|}
+\todofig{|}
+\todofig{|}
+\todofig{|}
+\todofig{|}

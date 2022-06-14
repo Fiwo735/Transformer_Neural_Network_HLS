@@ -1,5 +1,5 @@
 \chapter{Architecture Exploration}\label{models}
-This chapter presents the proposed neural network architectures. It starts with a baseline TNN network implemented in \texttt{PyTorch}, which then undergoes a series of hardware-aware adaptions specific to jet tagging. During this process two separate architectures are developed, which differ by the input type and design goal. The first one, referred to as the \textit{ultra-low latency} one, targets the HLF jet representation and aims to achieve the lowest possible latency at the cost of accuracy and AUC values. The second one, called \textit{accuracy-focused}, is based on the constituent list jet representation and trade-offs latency for quality of classification while still remaining within L1T timing constraints.
+This chapter presents the proposed neural network architectures. It starts with a baseline TNN network implemented in \texttt{PyTorch}, which then undergoes a series of hardware-aware adaptions specific to jet tagging. During this process two separate architectures are developed, which differ by the input type and design goal. The first one, referred to as the \textit{ultra-low latency} one, targets the HLF jet representation and aims to achieve the lowest possible latency at the cost of accuracy and AUC values. The second one, called \textit{accuracy-focused}, is based on the constituent list jet representation and trade-offs latency for quality of classification while still remaining within L1T timing constraints. In the end, the mechanism of quantization-aware training is explained, with a proposed way of implementing it in this project.
 
 
 \section{Base Architecture}
@@ -16,7 +16,7 @@ The straight-forward path between model's input and output highlights the sequen
 
 
 \subsection{Input embedding and Residual Connections}
-Although the model lacks any recurrency, the transformer includes two residual connections which have been widely adopted since their successful application in ResNet neural networks \cite{75-kaiming2016deep}. They offer improvements to training time and resulting accuracy \cite{74-szegedy2016inception-v4}, however, they require standardized data dimensionality to ensure the summation can be logically executed. In this project, this is obtained thanks to input embedding, which transforms the input \(\bm{\hat{x^i}} \in \mathbb{R}^{L \times 16} \) into a shape \(\mathbb{R}^{L \times d}\) that is used through the design, as seen in equation \ref{eq:embedding}.
+Although the model lacks any recurrency, the transformer includes two residual connections which have been widely adopted since their successful application in ResNet neural networks \cite{75-kaiming2016deep}. They offer improvements to training time and resulting accuracy \cite{74-szegedy2016inception-v4}, however, they require standardized data dimensionality to ensure the summation can be logically executed. In this project, this is obtained thanks to input embedding, which transforms the input \(\bm{\hat{x^i}} \in \mathbb{R}^{L \times 16} \) into a shape \(\mathbb{R}^{L \times d}\) that is used through the design, as seen in equation \ref{eq:embedding}. The \(d\) size is referred to as the self-attention latent or embedded dimension.
 
 \begin{equation}\label{eq:embedding}
   \bm{\hat{x^i}_{\text{emb}}} = \text{embedding} ( \bm{\hat{x^i}} ) = w_{\text{embed}}\; \bm{\hat{x^i}} + b_{\text{embed}} \in \mathbb{R}^{L \times d}
@@ -72,82 +72,139 @@ The algorithm behind the parameter extraction is rather simple, and the difficul
 \end{algorithm}
 
 
-\section{Hardware Mapping}
-
-
-\subsection{Tensor Multiplication and Scaling}
-Each self-attention head performs two tensor multiplications (referred to as \textit{matmul} blocks in figure \ref{fig:self-attention-multi-head}), which are normally expressed using Einstein Summation notation \cite{59-barr1991einstein}, which is supported by mathematical and machine learning libraries like \texttt{NumPy} or \texttt{PyTorch}. However, not present by default in HLS, it required careful design of the calculation loops in order to not cripple the performance by unnecessary computations and pseudo-random data accesses. As part of this research, an efficient and fully-customizable HLS block has been designed, that uses a very similar interface to the Python equivalent.
-
-\begin{figure}[hpt!]
-  \centering
-  \includegraphics[trim={0cm 0cm 0cm 0cm}, width=0.8\textwidth, center]{models/einsum.pdf}
-  \caption{Visualization of a tensor operation expressed in Einstein Summation notation.}
-  \label{fig:einsum}
-\end{figure}
-
-Figure \ref{fig:einsum} shows a visualization for an example notation to give a better understanding of the necessary flexibility of a formula. The translation between notations using the custom tool is showcased in listing TODO. While the \texttt{PyTorch} implementation uses 4-dimensional tensors, the first dimension refers to the batch, which is not present in the hardware implementation that processes input samples one-by-one.
-
-\todofig{Code listing showing starting \texttt{PyTorch} code and resulting C++ HLS implementation}
-\todofig{|}
-\todofig{|}
-\todofig{|}
-\todofig{|}
-\todofig{|}
-
-Another simple optimization used alongside the tensor multiplication blocks was the change in size scaling from using division to performing an arithmetic right shift (ASR), which requires precomputing the logarithm of the size, seen in equation \ref{eq:log-div}, vastly simplifying the otherwise computationally expensive hardware required at run-time.
-
-\begin{equation}\label{eq:log-div}
-  \frac{x}{\sqrt{\text{size}}} \equiv \text{ASR}(x,\; \log_2 \sqrt{\text{size}}) \equiv \text{ASR}(x,\; \frac{1}{2}\log_2 \text{size})
-\end{equation}
-
-
-\subsection{Softmax and Log Softmax Activation}
-Despite an already existing \hlsml implementation of the softmax activation function, computing the logarithm of its result is not as simple as it may seem. This is because the numerical stability and computational efficiency of this operation is often explored in-depth \cite{60-blanchard2019accurate} and varies depending on the programming language and target platform.
-
-\begin{figure}[hpt!]
-  \centering
-  \includegraphics[trim={0cm 0cm 0cm 0cm}, width=0.2\textwidth, center]{models/log_softmax_naive.pdf}
-  \caption{Direct hardware implementations of log softmax.}
-  \label{fig:log-softmax-naive}
-\end{figure}
-
-The naive implementation comes straight from the definition of taking a logarithm of softmax, seen in equation \ref{eq:softmax}, and the required hardware operations are shown in figure \ref{fig:log-softmax-naive}.
-
-\begin{equation} \label{eq:softmax}
-    \sigma (x_i) = e^{x_i} / \sum_{j=1}^{N} e^{x_j}
-\end{equation}
-
-This report proposes a different way of mapping this operation to hardware to improve stability while shortening the critical path and using less resources. It is based on the derivation shown in equation \ref{eq:log-softmax}.
-
-\begin{equation} \label{eq:log-softmax}
-    \log (\sigma (x_i)) = log(e^{x_i} / \sum_{j=1}^{N} e^{x_j}) = \log(e^{x_i}) - \log(\sum_{j=1}^{N} e^{x_j}) = e^{x_i} - \log(\sum_{j=1}^{N} e^{x_j})
-\end{equation}
-
-The resulting hardware operations are depicted in figure \ref{fig:log-softmax-opt}. It is important to note, that operations like exponentiation, division or taking a logarithm usually rely on precomputing a wide range of values and mapping them in BRAMs or LUTs to allow for lookup on run-time. Hence, the optimized design requires one less of such lookups while also replacing multiplication by a subtraction, which can be simpler to express in hardware.
-
-\begin{figure}[hpt!]
-  \centering
-  \includegraphics[trim={0cm 0cm 0cm 0cm}, width=0.2\textwidth, center]{models/log_softmax_opt.pdf}
-  \caption{Optimized hardware implementations of log softmax.}
-  \label{fig:log-softmax-opt}
-\end{figure}
-
-Although further simplifications, including approximating the summation by finding the maximum (see equation \ref{eq:log-softmax-max}) or simply omitting the logarithm portion of the expression, were also explored, they noticeably lowered the final accuracy and were thus abandoned.
-
-\begin{equation} \label{eq:log-softmax-max}
-    \log (\sigma (x_i)) = e^{x_i} - \log(\sum_{j=1}^{N} e^{x_j}) = e^{x_i} - \sum_{j=1}^{N} \log(e^{x_j}) = e^{x_i} - \sum_{j=1}^{N} x_j \approx e^{x_i} - \max(x)
-\end{equation}
-
 
 \section{Ultra-Low Latency Architecture}
+The first of the proposed architectures targets the HLF representation dataset, where each sample is of \(\mathbb{R}^{1 \times 16}\) dimensions, making it a better candidate for an \(N\) times faster inference than the constituent list representation with inputs with \(\mathbb{R}^{N \times 16}\) dimensions. The simpler data means that the network can achieve satisfactory classification results with a lower learning capacity, hence allowing for various simplifications of the base architecture.
 
-\subsection{Simplification and Tuning}
+\subsection{Optimization and Tuning}
+The hypothesis leading the optimization process is that the HLF dataset can be learned by a relatively lower complexity network. The strategy is to start with the accuracy and AUC value of the base architecture and keep applying changes to the network as long as they do lead to significant drops in classification results, with detailed evaluation discussed in 
+\cref{evaluation}. Doing so is inherently beneficial for the later FPGA mapping, as even without hardware-aware changes, a simpler model is likely to require less resources and achieve lower latency.
 
-\subsection{Hardware Mapping}
+The architecture features that have the highest influence on the overall performance are the size of the latent dimension and number of transformer layer. In the case of the original transformer model \cite{44-vaswani2017attention}, 12 transformer layers are used, split equally into a decoder and encoder parts of the networks. This, along with latent dimension size of 512 shows that jet tagging requires significantly less complexity compared to natural language processing, as the recent ConstituentNet \cite{3-yuan2021constituentnet:} is based on only 3 transformer layers and embedded dimension of 64. However, as the latter network targets a more complex dataset, the first optimization performed in this project yielded a reduction to only a single transformer layer with latent size of 16. The network complexity is directly proportional to the number of layers, while the self-attention complexities shown in \cref{self-attention} can be simplified given the dimensions of \textit{queries}, \textit{keys}, and \textit{values} are shared and equal to \(\in \mathbb{R}^{N \times d}\) in this work, 
+as shown in equation \ref{eq:qkv-complexity-time-simple} and \ref{eq:qkv-complexity-space-simple} for time and space respectively. It is worth mentioning that the shared dimension \(d\) is purposefully represented this way as it is equal to the model embedded dimension \(d\).
+
+\begin{equation}\label{eq:qkv-complexity-time-simple}
+  \mathcal{O}(h \cdot (N_Q N_K (d_Q + d_V) + d_Q^2 (N_Q + N_K) + d_V^2 N_K + N_Q d_V d_{out}) )) \equiv
+  \mathcal{O}(h N d (N + d + d_{out}) ))
+\end{equation}
+
+\begin{equation}\label{eq:qkv-complexity-space-simple}
+  \mathcal{O}(h \cdot (N_Q (N_K + d_V) + d_Q (N_Q + N_K) + d_V N_K + N_Q d_{out}) )) \equiv
+  \mathcal{O}(h N (N + d + d_{out}) ))
+\end{equation}
+
+Another successful optimization was simplifying the SiLU to ReLU activations, as in hardware, the latter rely on a single comparator to determine whether to pass input to output directly or set the signal to zero. In contrary, SiLU requires computing the sigmoid function as well as performing a multiplication, which has a non-trivial cost on an FPGA.
+
+Interestingly, the layer normalization was first changed to batch normalization to simplify the tracking and embedding the running data statistics. This only leads to a marginal accuracy decrease, however, it is interesting to point out that so does removing the normalization layers from the design. This can be attributed to the "smoother" distribution of elements of the HLF dataset, which tend to average around zero instead of taking values from a wide range as it is the case for the constituent list representation, shown in figure TODO. Hence, the used dataset does not benefit from additional normalization, vastly simplifying the architecture.
+
+\todofig{Simple visualization of the distribution in HLF and constituent list}
+\todofig{|}
+\todofig{|}
+\todofig{|}
+\todofig{|}
+
+\subsection{Summary}
+The optimizations described in the previous subsection correspond to a noticeably simpler architecture, which can be seen in figure \ref{fig:constituent-net-simplified}. It is also worth mentioning that the simplifications targeted the components of the transformer block other than the multi-head self-attention block. This is a result of the used mechanism's key role in the learning process as well as the fact that it is difficult to modify it as it uses very basic components, and changing them would impact the underlying, commonly-approved function.
+
+\begin{figure}[hpt!]
+  \centering
+  \includegraphics[trim={0cm 0cm 0cm 0cm}, width=0.45\textwidth, center]{models/constituent_net_simplified.pdf}
+  \caption{Diagram with an overview of the ultra-low latency architecture.}
+  \label{fig:constituent-net-simplified}
+\end{figure}
 
 
-\section{Accuracy-Focused Architecture}
-\indo{stability issues solved by more normalization (coming from wide range of inputs of 30x16)}
+\section{Accuracy-Focused Architecture}\label{accuracy-focused-model}
+The aim of the second architecture is to exploit a bigger design along with the more complex constituent list dataset to achieve a higher accuracy and AUC value that the ultra-low latency model while still meeting the latency constraints of L1T at LHC. In addition, this design undergoes a design space exploration to compare and reason about a number of existing and novel techniques.
 
-\subsection{Hardware Mapping}
+\subsection{Optimization and Tuning}
+Aside from the increase in computational complexity, the biggest difference caused by changing the datasets is the vastly different range and distribution of samples, showcased in figure TODO. While the network could perform normalization as its first layer, this approach was tested to significantly degrade the results quality. This is likely due to the fact that each samples' feature follows a distinct distribution and lays within a different range, so normalizing causes a loss in the provided information. These distributions can be seen in figure TODO. \maybe{Maybe claim visual differences between distributions of HLF and constituent list}
+
+Normalization and data distribution also need to be discussed for a different reason in the context of this architecture. The layer normalization layers present in the base design are not completely omitted this time, and instead changed to batch normalization. Although the layer normalization characteristic of not tracking running statistics and relying on per-layer normalization during evaluation can yield improvement to classification results, it is not a desired behavior for FPGA mapping due to the lack of hardware support for the square root and division operations. This could be resolved in an analogous way to batch norm by simply manually tracking the statistics, but this was experimentally proven to substantially affect the accuracy. What is more, the less clustered and more diverse distributions of constituent list dataset features lead to numerical instability in softmax calculations of the exponential function. Even though this was a marginal issue for the PyTorch implementation, it was quickly observed to drastically change the expected outcome of the early HLS prototype implementations. A solution to this issue lays in using additional normalization layers just before the self-attention softmax blocks, which not only solved this problem, but also very slightly increased the learning capacity of the network.
+
+\begin{figure}[hpt!]
+  \centering
+  \includegraphics[trim={0cm 0cm 0cm 0cm}, width=0.7\textwidth, center]{models/weight_merging.pdf}
+  \caption{Simple illustration for equivalency between matrix multiplication using merged and unmerged weights on the example of \textit{queries}, \textit{keys}, and \textit{values} used in self-attention.}
+  \label{fig:weight-merging}
+\end{figure}
+
+It is a common for GPU training to merge together adequately shaped fully-connected layers, as seen in figure \ref{fig:weight-merging}. This allows the GPU to more optimally use its resources for the computation, potentially decreasing the training time without affecting the results. Nonetheless, this approach was dropped for this architecture to avoid generating one bigger weight matrix in favor of several smaller ones. Contrary to GPUs, the synthesis process for FPGAs benefits from smaller precomputed matrices as it is easier for the algorithm the map them to certain BRAMs or LUTs that are close to the components that read from or write to them. With the significantly smaller dimension sizes for the ultra-low latency model, this aspect generated negligible difference, while in this architecture the merged weight matrix size would exceed a reasonable size and lead to an extremely long synthesis process and likely suboptimal hardware mapping.
+
+Lastly, some optimizations are inherited from the ultra-low latency architecture. The SiLU are replaced by ReLU activations, while embedding and encoding are simply implemented by a fully-connected layer and a learnable parameter. When it comes to the transformer layer count and latent dimension size, they follow the configuration of ConstituentNet of 3 and 64, however, a closer evaluation and discussion about these are carried in \cref{evaluation}.
+
+\subsection{Summary}
+In this case, the resulting architecture is much more similar to the base one in terms of its overall structure, however it differs from it with the crucial changes to normalization layers, activation function and modifications to the multi-head self-attention block. The overview of this design can be seen in figure \ref{fig:constituent-net-accuracy}.
+
+\begin{figure}[hpt!]
+  \centering
+  \includegraphics[trim={0cm 0cm 0cm 0cm}, width=0.6\textwidth, center]{models/constituent_net_accuracy.pdf}
+  \caption{Diagram with an overview of the accuracy-focused architecture; the inclusion of batch normalization before softmax within the multi-head self-attention block is not showcased for the sake of clarity.}
+  \label{fig:constituent-net-accuracy}
+\end{figure}
+
+
+\section{Quantization-Aware Training}
+The use of the term \textit{quantization} in the topic of machine learning and reconfigurable hardware might appear as a misnomer if one follows the definition used in signal processing, where it refers to constraining continuous values to a set of discrete ones. However, this definition can be extended for converting values from a very large set of discrete values to a 
+significantly smaller ones. This is the case when half (16 bits), single (32 bits) or double (64 bits) precision floating-point numbers are expressed using a fixed-point representation. This leads to an inherent quantization noise because many distinct values in floating-point representation map to the same number when stored as fixed-point, which can be seen in figure \ref{fig:float-to-fixed} \cite{76-shaumontfixed}. Although this work exploits fixed-point arithmetic for its efficient hardware representation, it has to be noted that quantizing is also used for time and space efficient GPU inference as it can vastly lower the total bits used across model's weights, hence reducing the required memory and computational complexity.
+
+\begin{figure}[hpt!]
+  \centering
+  \includegraphics[trim={0cm 0cm 0cm 0cm}, width=0.6\textwidth, center]{models/float_to_fixed.jpg}
+  \caption{Quantization noise from 32-bit floating-point to 3-bit (2-bit integer, 1-bit fractional) fixed-point representation; widths selected to highlight the behavior. Two methods of handling values outside representable range are showed: classic overflow as well as saturation to minimum or maximum value.}
+  \label{fig:float-to-fixed}
+\end{figure}
+
+\subsection{Floating-point and Fixed-point Representations}
+To bring more perspective to this topic, let's start by observing the 16-bit wide floating-point notation with an example seen in equation \ref{eq:floating-point}. \textit{SIGN}, \textit{EXP} and \textit{FRAC} stand for the sign, exponent and fractional\footnote{Also referred to as \textit{significand precision}} fields (sequences of 1's and 0's) of a number.
+
+\begin{equation}\label{eq:floating-point}
+  \{\text{SIGN | EXP | FRAC}\} = 
+  \begin{cases}
+    (-1)^{\text{SIGN}} \cdot 2^{-14} \cdot (0.\text{FRAC}_2) & \text{EXP} = 00\_000_2 \\
+    (-1)^{\text{SIGN}} \cdot 2^{\text{EXP}-15} \cdot (1.\text{FRAC}_2) & \text{EXP} \in [00\_000_2,\; 11\_110_2] \\
+    \pm \infty & \text{EXP} = 11\_111_2
+  \end{cases}
+\end{equation}
+
+The widths of the fields for standard floating-point width can be seen in table \ref{tab:floating-point-widths}, however, the particular details in the example do not need to be fully understood to notice the required complexity of the hardware design to perform operations using floating-point values. It has to first decode each of the fields, check for special values, normalize inputs to a common base, perform the computation, and lastly normalize again and decode the fields. As it can be expected, this comes with a significant overhead compared to integer numbers.
+
+\begin{table}[hpt!]
+  \centering
+  \caption{Comparison of standard precision types for floating-point values. Note the difference in half precisions, where \textit{Brain} offers same the exponent width as single precision, and \textit{binary} priorities fractional precision.}
+  \label{tab:floating-point-widths}
+  \begin{tabular}{|c|c|ccc|}
+  \hline
+  \multirow{2}{*}{\textbf{Precision}} & \multirow{2}{*}{\textbf{Total width}} & \multicolumn{3}{c|}{\textbf{Field width}}                                    \\ \cline{3-5} 
+                                      &                                       & \multicolumn{1}{c|}{sign} & \multicolumn{1}{c|}{exponent} & fractional \\ \hline
+  \textbf{Double}                     & 64                                    & \multicolumn{1}{c|}{1}    & \multicolumn{1}{c|}{11}       & 52         \\ \hline
+  \textbf{Single}                     & 32                                    & \multicolumn{1}{c|}{1}    & \multicolumn{1}{c|}{8}        & 23         \\ \hline
+  \textbf{Half} (\textit{Brain})               & 16                                    & \multicolumn{1}{c|}{1}    & \multicolumn{1}{c|}{8}        & 7          \\ \hline
+  \textbf{Half} \textit{(binary})              & 16                                    & \multicolumn{1}{c|}{1}    & \multicolumn{1}{c|}{5}        & 10         \\ \hline
+  \end{tabular}
+\end{table}
+
+While dedicated circuits exits in CPUs and GPUs to accelerate floating-point calculations, FPGAs tend to use fixed-point representation to achieve superior latency with relatively simple hardware resources. It comprises a sequence of \textit{P} binary digits representing the integer part, then a virtual decimal point, followed by \textit{R} binary digits representing the fractional part, according to equation \ref{eq:fixed-point}.
+
+\begin{equation}\label{eq:fixed-point}
+  \{ I_{P-1} | ... | I_0 | F_{R-1} | ... | F_0 \} = I_{P-1} \cdot 2^{P-1} + ... + I_{0} \cdot 2^{0} + F_{R-1} \cdot 2^{-1} + ... + F_{0} \cdot 2^{-R}
+\end{equation}
+
+The virtual decimal point is not explicitly present in the number, instead the lengths of the sequences are stored which allows for correct handling. There are also no widely adopted standards for the internal widths of fixed-point numbers, as they are often implementation-specific. Fixed-point hardware is only responsible for correctly aligning the inputs in case they vary in width, which is an information know at compile-time, as opposed to run-time for floating-point numbers, which makes it very suitable for FPGAs.
+
+\subsection{Existing Implementations}
+Quantization-aware training refers to training a model using the fixed-point representation of numbers to allow the model to reduce the impact of the quantization noise by learning the underlying data characteristics with less precision. However, approaches differ in the degree to which the quantization is used as it can be applied to training data, weights and biases, intermediate results or any combination of these. It also has to be noted that existing implementations have been designed with different objectives, although to the best of our knowledge, the most widely used ones are still in their very experimental phases at the time of writing this report. The approaches considered for this work are listed below:
+
+\begin{itemize}
+  \item \textbf{PyTorch Eager Mode Quantization} \cite{77-krishnamoorthistatic} - currently in its \textit{beta} version, this method is based on very manual operation
+
+  \item \textbf{PyTorch FX Graph Mode Quantization} \cite{78-zhangfx} - 
+
+  \item \textbf{Brevitas} \cite{brevitas} - 
+
+  \item \textbf{QPyTorch} \cite{zhang2019qpytorch} - 
+\end{itemize}
+
+\indo{which to use, which not and why}
+\indo{Mention post-training quantization explained in the next chapter}
 
