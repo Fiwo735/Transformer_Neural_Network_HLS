@@ -144,7 +144,7 @@ In this case, the resulting architecture is much more similar to the base one in
 \end{figure}
 
 
-\section{Quantization-Aware Training}
+\section{Quantization-Aware Training}\label{pre-training-quantization}
 The use of the term \textit{quantization} in the topic of machine learning and reconfigurable hardware might appear as a misnomer if one follows the definition used in signal processing, where it refers to constraining continuous values to a set of discrete ones. However, this definition can be extended for converting values from a very large set of discrete values to a 
 significantly smaller ones. This is the case when half (16 bits), single (32 bits) or double (64 bits) precision floating-point numbers are expressed using a fixed-point representation. This leads to an inherent quantization noise because many distinct values in floating-point representation map to the same number when stored as fixed-point, which can be seen in figure \ref{fig:float-to-fixed} \cite{76-shaumontfixed}. Although this work exploits fixed-point arithmetic for its efficient hardware representation, it has to be noted that quantizing is also used for time and space efficient GPU inference as it can vastly lower the total bits used across model's weights, hence reducing the required memory and computational complexity.
 

@@ -4,15 +4,13 @@
       #pragma HLS PIPELINE II=reuse_factor\
     } else {\
       #pragma HLS unroll \
-    }\
-  }\
-}
+    }}}
 
-type_t result[H][K][Q];
+type_t out[H][K][Q];
 if (io_type == io_serial) {
-  #pragma HLS ARRAY_PARTITION variable=result cyclic factor=cycle_factor
+  #pragma HLS ARRAY_PARTITION variable=out cyclic factor=cycle_factor
 } else if (io_type == io_parallel) {
-  #pragma HLS ARRAY_PARTITION variable=result complete
+  #pragma HLS ARRAY_PARTITION variable=out complete
 }
 
 Einsum_H: for (unsigned hh = 0; hh < H; hh++) {
@@ -23,9 +21,5 @@ Einsum_H: for (unsigned hh = 0; hh < H; hh++) {
       EINSUM_PIPELINE(1);
       Einsum_C: for (unsigned cc = 0; cc < C; cc++) {
         EINSUM_PIPELINE(0);
-        if (cc == 0) result[hh][kk][qq] = 0;
-        result[hh][kk][qq] += A[qq][hh][cc] * B[kk][hh][cc];
-      }
-    }
-  }
-}
+        if (cc == 0) out[hh][kk][qq] = 0;
+        out[hh][kk][qq] += A[qq][hh][cc] * B[kk][hh][cc];}}}}
