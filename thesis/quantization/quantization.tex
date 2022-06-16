@@ -1,9 +1,9 @@
-\chapter{Hardware Implementation}\label{quantization}
+\chapter{Hardware-Aware Analysis}\label{quantization}
 In this chapter, the hardware-aware optimizations used in the FPGA implementations are first presented and then their application in the proposed architectures is explained. Other elements of the hardware design and configuration process are then described which results in a comprehensive picture of the FPGA-mapped architectures. Afterwards, two analytical models are considered - one for the latency and the other for the resource utilization. The custom post-training quantization tool is discussed along with its suitability for this project. Then, existing infrastructure that ties together higher and lower-level code representation is introduced along with its synergy with a High-Level Synthesis optimization tool chain. Lastly, the technical contributions to \hlsml library are listed and explained.
 
 \section{Hardware-Aware Optimizations}
 
-\subsection{Tensor Multiplication and Scaling}
+\subsection{Tensor Multiplication and Scaling}\label{tensor-multiplication}
 Each self-attention head performs two tensor multiplications (referred to as \textit{matmul} blocks in figure \ref{fig:self-attention-multi-head}), which are normally expressed using Einstein Summation notation \cite{59-barr1991einstein}, which is supported by mathematical and machine learning libraries like \texttt{NumPy} or \texttt{PyTorch}. However, not present by default in HLS, it requires careful design of the calculation loops in order to not cripple the performance by unnecessary computations and pseudo-random data accesses. As part of this research, an efficient and fully-customizable HLS block has been designed, that uses a very similar interface to the Python equivalent.
 
 \begin{figure}[hpt!]
@@ -44,7 +44,7 @@ Another simple optimization used alongside the tensor multiplication blocks was 
 \end{equation}
 
 
-\subsection{Softmax and Log Softmax Activations}
+\subsection{Softmax and Log Softmax Activations}\label{log-softmax}
 Despite an already existing \hlsml implementation of the softmax activation function, computing the logarithm of its result is not as simple as it may seem. This is because the numerical stability and computational efficiency of this operation is often explored in-depth \cite{60-blanchard2019accurate} and varies depending on the programming language and target platform.
 
 \begin{figure}[hpt!]
@@ -138,7 +138,7 @@ The constraints of a network variable could theoretically be set arbitrarily to 
   \label{fig:width-constraints}
 \end{figure}
 
-Figure \ref{fig:width-constraints} visualizes a fixed-point number with a detailed analysis of its structure in terms of lookup table constraints. At first, it could be assumed that the imposed widths should simply be adopted by the variables used by the corresponding table values. However, it is possible for such variables to also have connections to other paths in a network, which can require more precision than the table, hence justifying the existence of the constraints ranges presented in equations \ref{eq:width-constraint-1}, \ref{eq:width-constraint-2}, and \ref{eq:width-constraint-3}, with the notation coming from the corresponding figure.
+Figure \ref{fig:width-constraints} visualizes a fixed-point number with a detailed analysis of its structure in terms of lookup table constraints, which were added as an optional feature, and are described in \cref{hls4ml-general-purpose}. At first, it could be assumed that the imposed widths should simply be adopted by the variables used by the corresponding table values. However, it is possible for such variables to also have connections to other paths in a network, which can require more precision than the table, hence justifying the existence of the constraints ranges presented in equations \ref{eq:width-constraint-1}, \ref{eq:width-constraint-2}, and \ref{eq:width-constraint-3}, with the notation coming from the corresponding figure.
 
 \begin{equation} \label{eq:width-constraint-1}
   W \geqslant N > T \geqslant 1
@@ -151,13 +151,11 @@ Figure \ref{fig:width-constraints} visualizes a fixed-point number with a detail
 \end{equation}
 
 \subsection{Steps}
+A high-level overview of the steps used in the proposed method is depicted in algorithm \ref{alg:post-training-quant}. The only required parameters are the negative and positive accuracy tolerance, which are used to guide the search process. Increasing the negative tolerance relaxes the accuracy constraints ensured after each algorithm step in order to significantly reduce the overall bit-widths. On the other hand, a complete opposite objective can also be achieved as reducing the positive tolerance priorities quality of results over narrower bit-widths. Overall, these parameters can take an arbitrary combination of non-negative values that best expresses the exploration goals.
 
+The algorithm starts by scanning an HLS file that includes all the fixed-point types used in a model, convert them into objects and organizes them into a First In, First Out (FIFO) queue, according to their original order. One by one, objects are popped from the queue and undergo the search process. Firstly, the bit-width that was found in the file is saved, the object inherits from the previous optimal bit-width (based on the correlation hypothesis), and the model is evaluated. Depending on whether the results stay within the accuracy tolerance, the object starts with either its original or the inherited configuration. Afterwards, the integer and fractional parts go through one or two loops - first, at each iteration the width gets incremented as long as it matches the target range. After the first loop, the second one, analogous but checking designs with fewer bits, is only entered if no significant improvements were found when increasing widths. This avoids evaluating same configurations unnecessarily, which goes in line with the overall aim to offer a relatively quickly-converging solution to the very multidimensional optimization problem. Once all width objects reach their optimal state, the found configuration is saved and can be used in a further design space exploration.
 
-
-It is important to point out that the aforementioned PyTorch Eager Mode and FX Graph Mode quantization schemes offer post-training quantization, but there are unsuitable for this work due to their lack of flexibility and support for the essential neural network layers.
-
-\indo{Walk through the steps and explain the parameters, pointing to provided algorithm}
-\indo{Talk about correlation of neighboring bit widths and how this is exploited (i.e. by resuming with previous width + the whole idea is based on that instead of a full gradient descent style search)}
+It is important to point out that the aforementioned PyTorch Eager Mode and FX Graph Mode quantization schemes offer post-training quantization, but there are unsuitable for this work due to their lack of flexibility and support for the essential neural network layers. Instead, the HLS source directory is modified and tested in a C Simulation to measure accuracy. While the synthesis process could supplement the algorithm with an additional feedback signal about the precise hardware resource utilization, it takes much more than the simulation, and its results can be estimated to vary linearly with the total number of bit-widths. The only situation when such assumption does not hold is when a hardware component input width limit is reached because then a 1-bit increase requires an additional instance of that component to be instantiated. Ways of avoiding this issue are covered along with the evaluation of the results in \cref{eval:post-training-quantization}.
 
 \begin{algorithm}
   \caption{Algorithm for performing post-training quantization search}\label{alg:post-training-quant}
@@ -240,44 +238,26 @@ It is important to point out that the aforementioned PyTorch Eager Mode and FX G
 
 
 \section{\hlsml Contributions}
-In this section, the technical contributions to the \hlsml library are descriptively presented, highlighting the areas that this work expands upon. Developed components are shown in figure \ref{fig:hls4ml-contributions}, along with a number of existing components that were expanded upon or are used to draw comparison with. Each group is discussed in the following subsections.
+In this section, the technical contributions to the \hlsml library are descriptively presented, highlighting the areas that this work expands upon. Developed components are shown in figure \ref{fig:hls4ml-contributions}, along with a number of existing components that were expanded upon or are used to draw comparison with. Each group is discussed in one of the following subsections, in an order of increasing design complexity.
 
 \begin{figure}[hpt!]
   \centering
-  \includegraphics[trim={0cm 0cm 0cm 0cm}, clip, width=0.7\textwidth, center]{evaluation/hls4ml_blocks.pdf}
+  \includegraphics[trim={0cm 0cm 0cm 0cm}, clip, width=0.7\textwidth, center]{quantization/hls4ml_blocks.pdf}
   \caption{Overview of the created implementations (dark-colored) and some existing components with similar functionality (light-colored).}
   \label{fig:hls4ml-contributions}
 \end{figure}
 
 
 \subsection{Activation Functions}
-\indo{Mention SiLU which was experimented with}
-\indo{Mention Log Softmax that implements the architecture from previous chapter}
-\indo{|}
-\indo{|}
-
-\subsection{High-Level Components}
-\indo{Briefly mention FC without bias as an optimization that saves initializing accumulators with bias values}
-\indo{Talk in details about the C++ HLS challenges and achievements of self-attention and transformer}
-\indo{|}
-\indo{|}
-\indo{|}
-\indo{|}
-
+The library offers several common non-linear activation functions, including the basic one - ReLU. An implementation was created for the SiLU, which extends the existing ReLU block by adding multiplication with the sigmoid function that can happen serially or in parallel depending on the specific configuration. In addition, the log softmax activation had implementations developed using both the direct and the optimized method described earlier in this chapter in \cref{log-softmax} to be able to evaluate the success of the optimization process.
 
 \subsection{Normalization Layers}
-\indo{Discuss how layer norm and batch norm actually differ}
-\indo{|}
-\indo{|}
+Layer normalization and batch normalization perform the same operation across different dimensions, which on its own would not require a separate implementation. However, they also differ in terms of statistic collection, as only the batch version collects them during training to use during inference while layer normalization always computes them directly. While this is a suboptimal approach for reconfigurable hardware, a simulation-only version of layer normalization was implemented to allow for analyzing the effect of switching between these two methods to better understand their trade-off.
 
+\subsection{General-Purpose Blocks}\label{hls4ml-general-purpose}
+The method used in \hlsml for mapping the precomputed function values to lookup table indexes prioritizes the integer range of a fixed-point number over its fractional part. In other words, it simply uses the \(N\) most significant bits of a value for calculating the table index, where \(N\) is the table word width. Although this approach works in the majority of cases, it limits the ease of exploration as the type used in a lookup table might be affected by another variable's width, hence enforcing an unnecessarily wider integer range and sacrificing decimal precision. A good example is the natural logarithm, which output range can be represented using fewer integer bits than its input domain, which makes it the perfect candidate for using the custom lookup table initialization. Aside from that, the tensor multiplication covered in details in \cref{tensor-multiplication} was implemented in a way to match the style of existing tensor and array modifying components. This makes it very convenient for accelerating more complex designs that rely on Einstein Summation in their PyTorch implementation, and in the future, it could allow \hlsml to automatically translate that concept as it is currently not supported.
 
-\subsection{General-Purpose Blocks}
-\indo{Explain the mechanism of function look up table initialization and how it was automatic}
-\indo{|}
-\indo{Show when automatic precision/range fails and how the new block addresses that by exposing int bit width as a parameter}
-\indo{|}
-\indo{|}
-\indo{|}
-\indo{Mention tensor einsum and the pragmas it uses}
-\indo{|}
+\subsection{High-Level Components}
+It comes as no surprise that \hlsml offers a customizable and efficient fully-connected layer implementation. However, the way of creating an instance without the bias calculation is to provide an array filled with zeros. This is believed to be a shortcoming of the current version, as having a compile-time parameter regarding the bias can make the synthesis process faster given that the HLS can skip the optimization process for that aspect. With bigger and more complex models, this simple change could lead to noticeable reduction in processing time. What is more, it also yielded a marginally smaller design in the case of this work, suggesting that the HLS hardware translation might not be behaving optimally, but that depends on a number of factors and was not evaluated further.
 
+Although the deeply covered self-attention and transformer layers could be viewed as specific to the topic of this report, it has to be remembered that they are the state-of-the-art when it comes to a plethora of applications. At the same time, they are incomparably more complex than any other aforementioned components, not only needing them for correct functionality, but also requiring considerable amount of development time to properly integrate and carefully optimize. Hence. they are considered the most important \hlsml contributions of this work.
