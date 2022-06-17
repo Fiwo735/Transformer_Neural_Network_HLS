@@ -74,13 +74,8 @@ void myproject(
 
     #pragma HLS ARRAY_RESHAPE variable=data_in complete dim=0
     #pragma HLS ARRAY_PARTITION variable=data_out complete dim=0
-<<<<<<< HEAD
-    #pragma HLS INTERFACE ap_vld port=data_in,data_out 
-    #pragma HLS PIPELINE
-=======
     #pragma HLS INTERFACE ap_vld port=data_in,data_out
     #pragma HLS DATAFLOW
->>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
 
     const_size_in_1 = N_PARTICLES * N_FEATURES;
     const_size_out_1 = N_LABELS;
@@ -91,18 +86,6 @@ void myproject(
         //hls-fpga-machine-learning insert load weights
         // std::cout << "Loading weights from txt" << "\n";
         
-<<<<<<< HEAD
-        nnet::load_weights_from_txt<model_default_t, 16>(cls_token, "cls_token.txt");
-        nnet::load_weights_from_txt<model_default_t, 256>(inp_layer_weight, "inp_layer_weight.txt");
-        nnet::load_weights_from_txt<model_default_t, 16>(inp_layer_bias, "inp_layer_bias.txt");
-        nnet::load_weights_from_txt<model_default_t, 80>(out_layer_1_weight, "out_layer_1_weight.txt");
-        nnet::load_weights_from_txt<model_default_t, 5>(out_layer_1_bias, "out_layer_1_bias.txt");
-        nnet::load_weights_from_txt<model_default_t, 768>(transformers_0_self_attention_qkv_weight, "transformers_0_self_attention_qkv_weight.txt");
-        nnet::load_weights_from_txt<model_default_t, 256>(transformers_0_self_attention_out_weight, "transformers_0_self_attention_out_weight.txt");
-        nnet::load_weights_from_txt<model_default_t, 16>(transformers_0_self_attention_out_bias, "transformers_0_self_attention_out_bias.txt");
-        nnet::load_weights_from_txt<model_default_t, 512>(transformers_0_linear_2_weight, "transformers_0_linear_2_weight.txt");
-        nnet::load_weights_from_txt<model_default_t, 512>(transformers_0_linear_5_weight, "transformers_0_linear_5_weight.txt");
-=======
         nnet::load_weights_from_txt<top_cls_token_t, 64>(cls_token, "cls_token.txt");
         nnet::load_weights_from_txt<top_embedded_weight_t, 1024>(inp_layer_weight, "inp_layer_weight.txt");
         nnet::load_weights_from_txt<top_embedded_bias_t, 64>(inp_layer_bias, "inp_layer_bias.txt");
@@ -161,22 +144,11 @@ void myproject(
         nnet::load_weights_from_txt<T_norm1_weight_t, 128>(transformers_2_linear_3_weight, "transformers_2_linear_3_weight.txt");
         nnet::load_weights_from_txt<T_norm1_bias_t, 128>(transformers_2_linear_3_bias, "transformers_2_linear_3_bias.txt");
         nnet::load_weights_from_txt<T_dense1_weight_t, 8192>(transformers_2_linear_5_weight, "transformers_2_linear_5_weight.txt");
->>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
 
         loaded_weights = true;
     }
 #endif
 
-<<<<<<< HEAD
-    // std::cout << "In myproject(...)" << std::endl;
-
-    PRETTY_PRINT_2D(data_in, N_PARTICLES, N_FEATURES);
-
-    // Input embedding
-    input_t embedded_input[N_PARTICLES][N_EMBEDDED_DIM];
-    for (unsigned ipart = 0; ipart < N_PARTICLES; ipart++) {
-        nnet::dense<input_t, input_t, embedded_config>(data_in[ipart], embedded_input[ipart], inp_layer_weight, inp_layer_bias);
-=======
     PRETTY_PRINT_2D(data_in, N_PARTICLES, N_FEATURES);
 
     // Input embedding
@@ -184,21 +156,10 @@ void myproject(
     Embedding_dense: for (unsigned ipart = 0; ipart < N_PARTICLES; ipart++) {
         #pragma HLS PIPELINE II=1
         nnet::dense<input_t, top_embedded_t, embedded_config>(data_in[ipart], embedded_input[ipart], inp_layer_weight, inp_layer_bias);
->>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
     }
     PRETTY_PRINT_2D(embedded_input, N_PARTICLES, N_EMBEDDED_DIM);
 
     // Class token
-<<<<<<< HEAD
-    input_t embedded_with_cls[N_PARTICLES+1][N_EMBEDDED_DIM];
-    PRETTY_PRINT(cls_token, N_EMBEDDED_DIM);
-    for (unsigned icls = 0; icls < N_EMBEDDED_DIM; icls++) {
-        embedded_with_cls[0][icls] = cls_token[icls];
-    }
-    for (unsigned ipart = 0; ipart < N_PARTICLES; ipart++) {
-        for (unsigned icls = 0; icls < N_EMBEDDED_DIM; icls++) {
-            embedded_with_cls[ipart+1][icls] = embedded_input[ipart][icls]; 
-=======
     top_cls_token_t embedded_with_cls[N_PARTICLES+1][N_EMBEDDED_DIM];
     PRETTY_PRINT(cls_token, N_EMBEDDED_DIM);
     Concat_0: for (unsigned icls = 0; icls < N_EMBEDDED_DIM; icls++) {
@@ -209,22 +170,10 @@ void myproject(
         #pragma HLS PIPELINE II=1
         Concat_1_1: for (unsigned icls = 0; icls < N_EMBEDDED_DIM; icls++) {
             embedded_with_cls[ipart+1][icls] = (top_cls_token_t) embedded_input[ipart][icls]; 
->>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
         }
     }
     PRETTY_PRINT_2D(embedded_with_cls, N_PARTICLES+1, N_EMBEDDED_DIM);
 
-<<<<<<< HEAD
-    // Jet transformer
-    input_t transformer_0_out[N_PARTICLES+1][N_EMBEDDED_DIM];
-    nnet::transformer<input_t, input_t, transformer_config0, self_attention_config0, sa_norm_config0, sa_dense_config0, sa_transpose_config0, sa_softmax_config0, sa_dense_config3, normalize_config1, sigmoid_config0, transformer_dense_config0, normalize_config2, sigmoid_config1, transformer_dense_config1>(
-        embedded_with_cls,
-        transformer_0_out,
-        transformers_0_self_attention_qkv_weight,
-        transformers_0_self_attention_out_weight,
-        transformers_0_self_attention_out_bias,
-        transformers_0_linear_2_weight,
-=======
     // Jet transformers
     top_transformer_0_t transformer_0_out[N_PARTICLES+1][N_EMBEDDED_DIM];
     nnet::transformer<top_cls_token_t, top_transformer_0_t, transformer_config0, self_attention_config0, sa_norm_config0, sa_dense_q_config0, sa_dense_k_config0, sa_dense_v_config0, sa_softmax_config0, sa_dense_config3, sa_exp_norm_config, normalize_config1, sigmoid_config0, transformer_dense_config0, normalize_config2, sigmoid_config1, transformer_dense_config1>(
@@ -245,32 +194,10 @@ void myproject(
         transformers_0_linear_2_weight,
         transformers_0_linear_3_weight,
         transformers_0_linear_3_bias,
->>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
         transformers_0_linear_5_weight
     );
     PRETTY_PRINT_2D(transformer_0_out, N_PARTICLES+1, N_EMBEDDED_DIM);
 
-<<<<<<< HEAD
-    // MLP dimension reduction
-    input_t mlp_dimensions_reduced[N_EMBEDDED_DIM];
-    mlp_dim: for (int imlp = 0; imlp < N_EMBEDDED_DIM; imlp++) {
-        mlp_dimensions_reduced[imlp] = transformer_0_out[0][imlp];
-    }
-    PRETTY_PRINT(mlp_dimensions_reduced, N_EMBEDDED_DIM);
-
-    // MLP dense
-    input_t mlp_out[N_LABELS];
-    nnet::dense<input_t, input_t, mlp_config>(mlp_dimensions_reduced, mlp_out, out_layer_1_weight, out_layer_1_bias);
-    PRETTY_PRINT(mlp_out, N_LABELS);
-
-    // Reduce precision for more accurate results of Log softmax
-    input_t_red mlp_out_red[N_LABELS];
-    for (int jj = 0; jj < N_LABELS; jj++) {
-        mlp_out_red[jj] = (input_t_red) mlp_out[jj];
-    }
-    PRETTY_PRINT(mlp_out_red, N_LABELS);
-    nnet::log_softmax_latency<input_t_red, result_t, softmax_config0>(mlp_out_red, data_out, log_table);
-=======
 #if N_TRANSFORMER_LAYERS > 1
     top_transformer_1_t transformer_1_out[N_PARTICLES+1][N_EMBEDDED_DIM];
     nnet::transformer<top_transformer_0_t, top_transformer_1_t, transformer_config0, self_attention_config0, sa_norm_config0, sa_dense_q_config0, sa_dense_k_config0, sa_dense_v_config0, sa_softmax_config0, sa_dense_config3, sa_exp_norm_config, normalize_config1, sigmoid_config0, transformer_dense_config0, normalize_config2, sigmoid_config1, transformer_dense_config1>(
@@ -369,17 +296,10 @@ void myproject(
     nnet::dense<top_mlp_dim_red_t, result_t, mlp_config>(mlp_dimensions_reduced, data_out, out_layer_1_weight, out_layer_1_bias);
 #endif
 #endif
->>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
     PRETTY_PRINT(data_out, N_LABELS);
 
 #ifndef __SYNTHESIS__
     // TODO don't close and just let it close automatically to avoid issues where running multiple tests?
     // FOUT.close();
 #endif
-<<<<<<< HEAD
-
-    // std::cout << "End of myproject(...)" << std::endl;
-    // nnet::print_result<result_t, N_LABELS>(data_out, std::cout, true);
-=======
->>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
 }
