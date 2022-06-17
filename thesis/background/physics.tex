@@ -95,11 +95,11 @@ The main jet datasets contain \(880,000\) samples regardless of the number of je
 \begin{figure}[hpt!]
   \centering
   \includegraphics[trim={0cm 0cm 0cm 0cm}, width=1.0\textwidth, center]{background/distributions.png}
-  \caption{Representation of the distributions of feature values in HLF dataset.}
+  \caption{Representation of the distributions of feature values in the HLF dataset.}
   \label{fig:distributions-hlf}
 \end{figure}
 
-It is also worth mentioning that normalization\footnote{Process of subtracting mean and dividing by standard deviation, sometimes referred to as "standardization".} is the only preprocessing measure used in this work, and it is only applied to the HLF dataset, and not the constituent list one, which is discussed in details in \cref{accuracy-focused-model}. Both dataset samples are simulated and do not contain any illegal or null values that would require dropping or substituting. There is also no need for data augmentation because of the simulated origin of data.
+It is also worth mentioning that normalization\footnote{Process of subtracting mean and dividing by standard deviation, also referred to as "standardization".} is the only preprocessing measure used in this work, and it is only applied to the HLF dataset. The reasons behind avoiding it in case of the constituent list dataset are discussed in detail in \cref{accuracy-focused-model}. Both dataset samples are simulated and do not contain any illegal or null values that would require dropping or substituting. There is also no need for data augmentation because of the simulated origin of data.
 
 \todofig{Constituent list feature distribution}
 \todofig{|}

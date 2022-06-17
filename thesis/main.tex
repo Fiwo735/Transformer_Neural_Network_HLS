@@ -35,6 +35,7 @@
 % change numbering to follow section number instead of a global counter
 \renewcommand{\thealgorithm}{\arabic{chapter}.\arabic{algorithm}}
 
+
 %% Itemize lists with more depth
 \usepackage{enumitem}
 % \usepackage{pifont}
@@ -52,6 +53,46 @@
 
 % Clever references from labels
 \usepackage{cleveref}
+
+% Code listings
+\usepackage{listings}
+
+%New colors defined below
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+%Code listing style named "mystyle"
+\lstdefinestyle{mystyle}{
+  backgroundcolor=\color{backcolour},
+  commentstyle=\color{codegreen},
+  keywordstyle=\color{magenta},
+  numberstyle=\tiny\color{codegray},
+  stringstyle=\color{codepurple},
+  basicstyle=\ttfamily\footnotesize,
+  breakatwhitespace=false,         
+  breaklines=true,                 
+  captionpos=b, 
+  keepspaces=true,                 
+  numbers=none,                    
+  numbersep=5pt,                  
+  showspaces=false,                
+  showstringspaces=false,
+  showtabs=false,                  
+  tabsize=2
+}
+%"mystyle" code listing set
+\lstset{style=mystyle}
+
+% Set the header of list of listings
+\renewcommand\lstlistingname{List of Listings}
+\renewcommand\lstlistlistingname{List of Listings}
+
+% Add list of listings to ToC
+\renewcommand{\lstlistoflistings}{\begingroup
+\tocfile{\lstlistingname}{lol}
+\endgroup}
 
 
 %% Todo notes
@@ -92,15 +133,26 @@ I want to thank Zhiqiang Que for his continuous technical support, our weekly me
 Lastly, I am very grateful for my family whose support was invaluable during this project and the degree as a whole.
 \end{abstract}
 
-{\hypersetup{linkcolor=black}
-  \renewcommand{\baselinestretch}{1.3}\normalsize
-  \tableofcontents
-  \renewcommand{\baselinestretch}{1.0}\normalsize
-  \listoffigures
-  \begingroup % way to display both figure and table lists together
-    \let\clearpage\relax
-    \listoftables
-  \endgroup
+{
+\hypersetup{linkcolor=black}
+\renewcommand{\baselinestretch}{1.1}\normalsize
+\tableofcontents
+\renewcommand{\baselinestretch}{1.0}\normalsize
+\listoffigures
+\begingroup % way to display everything together
+  \let\clearpage\relax
+  \listoftables
+\endgroup
+\begingroup % way to display everything together
+  \let\clearpage\relax
+  \lstlistoflistings
+\endgroup
+% Add list of algorithms to ToC
+\addcontentsline{toc}{chapter}{List of Algorithms}
+\begingroup % way to display everything together
+  \let\clearpage\relax
+  \listofalgorithms
+\endgroup
 }
 
 \input{introduction/introduction}

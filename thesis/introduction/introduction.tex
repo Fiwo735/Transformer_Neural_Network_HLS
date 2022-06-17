@@ -12,14 +12,27 @@ The information throughput of Petabytes per second collected by the LHC detector
 The purpose of this project is to develop novel, hardware-aware neural network architectures as well as to establish efficient ways mapping them onto FPGAs. Another objective is to use metaprogramming strategies to integrate them into the \textit{hls4ml} library or standalone tools, with various optimizations approaches that offer trade-offs between latency, throughput and hardware resources usage. Hence, there is an emphasis on creating parametrizable and reusable designs that can support creation of ultra-low latency systems, effectively transforming proof-of-concept implementations into optimized hardware accelerators.
 
 The two main challenges of the project involve:
+
 \begin{itemize}
-  \item Developing deep and complex neural network models with inference times in the microseconds range, which requires much lower abstraction levels than a typical ML framework. It is also crucial to stay aware of the underlying hardware architecture to exploit its strengths while keeping compile-time and run-time configuration easily accessible.
-  \item Bridging the abstraction gap for the translation between high-level representation of neural networks and their optimized mapping to hardware. The design space exploration is a long and difficult process, which needs careful examination and analytical performance models to find the optimal solutions.
+  \item \textbf{C1}: Developing deep and complex neural network models with inference times in the microseconds range, which requires much lower abstraction levels than a typical ML framework. It is also crucial to stay aware of the underlying hardware architecture to exploit its strengths while keeping compile-time and run-time configuration easily accessible.
+  \item \textbf{C2}: Bridging the abstraction gap for the translation between high-level representation of neural networks and their optimized mapping to hardware. The design space exploration is a long and difficult process, which needs careful examination and analytical performance models to find the optimal solutions.
 \end{itemize}
 
 
 \section{Contributions and Publication}
-The project aims to benefit the open-source community of ML researches that are in need of faster and more parametrizable neural network inference. The main audience for that operation are particle physicists, nonetheless, the hope is for the work to positively contribute many ML fields by both offering a reliable tool for acceleration of existing designs and providing a useful resource for learning about the nature of reconfigurable hardware and its optimization potential.
+The project aims to benefit the open-source community of ML practitioners and researches that are in need of faster and more parametrizable neural network inference. The main audience for that operation are particle physicists, nonetheless, the hope is for the work to positively contribute many ML fields by offering a reliable tool for acceleration of existing designs and providing a useful resource for learning about the nature of reconfigurable hardware and its optimization potential.
+
+The novel aspects proposed in this work can be summarized as follows, with the first two addressing challenge \textbf{C1}, and the latter challenge \textbf{C2}:
+
+\begin{itemize}
+  \item \textbf{Hardware-Aware Network Optimizations}: Two novel architectures are designed with hardware in mind, exploiting the target hardware platform to achieve cutting-edge latency and accuracy.
+  
+  \item \textbf{Efficient Hardware Implementation}: \hlsml codesign workflow is extended with a number of complex neural network layers that benefit from a range of optimization techniques.
+  
+  \item \textbf{Quantization-Aware Transformer Neural Training}: Several available solutions are surveyed and described, and the best one in terms of applicability to state-of-the-art neural network designs is selected and adapted to Transformer Neural Networks.
+  
+  \item \textbf{Custom Post-Training Quantization}: A custom tool is proposed that finds the optimal set of bit-widths for a High-Level Synthesis model according to used-defined constraints.
+\end{itemize}
 
 The bulk of the work and analysis conducted in this project was summarized in the paper "Accelerating Transformer Neural Networks on FPGAs for High Energy Physics Experiments" and submitted in the long paper category to the \textit{18\textsuperscript{th} International Symposium on Applied Reconfigurable Computing}. A journal article derived from this project is being prepared for publication.
 

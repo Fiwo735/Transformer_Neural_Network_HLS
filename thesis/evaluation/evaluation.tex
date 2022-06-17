@@ -237,12 +237,12 @@ Thanks to its high-performance, XCU250 (variant figd2104-2L-e) was chosen as the
 \end{figure}
 
 
-\subsection{Post-Training Quantization}
+\subsection{Post-Training Quantization}\label{eval:post-training-quantization}
 \indo{State that the results are very promising (64\% bits reduction), how this should influence synthesis}
-\indo{|}
-\indo{|}
+\indo{prove correlation with how different on average is the next bit width compared to previous vs default (34 bits etc)}
+\indo{say how we dont do synthesis due to time limitations, and its mostly no problem as the widhts are linear with hardware resources aside from the situations in which a dsp can be avoided (34 vs 35 bits etc)}
 \indo{Maybe talk about how correlation was verified}
-\indo{|}
+\indo{starting with integer or fractional in the search didnt seem to matter in the limited tests}
 \indo{Discuss the used parameters (ratio of positive and negative tolerance etc.) and how they affect the results}
 \indo{|}
 \indo{|}
