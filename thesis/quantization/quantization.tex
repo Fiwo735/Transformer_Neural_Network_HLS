@@ -1,5 +1,7 @@
 \chapter{Hardware-Aware Analysis}\label{quantization}
-In this chapter, the hardware-aware optimizations used in the FPGA implementations are first presented and then their application in the proposed architectures is explained. Other elements of the hardware design and configuration process are then described which results in a comprehensive picture of the FPGA-mapped architectures. Afterwards, two analytical models are considered - one for the latency and the other for the resource utilization. The custom post-training quantization tool is discussed along with its suitability for this project. Then, existing infrastructure that ties together higher and lower-level code representation is introduced along with its synergy with a High-Level Synthesis optimization tool chain. Lastly, the technical contributions to \hlsml library are listed and explained.
+In this chapter, the hardware-aware optimizations used in the FPGA implementations are first presented and then their application in the proposed architectures is explained. Other elements of the hardware design and configuration process are then described which results in a comprehensive picture of the FPGA-mapped architectures. Afterwards, two analytical models are considered - one for the latency and the other for the resource utilization. The custom post-training quantization tool is discussed along with its suitability for this project.
+%Then, existing infrastructure that ties together higher and lower-level code representation is introduced along with its synergy with a High-Level Synthesis optimization tool chain.
+Lastly, the technical contributions to \hlsml library are listed and explained.
 
 \section{Hardware-Aware Optimizations}
 
@@ -45,7 +47,7 @@ Another simple optimization used alongside the tensor multiplication blocks was 
 
 
 \subsection{Softmax and Log Softmax Activations}\label{log-softmax}
-Despite an already existing \hlsml implementation of the softmax activation function, computing the logarithm of its result is not as simple as it may seem. This is because the numerical stability and computational efficiency of this operation is often explored in-depth \cite{60-blanchard2019accurate} and varies depending on the programming language and target platform.
+Despite an already existing \hlsml implementation of the softmax activation function, obtaining the logarithm of its result is not as simple as it may seem. This is because the numerical stability and computational efficiency of this operation is non-trivial and varies depending on the programming language and target platform, as it is a topic of ongoing research \cite{60-blanchard2019accurate}.
 
 \begin{figure}[hpt!]
   \centering
@@ -84,25 +86,11 @@ Although further simplifications, including approximating the summation by findi
 
 
 \section{Neural Networks Implementation}
-\indo{|}
-\indo{|}
-\indo{|}
+The FPGA implementations of the two proposed architectures capture the ideas and novel approaches explained in \cref{models} and the previous subsection. What is left to discuss are the particular methods used in HLS C++ that play a significant role in the models' performance and quality of the results.
 
-\subsection{Ultra-Low Latency Architecture}
-\indo{|}
-\indo{|}
-\indo{|}
-\indo{|}
-\indo{|}
-\indo{|}
+As its name suggests, the ultra-low latency architecture is designed to offer cutting-edge inference speed. Thus, its hardware implementation is fully parallelized and pipelined, which means that operations are mapped to separate hardware resources split into pipeline stages wherever it is feasible. To achieve this, all loops are unrolled and every array\footnote{Multidimensional arrays are used in HLS C++ to implement matrices and tensors in the most efficient ways.} is fully partitioned in order to be stored in registers instead of slower-to-access BRAMs. This not only avoids any loop overhead, but also allows the computations to happen at the same time regardless of the design size, provided enough hardware resources are available.
 
-\subsection{Accuracy-Focused Architecture}
-\indo{|}
-\indo{|}
-\indo{|}
-\indo{|}
-\indo{|}
-\indo{|}
+The second, accuracy-focused architecture relies on a more complex dataset, hence requiring a substantially bigger design. This limits the possibility of performing every calculation in parallel and introduces the need to reuse the most demanded components. To avoid resource bottlenecks, arrays can no longer be completely partitioned to reduce the number of used FFs and LUTs in favor of BRAMs. For the same reason, certain computationally-expensive loops cannot be unrolled to restrict immense DSP usage. Surprisingly, the complexity of the design's synthesis process has to also be taken into consideration, which is a limitation of the existing HLS technology. This challenge imposes new constraints on the model's configuration, which is discussed in details along its evaluation in \cref{evaluation}.
 
 
 \section{Analytical Latency and Resource Models}
@@ -138,10 +126,20 @@ Overall, the latency can be expressed using a few variables and constants, leadi
   \text{latency (cycles)} = 6 + 1 \cdot ( 8 + 2 + 2 \cdot 1 ) = 18
 \end{equation}
 
-Given the design configuration of the ultra-low latency model, 18 cycles are expected as the overall latency value, as proven in equation \ref{eq:latency-model-numbers}. The number of transformer layers plays the most important role in this model, which can be seen from the plot in figure TODO which shows a 3-dimensional visualization of the latency dependency, with the model's constant values.
+Given the design configuration of the ultra-low latency model, 18 cycles are expected as the overall latency value, as proven in equation \ref{eq:latency-model-numbers}. The number of transformer layers plays the most important role in this model, which can be seen from the plot in figure \ref{fig:latency-model} which shows a 3-dimensional visualization of the latency dependency, with the model's constant values.
 
+\begin{figure}[hpt!]
+  \centering
+  \includegraphics[trim={0cm 0cm 0cm 4cm}, clip, width=0.7\textwidth, center]{../logs/latency_model.png}
+  \caption{3D plot of the latency model dependency on the number of transformer and feed-forward layers.}
+  \label{fig:latency-model}
+\end{figure}
 
 \subsection{DSP Model}
+\indo{TODO: how to handle the seemingly varying coefficient in linear size? how to estimate matmul?}
+\indo{|}
+\indo{|}
+\indo{|}
 
 % dsp:
 % -------
@@ -258,25 +256,6 @@ It is important to point out that the aforementioned PyTorch Eager Mode and FX G
   \EndFunction
   \end{algorithmic}
 \end{algorithm}
-
-
-\section{High-Level-Synthesis Optimization}
-\indo{Introduce MLIR and the overall flow of how PyTorch models are mapped, include nice diagrams}
-\indo{|}
-\indo{|}
-\indo{|}
-\indo{|}
-\indo{|}
-\indo{Talk about how ScaleHLS extends MLIR to HLS, again diagrams}
-\indo{|}
-\indo{|}
-\indo{|}
-\indo{|}
-\indo{|}
-\indo{Talk about potential integration/relation between hls4ml (Python -> HLS) and ScaleHLS (PyTorch/HLS -> Optimized HLS) }
-\indo{|}
-\indo{|}
-
 
 \section{\hlsml Contributions}
 In this section, the technical contributions to the \hlsml library are descriptively presented, highlighting the areas that this work expands upon. Developed components are shown in figure \ref{fig:hls4ml-contributions}, along with a number of existing components that were expanded upon or are used to draw comparison with. Each group is discussed in one of the following subsections, in an order of increasing design complexity.
