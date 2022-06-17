@@ -83,7 +83,7 @@ Although further simplifications, including approximating the summation by findi
 \end{equation}
 
 
-\section{Neural Network Architectures Design}
+\section{Neural Networks Implementation}
 \indo{|}
 \indo{|}
 \indo{|}
@@ -106,18 +106,59 @@ Although further simplifications, including approximating the summation by findi
 
 
 \section{Analytical Latency and Resource Models}
-\indo{Reason about computational complexity, include a diagram of self-attention tensor multiplications based on contents of Deep Learning lectures}
-\indo{|}
-\indo{|}
-\indo{|}
-\indo{|}
-\indo{|}
-\indo{|}
-\indo{Derive simple latency and resource (likely only DSP as others are too difficult) model, that will be verified in evaluation chapter}
-\indo{|}
-\indo{|}
-\indo{|}
-\indo{|}
+In the majority of cases, simulation and synthesis are the best ways of measuring model's accuracy, latency and hardware resources utilization. Although the results might vary compared to an actual FPGA implementation due to various nuances involved in converting the RTL code to equivalent bit stream, the overall design trends remain unchanged. Nonetheless, deriving an analytical model offers a much simpler and easier way of understanding the consequences of modifying a design. While predicting accuracy is not a feasible endeavor due to the complex nature of neural network models, latency estimation is possible for a given design configuration. Tracking hardware resources is not manageable in general as used FF and LUT numbers can reach millions, however, rough estimation of DSP slices can be discussed. In order for the analytical models to be easier to understand and verify, only the smaller, completely pipelined, ultra-low latency architecture is discussed in this section.
+
+\subsection{Latency Model}
+A visualization of the architecture annotated with the pipeline stages can be seen in figure \ref{fig:pipeline-stages}. As a consequence of pipelining the model, all the operations can be completed in either one or two cycles. Certain operations like ReLU or scaling share their stage with subsequent components due to their simplicity.
+
+\begin{figure}[hpt!]
+  \centering
+  \includegraphics[trim={0cm 0cm 0cm 0cm}, width=1.0\textwidth, center]{quantization/pipelining_stages.pdf}
+  \caption{Ultra-low latency architecture with highlighted pipeline stages. Not annotated blocks share stage with their neighbors.}
+  \label{fig:pipeline-stages}
+\end{figure}
+
+The following components' stages last for two cycles, which suggests that their internal operations could not be completed within a cycle:
+
+\begin{itemize}
+  \item Tensor multiplication - a single multiply-accumulate operation requires only one cycle, which might seem counterintuitive at first. However, in this case, several multiplication results need to be added together for each output's value, which leads to additional complexity and latency.
+  \item Softmax activation - it performs an exponential function lookup for each input in parallel given the full partitioning of the arrays, but then the values needs to be summed, and more importantly, multiplied, which generates the additional cycle.
+  \item Log softmax activation - compared to the previous operation, no multiplication is needed in this case, saving a cycle. However, after the initial lookups, another one needs to happen to find the logarithm value, which requires an additional cycle.
+\end{itemize}
+
+The design configuration affects several of the pipeline stages, and hence a significant portion of the latency. The number of transformer layers  have a direct impact on stages III to XI, with each additional layer effectively duplicating them, increasing the latency by \(12\) cycles. Within the transformer block, each feed forward (linear and ReLU) layer contributes one cycle. It is not obvious at first, but the number of self-attention heads do not influence the latency as they are executed in parallel.
+
+\begin{equation} \label{eq:latency-model}
+  \text{latency (cycles)} = C_{top} + T \cdot ( C_{SA} + C_{T} + F \cdot C_{FF} )
+\end{equation}
+
+Overall, the latency can be expressed using a few variables and constants, leading to the dependency seen in equation \ref{eq:latency-model}. As for the notation, \(C_{top}\), \(C_{SA}\), \(C_{T}\), and \(C_{FF}\) stand for the constant cycles needed in the top-level, self-attention, transformer, and feed-forward components, while \(T\) and \(F\) mean the number of transformers and feed-forward layers.
+
+\begin{equation} \label{eq:latency-model-numbers}
+  \text{latency (cycles)} = 6 + 1 \cdot ( 8 + 2 + 2 \cdot 1 ) = 18
+\end{equation}
+
+Given the design configuration of the ultra-low latency model, 18 cycles are expected as the overall latency value, as proven in equation \ref{eq:latency-model-numbers}. The number of transformer layers plays the most important role in this model, which can be seen from the plot in figure TODO which shows a 3-dimensional visualization of the latency dependency, with the model's constant values.
+
+
+\subsection{DSP Model}
+
+% dsp:
+% -------
+% linear: 240 = 16 x 16 * (15/16) = i x o x coeff
+% linear: 75 = 16 x 5 * (15/16) = i x o x coeff
+% log softmax: 0 (sub instead of mult)
+% trans: 4351
+%   relu: 0
+%   linear nb: 480 = 16 x 32 * (15/16)
+%   linear nb: 705 = 32 x 16 * (1.377 = 705/512)
+%   sa: 2162
+%     linear qkv: 457 = 32 x 96 * (0.149)
+%     matmul: ?
+%     scale: 0
+%     matmul: ?
+%     softmax: 2
+%     linear: 244 or 122?
 
 
 \section{Post-training Quantization}\label{post-training-quantization}
