@@ -54,12 +54,6 @@ hls/myproject_prj/solution1/*
 *.pyc
 
 # nohup - for long running jobs
-<<<<<<< HEAD
-nohup.out
-
-# Dataset H5 files
-*.h5
-=======
 nohup*
 best_quant_*
 grid_search_*
@@ -85,4 +79,3 @@ logs/vivado_hls_run.log
 logs/vivado_hls_run2.log
 logs/vivado_hls_run3.log
 logs/vivado_hls_run4.log
->>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c

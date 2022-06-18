@@ -3,13 +3,8 @@
 #################
 array set opt {
   reset      0
-<<<<<<< HEAD
-  csim       0
-  synth      0
-=======
   csim       1
   synth      1
->>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
   cosim      0
   validation 0
   export     0
@@ -69,12 +64,8 @@ if {$opt(reset)} {
 } else {
   open_solution "solution1"
 }
-<<<<<<< HEAD
-catch {config_array_partition -maximum_size 4096}
-=======
 # catch {config_array_partition -maximum_size 4096}
 catch {config_array_partition -maximum_size 8192}
->>>>>>> 9c0d86c28c83f71f1cb2ea0cb2e3aa899ae4e20c
 config_compile -name_max_length 60
 set_part {xcu250-figd2104-2L-e}
 create_clock -period 5 -name default
