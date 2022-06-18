@@ -27,6 +27,7 @@ thesis/*.lot
 thesis/*.out
 thesis/*.run.xml
 thesis/*.synctex.gz
+thesis/*.tdo
 thesis/*.toc
 thesis/*-converted-to*
 
