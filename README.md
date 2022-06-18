@@ -94,10 +94,6 @@
 
 ## Repo structure
 ```
-├─ fyp21yuan_code/                             # Yuan MSc code
-│
-├─ example_hls/                                # Tiny HLS design for testing Vivado HLS functions
-│
 ├─ hls/
 │   ├─ firmware/
 │   │   ├─ nnet_utils/
@@ -133,12 +129,13 @@
 │   └─ playground.py                           # Used for testing and debugging Pytorch implementation
 │
 ├─ logs/                                       # All sorts of logs and images
-│
-├─ reports/                                    # Synthesis reports captured at different design stages
+│   └─ synthesis_reports/                      # Synthesis reports captured at different design stages
 │
 ├─ thesis/                                     # Directory used for generating the LaTeX thesis
 │
 ├─ .gitignore                                  # gitignore
+├─ environment.yaml                            # Packages for Conda environment
+├─ requirements.txt                            # Packages for pip
 └─ README.md                                   # This file
 ```
 
