@@ -94,7 +94,7 @@ The second, accuracy-focused architecture relies on a more complex dataset, henc
 
 
 \section{Analytical Latency and Resource Models}
-In the majority of cases, simulation and synthesis are the best ways of measuring model's accuracy, latency and hardware resources utilization. Although the results might vary compared to an actual FPGA implementation due to various nuances involved in converting the RTL code to equivalent bit stream, the overall design trends remain unchanged. Nonetheless, deriving an analytical model offers a much simpler and easier way of understanding the consequences of modifying a design. While predicting accuracy is not a feasible endeavor due to the complex nature of neural network models, latency estimation is possible for a given design configuration. Tracking hardware resources is not manageable in general as used FF and LUT numbers can reach millions, however, rough estimation of DSP slices can be discussed. In order for the analytical models to be easier to understand and verify, only the smaller, completely pipelined, ultra-low latency architecture is discussed in this section.
+In the majority of cases, simulation and synthesis are the best ways of measuring model's accuracy, latency and hardware resources utilization. Although the results might vary compared to an actual FPGA implementation due to various nuances involved in converting the RTL code to equivalent bit stream, the overall design trends remain unchanged. Nonetheless, deriving an analytical model offers a much simpler and easier way of understanding the consequences of modifying a design. While predicting accuracy is not a feasible endeavor due to the complex nature of neural network models, latency estimation is possible for a given design configuration. Tracking hardware resources is not manageable in general as used FF and LUT numbers can reach millions, however, rough estimation of DSP slices can be discussed. In order for the analytical models to be easier to understand and verify, only the smaller, fully pipelined, ultra-low latency architecture is discussed in this section.
 
 \subsection{Latency Model}
 A visualization of the architecture annotated with the pipeline stages can be seen in figure \ref{fig:pipeline-stages}. As a consequence of pipelining the model, all the operations can be completed in either one or two cycles. Certain operations like ReLU or scaling share their stage with subsequent components due to their simplicity.
@@ -109,9 +109,9 @@ A visualization of the architecture annotated with the pipeline stages can be se
 The following components' stages last for two cycles, which suggests that their internal operations could not be completed within a cycle:
 
 \begin{itemize}
-  \item Tensor multiplication - a single multiply-accumulate operation requires only one cycle, which might seem counterintuitive at first. However, in this case, several multiplication results need to be added together for each output's value, which leads to additional complexity and latency.
-  \item Softmax activation - it performs an exponential function lookup for each input in parallel given the full partitioning of the arrays, but then the values needs to be summed, and more importantly, multiplied, which generates the additional cycle.
-  \item Log softmax activation - compared to the previous operation, no multiplication is needed in this case, saving a cycle. However, after the initial lookups, another one needs to happen to find the logarithm value, which requires an additional cycle.
+  \item \textbf{Tensor product} - a single multiply-accumulate operation requires only one cycle, which might seem counterintuitive at first. However, in this case, several multiplication results need to be added together for each output's value, which leads to additional complexity and latency.
+  \item \textbf{Softmax activation} - it performs an exponential function lookup for each input in parallel given the full partitioning of the arrays, but then the values needs to be summed, and more importantly, multiplied, which generates the additional cycle.
+  \item \textbf{Log softmax activation} - compared to the previous operation, no multiplication is needed in this case, saving a cycle. However, after the initial lookups, another one needs to happen to find the logarithm value, which requires an additional cycle.
 \end{itemize}
 
 The design configuration affects several of the pipeline stages, and hence a significant portion of the latency. The number of transformer layers  have a direct impact on stages III to XI, with each additional layer effectively duplicating them, increasing the latency by \(12\) cycles. Within the transformer block, each feed forward (linear and ReLU) layer contributes one cycle. It is not obvious at first, but the number of self-attention heads do not influence the latency as they are executed in parallel.
@@ -136,27 +136,36 @@ Given the design configuration of the ultra-low latency model, 18 cycles are exp
 \end{figure}
 
 \subsection{DSP Model}
-\indo{TODO: how to handle the seemingly varying coefficient in linear size? how to estimate matmul?}
-\indo{|}
-\indo{|}
-\indo{|}
+The raised abstraction level of C++ code compared to an RTL representation is the main benefit of HLS, but it poses a challenge for accurate modelling of hardware resources. Hence, the DSP model uses precise values wherever feasible, and big O notation for the more convoluted components.
 
-% dsp:
-% -------
-% linear: 240 = 16 x 16 * (15/16) = i x o x coeff
-% linear: 75 = 16 x 5 * (15/16) = i x o x coeff
-% log softmax: 0 (sub instead of mult)
-% trans: 4351
-%   relu: 0
-%   linear nb: 480 = 16 x 32 * (15/16)
-%   linear nb: 705 = 32 x 16 * (1.377 = 705/512)
-%   sa: 2162
-%     linear qkv: 457 = 32 x 96 * (0.149)
-%     matmul: ?
-%     scale: 0
-%     matmul: ?
-%     softmax: 2
-%     linear: 244 or 122?
+\begin{equation} \label{eq:dsp-linear}
+  \text{Linear: \# of DSPs} = \mathcal{O}( (\text{input size}) \cdot (\text{output size}) )
+\end{equation}
+
+Starting with the ones that are not expected to contribute any utilization, both ReLU and scaling can be implemented without DSPs, using solely comparators for the conditions and clever routing for shifting. While softmax activation requires one multiplication for each of its inputs which depends on \textit{\# of input jets}\footnote{The term \textit{\# of input jets} refers to the dataset's jet dimensionality - \(1\) for HLF and \(30\), \(50\), \(100\), or \(150\) for the constituent list representation.} called \(L\), the optimized log softmax uses subtraction instead and can be omitted in this model. The most difficult to model are the more computationally expensive components - linear layers and tensor multiplication blocks. The former performs a number of multiplications proportional to its input and output sizes, directly relating to DSP count, as well as an accumulation of the products which is not guaranteed to be mapped to separate units, possibly using existing ones instead. The resulting complexity can be seen in equation \ref{eq:dsp-linear}.
+
+\begin{equation} \label{eq:dsp-tensor}
+  \text{Tensor product: \# of DSPs} = \mathcal{O}( L^2 \cdot H )
+\end{equation}
+
+Similar argument can be made about the tensor multiplication, where it is also clear that there is a direct relation to the size of the involved tensor dimensions, but it is not easy to conclude how many DSP slices each multiply-accumulate need. Given that both of the instances of this block operate on the same dimensions, equation \ref{eq:dsp-tensor} uses a more precise notation, where \(H\) stands for the number of self-attention heads.
+
+In order to express the overall DSP model, the input and output sized of each linear layer have to be considered. The following list refers to them using the pipeline stages introduced in figure \ref{fig:pipeline-stages} for unambiguity:
+
+\begin{itemize}
+  \item \textbf{Stage I}: from jet feature number (\(16\)) to self-attention latent dimension \(d\),
+  \item \textbf{Stage III}: regardless of being fused into 1 or expressed as 3 separate layers, it takes the latent dimension \(d\) and yields \(3 \cdot d\),
+  \item \textbf{Stage VII}: both input and output are of size \(d\),
+  \item \textbf{Stage IX}: from \(d\) to \(2 \cdot d\),
+  \item \textbf{Stage X}: from \(2 \cdot d\) to \(d\),
+  \item \textbf{Stage XIII}: from \(d\) to the number of classes (\(5\)).
+\end{itemize}
+
+All together, the above dimensions can be summed to \(16d + 3d^2 + d^2 + 2d^2 + 2d^2 + 5d = 21d + 8d^2\). To produce a clearer model, constant coefficients \(C_{\text{linear}}\) and \(C_{\text{tensor}}\) are introduced in the computational complexities to express them directly. Hence, combining the above information about softmax, linear and tensor product blocks, the following DSP model shown in equation \ref{eq:dsp-model} is obtained. As expected, the result is significantly more complex that the latency model and cannot be easily plotted.
+
+\begin{equation} \label{eq:dsp-model}
+  \text{\# of DSPs} = L + C_{\text{linear}} \cdot (21d + 8d^2) + C_{\text{tensor}} \cdot 2 \cdot L^2 \cdot H
+\end{equation}
 
 
 \section{Post-training Quantization}\label{post-training-quantization}
