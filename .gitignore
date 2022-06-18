@@ -92,3 +92,6 @@ logs/vivado_hls_run4.log
 # PyTorch models
 *.model.pth
 *.pth.tar
+
+# Old MSc code
+fyp21yuan_code
