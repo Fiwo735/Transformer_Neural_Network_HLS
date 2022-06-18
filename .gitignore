@@ -17,12 +17,15 @@ hls4ml_tutorial/hsperfdata_root
 thesis/*.aux
 thesis/*.bbl
 thesis/*.blg
+thesis/*.bcf
 thesis/*.fdb_latexmk
 thesis/*.fls
+thesis/*.loa
 thesis/*.lof
 thesis/*.log
 thesis/*.lot
 thesis/*.out
+thesis/*.run.xml
 thesis/*.synctex.gz
 thesis/*.toc
 thesis/*-converted-to*
@@ -48,6 +51,7 @@ csim.exe
 csim_layers.log
 myproject_csim.log
 hls/myproject_prj/solution1/*
+example_hls
 
 # Python
 *.npy
@@ -58,6 +62,7 @@ nohup*
 best_quant_*
 grid_search_*
 search.out
+search_quant.out
 
 # Dataset H5 files
 *.h5
@@ -79,3 +84,11 @@ logs/vivado_hls_run.log
 logs/vivado_hls_run2.log
 logs/vivado_hls_run3.log
 logs/vivado_hls_run4.log
+*.log
+
+# PyTorch logs
+*training_mean_var.txt
+
+# PyTorch models
+*.model.pth
+*.pth.tar

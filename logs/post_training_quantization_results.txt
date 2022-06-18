@@ -1,7 +1,0 @@
-Starting point with 44 total bit width (128 inputs): 78.91%
-
-Starting point with 44 total bit width (16 inputs): 81.25%
-
-Starting point with 34 total bit width (16 inputs): 81.25%
-Synthesis:
-
