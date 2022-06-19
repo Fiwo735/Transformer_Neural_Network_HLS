@@ -1,138 +1,98 @@
 \chapter{Evaluation}\label{evaluation}
-This chapter starts by evaluating proposed neural network architectures using CPUs and GPUs to find a baseline inference latency, accuracy and AUC values. This information is then compared with the results obtained from simulating and synthesizing the models on reconfigurable hardware. The outcome of the design space exploration includes hardware resource utilization metrics as well as discussion about the Pareto front and applicability in high energy physics environments. Lastly, both the pre-training and post-training quantization are evaluated quantitatively in terms of the trade-off between quality of results and bit-width reduction as well as qualitatively for their ease of adaptation to existing designs.
+This chapter starts by evaluating the proposed neural network architectures on CPUs and GPUs to find a baseline inference latency, accuracy and AUC values. This information is then compared with the results obtained from simulating and synthesizing the models on reconfigurable hardware. The outcome of the design space exploration includes hardware resource utilization metrics as well as discussion about the Pareto front and applicability in high energy physics environments. Lastly, both the quantization-aware training and post-training quantization are evaluated quantitatively in terms of the trade-off between quality of results and bit-width reduction as well as qualitatively for their ease of adaptation to existing designs.
+\indo{Correct the above}
 
-% This chapter outlines the proposed evaluation plan for the project. The first objective of developing and optimizing a state-of-the-art neural network in hardware can be evaluated quantitatively, while integrating it into the \textit{hls4ml} library and making it easy for new users to use requires a more qualitative approach.
+As efficient hardware mapping is the motivation behind the proposed models, out of the constituent list representation datasets, only the one containing 30 most energetic jets is analyzed in this chapter due to the inherent complexity of transformer neural networks and the challenges involved in mapping bigger designs to FPGAs.
 
-% \section{Quantitative results}
-% The following describes the quantities to be measured for each neural network design:
+\section{Proposed Models' Performance}
+The first objective of the project is to design neural network architectures capable of very fast and accurate classification. Firstly, the classification accuracies and ROC curves are analyzed. Then, the choice of a dataset for both models is discussed, followed by inference latency results and comparison to existing solutions.
 
-% \begin{outline}
-%   \1 Classification accuracy, AUC and confusion matrix on a validation dataset
-%   \1 Inference latency and throughput when running on the target platform
-%   \1 Hardware resource utilization (exact values for comparison with other platforms and percentage of available resources for understanding limitations):
-%     \2 Block RAM (BRAM) and Ultra RAM (URAM)
-%     \2 Digital Signal Processing units (DSP)
-%     \2 Flip-Flops (FF)
-%     \2 Look-Up Tables (LUT)
-% \end{outline}
+\subsection{Classification Accuracy}
+Table \ref{tab:classification-results} shows the evaluation results of the base and the two proposed architectures on the HLF and the constituent list datasets. Compared to the base one, the ultra-low latency model requires roughly 156 times fewer parameters and 2,875 times fewer FLOPS while achieving comparable classification results, suggesting that the base model has significantly too much learning capacity for that dataset. The second model also offers a notable parameters and FLOPS reduction of around 4 times. This matches the quadratic complexity of the self-attention layer given that the latent dimension is reduced from \(128\) to \(64\) and proves the importance of this factor. Along this, there is a slight improvement in accuracy and AUC thanks to a more careful selection of the design parameters.
 
-% In the early stages of the project, the above quantities will be measured from the results from the simulation and synthesis reports. At a later stage, the best designs will be run on actual hardware platforms to validate them under real-life use cases. The platform planned for this part is an Intel Stratix V FPGA hosted in a Maxeler MPC-X dataflow node with 8 Maia dataflow engines and 48 GB of DRAM. A consideration is also planned for the specific hardware used in the LHC L1T detectors and its available resources, which although cannot be directly tested on, can guide the state space exploration.
-
-% Apart from clear design improvements, it is predicted that most evaluated designs will offer trade-offs between classification accuracy, AUC, inference throughput and hardware utilization. It is not possible to find a design that is superior in every way, hence a Pareto front and the Roofline model will play the key roles in understanding the overall performance and selecting configuration with specific needs in mind.
-
-
-% \section{Qualitative Results}
-% To assess the success of enhancing the \textit{hls4ml} library, qualitative comparisons will be drawn between it and the already existing neural network components and architectures. Depending on the project's timeline, it is possible that the improvements can get official approval and get merged into the main repository, however if this is not feasible before the final deadline, current users of the library will be surveyed and their opinion will be taken into consideration instead.
-
-\section{Architecture Analysis}
-\indo{Carries on from chapter 3}
-\indo{|}
-\indo{|}
-\indo{|}
-
-\subsection{Existing Solutions}
-
-\begin{table}[!hpt]
+\begin{table}[hpt!]
   \centering
-  \caption{Summary of networks' inference time, accuracy, Floating-Point Operations Per Second and parameter number for optimal batch sizes, with best values in bold.}
-  \label{tab:all-networks-comparison}
+  \caption{Comparison between classification accuracy, average ROC metrics, parameter count, and FLOPS between the baseline and the proposed architectures.}
+  \label{tab:classification-results}
   \bgroup
   \def\arraystretch{1.2}
-  \setlength\tabcolsep{1.5mm}
-  \begin{tabular}{|c|c|c|c|c|}
+  \setlength\tabcolsep{2.5mm}
+  \begin{tabular}{|c|c|c|c|c|c|}
   \hline
-  \textbf{\begin{tabular}[c]{@{}c@{}}Neural network\\ \end{tabular}} & \textbf{\begin{tabular}[c]{@{}c@{}}Inference per\\ batch (ms)\end{tabular}} & \textbf{\begin{tabular}[c]{@{}c@{}}Accuracy /\\ aver. AUC\end{tabular}} & \textbf{FLOPS} & \textbf{Parameters} \\ \hline
-  DNN \cite{9-newman2019jedi-net:}                                                                   & \textbf{1.0 $\pm$ 0.2}                                                                    & 0.760 / 0.941            & \textbf{27 k}           & 14,725              \\ \hline
-  CNN \cite{9-newman2019jedi-net:}                                                                   & 57.1 $\pm$ 0.5                                                                   & 0.740 / 0.911           & 400 k           & 205,525             \\ \hline
-  GRU \cite{9-newman2019jedi-net:}                                                                   & 23.2 $\pm$ 0.6                                                                   & 0.750 / 0.912            & 46 k           & 15,575              \\ \hline
-  JEDI-net \cite{9-newman2019jedi-net:}                                                              & 121.2 $\pm$ 0.4                                                                  & TODO / 0.959           & 116 M             & 33,625              \\ \hline
-  JEDI-net with $\sum O$ \cite{9-newman2019jedi-net:}                                                            & 402.0 $\pm$ 1.0                                                                  & TODO / 0.957            & 458 M             & 8,767               \\ \hline
-  ConstituentNet-Base \cite{3-yuan2021constituentnet:}                                                   & $\sim$773.0                                                                         & 0.818 / \textbf{0.966}            & 1,553 M            & 289,000             \\ \hline
-  ConstituentNet-Tiny \cite{3-yuan2021constituentnet:}                                                   & $\sim$17.0                                                                        & 0.805 / 0.960            & 13 M              & \textbf{8,533}               \\ \hline
+  \textbf{Architecture} & \textbf{Dataset} & \textbf{\begin{tabular}[c]{@{}c@{}}Classification\\ Accuracy (\%)\end{tabular}} & \textbf{AUC} & \textbf{Parameters} & \textbf{FLOPS} \\ \hline
+  Base & \multirow{2}{*}{HLF} & 76.50 & 0.9429 & 399,901 & 102 M \\ \cline{1-1} \cline{3-6} 
+  Ultra-Low Latency &  & 76.09 & 0.9396 & 2,605 & 583 k \\ \hline
+  Base & \multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}Constituents\\ (30)\end{tabular}} & 77.56 & 0.9473 & 405,643 & 1,676 M \\ \cline{1-1} \cline{3-6} 
+  Accuracy-Focused &  & 77.81 & 0.9480 & 107,403 & 448 M \\ \hline
   \end{tabular}
   \egroup
+  \end{table}
+
+\subsection{Receiver Operating Characteristic Curves and their Areas}
+Analyzing the ROC curves offers a more complex analysis of the trade-offs in classification results between the base and the proposes architecture.
+
+\begin{figure}[!hpt]
+  \centering
+  \begin{tabular}{ccc}
+      {\includegraphics[width=0.48\columnwidth]{../logs/ROC.png}} &
+      {\includegraphics[width=0.48\columnwidth]{../logs/ROC.png}}
+  \end{tabular}
+  \caption{Comparison between ROC and AUC of the base (left) and ultra-low latency (right) models using the HLF dataset.}
+  \label{fig:ROCs-HLF}
+\end{figure}
+
+Figure \ref{fig:ROCs-HLF} compares the base and the ultra-low latency models trained on the HLF dataset. The curves behave very similarly, with the ones associated with gluons and light quarks achieving notably lower true positive rates (TRPs) at lower false positive rates (FPRs), which means that both models have more troubles between distinguishing between these two jet categories.
+
+\begin{figure}[!hpt]
+  \centering
+  \begin{tabular}{ccc}
+      {\includegraphics[width=0.48\columnwidth]{../logs/ROC.png}} &
+      {\includegraphics[width=0.48\columnwidth]{../logs/ROC.png}}
+  \end{tabular}
+  \caption{Comparison between ROC and AUC of the base (left) and accuracy-focused (right) models using the constituent list dataset.}
+  \label{fig:ROCs-constituent}
+\end{figure}
+
+Figure \ref{fig:ROCs-constituent} shows an analogous comparison for the base and accuracy-focused models using the constituent list representation. TODO
+
+\begin{table}[]
+  \centering
+  \caption{}
+  \label{tab:AUCs}
+  \begin{tabular}{|c|c|cc|}
+  \hline
+  \multirow{2}{*}{\textbf{Particle}} & \multirow{2}{*}{\textbf{AUC}} & \multicolumn{2}{c|}{\textbf{TPR @ FPR}} \\ \cline{3-4} 
+   &  & \multicolumn{1}{c|}{\textbf{10 \%}} & \textbf{1 \%} \\ \hline
+  Gluon &  & \multicolumn{1}{c|}{} &  \\ \hline
+  Light quarks &  & \multicolumn{1}{c|}{} &  \\ \hline
+  Top quark &  & \multicolumn{1}{c|}{} &  \\ \hline
+  W boson &  & \multicolumn{1}{c|}{} &  \\ \hline
+  Z boson &  & \multicolumn{1}{c|}{} &  \\ \hline
+  \end{tabular}
 \end{table}
 
+Table \ref{tab:AUCs} provides a comprehensive view of the models' true positive rates at 10 \% and 1 \% false positive rates, comparing them to other state-of-the-art neural network architectures introduced in \cref{background}.
 
-\subsection{Receiver Operating Characteristic Curves}
-
-\indo{Baseline ROC and its meaning}
-\indo{|}
-
-\begin{figure}[hpt!]
-  \centering
-  \includegraphics[trim={0cm 0cm 0cm 0cm}, width=0.6\textwidth, center]{../logs/ROC.png}
-  \caption{ROC curve for TODO}
-  \label{fig:ROC}
-\end{figure}
-
-\indo{Talk about grid search for accuracy-focused model as a quick and easy hyperparameter search, that was done mainly to look for simpler designs given very long synthesis, not hardcore tuning accuracy}
-\indo{Give estimate of how long is the synthesis and why this is a problem}
-\indo{|}
-\indo{|}
-
-\begin{figure}[hpt!]
-  \centering
-  \includegraphics[trim={0cm 0cm 0cm 1cm}, clip, width=1.0\textwidth, center]{../logs/grid_search.png}
-  \caption{Grid-search results - squares area proportional to accuracy.}
-  \label{fig:grid-search}
-\end{figure}
-
-\indo{Ultra-low latency ROC and its meaning}
-\indo{|}
-
-\begin{figure}[hpt!]
-  \centering
-  \includegraphics[trim={0cm 0cm 0cm 0cm}, width=0.6\textwidth, center]{../logs/ROC.png}
-  \caption{ROC curve for TODO}
-  \label{fig:ROC2}
-\end{figure}
-
-\indo{Table with AUC and accuracy}
-\indo{|}
-\indo{|}
-\indo{|}
-\indo{|}
-\indo{|}
-
-\indo{Accuracy-focused ROC and its meaning}
-\indo{|}
-
-\begin{figure}[hpt!]
-  \centering
-  \includegraphics[trim={0cm 0cm 0cm 0cm}, width=0.6\textwidth, center]{../logs/ROC.png}
-  \caption{ROC curve for TODO}
-  \label{fig:ROC3}
-\end{figure}
-
-\indo{Table with AUC and accuracy}
-\indo{|}
-\indo{|}
-\indo{|}
-\indo{|}
-\indo{|}
-
-
-\subsection{Proposed Networks' Latency using CPUs and GPUs}
+\subsection{CPU and GPU Latency}
 
 \indo{Latency on CPUs and GPUs, extend table below with accuracy-focused latency results or just create a second one}
 \indo{Comment on how little difference there is between all CPUs and GPUs}
 \indo{|}
 \indo{|}
 
-The detailed specifications of the machines used for measuring the inference time are listed below. The system specification is shared and includes CentOS 7.0. The first machine that hosts the GPUs has CUDA version 11.5, driver version 495.29.05.
+The detailed specifications of the four machines used for measuring the inference time are listed below. All machines have CentOS 7.0 operating system, while the first listed machine, which is the GPUs host, uses CUDA version 11.5, with driver version 495.29.05.
 
 \begin{itemize}
-  \item Dual Intel Xeon Silver 4110 at 2.10GHz with 192 GB DDR4 at 2666 MT/s - GPUs host,
-  \item Dual Intel Xeon X5690 at 3.47GHz with 96 GB DDR3 at 1333 MT/s,
-  \item Intel Xeon E5-2620 v3 at 2.40GHz with 192 GB DDR4 at 2133 MT/s,
-  \item Dual Intel Xeon Gold 6154 CPU at 3.00GHz with 768 GB DDR4 at 2666 MT/s,
+  \item Dual Intel Xeon Silver 4110 at 2.10GHz with 192 GB DDR4 RAM at 2666 MT/s,
+  \item Dual Intel Xeon X5690 at 3.47GHz with 96 GB DDR3 RAM at 1333 MT/s,
+  \item Intel Xeon E5-2620 v3 at 2.40GHz with 192 GB DDR4 RAM at 2133 MT/s,
+  \item Dual Intel Xeon Gold 6154 CPU at 3.00GHz with 768 GB DDR4 RAM at 2666 MT/s,
 \end{itemize}
 
 
 \begin{table}[hpt!]
   \centering
-  \caption{Comparison of simplified model's inference times with batch size of 128}
+  \caption{Comparison of ultra-low latency model's inference times, with batch size of 128}
   \label{tab:inference-times}
   \bgroup
   \def\arraystretch{1.2}
@@ -155,11 +115,67 @@ The detailed specifications of the machines used for measuring the inference tim
 
 
 
+\subsection{Comparison with Existing Solutions}
 
-\section{Hardware Implementation}
+\begin{table}[!hpt]
+  \centering
+  \caption{Summary of networks' inference time, accuracy, Floating-Point Operations Per Second and parameter number for optimal batch sizes, with best values in bold.}
+  \label{tab:all-networks-comparison}
+  \bgroup
+  \def\arraystretch{1.2}
+  \setlength\tabcolsep{1.5mm}
+  \begin{tabular}{|c|c|c|c|c|}
+  \hline
+  \textbf{\begin{tabular}[c]{@{}c@{}}Neural network\\ \end{tabular}} & \textbf{\begin{tabular}[c]{@{}c@{}}Inference per\\ batch (ms)\end{tabular}} & \textbf{\begin{tabular}[c]{@{}c@{}}Accuracy /\\ aver. AUC\end{tabular}} & \textbf{FLOPS} & \textbf{Parameters} \\ \hline
+  DNN \cite{9-newman2019jedi-net:} & \textbf{1.0 $\pm$ 0.2} & 0.760 / 0.941 & \textbf{27 k} & 14,725 \\ \hline
+  CNN \cite{9-newman2019jedi-net:} & 57.1 $\pm$ 0.5 & 0.740 / 0.911 & 400 k & 205,525 \\ \hline
+  GRU \cite{9-newman2019jedi-net:} & 23.2 $\pm$ 0.6 & 0.750 / 0.912 & 46 k & 15,575 \\ \hline
+  JEDI-net \cite{9-newman2019jedi-net:} & 121.2 $\pm$ 0.4 & TODO / 0.959 & 116 M & 33,625 \\ \hline
+  JEDI-net with $\sum O$ \cite{9-newman2019jedi-net:}  & 402.0 $\pm$ 1.0 & TODO / 0.957 & 458 M & 8,767 \\ \hline
+  ConstituentNet-Base \cite{3-yuan2021constituentnet:} & $\sim$773.0 & 0.818 / \textbf{0.966} & 1,553 M & 289,000 \\ \hline
+  ConstituentNet-Tiny \cite{3-yuan2021constituentnet:} & $\sim$17.0 & 0.805 / 0.960 & 13 M  & \textbf{8,533} \\ \hline
+  \end{tabular}
+  \egroup
+\end{table}
+
+% Ultra-low latency
+% Test accuracy: 76.09% in 2.76 s
+% -------------------------------------------------------
+% Particle        AUC        TPR @ FPR=10%   TPR @ FPR=1%
+% -------------------------------------------------------
+% Gluon:        0.9372          0.8057          0.3928  
+% Light quark:  0.9000          0.6813          0.1618  
+% W boson:      0.9610          0.9079          0.6207  
+% Z boson:      0.9525          0.8390          0.6277  
+% Top quark:    0.9474          0.8304          0.7064  
+% -------------------------------------------------------
+% Average:      0.9396          0.8129          0.5019  
+% -------------------------------------------------------
+
+% Accuracy-Focused
+% Test accuracy: 77.35% in 9.74 s
+% -------------------------------------------------------
+% Particle        AUC        TPR @ FPR=10%   TPR @ FPR=1%
+% -------------------------------------------------------
+% Gluon:        0.9280          0.7765          0.3242  
+% Light quark:  0.9201          0.7729          0.2788  
+% W boson:      0.9622          0.8990          0.5632  
+% Z boson:      0.9571          0.8768          0.6704  
+% Top quark:    0.9620          0.9094          0.5553  
+% -------------------------------------------------------
+% Average:      0.9459          0.8469          0.4784  
+% -------------------------------------------------------
+
+
+
+\section{Hardware Acceleration}
 \indo{Small introduction}
 Thanks to its high-performance, XCU250 (variant figd2104-2L-e) was chosen as the target FPGA platform.
 \indo{Brief info about XCU250}
+
+\indo{compare with the dnn built using hls4ml}
+
+
 
 \subsection{Ultra-Low Latency Model}
 \indo{Discuss hardware resources and latency}
@@ -218,10 +234,28 @@ Thanks to its high-performance, XCU250 (variant figd2104-2L-e) was chosen as the
 
 \indo{compare results with transformers using hls4ml for point cloud ... that Walkie suggested}
 
+\subsection{Accuracy-Focused Model}
+
+\indo{Talk about grid search for accuracy-focused model as a quick and easy hyperparameter search, that was done mainly to look for simpler designs given very long synthesis, not hardcore tuning accuracy}
+\indo{Give estimate of how long is the synthesis and why this is a problem}
+\indo{|}
+\indo{|}
+
+\begin{figure}[hpt!]
+  \centering
+  \includegraphics[trim={0cm 0cm 0cm 1cm}, clip, width=1.0\textwidth, center]{../logs/grid_search.png}
+  \caption{Grid-search results - squares area proportional to accuracy.}
+  \label{fig:grid-search}
+\end{figure}
+
+\subsection{Design Space Exploration}
+
+
+
 \section{Quantization Results}
 
 
-\subsection{Pre-Training Quantization}
+\subsection{Quantization-Aware Training}
 \indo{Recap how this was done and talk about results}
 \indo{Mention float16 doesnt learn anything (acc 20\%) as its range is too small, and we cannot consider normalizing inputs as its real time system}
 \indo{Mention problems with fixed-point 32 and reason about both int and frac range being important, give examples at which point which one causes issues (likely input -> int range, after normalization -> frac range)}
