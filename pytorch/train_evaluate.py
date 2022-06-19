@@ -359,7 +359,13 @@ def train_test_loop(
   return (accuracy, end_time - start_time, (all_data, all_predicted, all_labels))
 
 
-def save_model(model: nn.Module, model_path: str, script_path: str, state_path: str, quant: bool) -> None:
+def save_model(
+  model: nn.Module,
+  model_path: str,
+  script_path: str,
+  state_path: str,
+  quant: bool
+) -> None:
   model.eval()
   
   print(f'Model saved successfully (', end ='')
@@ -505,7 +511,14 @@ def compute_roc_auc(targets, predictions):
   FPR_micro, TPR_micro, AUC_micro = find_FPR_TPR_AUC(targets.ravel(), predictions.ravel())
 
 
-def mean_var_info(name: str, index: int, mean: torch.Tensor, var: torch.Tensor, ctr: int, sub_index: str='') -> str:
+def mean_var_info(
+  name: str,
+  index: int,
+  mean: torch.Tensor,
+  var: torch.Tensor,
+  ctr: int,
+  sub_index: str=''
+) -> str:
   result = f"{name}{index}\n"
   result += f"mean{sub_index}: {mean.size()}\n\t"
 
@@ -562,28 +575,36 @@ def main(
   num_transformers: int = 3,
   embbed_dim: int = 64,
   num_heads: int = 2,
+  activation: str = 'ReLU',
+  normalization: str = 'Batch',
 ) -> None:
  
   batch_size = 128
   criterion = torch.nn.NLLLoss()
-  # num_transformers = 3
-  # embbed_dim = 16
-  # num_heads = 2
   dropout = 0.0
+  dataset_name = 'HLF' if num_particles == 1 else f'{num_particles} jets'
 
   print('-'*15 + 'Model configuration' + '-'*15)
+  print(f'Dataset: {dataset_name}')
   print(f'Batch size: {batch_size}')
   print(f'Critetion: {criterion}')
   print(f'# of transformers: {num_transformers}')
   print(f'# of embedded dimensions: {embbed_dim}')
   print(f'# of attention heads: {num_heads}')
+  print(f'Activation function: {activation}')
+  print(f'Normalization: {normalization}')
   print(f'Dropout rate: {dropout}')
   print(f'Input and model precision type: {x_type}')
   print(f'Pre-training quantization: {quant}')
   print('-'*49)
 
 
-  train_loader, test_loader, tiny_loader, classes = load_dataset(num_particles=num_particles, x_type=x_type, batch_size=batch_size, tiny_size=tiny_size)
+  train_loader, test_loader, tiny_loader, classes = load_dataset(
+    num_particles=num_particles,
+    x_type=x_type,
+    batch_size=batch_size,
+    tiny_size=tiny_size
+  )
 
   if do_train:
     # Instantiate model
@@ -596,6 +617,9 @@ def main(
         num_transformers=num_transformers,
         dropout=dropout,
         is_debug=is_debug,
+        num_particles=num_particles,
+        activation=activation,
+        normalization=normalization,
       ).to(DEVICE)
 
     else:
@@ -607,6 +631,9 @@ def main(
       #   num_transformers=num_transformers,
       #   dropout=dropout,
       #   is_debug=is_debug,
+      #   num_particles=num_particles,
+      #   activation=activation,
+      #   normalization=normalization,
       # ).to(DEVICE)
 
       model = ConstituentNetQuantQPyTorch(
@@ -665,7 +692,13 @@ def main(
     )
     print(f'Training took {total_time:.2f} s')
 
-    save_model(model=model, model_path=model_path, script_path=script_path, state_path=state_path, quant=quant)
+    save_model(
+      model=model,
+      model_path=model_path,
+      script_path=script_path,
+      state_path=state_path,
+      quant=quant
+    )
   
   else:
     # Load from script
@@ -711,12 +744,26 @@ def main(
   # Test model
   if is_debug:
     print(f'{len(tiny_loader)=}, {tiny_size=}')
-    _, _, _ = evaluate(test_loader=tiny_loader, model=model, criterion=criterion, filepath=debug_path, print_predictions=True, num_particles=num_particles)
+    _, _, _ = evaluate(
+      test_loader=tiny_loader,
+      model=model,
+      criterion=criterion,
+      filepath=debug_path,
+      print_predictions=True,
+      num_particles=num_particles
+    )
     print(f'Debug output saved to {debug_path}')
     if is_timing:
       print(f'WARNING: Skipping timing as debug affects evaluation speed')
+
   elif is_timing:
-    accuracy, time_mean, time_std = time_evaluate(test_loader=test_loader, model=model, criterion=criterion, num_epochs=num_epochs, num_particles=num_particles)
+    accuracy, time_mean, time_std = time_evaluate(
+      test_loader=test_loader,
+      model=model,
+      criterion=criterion,
+      num_epochs=num_epochs,
+      num_particles=num_particles
+    )
     time_mean_batch = time_mean / (len(test_loader) - 2)
     time_std_batch = time_std / (len(test_loader) - 2)
     time_mean_sample = time_mean_batch / batch_size
@@ -726,13 +773,19 @@ def main(
     print(f'{time_mean_batch * 1000:.3f} \u00B1 {time_std_batch * 1000:.3f} ms per batch')
     print(f'{time_mean_sample * 1000000:.3f} \u00B1 {time_std_sample * 1000000:.3f} us per sample')
   elif not only_predictions:
-    accuracy, total_time, (data, results, labels) = evaluate(test_loader=test_loader, model=model, criterion=criterion, num_particles=num_particles)
+    accuracy, total_time, (data, results, labels) = evaluate(
+      test_loader=test_loader,
+      model=model,
+      criterion=criterion,
+      num_particles=num_particles
+    )
     print(f'Test accuracy: {accuracy*100:.2f}% in {total_time:.2f} s')
     compute_roc_auc(targets=labels, predictions=results)
 
     if generate_in_out_hls_tb > 0:
       print(f'Creating HLS TB data of size {generate_in_out_hls_tb} (input: {hls_tb_in_path}, output: {hls_tb_out_path})')
-      assert len(data) - 1 == len(results) == len(test_loader) - 2, 'Number of captured samples and predictions must match DataLoader size'
+      assert len(data) - 1 == len(results) == len(test_loader) - 2,\
+        'Number of captured samples and predictions must match DataLoader size'
       
       if generate_in_out_hls_tb >= batch_size:
         batches_limit = generate_in_out_hls_tb // batch_size
@@ -783,9 +836,13 @@ def main(
           if index >= batches_limit-1:
             break
   else:
-    _, _, _ = evaluate(test_loader=tiny_loader, model=model, criterion=criterion, print_predictions=True, num_particles=num_particles)
-
-  
+    _, _, _ = evaluate(
+      test_loader=tiny_loader,
+      model=model,
+      criterion=criterion,
+      print_predictions=True,
+      num_particles=num_particles
+    )
 
   if measure_flops:
     flop_input = torch.rand((batch_size, num_particles, 16)).to(DEVICE)
@@ -815,8 +872,6 @@ def main(
         afile.write(f"SA{index} mean: \n{tr.self_attention.get_avg_mean()}\nvar: \n{tr.self_attention.get_avg_var()}\nctr: {tr.self_attention.get_counter()}\n")
 
 
-
-
 def parse():
   parser = ArgumentParser(description='Train and/or evaluate Pytorch model')
 
@@ -840,6 +895,8 @@ def parse():
   parser.add_argument('--num_transformers', action='store', type=int, default=3)
   parser.add_argument('--embbed_dim', action='store', type=int, default=64)
   parser.add_argument('--num_heads', action='store', type=int, default=2)
+  parser.add_argument('--activation', action='store', type=str, default='ReLU')
+  parser.add_argument('--normalization', action='store', type=str, default='Batch')
 
   return parser.parse_args()
 
@@ -906,4 +963,6 @@ if __name__ == "__main__":
     num_transformers=args.num_transformers,
     embbed_dim=args.embbed_dim,
     num_heads=args.num_heads,
+    activation=args.activation,
+    normalization=args.normalization,
   )

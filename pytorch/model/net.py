@@ -34,26 +34,51 @@ class ConstituentNet(nn.Module):
         ConstituentNet Base Model
     """
 
-    def __init__(self, in_dim:int=16, embbed_dim:int=128, num_heads:int=2, num_classes:int=5, num_transformers:int=4, dropout:float=0., is_debug:bool = False, **kwargs) -> None:
+    def __init__(
+        self,
+        in_dim: int = 16,
+        embbed_dim: int = 128,
+        num_heads: int = 2,
+        num_classes: int = 5,
+        num_transformers:int = 4,
+        dropout: float = 0.,
+        is_debug: bool = False,
+        num_particles: int = 30,
+        activation: str = 'ReLU',
+        normalization: str = 'Batch',
+        **kwargs
+    ) -> None:
         super(ConstituentNet, self).__init__()
         self.is_debug = is_debug
         self.input_size = in_dim
         self.channel_in = in_dim
         self.embbed_dim = embbed_dim # C
         self.num_transformers = num_transformers
+        self.normalization = normalization
         
-        self.inp_layer = nn.Linear(in_dim, embbed_dim)
-        # self.out_layer = nn.Sequential(
-        #     nn.LayerNorm(embbed_dim),
-        #     nn.Linear(embbed_dim, num_classes)
-        # )
-        # self.out_layer_0 = nn.LayerNorm(embbed_dim)
-        self.out_layer_0 = nn.BatchNorm1d(embbed_dim)
-        self.out_layer_1 = nn.Linear(embbed_dim, num_classes)
+        self.embedding = nn.Linear(in_dim, embbed_dim)
+
+        if self.normalization == 'Batch':
+            self.norm = nn.BatchNorm1d(embbed_dim)
+        elif self.normalization == 'Layer':
+            self.norm = nn.LayerNorm(embbed_dim)
+        else:
+            # Dummy so type checking doesnt complain
+            self.norm = nn.BatchNorm1d(embbed_dim)
+
+        self.linear = nn.Linear(embbed_dim, num_classes)
         
         self.cls_token = nn.Parameter(torch.randn(1, 1, embbed_dim)) # learned classification token, (1, 1, C)
         self.transformers = nn.ModuleList([
-            Transformer(embbed_dim, num_heads=num_heads, dropout=dropout, is_debug=self.is_debug) for _ in range(num_transformers)
+            Transformer(
+                embbed_dim,
+                num_heads=num_heads,
+                dropout=dropout,
+                is_debug=self.is_debug,
+                num_particles=num_particles,
+                activation=activation,
+                normalization=self.normalization,
+            ) for _ in range(num_transformers)
         ])
 
         torch.set_printoptions(precision=5, threshold=2097152, linewidth=1000, sci_mode=False)
@@ -66,45 +91,38 @@ class ConstituentNet(nn.Module):
 
     def forward(self, x):
 
-        m_batch, seq_len, _ = x.size() # (m_batch, seq_len=100, input_dim=16)
+        m_batch, seq_len, _ = x.size()
         self.debug_print('input', x)
 
         # Input layer
-        out = self.inp_layer(x) # (m_batch, seq_len, C)
-        self.debug_print('out (after input layer)', out)
+        out = self.embedding(x)
+        self.debug_print('out (after embedding)', out)
 
         # Append class tokens to input
         cls_tokens = self.cls_token.repeat(m_batch, 1, 1)
-        out = torch.cat((cls_tokens, out), dim=1) # (m_batch, seq_len + 1, C)
         self.debug_print('cls_tokens', cls_tokens)
+        out = torch.cat((cls_tokens, out), dim=1)
         self.debug_print('out (after class tokens)', out)
 
         # Transformer layers
         for transformer in self.transformers:
-            out = transformer(out)       # (m_batch, seq_len + 1, C)
+            out = transformer(out)
             self.debug_print('out (after transformer layer)', out)
 
-        # Output layer
-        out = out[:, 0]                           # (m_batch, 1, C
+        out = out[:, 0]
         self.debug_print('out (after out[:, 0])', out)
 
-        out = self.out_layer_0(out)
-        self.debug_print('out (after out layer 0)', out)
+        if self.normalization == 'Batch' or self.normalization == 'Layer':
+            out = self.norm(out)
+            self.debug_print('out (after norm)', out)
 
-        out = self.out_layer_1(out)
-        self.debug_print('out (after out layer 1)', out)
+        out = self.linear(out)
+        self.debug_print('out (after linear)', out)
 
         out = out.squeeze(1)
         self.debug_print('out (after squeeze())', out)
-            
-        # out = self.out_layer(out).squeeze(1)      # (m_batch, 1, C) -> (batch_m, num_classes)
-        # if not self.training:
-        #     print("out (after out layer)")
-        #     print(out)
 
-        # final_result = torch.sub(out, out.max(dim=-1, keepdim=True).values)
         final_result = F.log_softmax(out, dim=-1)
-        # final_result = F.softmax(out, dim=-1)
         self.debug_print('final_result (softmax)', final_result)
 
         return final_result
