@@ -25,12 +25,22 @@ Table \ref{tab:classification-results} shows the evaluation results of the base 
   Accuracy-Focused &  & 77.81 & 0.9480 & 107,403 & 448 M \\ \hline
   \end{tabular}
   \egroup
-  \end{table}
+\end{table}
 
-\subsection{Receiver Operating Characteristic Curves and their Areas}
+It is interesting to observe which jet categories are harder to differentiate, which is summarized in the confusion matrix shown in figure \ref{fig:confusion-matrix}. Both models tend to confuse the lighter particles, gluons with light quarks, although the ultra-low latency model is relatively better at classifying them. The other model achieves better results for the heavier particles - bosons and top quark.
+
+\begin{figure}[!hpt]
+  \centering
+  \begin{tabular}{ccc}
+      {\includegraphics[width=0.48\columnwidth]{../logs/confusion_matrix_hlf.png}} &
+      {\includegraphics[width=0.48\columnwidth]{../logs/confusion_matrix_constituent.png}}
+  \end{tabular}
+  \caption{Comparison between confusion matrices of the ultra-low latency model on the HLF dataset (left) and the accuracy-focused model on the constituent list dataset (right).}
+  \label{fig:confusion-matrix}
+\end{figure}
+
+\subsection{Receiver Operating Characteristic Curves}
 Analyzing the ROC curves offers a more complex analysis of the trade-offs in classification results between the base and the proposes architecture.
-
-\indo{confusion matrix}
 
 \begin{figure}[!hpt]
   \centering
@@ -105,7 +115,7 @@ Table \ref{tab:inference-times-ultra-low-latency} and \ref{tab:inference-times-a
   \egroup
 \end{table}
 
-The detailed specifications of the four machines used for measuring the inference time are listed below. All machines run CentOS 7.0 operating system, while the first listed machine, which is the GPU host, uses CUDA version 11.5, with driver version 495.29.05.
+The detailed specifications of the four machines used for measuring the inference time are listed below. All machines run CentOS 7.0 operating system, while the first listed machine, which is the GPU host, uses CUDA version 11.5, with driver version 495.29.05. In the subsequent sections, when no comparisons between machines are discussed, the used environment is the last of the listed systems.
 
 \begin{itemize}
   \item Dual Intel Xeon Silver 4110 at 2.10GHz with 192 GB DDR4 RAM at 2666 MT/s,
@@ -197,7 +207,7 @@ The final design's resource usage can be seen in figure \ref{tab:utilization}, w
 
 \begin{table}[hpt!]
   \centering
-  \caption{FPGA resources utilization}
+  \caption{FPGA resources utilization for the ultra-low latency model.}
   \label{tab:utilization}
   \bgroup
   \def\arraystretch{1.3}
@@ -212,11 +222,11 @@ The final design's resource usage can be seen in figure \ref{tab:utilization}, w
   \egroup
 \end{table}
 
-Along with the FPGA clock period of 5 ns\footnote{5 ns period corresponds to a frequency of 200 MHz, which is used at L1T at LHC.} with a 12.5 \% uncertainty, the final design is able to perform a successful inference in only 90 ns with adequate slack. Thus, the hardware acceleration leads to an over 500 times decrease in latency per sample compared to the CPU and GPU implementation, and it is well within the L1T 12.5 \(\mu s\) latency constraint, leaving a significant headroom for more complex processing. The test accuracy is measured as 74.4 \%, which is 1.7 percent point lower than the original floating-point implementation. The average AUC is slightly lower at 0.9368, with the quantization noise being considered as the main factor for the decrease is classification capability. These values are inline with other results obtained using \hlsml \cite{53-kreinar2018fast}, however, our implemented hardware model is over 4 times faster despite not undergoing any compression, pruning or quantization, which highlights the potential of the described optimization process.
+Along with the FPGA clock period of 5 ns\footnote{5 ns period corresponds to a frequency of 200 MHz, which is used at L1T at LHC.} with a 12.5 \% uncertainty, the final design is able to perform a successful inference in only 90 ns with adequate slack and initiation interval of 1\footnote{Initiation interval informs about the number of cycles between new inputs can be processed by a pipeline. In this case, new sample can be handled each cycle.}. Thus, the hardware acceleration leads to an over 500 times decrease in latency per sample compared to the CPU and GPU implementation, and it is well within the L1T 12.5 \(\mu s\) latency constraint, leaving a significant headroom for more complex processing. The test accuracy is measured as 74.4 \%, which is 1.7 percent point lower than the original floating-point implementation. The average AUC is slightly lower at 0.9368, with the quantization noise being considered as the main factor for the decrease is classification capability. These values are inline with other results obtained using \hlsml \cite{53-kreinar2018fast}, however, our implemented hardware model is over 4 times faster despite not undergoing any compression, pruning or quantization, which highlights the potential of the described optimization process.
 
 \begin{table}[!hpt]
   \centering
-  \caption{Information about design's clock, latency and initiation interval.}
+  \caption{Information about design's clock, latency and initiation interval for the ultra-low latency model.}
   \label{tab:fgpa-timing}
   \bgroup
   \def\arraystretch{1.2}
@@ -230,11 +240,11 @@ Along with the FPGA clock period of 5 ns\footnote{5 ns period corresponds to a f
   \egroup
 \end{table}
 
-It is possible for the designs other than the final one to represent interesting trade-offs between latency and hardware resources. To get a better view of that, figure \ref{fig:hardware-optimizations-pareto} shows the latency plotted against the resources. It can be seen that the design space exploration has lead to two Pareto optimal designs - the final one, which offers better latency, and the one without unrolled tensor product, which requires less resources' utilization. In general, none of them could be called strictly better than the other. However, the final design is more suitable given the ultra low-latency objective of this work.
+It is possible for the designs other than the final one to represent interesting trade-offs between latency and hardware resources. To get a better view of that, figure \ref{fig:hardware-optimizations-pareto} shows the latency plotted against the resources. It can be seen that the design space exploration has led to two Pareto optimal designs - the final one, which offers better latency, and the one without unrolled tensor product, which requires less resources' utilization. In general, none of them could be called strictly better than the other. However, the final design is more suitable given the ultra low-latency objective of this work.
 
 \begin{figure}[hpt!]
   \centering
-  \includegraphics[trim={0cm 0cm 0cm 1.3cm}, clip, width=0.6\textwidth, center]{../logs/hardware_optimizations_pareto.png}
+  \includegraphics[trim={0cm 0cm 0cm 0cm}, clip, width=0.6\textwidth, center]{../logs/hardware_optimizations_pareto.png}
   \caption{Latency plotted against average resource utilization for the ultra-low latency model configurations.}
   \label{fig:hardware-optimizations-pareto}
 \end{figure}
@@ -250,58 +260,90 @@ The latency estimation formulated in the previous chapter is verified given the 
 The situation gets more complicated for the DSP model. After a careful analysis of the required hardware footprint of each component of the final design, it turns out that both the linear layer and the tensor product depend on more variables than just their input and output sizes, effectively making the included "constants" vary between instances. It is likely that there exists no easy-to-understand expression, given the complexity of HLS synthesis routing for pipelined designs. In other words, user-independent factors like the order in which HLS processes the design might influence the required hardware resources, including DSPs. However, there is still merit in the proposed model when it comes to its overall computational complexity, as shown in equation \ref{eq:dsp-model-new}. While this does not provide a clear upper boundary for deciding whether a configuration exceeds the available DSP slices, it highlights the quadratic relationship with the latent dimension \(d\), number of input jets \(L\), as well as a linear dependency on the number of self-attention heads \(H\).
 
 \subsection{Accuracy-Focused Model}
-The process of creating a hardware model for the accuracy-focused architecture started similarly to previous model. After implementing the necessary layers and changing the design configuration, C simulation reported 
-
-
-\indo{Talk about grid search for accuracy-focused model as a quick and easy hyperparameter search, that was done mainly to look for simpler designs given very long synthesis, not hardcore tuning accuracy}
-\indo{Give estimate of how long is the synthesis and why this is a problem}
-\indo{|}
-\indo{|}
+The process of creating a hardware model for the accuracy-focused architecture started similarly to the previous model. After implementing the necessary layers and changing the design configuration, C simulation reported a slight decrease in test accuracy by 1.8 percent point, to a value of 76.01 \% along with AUC equal to 0.944. However, very quickly it became evident that the synthesis is struggling to make any progress with the design. While it was not uncommon for it to last hours for the ultra-low latency model, this time the process was still in its early phase after days of waiting. The first solution was to keep simplifying the model to find a configuration that can be synthesized. In order to make informed decisions, a grid search was performed on the most influential design parameters, and the results can be seen in figure \ref{fig:grid-search}.
 
 \begin{figure}[hpt!]
   \centering
-  \includegraphics[trim={0cm 0cm 0cm 1cm}, clip, width=1.0\textwidth, center]{../logs/grid_search.png}
-  \caption{Grid-search results - squares area proportional to accuracy.}
+  \includegraphics[trim={0cm 0cm 0cm 0cm}, clip, width=1.0\textwidth, center]{../logs/grid_search.png}
+  \caption{Grid-search results - squares' area proportional to accuracy.}
   \label{fig:grid-search}
 \end{figure}
 
-\indo{include table of timing and hardware resources from the non pipelined model}
-\indo{do some interpolation based on dense in non pipelined to the one from pipelined by analysing the parameters from ultra low latency and takign care of using too much resources, hene needing to re-use}
-
-
-\section{Quantization Results}
-
-
-\subsection{Quantization-Aware Training}
-\indo{Recap how this was done and talk about results}
-\indo{Mention float16 doesnt learn anything (acc 20\%) as its range is too small, and we cannot consider normalizing inputs as its real time system}
-\indo{Mention problems with fixed-point 32 and reason about both int and frac range being important, give examples at which point which one causes issues (likely input -> int range, after normalization -> frac range)}
-\indo{Mention brevitas only gets 34\% accuracy and why this is the case and how it could be solved}
-\indo{|}
-\indo{|}
-\indo{|}
+It can be seen that reducing the number of embedded dimensions have the smallest impact, followed by the transformer layers. The model with 4 self-attention heads was evaluated in case it performed better in certain configurations, but this concluded to not be the case. Hence, simpler designs were selected for synthesis, however, each of them would be terminated after approximately a week given that they were still in their early steps. It was clear that the design simplification alone was not enough to overcome this challenge. After careful performance analysis, it became apparent that each synthesis job keeps increasing its reserved system memory, reaching the limit at around 750 GB, which was all the server's available RAM. This suggests that an \textit{explosion} of the design space would happen due to the way HLS analyzes the design, and that this process was to complex to ever succeed without a fundamental change of server specifications (which is not possible given the scope of this project) or approach to synthesis. This issue is visualized in figure \ref{fig:state-space-explosion}. 
 
 \begin{figure}[hpt!]
   \centering
-  \includegraphics[trim={0cm 0cm 0cm 1.2cm}, clip, width=1.0\textwidth, center]{../logs/training_accuracy.png}
+  \includegraphics[trim={0cm 0cm 0cm 0cm}, clip, width=0.6\textwidth, center]{evaluation/state_space_explosion.pdf}
+  \caption{Illustration of the synthesis design space reaching the limit of available memory.}
+  \label{fig:state-space-explosion}
+\end{figure}
+
+Knowing that the issue was not a matter of using a faster machine or waiting for longer, the synthesis process had to be altered to reduce the number of states generated during HLS. Thus, a serial model was created by removing pipelining and any motions of parallelizability from both the implementations created as part of this work and these already present in \hlsml library. Avoiding the complexity of synthesizing a pipelined design, the process finished within minutes, yielding the results shown in tables \ref{tab:utilization-accuracy-focused} and \ref{tab:fgpa-timing-accuracy-focused}.
+
+\begin{table}[hpt!]
+  \centering
+  \caption{FPGA resources utilization for accuracy-focused model.}
+  \label{tab:utilization-accuracy-focused}
+  \bgroup
+  \def\arraystretch{1.3}
+  \setlength\tabcolsep{3mm}
+  \begin{tabular}{r|c|c|c|c|}
+  \cline{2-5}
+  \multicolumn{1}{c|}{}                      & \textbf{BRAM 18K} & \textbf{DSP48E} & \textbf{FF} & \textbf{LUT} \\ \hline
+  \multicolumn{1}{|r|}{\textbf{Total used}}       & 19                 & 15            & 3106       & 6823       \\ \hline
+  \multicolumn{1}{|r|}{\textbf{Available}}   & 5,376              & 12,288           & 3,456,000     & 1,728,000      \\ \hline\hline
+  \multicolumn{1}{|r|}{\textbf{Utilization}} & 0.4\%            & 0.1\%         & 0.1\%      & 0.4\%       \\ \hline
+  \end{tabular}
+  \egroup
+\end{table}
+
+It is clear that without pipelining, the model is not suitable for operating under the latency constraint of L1T at LHC. At the same time, it is interesting to note how little resources are required and how easily the synthesis process is handled for a serial design. Due to the complexity involved in the HLS, it is not feasible to interpolate the results for a pipelined design.
+
+\begin{table}[!hpt]
+  \centering
+  \caption{Information about design's clock, latency and initiation interval for the accuracy-focused model.}
+  \label{tab:fgpa-timing-accuracy-focused}
+  \bgroup
+  \def\arraystretch{1.2}
+  \setlength\tabcolsep{1.5mm}
+  \begin{tabular}{|c|c|c||cc|c|}
+  \hline
+  \multirow{3}{*}{\textbf{\begin{tabular}[c]{@{}c@{}}Clock\\ (ns)\end{tabular}}} & \textbf{Target} & 5.000 & \multicolumn{1}{c|}{\multirow{2}{*}{\textbf{Latency}}} & \textbf{cycles} & 6803 \\ \cline{2-3} \cline{5-6} 
+   & \textbf{Estimated} & 4.300 & \multicolumn{1}{c|}{} & \textbf{ns} & 34,015 \\ \cline{2-6} 
+   & \textbf{Uncertainty} & 0.620 & \multicolumn{2}{c|}{\textbf{Interval}} & N/A \\ \hline
+  \end{tabular}
+  \egroup
+\end{table}
+
+\section{Quantization Results}
+In this section, firstly the effects of quantization-aware training are explained, followed by discussion of the results generated using the proposed post-training quantization algorithm and other available techniques. In both cases, the accuracy-focused architecture is targeted because of its increased complexity, which can highlight the impact of the quantization.
+
+\subsection{Quantization-Aware Training}
+The first analysis includes a QPyTorch implementation of the accuracy-focused architecture configured with a range of fixed-point representations. For each experiment, the same bit-width was used for every quantizable layer of the model to limit the number of configurations and focus on the high-level effects. Figure \ref{fig:pre-training} compares several 64-bit, 32-bit and 16-bit wide floating-point and fixed-point models across epochs.
+
+\begin{figure}[hpt!]
+  \centering
+  \includegraphics[trim={0cm 0cm 0cm 0cm}, clip, width=1.0\textwidth, center]{../logs/training_accuracy.png}
   \caption{Performance against epochs for floating-point and fixed-point models.}
   \label{fig:pre-training}
 \end{figure}
 
+There are two key observations that can be made. Firstly, the model appears to require a significant fractional precision for successful classification. At 64 total bits, all configurations improve with epochs, although the one with 32 bits of fractional precision takes longer to learn and ends with a worse accuracy than the rest. At 32 total bits, only the floating-point model is able to be usefully trained which further proves the impact of decimal precision. The second crucial conclusion comes from the models with 16 total bits, where only the floating-point model with 8-bit wide exponent field is able to learn, and the one other floating-point and both fixed-point models are stuck around baseline accuracy of 20 \%. This suggests that the representable integer range also plays a key role in the classification.
+
+It is difficult to pinpoint the exact layer or mechanism involved in the model that causes the results to degrade without an adequate integer and fractional ranges. The former is predicted to be of most importance for representing the constituent list dataset features which follow wide distributions, hence value truncation leads to no useful input information which are effectively randomized without the most significant bits. The latter is believed to be most crucial for the normalization layers which map numbers to relatively small values, hence without proper decimal precision, many inputs are assigned with the same quantized outputs. Combined, these two effects mean that floating-point representations work better for this model's quantization aware training thanks to their flexibility in precise storage of high and low values, while fixed-point numbers require both their integer and fractional fields to be relatively wide for comparable results.
+
+The other framework mentioned in \cref{pre-training-quantization} is Brevitas. Despite promising hardware mapping potential thanks to its close integration with hardware tool chains, at the time of this project, Brevitas lacks support for fixed-point values wider than 8 bits. It comes as no surprise given the conclusion from the previous paragraph, that this is not a wide-enough representation for this model. Although the most successful training yields a classification accuracy of only 34 \%, with further development of available types, Brevitas is likely to produce comparable results to QPyTorch or potentially outperform it given its approach of offering custom quantized neural network components.
 
 \subsection{Post-Training Quantization}\label{eval:post-training-quantization}
-\indo{State that the results are very promising (64\% bits reduction), how this should influence synthesis}
-\indo{prove correlation with how different on average is the next bit width compared to previous vs default (34 bits etc)}
-\indo{say how we dont do synthesis due to time limitations, and its mostly no problem as the widhts are linear with hardware resources aside from the situations in which a dsp can be avoided (34 vs 35 bits etc)}
-\indo{Maybe talk about how correlation was verified}
-\indo{starting with integer or fractional in the search didnt seem to matter in the limited tests}
-\indo{Discuss the used parameters (ratio of positive and negative tolerance etc.) and how they affect the results}
-\indo{compare with performance of the HAQ that Walkie suggested}
-\indo{|}
+Compared to the previous quantization methods, the proposed post-training quantization approach is noticeably easier to experiment with and deploy for existing models. By simply specifying the target environment, the algorithm adapts the hardware implementation and finds the optimal set of bit-widths. In this project, 60 individual variables are analyzed for a maximum quantization granularity, which significantly differs from the quantization-aware training experiments. Figure \ref{fig:post-training-bit-widths} showcases the final integer and fractional bit-widths, with types related to the same layer logically grouped.
 
 \begin{figure}[hpt!]
   \centering
-  \includegraphics[trim={0cm 0cm 1cm 7.8mm}, clip, width=1.0\textwidth, center]{../logs/bit_width_visualization.png}
-  \caption{Visualization of the fixed-point precision of the types used in the accuracy-focused model.}
+  \includegraphics[trim={0cm 0cm 1cm 0cm}, clip, width=1.0\textwidth, center]{../logs/bit_width_visualization.png}
+  \caption{Visualization of the optimal fixed-point precision of the types used in the quantized accuracy-focused model.}
   \label{fig:post-training-bit-widths}
 \end{figure}
+
+This method achieved a 64 \% reduction in total bit-width with a 2 \% decrease to accuracy. Total bit-width relatively closely corresponds to the hardware resource utilization - while the FFs and LUTs are expected to vary linearly, DSPs and BRAMs are only affected after their width threshold is exceeded. In other words, the target FPGA's DSP slices allow up to 34 bits as their main input, hence only 35 bits or more lead to an additional unit being instantiated. For that reason, the algorithm uses C simulation accuracy and bit-widths as its two driving signals, without the need of performing the synthesis. By exploiting this simplified bit-width to hardware resources relation, the total run-time of the tool is significantly shorter as each simulation runs within minutes instead of hours or even not finishing at all as it was discussed before. However, the total number of simulations still lead to a program run-time of around 7 days given the model's complexity. As a result, only one configuration of the algorithm's positive and negative accuracy tolerances was tested, where the negative one was assigned twice the importance of the positive tolerance, driving the substantial bit-width reduction while sacrificing a fraction of the accuracy.
+
+The success of this method proves the hypothesis about strong correlation between neighboring layers. More specifically, the average total bit-width difference between layers is measured at approximately 4 bits. Furthermore, corresponding types also seem to follow the same trends among different layers - a good example are the widths of \textit{queries}, \textit{keys}, and \textit{values} linear layers, all of which have similar input, weight, and accumulator widths, with the \textit{values}' being slightly less similar, as they are used further along the computations than the other two. It is also worth mentioning that there is no noticeable difference in results regardless of whether the integer or the fractional parts are analyzed first.
