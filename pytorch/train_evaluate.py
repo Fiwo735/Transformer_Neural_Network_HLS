@@ -530,7 +530,9 @@ def compute_roc_auc(targets, predictions):
   plt.xlabel('Predicted Label')
   fig.tight_layout()
 
-  plt.savefig('logs/confusion_matrix.png', format='png', dpi=200)
+  confusion_matrix_path = 'logs/confusion_matrix.png'
+  plt.savefig(confusion_matrix_path, format='png', dpi=200)
+  print(f'Saved confusion matrix to {confusion_matrix_path}')
 
 def mean_var_info(
   name: str,
