@@ -1,6 +1,5 @@
 \chapter{Evaluation}\label{evaluation}
-This chapter starts by evaluating the proposed neural network architectures on CPUs and GPUs to find a baseline inference latency, accuracy and AUC values. This information is then compared with the results obtained from simulating and synthesizing the models on reconfigurable hardware. The outcome of the design space exploration includes hardware resource utilization metrics as well as discussion about the Pareto front and applicability in high energy physics environments. Lastly, both the quantization-aware training and post-training quantization are evaluated quantitatively in terms of the trade-off between quality of results and bit-width reduction as well as qualitatively for their ease of adaptation to existing designs.
-\indo{Correct the above}
+This chapter starts by evaluating the proposed neural network architectures on CPUs and GPUs to find a baseline inference latency, accuracy and AUC values. This information is then compared with the results obtained from simulating and synthesizing the models on reconfigurable hardware. The outcome of the design space exploration includes hardware resource utilization metrics as well as discussion about the Pareto front, applicability in high energy physics environments, and verification of the analytical models formulated in the previous chapter. Lastly, both the quantization-aware training and post-training quantization are evaluated quantitatively in terms of the trade-off between quality of results and bit-width reduction as well as qualitatively for their ease of adaptation to existing designs.
 
 As efficient hardware mapping is the motivation behind the proposed models, out of the constituent list representation datasets, only the one containing 30 most energetic jets is analyzed in this chapter due to the inherent complexity of transformer neural networks and the challenges involved in mapping bigger designs to FPGAs.
 
@@ -30,6 +29,8 @@ Table \ref{tab:classification-results} shows the evaluation results of the base 
 
 \subsection{Receiver Operating Characteristic Curves and their Areas}
 Analyzing the ROC curves offers a more complex analysis of the trade-offs in classification results between the base and the proposes architecture.
+
+\indo{confusion matrix}
 
 \begin{figure}[!hpt]
   \centering
@@ -79,12 +80,12 @@ Figure \ref{fig:ROCs-constituent} shows an analogous comparison for the base and
 Table \ref{tab:AUCs} provides a comprehensive view of the models' true positive rates at 10 \% and 1 \% false positive rates. Interestingly, the ultra-low latency model yields a superior classification of gluons, despite being a simpler design. This can be attributed to the HLF dataset that might capture some characteristics of gluons better than the constituent list one.
 
 \subsection{CPU and GPU Latency}
-Table \ref{tab:inference-times} displays the inference times for TODO measured on several CPUs and GPUs. The results serve as a baseline for quantifying the improvements thanks to the hardware acceleration, which are discussed in the next section. The experimental setup for accurately measuring the inference times involves firstly performing 5 warm-up runs, followed by CUDA-synchronization where applicable, and then timing 200 test runs, for which mean and standard deviation were calculated. It is worth pointing out that the results for each model are similar regardless of the underlying hardware, including very little differences in performance between CPUs and GPUs.
+Table \ref{tab:inference-times-ultra-low-latency} and \ref{tab:inference-times-accuracy-focused} display the inference times for the two proposed models, measured on several CPUs and GPUs. The results serve as a baseline for quantifying the improvements thanks to the hardware acceleration, which are discussed in the next section. The experimental setup for accurately measuring the inference times involves firstly performing 5 warm-up runs, followed by CUDA-synchronization where applicable, and then timing 200 test runs, for which mean and standard deviation were calculated. It is worth pointing out that the results for the ultra-low latency model are similar regardless of the underlying hardware, including very little differences in performance between CPUs and GPUs. This can suggest that the machines are bottle-necked in terms of memory instead of computational resources, as that behavior is not observed for the more computationally-complex, accuracy-focused model.
 
 \begin{table}[hpt!]
   \centering
   \caption{Comparison of ultra-low latency model's inference times, with batch size of 128}
-  \label{tab:inference-times}
+  \label{tab:inference-times-ultra-low-latency}
   \bgroup
   \def\arraystretch{1.2}
   \setlength\tabcolsep{3mm}
@@ -113,6 +114,29 @@ The detailed specifications of the four machines used for measuring the inferenc
   \item Dual Intel Xeon Gold 6154 CPU at 3.00GHz with 768 GB DDR4 RAM at 2666 MT/s,
 \end{itemize}
 
+\begin{table}[hpt!]
+  \centering
+  \caption{Comparison of accuracy-focused model's inference times, with batch size of 128}
+  \label{tab:inference-times-accuracy-focused}
+  \bgroup
+  \def\arraystretch{1.2}
+  \setlength\tabcolsep{3mm}
+  \begin{tabular}{c|l|cc|}
+  \cline{2-4}
+  \multicolumn{1}{l|}{}                               & \multicolumn{1}{c|}{\multirow{2}{*}{\textbf{Device}}} & \multicolumn{2}{c|}{\textbf{Inference time}}                      \\ \cline{3-4} 
+  \multicolumn{1}{l|}{}                               & \multicolumn{1}{c|}{}                                 & \multicolumn{1}{c|}{per batch (ms)}          & per sample ($\mu$s) \\ \hline
+  \multicolumn{1}{|c|}{\multirow{4}{*}{\textbf{\begin{sideways}CPU\end{sideways}}}} & Intel Xeon Silver 4110  & \multicolumn{1}{c|}{13.681 $\pm$ 0.087}       & 106.881 $\pm$ 0.678 \\ \cline{2-4} 
+  \multicolumn{1}{|c|}{}                              & Intel Xeon X5690                                      & \multicolumn{1}{c|}{16.874 $\pm$ 0.237}       & 131.832 $\pm$ 1.851 \\ \cline{2-4} 
+  \multicolumn{1}{|c|}{}                              & Intel Xeon E5-2620 v3                                 & \multicolumn{1}{c|}{15.311 $\pm$ 0.444}       & 119.616 $\pm$ 3.468 \\ \cline{2-4}
+  \multicolumn{1}{|c|}{}                              & Intel Xeon Gold 6154                                  & \multicolumn{1}{c|}{7.436 $\pm$ 0.498}       & 58.092 $\pm$ 3.888  \\ \hline\hline
+  \multicolumn{1}{|c|}{\multirow{3}{*}{\textbf{\begin{sideways}GPU\end{sideways}}}} & Nvidia GTX 1080 Ti      & \multicolumn{1}{c|}{2.941 $\pm$ 0.186}       & 22.975 $\pm$ 1.452  \\ \cline{2-4} 
+  \multicolumn{1}{|c|}{}                              & Nvidia TITAN X                                        & \multicolumn{1}{c|}{3.258 $\pm$ 0.358}       & 25.456 $\pm$ 2.797  \\ \cline{2-4} 
+  \multicolumn{1}{|c|}{}                              & Nvidia TITAN Xp                                       & \multicolumn{1}{c|}{2.993 $\pm$ 0.269}       & 23.385 $\pm$ 2.099  \\ \cline{2-4} 
+  \hline
+  \end{tabular}
+  \egroup
+\end{table}
+
 \subsection{Comparison with Existing Solutions}
 It is essential to compare the proposed architectures with recent state-of-the-art designs mentioned in \cref{background}. Table \ref{tab:all-networks-comparison} shows the key characteristics of each neural network architecture. Although the inference times were measured on different hardware platforms, it can be safely assumed that the overall trends are maintained given the results obtained in the previous subsection.
 
@@ -134,13 +158,12 @@ It is essential to compare the proposed architectures with recent state-of-the-a
   ConstituentNet-Base \cite{3-yuan2021constituentnet:} & $\sim$133.7\textsuperscript{$\dagger$} & 0.818 / \textbf{0.966} & 1,553 M & 289,000 \\ \hline
   ConstituentNet-Tiny \cite{3-yuan2021constituentnet:} & $\sim$12.4\textsuperscript{$\dagger$} & 0.805 / 0.960 & 13 M  & 8,533 \\ \hline \hline
   Ultra-Low Latency & 1.2 $\pm$ 0.1\textsuperscript{$\ddagger$} & 0.761 / 0.940 & 583 k & \textbf{2,605} \\ \hline
-  Accuracy-Focused & xxx\textsuperscript{$\ddagger$} & 0.778 / 0.948 & 448 M & 107,403 \\ \hline
+  Accuracy-Focused & 2.9 $\pm$ 0.2\textsuperscript{$\ddagger$} & 0.778 / 0.948 & 448 M & 107,403 \\ \hline
   \end{tabular}
   \egroup
 \end{table}
 
 It is important to mention that the accuracy and AUC values claimed in the literature are obtained thanks to an extensive hyperparameter tuning, which is beyond the scope of this project. Nonetheless, the proposed architectures offer an interesting trade-off between the quality of results and design complexity, which is highlighted by the low inference time.
-
 
 \section{Hardware Acceleration}
 This section covers the results of the hardware implementation of the two proposed architectures. It also discusses the design space exploration performed using C simulation and synthesis processes available in Vivado HLS. Thanks to its high-performance, Xilinx Virtex Ultrascale+ XCU250 (variant figd2104-2L-e) was chosen as the target FPGA platform. It contains 5,376 18 Kb BRAMs, 12,288 DSP slices, 3,456,000 registers (also referred to as FFs), and 1,728,000 LUTs.
@@ -149,7 +172,18 @@ This section covers the results of the hardware implementation of the two propos
 The first of the proposed models undergoes a series of optimization steps, with the aim of finding the fastest, yet still accurate design configuration. The steps are described below, with their impact on latency and resource utilization depicted in figure \ref{fig:hardware-optimizations}.
 
 \begin{enumerate}
-  \item TODO
+  \item Initial implementation of the architecture.
+  \item SiLU activations are replaced by ReLU, leading to a slight latency improvement with a 6 \% decrease in BRAMs with no sigmoid functions needing precomputing.
+  \item Pipelining is introduced, latency decreases nearly 1000 times, 5 times less BRAMs are needed thanks to array partitioning, but at the same time more DSPs, LUTs and FFs are instantiated to handle the parallelism.
+  \item Dependencies in linear layers are simplified, which decreases all resources' utilization, but worsens latency.
+  \item Separate instances of linear layers without bias calculation are used, which reduces LUTs and FFs usage, but surprisingly causes a slight increase in latency.
+  \item More arrays are partitioned and some are explicitly set to LUTs instead of BRAMs, halving the number of the latter and reducing latency by over 40 \%.
+  \item The optimized log softmax block replaces the naive implementation, which causes an 86 \% latency improvement with marginal resource utilization decrease.
+  \item The \textit{queries}, \textit{keys}, and \textit{values} fully-connected block is split into separate layers, reducing BRAMs thanks to more optimal weights allocation and decreasing latency.
+  \item Tensor product is reorganized and simplified, nearly halving latency and BRAMs, while notably reducing LUTs and FFs.
+  \item Tensor product gets fully unrolled, which again halves the latency, but causes a noticeable increase in overall resource utilization.
+  \item Top level module variables are reorganized to reduce FFs and LUTs usage.
+  \item The uniform design bit-width is reduced to match DSP specification to allow for a more optimal routing, halving their required number and causing an overall improvement to latency and other resources.
 \end{enumerate}
 
 \begin{figure}[hpt!]
@@ -159,9 +193,7 @@ The first of the proposed models undergoes a series of optimization steps, with 
   \label{fig:hardware-optimizations}
 \end{figure}
 
-The final design's resource usage can be seen in figure \ref{tab:utilization}, while its timing results are shown in figure \ref{tab:fgpa-timing}.
-
-\indo{default clock with 5 ns, default clock uncertanty of 12.5 \%}
+The final design's resource usage can be seen in figure \ref{tab:utilization}, while its timing results are shown in figure \ref{tab:fgpa-timing}. Overall, the optimization process leads to an over 1,000,000 times faster inference speed, with decreases in all resources aside from LUTs.
 
 \begin{table}[hpt!]
   \centering
@@ -180,6 +212,8 @@ The final design's resource usage can be seen in figure \ref{tab:utilization}, w
   \egroup
 \end{table}
 
+Along with the FPGA clock period of 5 ns\footnote{5 ns period corresponds to a frequency of 200 MHz, which is used at L1T at LHC.} with a 12.5 \% uncertainty, the final design is able to perform a successful inference in only 90 ns with adequate slack. Thus, the hardware acceleration leads to an over 500 times decrease in latency per sample compared to the CPU and GPU implementation, and it is well within the L1T 12.5 \(\mu s\) latency constraint, leaving a significant headroom for more complex processing. The test accuracy is measured as 74.4 \%, which is 1.7 percent point lower than the original floating-point implementation. The average AUC is slightly lower at 0.9368, with the quantization noise being considered as the main factor for the decrease is classification capability. These values are inline with other results obtained using \hlsml \cite{53-kreinar2018fast}, however, our implemented hardware model is over 4 times faster despite not undergoing any compression, pruning or quantization, which highlights the potential of the described optimization process.
+
 \begin{table}[!hpt]
   \centering
   \caption{Information about design's clock, latency and initiation interval.}
@@ -194,12 +228,9 @@ The final design's resource usage can be seen in figure \ref{tab:utilization}, w
    & \textbf{Uncertainty} & 0.620 & \multicolumn{2}{c|}{\textbf{Interval}} & 1 \\ \hline
   \end{tabular}
   \egroup
-  \end{table}
+\end{table}
 
-\indo{Talk about Pareto front and its meaning, maybe use a roofline model if it makes sense}
-\indo{|}
-\indo{|}
-\indo{|}
+It is possible for the designs other than the final one to represent interesting trade-offs between latency and hardware resources. To get a better view of that, figure \ref{fig:hardware-optimizations-pareto} shows the latency plotted against the resources. It can be seen that the design space exploration has lead to two Pareto optimal designs - the final one, which offers better latency, and the one without unrolled tensor product, which requires less resources' utilization. In general, none of them could be called strictly better than the other. However, the final design is more suitable given the ultra low-latency objective of this work.
 
 \begin{figure}[hpt!]
   \centering
@@ -208,16 +239,19 @@ The final design's resource usage can be seen in figure \ref{tab:utilization}, w
   \label{fig:hardware-optimizations-pareto}
 \end{figure}
 
-
-
-\indo{compare results with transformers using hls4ml for point cloud ... that Walkie suggested}
-\indo{compare with the dnn built using hls4ml}
-
 \subsection{Verifying Analytical Latency and DSP Models}
-\indo{Verify analytical models for latency/resources - state that each linear and matmul blocks dont share the coefficients as they depend on how the pipelining is done}
 
+The latency estimation formulated in the previous chapter is verified given the synthesis results - the final design requires 18 cycles as predicted. This could only be guaranteed under the assumption that every operation can be completely unrolled and pipelined and all arrays are fully partitioned, which depending on the design might require more resources than there are available. Thanks to the optimizations and simplifications used for the model, this assumption was correct, with the most demanded resource (DSPs) at around a third of its limit.
+
+\begin{equation} \label{eq:dsp-model-new}
+  \text{\# of DSPs} = L + C_{\text{linear}} \cdot (21d + 8d^2) + C_{\text{tensor}} \cdot 2 \cdot L^2 \cdot H \approx \mathcal{O}(d^2 + L^2 \cdot H)
+\end{equation}
+
+The situation gets more complicated for the DSP model. After a careful analysis of the required hardware footprint of each component of the final design, it turns out that both the linear layer and the tensor product depend on more variables than just their input and output sizes, effectively making the included "constants" vary between instances. It is likely that there exists no easy-to-understand expression, given the complexity of HLS synthesis routing for pipelined designs. In other words, user-independent factors like the order in which HLS processes the design might influence the required hardware resources, including DSPs. However, there is still merit in the proposed model when it comes to its overall computational complexity, as shown in equation \ref{eq:dsp-model-new}. While this does not provide a clear upper boundary for deciding whether a configuration exceeds the available DSP slices, it highlights the quadratic relationship with the latent dimension \(d\), number of input jets \(L\), as well as a linear dependency on the number of self-attention heads \(H\).
 
 \subsection{Accuracy-Focused Model}
+The process of creating a hardware model for the accuracy-focused architecture started similarly to previous model. After implementing the necessary layers and changing the design configuration, C simulation reported 
+
 
 \indo{Talk about grid search for accuracy-focused model as a quick and easy hyperparameter search, that was done mainly to look for simpler designs given very long synthesis, not hardcore tuning accuracy}
 \indo{Give estimate of how long is the synthesis and why this is a problem}
