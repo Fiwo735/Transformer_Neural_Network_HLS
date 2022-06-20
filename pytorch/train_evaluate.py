@@ -4,6 +4,7 @@ import torch
 import torch.nn as nn
 import numpy as np
 import matplotlib.pyplot as plt
+import seaborn as sn
 
 # from tracemalloc import start
 from h5py import File as hdf5_file
@@ -510,6 +511,26 @@ def compute_roc_auc(targets, predictions):
     
   FPR_micro, TPR_micro, AUC_micro = find_FPR_TPR_AUC(targets.ravel(), predictions.ravel())
 
+  print('Generating confusion matrix...')
+  predictions = np.argmax(predictions, axis=1)
+  targets = np.argmax(targets, axis=1)
+  
+  confusion_matrix = np.zeros((5, 5), dtype=np.uint)
+  for target, pred in zip(targets, predictions):
+      confusion_matrix[int(target), int(pred)] += 1
+
+  # Normalize
+  confusion_matrix = confusion_matrix / confusion_matrix.sum(axis=1).reshape(1,-1)
+
+  fig = plt.figure()
+  sn.heatmap(confusion_matrix, annot=True, xticklabels=CLASSES, yticklabels=CLASSES, cbar=False, cmap='viridis')
+  plt.yticks(rotation=0)
+  plt.title('Jet Categories Confusion Matrix')
+  plt.ylabel('True Label')
+  plt.xlabel('Predicted Label')
+  fig.tight_layout()
+
+  plt.savefig('logs/confusion_matrix.png', format='png', dpi=200)
 
 def mean_var_info(
   name: str,
@@ -731,7 +752,7 @@ def main(
 
     # Load from model
     else:
-      model = torch.load(model_path)
+      model = torch.load(model_path, map_location=DEVICE)
       model.to(DEVICE)
       print(f'Model loaded from {model_path}')
 
