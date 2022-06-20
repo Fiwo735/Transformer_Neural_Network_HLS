@@ -86,11 +86,11 @@ def plot_pareto(path: str, cycles: List[int], hardware_averages: List[float]):
     y_p = [el for i, el in enumerate(cycles) if i in pareto]
     y = [el for i, el in enumerate(cycles) if i not in pareto]
 
-    ax[0].scatter(x_p, y_p, label='Pareto', s=size, linewidth=1, edgecolor='black')
-    ax[0].scatter(x, y, label='Not Pareto', s=size, linewidth=1, edgecolor='black')
+    ax[0].scatter(x_p, y_p, label='Pareto optimal', s=size, linewidth=1, edgecolor='black')
+    ax[0].scatter(x, y, label='Not Pareto optimal', s=size, linewidth=1, edgecolor='black')
 
-    ax[1].scatter(x_p, y_p, label='Pareto', s=size, linewidth=1, edgecolor='black')
-    ax[1].scatter(x, y, label='Not Pareto', s=size, linewidth=1, edgecolor='black')
+    ax[1].scatter(x_p, y_p, label='Pareto optimal', s=size, linewidth=1, edgecolor='black')
+    ax[1].scatter(x, y, label='Not Pareto optimal ', s=size, linewidth=1, edgecolor='black')
 
     texts0 = []
     for i, (h, c) in enumerate(zip(hardware_averages, cycles)):
