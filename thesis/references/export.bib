@@ -1,3 +1,89 @@
+@misc{RefWorks:RefID:86-llvm2020torch-mlir,
+	author = 	 {llvm},
+	year = 	 {2020},
+	month = 	 {July 30,},
+	title = 	 {Torch-MLIR},
+	url = 	 {https://github.com/llvm/torch-mlir}
+}
+@article{RefWorks:RefID:84-su2021vitas:,
+	author={Xiu Su and Shan You and Jiyang Xie and Mingkai Zheng and Fei Wang and Chen Qian and Changshui Zhang and Xiaogang Wang and Chang Xu},
+	year={2021},
+	month={Jun 25,},
+	title={ViTAS: Vision Transformer Architecture Search},
+	abstract={Vision transformers (ViTs) inherited the success of NLP but their structures
+have not been sufficiently investigated and optimized for visual tasks. One of
+the simplest solutions is to directly search the optimal one via the widely
+used neural architecture search (NAS) in CNNs. However, we empirically find
+this straightforward adaptation would encounter catastrophic failures and be
+frustratingly unstable for the training of superformer. In this paper, we argue
+that since ViTs mainly operate on token embeddings with little inductive bias,
+imbalance of channels for different architectures would worsen the
+weight-sharing assumption and cause the training instability as a result.
+Therefore, we develop a new cyclic weight-sharing mechanism for token
+embeddings of the ViTs, which enables each channel could more evenly contribute
+to all candidate architectures. Besides, we also propose identity shifting to
+alleviate the many-to-one issue in superformer and leverage weak augmentation
+and regularization techniques for more steady training empirically. Based on
+these, our proposed method, ViTAS, has achieved significant superiority in both
+DeiT- and Twins-based ViTs. For example, with only $1.4$G FLOPs budget, our
+searched architecture has $3.3\%$ ImageNet-$1$k accuracy than the baseline
+DeiT. With $3.0$G FLOPs, our results achieve $82.0\%$ accuracy on
+ImageNet-$1$k, and $45.9\%$ mAP on COCO$2017$ which is $2.4\%$ superior than
+other ViTs.},
+	url={https://arxiv.org/abs/2106.13700}
+}
+@article{RefWorks:RefID:83-tsai2020finding,
+	author={Henry Tsai and Jayden Ooi and Chun-Sung Ferng and Hyung Won Chung and Jason Riesa},
+	year={2020},
+	month={Aug 15,},
+	title={Finding Fast Transformers: One-Shot Neural Architecture Search by Component Composition},
+	abstract={Transformer-based models have achieved stateof-the-art results in many tasks
+in natural language processing. However, such models are usually slow at
+inference time, making deployment difficult. In this paper, we develop an
+efficient algorithm to search for fast models while maintaining model quality.
+We describe a novel approach to decompose the Transformer architecture into
+smaller components, and propose a sampling-based one-shot architecture search
+method to find an optimal model for inference. The model search process is more
+efficient than alternatives, adding only a small overhead to training time. By
+applying our methods to BERT-base architectures, we achieve 10% to 30% speedup
+for pre-trained BERT and 70% speedup on top of a previous state-of-the-art
+distilled BERT model on Cloud TPU-v2 with a generally acceptable drop in
+performance.},
+	url={https://arxiv.org/abs/2008.06808}
+}
+@article{RefWorks:RefID:82-mikuni2021point,
+	author={Vinicius Mikuni and Florencia Canelli},
+	year={2021},
+	month={Jul 13,},
+	title={Point cloud transformers applied to collider physics},
+	journal={Machine Learning: Science and Technology},
+	volume={2},
+	number={3},
+	pages={35027},
+	abstract={Abstract Methods for processing point cloud information have seen a great success in collider physics applications. One recent breakthrough in machine learning is the usage of transformer networks to learn semantic relationships between sequences in language processing. In this work, we apply a modified transformer network called point cloud transformer as a method to incorporate the advantages of the transformer architecture to an unordered set of particles resulting from collision events. To compare the performance with other strategies, we study jet-tagging applications for highly-boosted particles.},
+	isbn={2632-2153},
+	url={https://iopscience.iop.org/article/10.1088/2632-2153/ac07f6},
+	doi={10.1088/2632-2153/ac07f6}
+}
+@article{RefWorks:RefID:81-tay2020efficient,
+	author={Yi Tay and Mostafa Dehghani and Dara Bahri and Donald Metzler},
+	year={2020},
+	month={Sep 14,},
+	title={Efficient Transformers: A Survey},
+	abstract={Transformer model architectures have garnered immense interest lately due to
+their effectiveness across a range of domains like language, vision and
+reinforcement learning. In the field of natural language processing for
+example, Transformers have become an indispensable staple in the modern deep
+learning stack. Recently, a dizzying number of "X-former" models have been
+proposed - Reformer, Linformer, Performer, Longformer, to name a few - which
+improve upon the original Transformer architecture, many of which make
+improvements around computational and memory efficiency. With the aim of
+helping the avid researcher navigate this flurry, this paper characterizes a
+large and thoughtful selection of recent efficiency-flavored "X-former" models,
+providing an organized and comprehensive overview of existing work and models
+across multiple domains.},
+	url={https://arxiv.org/abs/2009.06732}
+}
 @inproceedings{RefWorks:RefID:80-wang2019haq:,
 	author={Kuan Wang and Zhijian Liu and Yujun Lin and Ji Lin and Song Han},
 	year={Jun 2019},
@@ -286,20 +372,6 @@ level.},
 	abstract = 	 {Neural network-based methods for image processing are becoming widely used in practical applications. Modern neural networks are computationally expensive and require specialized hardware, such as graphics processing units. Since such hardware is not always available in real life applications, there is a compelling need for the design of neural networks for mobile devices. Mobile neural networks typically have reduced number of parameters and require a relatively small number of arithmetic operations. However, they usually still are executed at the software level and use floating-point calculations. The use of mobile networks without further optimization may not provide sufficient performance when high processing speed is required, for example, in real-time video processing (30 frames per second). In this study, we suggest optimizations to speed up computations in order to efficiently use already trained neural networks on a mobile device. Specifically, we propose an approach for speeding up neural networks by moving computation from software to hardware and by using fixed-point calculations instead of floating-point. We propose a number of methods for neural network architecture design to improve the performance with fixed-point calculations. We also show an example of how existing datasets can be modified and adapted for the recognition task in hand. Finally, we present the design and the implementation of a floating-point gate array-based device to solve the practical problem of real-time handwritten digit classification from mobile camera video feed.},
 	url = 	 {https://explore.openaire.eu/search/publication?articleId=od________18::a7b50ad6649ba7942600e9d20ecf2b80},
 	doi={10.1109/EIConRus.2019.8656778}
-}
-@techreport{RefWorks:RefID:53-kreinar2018fast,
-	author={Edward Kreinar and Jennifer Ngadiuba and Zhenbin Wu and Philip Harris and Maurizio Pierini and Ryan Rivera and Song Han and Javier Duarte and Benjamin Kreis and Nhan Tran and Sergo Jindariani},
-	year={2018},
-	month={Apr 16,},
-	title={Fast inference of deep neural networks in FPGAs for particle physics},
-	institution={IOP Publishing},
-	number={13},
-	pages={P07027},
-	abstract={Recent results at the Large Hadron Collider (LHC) have pointed to enhanced physics capabilities through the improvement of the real-time event processing techniques. Machine learning methods are ubiquitous and have proven to be very powerful in LHC physics, and particle physics as a whole. However, exploration of the use of such techniques in low-latency, low-power FPGA (Field Programmable Gate Array) hardware has only just begun. FPGA-based trigger and data acquisition systems have extremely low, sub-microsecond latency requirements that are unique to particle physics. We present a case study for neural network inference in FPGAs focusing on a classifier for jet substructure which would enable, among many other physics scenarios, searches for new dark sector particles and novel measurements of the Higgs boson. While we focus on a specific example, the lessons are far-reaching. A companion compiler package for this work is developed based on High-Level Synthesis (HLS) called hls4ml to build machine learning models in FPGAs. The use of HLS increases accessibility across a broad user community and allows for a drastic decrease in firmware development time. We map out FPGA resource usage and latency versus neural network hyperparameters to identify the problems in particle physics that would benefit from performing neural network inference with FPGAs. For our example jet substructure model, we fit well within the available resources of modern FPGAs with a latency on the scale of 100 ns.
-Recent results at the Large Hadron Collider (LHC) have pointed to enhanced physics capabilities through the improvement of the real-time event processing techniques. Machine learning methods are ubiquitous and have proven to be very powerful in LHC physics, and particle physics as a whole. However, exploration of the use of such techniques in low-latency, low-power FPGA hardware has only just begun. FPGA-based trigger and data acquisition (DAQ) systems have extremely low, sub-microsecond latency requirements that are unique to particle physics. We present a case study for neural network inference in FPGAs focusing on a classifier for jet substructure which would enable, among many other physics scenarios, searches for new dark sector particles and novel measurements of the Higgs boson. While we focus on a specific example, the lessons are far-reaching. We develop a package based on High-Level Synthesis (HLS) called hls4ml to build machine learning models in FPGAs. The use of HLS increases accessibility across a broad user community and allows for a drastic decrease in firmware development time. We map out FPGA resource usage and latency versus neural network hyperparameters to identify the problems in particle physics that would benefit from performing neural network inference with FPGAs. For our example jet substructure model, we fit well within the available resources of modern FPGAs with a latency on the scale of 100 ns.},
-	isbn={1748-0221},
-	url={http://cds.cern.ch/record/2316331},
-	doi={10.1088/1748-0221/13/07/P07027}
 }
 @article{RefWorks:RefID:52-elfwing2018sigmoid-weighted,
 	author={Stefan Elfwing and Eiji Uchibe and Kenji Doya},

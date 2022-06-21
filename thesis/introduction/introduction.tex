@@ -22,19 +22,19 @@ The two main challenges of the project involve:
 \section{Contributions and Publication}
 The project aims to benefit the open-source community of ML practitioners and researches that are in need of faster and more parametrizable neural network inference. The main audience for that operation are particle physicists, nonetheless, the hope is for the work to positively contribute many ML fields by offering a reliable tool for acceleration of existing designs and providing a useful resource for learning about the nature of reconfigurable hardware and its optimization potential.
 
-The novel aspects proposed in this work can be summarized as follows, with the first two addressing challenge \textbf{C1}, and the latter challenge \textbf{C2}:
+The novel aspects proposed in this work can be summarized as follows, with the first two points addressing challenge \textbf{C1}, and the other two points challenge \textbf{C2}:
 
 \begin{itemize}
-  \item \textbf{Hardware-Aware Network Optimizations}: Two novel architectures are designed with hardware in mind, exploiting the target hardware platform to achieve cutting-edge latency and accuracy.
+  \item \textbf{Hardware-Aware Design}: Two novel transformer architectures are designed with hardware in mind, exploiting the target hardware platform to achieve cutting-edge latency and accuracy.
   
   \item \textbf{Efficient Hardware Implementation}: \hlsml codesign workflow is extended with a number of complex neural network layers that benefit from a range of optimization techniques.
   
-  \item \textbf{Quantization-Aware Transformer Neural Training}: Several available solutions are surveyed and described, and the best one in terms of applicability to state-of-the-art neural network designs is selected and adapted to Transformer Neural Networks.
+  \item \textbf{Quantization-Aware Training}: Several available solutions are surveyed and described, and the best one in terms of applicability to state-of-the-art neural network designs is selected and adapted to transformer neural networks.
   
-  \item \textbf{Custom Post-Training Quantization}: A custom tool is proposed that finds the optimal set of bit-widths for a High-Level Synthesis model according to used-defined constraints.
+  \item \textbf{Post-Training Quantization Search}: A custom algorithm is proposed that finds the optimal set of bit-widths for a High-Level Synthesis model according to used-defined constraints.
 \end{itemize}
 
-The bulk of the work and analysis conducted in this project was summarized in the paper "Accelerating Transformer Neural Networks on FPGAs for High Energy Physics Experiments" and submitted in the long paper category to the \textit{18\textsuperscript{th} International Symposium on Applied Reconfigurable Computing}. A journal article derived from this project is being prepared for publication.
+The bulk of the work and analysis conducted in this project were summarized in the paper "Accelerating Transformer Neural Networks on FPGAs for High Energy Physics Experiments" and submitted in the long paper category to the \textit{18\textsuperscript{th} International Symposium on Applied Reconfigurable Computing}. A journal article derived from this project is being prepared for publication.
 
 \section{Report Outline}
 This report begins by discussing the necessary particle physics background to understand the scope of the work, followed by the related work in the field of machine learning, with an emphasis on the state-of-the-art architectures, and a deeper dive into the reconfigurable hardware technology in \cref{background}. Then in \cref{models}, the two proposed novel neural network architectures are described in details, including the necessary training and processing steps. After that, \cref{quantization} covers both the existing and custom ways of conducting design space exploration and how they were applies in this project. \Cref{evaluation} discusses the evaluation metrics and collected experimental results, which is concluded by \cref{conclusion}, which also proposes future work derived from this analysis. \todo{Confirm at the end if the sections are still as described here}
