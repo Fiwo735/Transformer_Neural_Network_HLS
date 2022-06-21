@@ -41,10 +41,6 @@ A commonality between the recent best performing hardware-mapped neural network 
 \indo{|}
 \indo{|}
 \indo{|}
-\indo{|}
-\indo{|}
-\indo{|}
-\indo{|}
 
 
 \subsection{Latency, Throughput, and Hardware Resources}\label{latency-throughput-resources}
@@ -59,10 +55,10 @@ To properly navigate during the DSE and assign scores the solutions, the followi
 While FPGAs vary in terms of hardware resource configurations, several key components can be distinguished:
 
 \begin{itemize}
-  \item \textbf{Block Random Access Memory (BRAM)} - \indo{finish}
-  \item \textbf{Digital Signal Processing (DSP) logic element} - \indo{finish}
-  \item \textbf{Flip-Flop (FF)} - \indo{finish}
-  \item \textbf{Lookup Table (LUT)} - \indo{finish}
+  \item \textbf{Block Random Access Memory (BRAM)} - RAM unit which offers higher capacity storage with a relatively high access latency. It is best for storing big chunks of data that are not continuously used.
+  \item \textbf{Lookup Table (LUT)} - a simple memory component that can store a very limited number of values while offering low access latency. It is often used for storing precomputed function values which can remove complex calculations from the critical path.
+  \item \textbf{Flip-Flop (FF)} - more precisely, a D flip-flop, which implements a basic 1-bit binary register.
+  \item \textbf{Digital Signal Processing (DSP) slice} - a logic element that is very efficient at additions, subtractions, multiplications, and boolean logic operations. It can process more than two inputs at once, which efficiently handles common algebraic operations like multiply-accumulate.
 \end{itemize}
 
 To fully understand the trade-offs between designs, one cannot forget about the metric directly related to the specific task that is accelerated in hardware. In the case of this report, classification accuracy and AUC described in \cref{ml-accuracy-auc-confusion}, will also play key roles in evaluating various configurations.

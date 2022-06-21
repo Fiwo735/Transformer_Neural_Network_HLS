@@ -19,11 +19,16 @@ The Standard Model also provides a classification of all the elementary particle
   \end{itemize}
 \end{itemize}
 
-The information about the following decay processes form the dataset of this report, with visualization in figure \ref{fig:jedi-jets} (obtained from \cite{9-newman2019jedi-net:}). It is important to note that where applicable, the particles on the left-hand side of the arrows undergo a series of decays before reaching the right-hand side, when the only particles left are those composed of quarks and antiquarks (denoted by the vertical bar), referred to as hadrons.
-\todo{Possibly clear page}
-\[ q / g \]
-\[ H^0 / W / Z \rightarrow q\overline{q} \]
-\[ t \rightarrow Wq \rightarrow q\overline{q}q \]
+The information about the decay processes seen in equations \ref{eq:jet1}, \ref{eq:jet2}, \ref{eq:jet3} form the dataset of this report, with a visualization in figure \ref{fig:jedi-jets} (obtained from \cite{9-newman2019jedi-net:}). It is important to note that where applicable, the particles on the left-hand side of the arrows undergo a series of decays before reaching the right-hand side, when the only particles left are those composed of quarks and antiquarks (denoted by the vertical bar), referred to as hadrons.
+\begin{equation}\label{eq:jet1}
+  q / g
+\end{equation}
+\begin{equation}\label{eq:jet2}
+  H^0 / W / Z \rightarrow q\overline{q}
+\end{equation}
+\begin{equation}\label{eq:jet3}
+  t \rightarrow Wq \rightarrow q\overline{q}q
+\end{equation}
 
 \begin{figure}[hpt!]
   \centering
@@ -90,7 +95,7 @@ Using the 30 jet dataset as an example, each sample has between 1 and 30 constit
   \end{bmatrix} \in \mathbb{R}^{N \times L \times 16}
 \end{equation}
 
-The main jet datasets contain \(880,000\) samples regardless of the number of jets per sample, while the HLF dataset contains \(830,000\) examples, which are split into training and test samples in \(70:30\) and \(80:20\) proportions accordingly. In both cases, the datasets are balanced, meaning that they contain all available particle classes in near identical proportions. This is a desired characteristic of data as it avoids having to introduce weighted results as a measure of protecting the model from not learning the underrepresented classes properly. When it comes to the distribution and range of values for each feature, the visualizations can be seen in figure \ref{fig:distributions-hlf}\maybe{Maybe city the OpenML website} and TODO for HLF and constituent list datasets respectively.
+The main jet datasets contain \(880,000\) samples regardless of the number of jets per sample, while the HLF dataset contains \(830,000\) examples, which are split into training and test samples in \(70:30\) and \(80:20\) proportions accordingly. In both cases, the datasets are balanced, meaning that they contain all available particle classes in near identical proportions. This is a desired characteristic of data as it avoids having to introduce weighted results as a measure of protecting the model from not learning the underrepresented classes properly. When it comes to the distribution and the range of values for each feature, their visualizations can be seen in figure \ref{fig:distributions-hlf} and TODO for HLF and constituent list datasets respectively.
 
 \begin{figure}[hpt!]
   \centering
