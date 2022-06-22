@@ -22,7 +22,7 @@ In many use cases the neural networks architectures are optimized and accelerate
 \begin{figure}[hpt!]
   \centering
   \includegraphics[trim={0cm 0cm 0cm 0cm}, width=0.4\textwidth, center]{background/fully_connected_layer.pdf}
-  \caption{Diagram of a fully connected layer.}
+  \caption{Illustration of a network with one hidden fully connected layer.}
   \label{fig:fully-connected-layer}
 \end{figure}
 
@@ -51,25 +51,25 @@ or more complicated like the Sigmoid Linear Unit (SiLU), based on the sigmoid fu
 
 As layers are tightly connected to each other, this type of neural layer is often referred to as \textit{fully connected} or \textit{linear}. It requires a relatively large number of separate weights and biases, which makes it both computationally and memory intensive, but nonetheless, modern network architectures can have dozens of these layers, not to mention plethora of other types.
 
-Since the invention of deep neural networks, countless other network classes have been developed. The list below gives a brief explanation of those that have been experimented with for jet-tagging.
+Since the invention of deep neural networks, countless network classes have been developed. The list below gives a brief explanation of those that are mentioned in this report in the context of jet-tagging.
 
 \begin{itemize}
-  \item \textbf{Convolutional Neural Networks (CNNs)}: TODO
-  \item \textbf{Graph Neural Networks (GNNs)}: 
-  \item \textbf{Recurrent Neural Networks (RNNs)}: GRU, LSTM
+  \item \textbf{Convolutional Neural Networks (CNNs)}: unlike a fully connected network, CNN requires significantly fewer connections between layers thanks to the convolution operation. As a result, relatively smaller sets of weights are reused for multiple neurons which enables processing of higher dimensional inputs like images or particle jets.
+  \item \textbf{Graph Neural Networks (GNNs)}: GNN treats data as graphs, which are structures composed of edges and vertices. Hence, they are used in domains where data naturally exists as graphs like social networks, but they can also be applied to any data provided it can be modeled as graphs.
+  \item \textbf{Recurrent Neural Networks (RNNs)}: similarly to GNNs, RNNs target graphs, often exploiting the underlying sequencing information about time or space of the samples. Original RNNs suffer from the vanishing gradient problem, which can be solved with more advanced architectures like LSTM \cite{88-hochreiter1997long} or GRU \cite{89-cho2014properties} that use cell states regulating the flow of information.
 \end{itemize}
 
-\subsection{Batch and Layer Normalization}
-\indo{Batch norm vs layer norm as both are used in the architecture}
-\indo{|}
-\indo{|}
-\indo{|}
-\indo{|}
-\indo{|}
+\subsection{Data Normalization}\label{data-normalization}
+In the context of machine learning, normalization refers to transforming data into a given range. This usually refers to making the input data \(X[i]\) into a normally distributed data \(\hat{X}[i]\), which is done by subtracting its mean \(\mu\) and dividing by the standard deviation \(\sigma\) as seen in equation \ref{eq:normalization}, where \(N\) stands for the number of elements.
 
+\begin{equation}\label{eq:normalization}
+  \hat{X}[i] = \frac{X - \mu}{\sigma} \; \text{, where } \; \mu = \frac{1}{N} \sum X[i] \; \text{ and } \; \sigma = \frac{1}{N-1} \sum ( X[i] - \mu )^2
+\end{equation}
+
+Two normalization methods are commonly used in neural networks to improve performance. Originally, this was believed to happen thanks to mitigating the covariate shift problem, but recent studies claim other reasons \cite{90-santurkar2018batch}. The first method is batch normalization, which performs the aforementioned calculation in batch during training while learning data's expected value and variance to use during inference. On the other hand, layer normalization \cite{51-ba2016layer} does the same computations across the layer dimension, which removes the dependency on the batch size, and it is claimed to work better in RNNs. Another difference is that layer normalization operates identically during training and inference by always computing the data statistics instead of learning them. These two methods are further analyzed in \cref{model-normalization} in terms of this project's objectives.
 
 \subsection{Transformer Neural Networks and Self-Attention}\label{self-attention}
-A promising architecture that has been chosen as the topic of this project is the transformer neural network (TNN). Similarly to RNNs, TNNs were designed for sequential input data, most commonly found in natural language processing applications, however, compared to RNNs, they process all input data at once. In RNNs, convolutional \cite{72-keren2016convolutional} or attention mechanisms \cite{71-chorowski2015attention-based} are used in a recurrent manner to allow models to learn the representation and connections between different parts of the input sequence, which most commonly are words in a sentence. This limits the parallelizability as the network is handled serially - each hidden state needs to wait for the result generated by the previous one. In TNNs, a modified mechanism called self-attention \cite{44-vaswani2017attention} is used which can find global relations in a data, without relying on the temporal, sequencing information. The self-attention combines several simpler operations to achieve its strength, including linear layers, matrix multiplication and the softmax function, formula for which is presented in equation \ref{eq:softmax}.
+A promising architecture that has been chosen as the topic of this project is the transformer neural network (TNN). Similarly to RNNs, TNNs were designed for sequential input data, most commonly found in natural language processing applications, however, compared to RNNs, they process all input data at once. In RNNs, convolutional \cite{72-keren2016convolutional} or attention mechanisms \cite{71-chorowski2015attention-based} are used in a recurrent manner to allow models to learn the representation and connections between different parts of the input sequence, which most commonly are words in a sentence. This limits the parallelizability as the network is handled serially - each hidden state needs to wait for the result generated by the previous one. In TNNs, a modified mechanism called self-attention \cite{44-vaswani2017attention} is used which can find global relations in a data, without relying on the temporal, sequencing information. The self-attention combines several simpler operations to achieve its strength, including linear layers, matrix multiplication and the softmax function, which is shown in equation \ref{eq:softmax}.
 
 \begin{equation}\label{eq:softmax}
   \text{softmax}(x) = \frac{exp(x_i)}{\sum exp(x_i)}
@@ -83,7 +83,7 @@ Softmax can be described as mapping a vector to a ratio between each input's exp
       {\includegraphics[width=0.2\columnwidth]{background/self_attention.pdf}} &
       {\includegraphics[width=0.4\columnwidth]{background/multi_head_self_attention.pdf}}
   \end{tabular}
-  \caption{Left: diagram of a self-attention head. Right: illustration of \(H\) self-attention heads forming a multi-headed self-attention block.}
+  \caption{Left: block diagram of a self-attention head. Right: illustration of \(H\) self-attention heads forming a multi-headed self-attention block.}
   \label{fig:self-attention-multi-head}
 \end{figure}
 
@@ -96,18 +96,17 @@ A diagram representing the initial implementation of the self-attention can be s
       {\includegraphics[width=0.32\columnwidth]{background/attention_2_head.png}} & 
       {\includegraphics[width=0.32\columnwidth]{background/attention_8_head.png}}
   \end{tabular}
-  \caption{From left to right: visualizations, for an input word, of the words focused by 1, 2 and 8 attention heads.}
+  \caption{From left to right: visualizations of other words in a sentence focused by 1, 2 and 8 attention heads for the same input word.}
   \label{fig:1-2-8-heads}
 \end{figure}
 
-The complexity of a multi-head self-attention depends on the dimensions of the underlying \textit{queries} \(\in \mathbb{R}^{N_Q \times d_Q}\), \textit{keys} \(\in \mathbb{R}^{N_K \times d_Q}\), and \textit{values} \(\in \mathbb{R}^{N_K \times d_V}\)parameters. The resulting time complexity is represented in the equation \ref{eq:qkv-complexity-time}, while the space complexity can be seen in equation \ref{eq:qkv-complexity-space} with \(h\) and \(d_{out}\) standing for number of heads and output dimensions respectively in both cases.\todo{Cite or derive this complexities}
+The complexity of a multi-head self-attention depends on the dimensions of the underlying \textit{queries} \(\in \mathbb{R}^{N_Q \times d_Q}\), \textit{keys} \(\in \mathbb{R}^{N_K \times d_Q}\), and \textit{values} \(\in \mathbb{R}^{N_K \times d_V}\)parameters. The resulting time complexity is represented in the equation \ref{eq:qkv-complexity-time}, while the space complexity can be seen in equation \ref{eq:qkv-complexity-space} with \(h\) and \(d_{out}\) standing for number of heads and output dimension respectively in both cases.
 
 \begin{equation}\label{eq:qkv-complexity-time}
   \mathcal{O}(h \cdot (N_Q N_K (d_Q + d_V) + d_Q^2 (N_Q + N_K) + d_V^2 N_K + N_Q d_V d_{out}) ))
 \end{equation}
-
 \begin{equation}\label{eq:qkv-complexity-space}
   \mathcal{O}(h \cdot (N_Q (N_K + d_V) + d_Q (N_Q + N_K) + d_V N_K + N_Q d_{out}) ))
 \end{equation}
 
-It has to be mentioned that in terms of the AUC value, a recent implementation of a transformer called ConstituentNet \cite{3-yuan2021constituentnet:} has been shown to outperform previous state-of-the-art GNN implementations like JEDI-net \cite{9-newman2019jedi-net:} and thus serves as an inspiration for the starting point architecture of \cref{models}, which is entirely devoted to a further analysis of the network design and suitability for jet tagging. More specifically, given the strong results of its software implementation, an FPGA-mapped design is believed to have a possibility to be a viable alternative to existing designs for L1T at LHC.
+It has to be mentioned that in terms of the AUC value, a recent implementation of a transformer called ConstituentNet \cite{3-yuan2021msc} has been shown to outperform previous state-of-the-art GNN implementations like JEDI-net \cite{9-newman2019jedi-net:} and thus serves as an inspiration for the starting point architecture of \cref{models}, which is entirely devoted to a further analysis of the network design and suitability for jet tagging. More specifically, given the strong results of its software implementation, an FPGA-mapped design is believed to have a possibility to be a viable alternative to existing designs for L1T at LHC.

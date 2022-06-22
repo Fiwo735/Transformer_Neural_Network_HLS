@@ -20,6 +20,125 @@
   doi          = {10.5281/zenodo.3333552},
   url          = {https://doi.org/10.5281/zenodo.3333552}
 }
+@article{95-qi2021trim:,
+	author={Yangjie Qi and Shuo Zhang and Tarek M. Taha},
+	year={2021},
+	month={May 17,},
+	title={{TRIM}: A Design Space Exploration Model for Deep Neural Networks Inference and Training Accelerators},
+	abstract={There is increasing demand for specialized hardware for training deep neural
+networks, both in edge/IoT environments and in high-performance computing
+systems. The design space of such hardware is very large due to the wide range
+of processing architectures, deep neural network configurations, and dataflow
+options. This makes developing deep neural network processors quite complex,
+especially for training. We present TRIM, an infrastructure to help hardware
+architects explore the design space of deep neural network accelerators for
+both inference and training in the early design stages. The model evaluates at
+the whole network level, considering both inter-layer and intra-layer
+activities. Given applications, essential hardware specifications, and a design
+goal, TRIM can quickly explore different hardware design options, select the
+optimal dataflow and guide new hardware architecture design. We validated TRIM
+with FPGA-based implementation of deep neural network accelerators and
+ASIC-based architectures. We also show how to use TRIM to explore the design
+space through several case studies. TRIM is a powerful tool to help architects
+evaluate different hardware choices to develop efficient inference and training
+architecture design.},
+	url={https://arxiv.org/abs/2105.08239}
+}
+@inproceedings{94-wei2020design,
+	author={Zhigang Wei and Aman Arora and Pragenesh Patel and Lizy John},
+	year={Jul 2020},
+	title={Design Space Exploration for Softmax Implementations},
+	publisher={IEEE},
+	pages={45-52},
+	abstract={Deep Neural Networks (DNN) are crucial components of machine learning in the big data era. Significant effort has been put into the hardware acceleration of convolution and fully-connected layers of neural networks, while not too much attention has been put on the Softmax layer. Softmax is used in terminal classification layers in networks like ResNet, and is also used in intermediate layers in networks like the Transformer. As the speed for other DNN layers keeps improving, efficient and flexible designs for Softmax are required. With the existence of several ways to implement Softmax in hardware, we evaluate various softmax hardware designs and the trade-offs between them. In order to make the design space exploration more efficient, we also develop a parameterized generator which can produce softmax designs by varying multiple aspects of a base architecture. The aspects or knobs are parallelism, accuracy, storage and precision. The goal of the generator is to enable evaluation of tradeoffs between area, delay, power and accuracy in the architecture of a softmax unit. We simulate and synthesize the generated designs and present results comparing them with the existing state-of-the-art. Our exploration reveals that the design with parallelism of 16 can provide the best area-delay product among designs with parallelism ranging from 1 to 32. It is also observed that look-up table based approximate LOG and EXP units can be used to yield almost the same accuracy as the full LOG and EXP units, while providing area and energy benefits. Additionally, providing local registers for intermediate values is seen to provide energy savings.},
+	url={https://ieeexplore.ieee.org/document/9153236},
+	doi={10.1109/ASAP49362.2020.00017}
+}
+@techreport{93-apresyan2019deep,
+	author={Artur Apresyan and Giuseppe Bagliesi and Julia Velkovska and Nikos Varelas and others},
+	year={2019},
+	month={Dec 27,},
+	title={A deep neural network to search for new long-lived particles decaying to jets},
+	institution={IOP Publishing},
+	number={1},
+	pages={35012},
+	abstract={A tagging algorithm to identify jets that are significantly displaced from the proton-proton (pp) collision region in the CMS detector at the LHC is presented. Displaced jets can arise from the decays of long-lived particles (LLPs), which are predicted by several theoretical extensions of the standard model. The tagger is a multiclass classifier based on a deep neural network, which is parameterised according to the proper decay length $c\tau_0$ of the LLP. A novel scheme is defined to reliably label jets from LLP decays for supervised learning. Samples of pp collision data, recorded by the CMS detector at a centre-of-mass energy of 13 TeV, and simulated events are used to train the neural network. Domain adaptation by backward propagation is performed to improve the simulation modelling of the jet class probability distributions observed in pp collision data. The potential performance of the tagger is demonstrated with a search for long-lived gluinos, a manifestation of split supersymmetric models. The tagger provides a rejection factor of 10 000 for jets from standard model processes, while maintaining an LLP jet tagging efficiency of 30-80% for gluinos with 1 mm $\leq c\tau_0 \leq$ 10 m. The expected coverage of the parameter space for split supersymmetry is presented.
+A tagging algorithm to identify jets that are significantly displaced from the proton-proton (pp) collision region in the CMS detector at the LHC is presented. Displaced jets can arise from the decays of long-lived particles (LLPs), which are predicted by several theoretical extensions of the standard model. The tagger is a multiclass classifier based on a deep neural network, which is parameterised according to the proper decay length $\mathrm{c}\tau_0$ of the LLP. A novel scheme is defined to reliably label jets from LLP decays for supervised learning. Samples of pp collision data, recorded by the CMS detector at a centre-of-mass energy of 13 TeV, and simulated events are used to train the neural network. Domain adaptation by backward propagation is performed to improve the simulation modelling of the jet class probability distributions observed in pp collision data. The potential performance of the tagger is demonstrated with a search for long-lived gluinos, a manifestation of split supersymmetric models. The tagger provides a rejection factor of 10 000 for jets from standard model processes, while maintaining an LLP jet tagging efficiency of 30-80% for gluinos with 1 mm $\leq$ $c\tau_0$ $\leq$ 10 m. The expected coverage of the parameter space for split supersymmetry is presented.},
+	isbn={2632-2153},
+	url={http://cds.cern.ch/record/2705632},
+	doi={10.1088/2632-2153/ab9023}
+}
+@inproceedings{92-lomonaco2021avalanche:,
+	author={Vincenzo Lomonaco and Lorenzo Pellegrini and Andrea Cossu and Antonio Carta and others},
+	year={Jun 2021},
+	title={Avalanche: an End-to-End Library for Continual Learning},
+	publisher={IEEE},
+	pages={3595-3605},
+	abstract={Learning continually from non-stationary data streams is a long-standing goal and a challenging problem in machine learning. Recently, we have witnessed a renewed and fast-growing interest in continual learning, especially within the deep learning community. However, algorithmic solutions are often difficult to re-implement, evaluate and port across different settings, where even results on standard benchmarks are hard to reproduce. In this work, we propose Avalanche, an open-source end-to-end library for continual learning research based on PyTorch. Avalanche is designed to provide a shared and collaborative codebase for fast prototyping, training, and reproducible evaluation of continual learning algorithms.},
+	url={https://ieeexplore.ieee.org/document/9523188},
+	doi={10.1109/CVPRW53098.2021.00399}
+}
+@article{90-santurkar2018batch,
+	author={Shibani Santurkar and Dimitris Tsipras and Andrew Ilyas and Aleksand others},
+	year={2018},
+	month={May 29,},
+	title={How Does Batch Normalization Help Optimization?},
+	abstract={Batch Normalization (BatchNorm) is a widely adopted technique that enables
+faster and more stable training of deep neural networks (DNNs). Despite its
+pervasiveness, the exact reasons for BatchNorm's effectiveness are still poorly
+understood. The popular belief is that this effectiveness stems from
+controlling the change of the layers' input distributions during training to
+reduce the so-called "internal covariate shift". In this work, we demonstrate
+that such distributional stability of layer inputs has little to do with the
+success of BatchNorm. Instead, we uncover a more fundamental impact of
+BatchNorm on the training process: it makes the optimization landscape
+significantly smoother. This smoothness induces a more predictive and stable
+behavior of the gradients, allowing for faster training.},
+	url={https://arxiv.org/abs/1805.11604}
+}
+@article{89-cho2014properties,
+	author={Kyunghyun Cho and Bart van Merrienboer and Dzmitry Bahdanau and Yoshua Bengio},
+	year={2014},
+	month={Sep 3,},
+	title={On the Properties of Neural Machine Translation: Encoder-Decoder Approaches},
+	abstract={Neural machine translation is a relatively new approach to statistical
+machine translation based purely on neural networks. The neural machine
+translation models often consist of an encoder and a decoder. The encoder
+extracts a fixed-length representation from a variable-length input sentence,
+and the decoder generates a correct translation from this representation. In
+this paper, we focus on analyzing the properties of the neural machine
+translation using two models; RNN Encoder--Decoder and a newly proposed gated
+recursive convolutional neural network. We show that the neural machine
+translation performs relatively well on short sentences without unknown words,
+but its performance degrades rapidly as the length of the sentence and the
+number of unknown words increase. Furthermore, we find that the proposed gated
+recursive convolutional network learns a grammatical structure of a sentence
+automatically.},
+	url={https://arxiv.org/abs/1409.1259}
+}
+@article{88-hochreiter1997long,
+	author={Sepp Hochreiter and Jurgen Schmidhuber},
+	year={1997},
+	month={Nov 15,},
+	title={Long Short-Term Memory},
+	journal={Neural computation},
+	volume={9},
+	number={8},
+	pages={1735-1780},
+	abstract={Learning to store information over extended time intervals by recurrent backpropagation takes a very long time, mostly because of insufficient, decaying error backflow. We briefly review Hochreiter's (1991) analysis of this problem, then address it by introducing a novel, efficient, gradient based method called long short-term memory (LSTM). Truncating the gradient where this does not do harm, LSTM can learn to bridge minimal time lags in excess of 1000 discrete-time steps by enforcing constant error flow through constant error carousels within special units. Multiplicative gate units learn to open and close access to the constant error flow. LSTM is local in space and time; its computational complexity per time step and weight is
+. 1. Our experiments with artificial data involve local, distributed, real-valued, and noisy pattern representations. In comparisons with real-time recurrent learning, back propagation through time, recurrent cascade correlation, Elman nets, and neural sequence chunking, LSTM leads to many more successful runs, and learns much faster. LSTM also solves complex, artificial long-time-lag tasks that have never been solved by previous recurrent network algorithms.},
+	isbn={0899-7667},
+	url={https://direct.mit.edu/neco/article/doi/10.1162/neco.1997.9.8.1735},
+	doi={10.1162/neco.1997.9.8.1735},
+	pmid={9377276}
+}
+@misc{87-openml2022hls4ml,
+	author={OpenML},
+	year={2022},
+	month={21 June,},
+	title={hls4ml {LHC} jets {HLF} dataset},
+	url={https://www.openml.org/search?type=data&sort=runs&id=42468&status=active}
+}
 @misc{86-llvm2020torch-mlir,
 	author = 	 {llvm},
 	year = 	 {2020},
@@ -341,7 +460,8 @@ level.},
 	author={Pierre Blanchard and Desmond J. Higham and Nicholas J. Higham},
 	year={2019},
 	title={Accurate computation of the log-sum-exp and softmax functions},
-	journal={arXiv preprint arXiv:1909.03469}
+	journal={arXiv preprint arXiv:1909.03469},
+	url={https://arxiv.org/abs/1909.03469}
 }
 @article{59-barr1991einstein,
 	author={Alan H. Barr},
@@ -349,7 +469,8 @@ level.},
 	title={The Einstein summation notation},
 	journal={An Introduction to Physically Based Modeling (Course Notes 19), pages E},
 	volume={1},
-	pages={57}
+	pages={57},
+	url={http://vucoe.drbriansullivan.com/wp-content/uploads/Einstein-Summation-Notation.pdf}
 }
 @article{57-garbin2020dropout,
 	author={Christian Garbin and Xingquan Zhu and Oge Marques},
@@ -701,6 +822,7 @@ This paper evaluates a selection of emerging DNN algorithms on two generations o
 	journal={International Journal of Computer Theory and Engineering},
 	pages={494-498},
 	isbn={1793-8201},
+	url={http://www.ijcte.org/papers/356-G826.pdf},
 	doi={10.7763/IJCTE.2011.V3.356}
 }
 @article{23-knag2015sparse,
@@ -782,6 +904,7 @@ This paper evaluates a selection of emerging DNN algorithms on two generations o
 	pages={177},
 	abstract={Byline: Cathy Wu (1), Michael Berry (2), Sailaja Shivakumar (3), Jerry McLarty (3) Keywords: neural networks; database search; protein classification; sequence analysis; superfamily; singular value decomposition (SVD) A neural network classification method has been developed as an alternative approach to the search/organization problem of protein sequence databases. The neural networks used are three-layered, feed-forward, back-propagation networks. The protein sequences are encoded into neural input vectors by a hashing method that counts occurrences of n-gram words. A new SVD (singular value decomposition) method, which compresses the long and sparse n-gram input vectors and captures semantics of n-gram words, has improved the generalization capability of the network. A full-scale protein classification system has been implemented on a Cray supercomputer to classify unknown sequences into 3311 PIR (Protein Identification Resource) superfamilies/families at a speed of less than 0.05 CPU second per sequence. The sensitivity is close to 90% overall, and approaches 100% for large superfamilies. The system could be used to reduce the database search time and is being used to help organize the PIR protein sequence database. Author Affiliation: Article History: Registration Date: 26/08/2004},
 	isbn={0885-6125},
+	url={https://link.springer.com/content/pdf/10.1023/A:1022677900508.pdf},
 	doi={10.1023/A:1022677900508}
 }
 @inproceedings{15-nurvitadhi2016accelerating,
@@ -922,13 +1045,14 @@ boson decays with respect to a background of quark- and gluoninitiated jets. Usi
 	author={CERN},
 	title={Jets at {CMS} and the determination of their energy scale | {CMS} Experiment},
 	volume={2022},
-	number={Jan 24,}
+	number={Jan 24,},
+	url={https://cms.cern/news/jets-cms-and-determination-their-energy-scale}
 }
-@techreport{3-yuan2021constituentnet:,
+@techreport{3-yuan2021msc,
 	author={Xinyang Yuan},
 	year={2021},
 	month={-09-22},
-	title={ConstituentNet: Learn to Solve Jet Tagging through Attention}
+	title={{MS}c report: ConstituentNet - Learn to Solve Jet Tagging through Attention}
 }
 @article{2-capeans2017strategies,
 	author={M. Capeans and R. Guida and B. Mandelli},
@@ -958,13 +1082,15 @@ boson decays with respect to a background of quark- and gluoninitiated jets. Usi
   volume={},
   number={},
   pages={2-14},
-  doi={10.1109/CGO51591.2021.9370308}
+  doi={10.1109/CGO51591.2021.9370308},
+  url = {https://ieeexplore.ieee.org/document/9370308}
 }
 @inproceedings{nn_cpu_optim,
 title	= {Improving the speed of neural networks on {CPU}s},
 author	= {Vincent Vanhoucke and Andrew Senior and Mark Z. Mao},
 year	= {2011},
-booktitle	= {Deep Learning and Unsupervised Feature Learning Workshop, {NIPS} 2011}
+booktitle	= {Deep Learning and Unsupervised Feature Learning Workshop, {NIPS} 2011},
+url = {https://static.googleusercontent.com/media/research.google.com/en//pubs/archive/37631.pdf}
 }
 
 @InProceedings{pmlr-v42-chen14,
@@ -989,13 +1115,15 @@ booktitle	= {Deep Learning and Unsupervised Feature Learning Workshop, {NIPS} 20
     year={2019},
     eprint={1910.04540},
     archivePrefix={arXiv},
-    primaryClass={cs.LG}
+    primaryClass={cs.LG},
+    url = {https://arxiv.org/abs/1910.04540}
 }
 @article{ye2021scalehls,
   title={Scale{HLS}: A New Scalable High-Level Synthesis Framework on Multi-Level Intermediate Representation},
   author={Ye, Hanchen and Hao, Cong and Cheng, Jianyi and Jeong, Hyunmin and others},
   journal={arXiv preprint arXiv:2107.11673},
-  year={2021}
+  year={2021},
+  url = {https://arxiv.org/abs/2107.11673}
 }
 @article{tensor2tensor,
   author    = {Ashish Vaswani and Samy Bengio and Eugene Brevdo and

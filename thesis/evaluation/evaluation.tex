@@ -163,10 +163,10 @@ It is essential to compare the proposed architectures with recent state-of-the-a
   DNN \cite{9-newman2019jedi-net:} & \textbf{1.0 $\pm$ 0.2}\textsuperscript{*} & 0.760 / 0.941 & \textbf{27 k} & 14,725 \\ \hline
   CNN \cite{9-newman2019jedi-net:} & 57.1 $\pm$ 0.5\textsuperscript{*} & 0.740 / 0.911 & 400 k & 205,525 \\ \hline
   GRU \cite{9-newman2019jedi-net:} & 23.2 $\pm$ 0.6\textsuperscript{*} & 0.750 / 0.912 & 46 k & 15,575 \\ \hline
-  JEDI-net \cite{9-newman2019jedi-net:} & 121.2 $\pm$ 0.4\textsuperscript{*} & TODO / 0.959 & 116 M & 33,625 \\ \hline
-  JEDI-net with $\sum O$ \cite{9-newman2019jedi-net:}  & 402.0 $\pm$ 1.0\textsuperscript{*} & TODO / 0.957 & 458 M & 8,767 \\ \hline
-  ConstituentNet-Base \cite{3-yuan2021constituentnet:} & $\sim$133.7\textsuperscript{$\dagger$} & 0.818 / \textbf{0.966} & 1,553 M & 289,000 \\ \hline
-  ConstituentNet-Tiny \cite{3-yuan2021constituentnet:} & $\sim$12.4\textsuperscript{$\dagger$} & 0.805 / 0.960 & 13 M  & 8,533 \\ \hline \hline
+  JEDI-net \cite{9-newman2019jedi-net:} & 121.2 $\pm$ 0.4\textsuperscript{*} & 0.842 / 0.959 & 116 M & 33,625 \\ \hline
+  JEDI-net with $\sum O$ \cite{9-newman2019jedi-net:}  & 402.0 $\pm$ 1.0\textsuperscript{*} & 0.840 / 0.957 & 458 M & 8,767 \\ \hline
+  ConstituentNet-Base \cite{3-yuan2021msc} & $\sim$133.7\textsuperscript{$\dagger$} & 0.818 / \textbf{0.966} & 1,553 M & 289,000 \\ \hline
+  ConstituentNet-Tiny \cite{3-yuan2021msc} & $\sim$12.4\textsuperscript{$\dagger$} & 0.805 / 0.960 & 13 M  & 8,533 \\ \hline \hline
   Ultra-Low Latency & 1.2 $\pm$ 0.1\textsuperscript{$\ddagger$} & 0.761 / 0.940 & 583 k & \textbf{2,605} \\ \hline
   Accuracy-Focused & 2.9 $\pm$ 0.2\textsuperscript{$\ddagger$} & 0.778 / 0.948 & 448 M & 107,403 \\ \hline
   \end{tabular}
@@ -199,7 +199,7 @@ The first of the proposed models undergoes a series of optimization steps, with 
 \begin{figure}[hpt!]
   \centering
   \includegraphics[trim={0cm 0cm 0cm 1cm}, clip, width=0.8\textwidth, center]{../logs/hardware_optimizations.png}
-  \caption{Results of the optimization process for the ultra-low latency model.}
+  \caption{Latency and hardware utilization results of the optimization process for the ultra-low latency model.}
   \label{fig:hardware-optimizations}
 \end{figure}
 
@@ -245,7 +245,7 @@ It is possible for the designs other than the final one to represent interesting
 \begin{figure}[hpt!]
   \centering
   \includegraphics[trim={0cm 0cm 0cm 0cm}, clip, width=0.6\textwidth, center]{../logs/hardware_optimizations_pareto.png}
-  \caption{Latency plotted against average resource utilization for the ultra-low latency model configurations.}
+  \caption{Latency plotted against average resource utilization for the ultra-low latency model configurations, with highlighted Pareto front.}
   \label{fig:hardware-optimizations-pareto}
 \end{figure}
 
@@ -265,16 +265,16 @@ The process of creating a hardware model for the accuracy-focused architecture s
 \begin{figure}[hpt!]
   \centering
   \includegraphics[trim={0cm 0cm 0cm 0cm}, clip, width=1.0\textwidth, center]{../logs/grid_search.png}
-  \caption{Grid-search results - squares' area proportional to accuracy.}
+  \caption{Grid-search results, with squares' areas proportional to classification accuracy.}
   \label{fig:grid-search}
 \end{figure}
 
-It can be seen that reducing the number of embedded dimensions have the smallest impact, followed by the transformer layers. The model with 4 self-attention heads was evaluated in case it performed better in certain configurations, but this concluded to not be the case. Hence, simpler designs were selected for synthesis, however, each of them would be terminated after approximately a week given that they were still in their early steps. It was clear that the design simplification alone was not enough to overcome this challenge. After careful performance analysis, it became apparent that each synthesis job keeps increasing its reserved system memory, reaching the limit at around 750 GB, which was all the server's available RAM. This suggests that an \textit{explosion} of the design space would happen due to the way HLS analyzes the design, and that this process was to complex to ever succeed without a fundamental change of server specifications (which is not possible given the scope of this project) or approach to synthesis. This issue is visualized in figure \ref{fig:state-space-explosion}. 
+It can be seen that reducing the number of embedded dimensions have the smallest impact, followed by the transformer layers. The model with 4 self-attention heads was evaluated in case it performed better in certain configurations, but this was concluded to not be the case. Hence, simpler designs were selected for synthesis, however, each of them would be terminated after approximately a week given that they were still in their early steps. It was clear that the design simplification alone was not enough to overcome this challenge. After careful performance analysis, it became apparent that each synthesis job keeps increasing its reserved system memory, reaching the limit at around 750 GB, which was all the server's available RAM. This suggests that an \textit{explosion} of the design space would happen due to the way HLS analyzes the design, and that this process was to complex to ever succeed without a fundamental change of server specifications (which is not possible given the scope of this project) or approach to synthesis. This issue is visualized in figure \ref{fig:state-space-explosion}. 
 
 \begin{figure}[hpt!]
   \centering
   \includegraphics[trim={0cm 0cm 0cm 0cm}, clip, width=0.6\textwidth, center]{evaluation/state_space_explosion.pdf}
-  \caption{Illustration of the synthesis design space reaching the limit of available memory.}
+  \caption{Illustration of the synthesis design space reaching the limit of available system memory.}
   \label{fig:state-space-explosion}
 \end{figure}
 
@@ -324,7 +324,7 @@ The first analysis includes a QPyTorch implementation of the accuracy-focused ar
 \begin{figure}[hpt!]
   \centering
   \includegraphics[trim={0cm 0cm 0cm 0cm}, clip, width=1.0\textwidth, center]{../logs/training_accuracy.png}
-  \caption{Performance against epochs for floating-point and fixed-point models.}
+  \caption{Performance plotted against epochs for floating-point and fixed-point models.}
   \label{fig:pre-training}
 \end{figure}
 
@@ -347,3 +347,6 @@ Compared to the previous quantization methods, the proposed post-training quanti
 This method achieved a 64 \% reduction in total bit-width with a 2 \% decrease to accuracy. Total bit-width relatively closely corresponds to the hardware resource utilization - while the FFs and LUTs are expected to vary linearly, DSPs and BRAMs are only affected after their width threshold is exceeded. In other words, the target FPGA's DSP slices allow up to 34 bits as their main input, hence only 35 bits or more lead to an additional unit being instantiated. For that reason, the algorithm uses C simulation accuracy and bit-widths as its two driving signals, without the need of performing the synthesis. By exploiting this simplified bit-width to hardware resources relation, the total run-time of the tool is significantly shorter as each simulation runs within minutes instead of hours or even not finishing at all as it was discussed before. However, the total number of simulations still lead to a program run-time of around 7 days given the model's complexity. As a result, only one configuration of the algorithm's positive and negative accuracy tolerances was tested, where the negative one was assigned twice the importance of the positive tolerance, driving the substantial bit-width reduction while sacrificing a fraction of the accuracy.
 
 The success of this method proves the hypothesis about strong correlation between neighboring layers. More specifically, the average total bit-width difference between layers is measured at approximately 4 bits. Furthermore, corresponding types also seem to follow the same trends among different layers - a good example are the widths of \textit{queries}, \textit{keys}, and \textit{values} linear layers, all of which have similar input, weight, and accumulator widths, with the \textit{values}' being slightly less similar, as they are used further along the computations than the other two. It is also worth mentioning that there is no noticeable difference in results regardless of whether the integer or the fractional parts are analyzed first.
+
+\section{Summary}
+This chapter presents the evaluation of the proposed neural network architectures along with their hardware implementations. The results greatly outperform state-of-the-art models in terms of latency while offering comparable classification quality. They also meet the L1T constraints of LHC detectors. The state space explosion is covered, and potential preventive measures are described. The best quantization-aware training framework for efficient hardware mapping is selected, and the decision is carefully justified. Lastly, the developed post-training quantization algorithm is validated to offer significant bit-width reduction, and it is hence recommended as the go-to tool for simplifying designs for low-latency applications.

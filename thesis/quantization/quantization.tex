@@ -11,11 +11,11 @@ Each self-attention head performs two tensor multiplications (referred to as \te
 \begin{figure}[hpt!]
   \centering
   \includegraphics[trim={0cm 0cm 0cm 0cm}, width=0.75\textwidth, center]{models/einsum.pdf}
-  \caption{Visualization of a tensor operation expressed in Einstein Summation notation.}
+  \caption{Visualization of a tensor operation expressed using Einstein Summation notation.}
   \label{fig:einsum}
 \end{figure}
 
-Figure \ref{fig:einsum} shows a visualization for an example notation to give a better understanding of the necessary flexibility of a formula. The translation between notations using the custom tool is showcased in listing \ref{list:einsum}. While the \texttt{PyTorch} implementation can often use 4-dimensional tensors, the first dimension refers to the batch, which is not present in the hardware implementation that processes input samples one-by-one, hence both the figure and code listing show 3-dimensional cases. It is also worth pointing out, that tensor multiplication is an inherently computationally expensive operation due to the quadruple-nested loop structure. For this reason, the proposed design leaves the configuration of pipelining as a parameter that offers a trade-off between time and design complexity. The \textit{design} complexity refers to the difficulty involved in HLS synthesis as well as hardware resource utilization. In other words, the hardware block can be instantiated to run serially, where little resources are needed as they get re-used, or alternatively, in parallel, where significantly more components are used to decrease latency, and in case the design is also pipelined, to also increase throughput.
+Figure \ref{fig:einsum} shows a visualization for an example notation to give a better understanding of the necessary flexibility of a formula. The translation between notations using the custom tool is showcased in listing \ref{list:einsum}. While the \texttt{PyTorch} implementation can often use 4-dimensional tensors, the first dimension refers to the batch, which is not present in the hardware implementation that processes input samples one-by-one, hence both the figure and code listing show 3-dimensional cases. It is also worth pointing out  that tensor multiplication is an inherently computationally expensive operation due to the quadruple-nested loop structure. For this reason, the proposed design leaves the configuration of pipelining as a parameter that offers a trade-off between time and design complexity. The \textit{design} complexity refers to the difficulty involved in HLS synthesis as well as hardware resource utilization. In other words, the hardware block can be instantiated to run serially, where little resources are needed as they get re-used, or alternatively, in parallel, where significantly more components are used to decrease latency, and in case the design is also pipelined, to also increase throughput.
 
 % \clearpage
 \lstinputlisting[language={[GNU]C++}, caption={From PyTorch \texttt{out = torch.einsum("qhc,khc->hqk", [A, B])} to HLS C++ code.}, captionpos=b, label={list:einsum}]{quantization/einsum_example.cpp}
@@ -47,12 +47,12 @@ Another simple optimization used alongside the tensor multiplication blocks was 
 
 
 \subsection{Softmax and Log Softmax Activations}\label{log-softmax}
-Despite an already existing \hlsml implementation of the softmax activation function, obtaining the logarithm of its result is not as simple as it may seem. This is because the numerical stability and computational efficiency of this operation is non-trivial and varies depending on the programming language and target platform, as it is a topic of ongoing research \cite{60-blanchard2019accurate}.
+Despite an already existing \hlsml implementation of the softmax activation function, obtaining the logarithm of its result is not as simple as it may seem. This is because the numerical stability and computational efficiency of these operations are non-trivial and vary depending on the programming language and target platform, both being topics of active research \cite{60-blanchard2019accurate,94-wei2020design}.
 
 \begin{figure}[hpt!]
   \centering
   \includegraphics[trim={0cm 0cm 0cm 0cm}, width=0.55\textwidth, center]{quantization/log_softmax_naive_h.pdf}
-  \caption{Direct hardware implementations of log softmax.}
+  \caption{Direct hardware implementations of log softmax. Summation is handled by an adder tree.}
   \label{fig:log-softmax-naive}
 \end{figure}
 
@@ -68,17 +68,17 @@ This report proposes a different way of mapping this operation to hardware to im
     \log (\sigma (x_i)) = log(e^{x_i} / \sum_{j=1}^{N} e^{x_j}) = \log(e^{x_i}) - \log(\sum_{j=1}^{N} e^{x_j}) = e^{x_i} - \log(\sum_{j=1}^{N} e^{x_j})
 \end{equation}
 
-The resulting hardware operations are depicted in figure \ref{fig:log-softmax-opt}. It is important to note, that operations like exponentiation, division or taking a logarithm usually rely on precomputing a wide range of values and mapping them in BRAMs or LUTs to allow for lookup on run-time. Hence, the optimized design requires one less of such lookups while also replacing multiplication by a subtraction, which can be simpler to express in hardware.
+The resulting hardware operations are depicted in figure \ref{fig:log-softmax-opt}. It is important to note that operations like exponentiation, division or taking a logarithm usually rely on precomputing a wide range of values and mapping them in BRAMs or LUTs to allow for lookup on run-time. Hence, the optimized design requires one fewer lookups while also replacing multiplication by a subtraction, which can be simpler to express in hardware.
 
 \begin{figure}[hpt!]
   \centering
   \includegraphics[trim={0cm 0cm 0cm 0cm}, width=0.5\textwidth, center]{quantization/log_softmax_opt_h.pdf}
-  \caption{Optimized hardware implementations of log softmax.}
+  \caption{Optimized hardware implementations of log softmax. Summation is handled by an adder tree.}
   \label{fig:log-softmax-opt}
 \end{figure}
 
 \clearpage
-Although further simplifications, including approximating the summation by finding the maximum (see equation \ref{eq:log-softmax-max}) or simply omitting the logarithm portion of the expression, were also explored, they noticeably lowered the final accuracy and were thus abandoned.
+Although further simplifications, including approximating the summation by finding the maximum element (see equation \ref{eq:log-softmax-max}) or simply omitting the logarithm portion of the expression, were also explored, they noticeably lowered the final accuracy and were thus abandoned.
 
 \begin{equation} \label{eq:log-softmax-max}
     \log (\sigma (x_i)) = e^{x_i} - \log(\sum_{j=1}^{N} e^{x_j}) = e^{x_i} - \sum_{j=1}^{N} \log(e^{x_j}) = e^{x_i} - \sum_{j=1}^{N} x_j \approx e^{x_i} - \max(x)
@@ -102,11 +102,12 @@ A visualization of the architecture annotated with the pipeline stages can be se
 \begin{figure}[hpt!]
   \centering
   \includegraphics[trim={0cm 0cm 0cm 0cm}, width=0.9\textwidth, center]{quantization/pipelining_stages.pdf}
-  \caption{Ultra-low latency architecture with highlighted pipeline stages. Not annotated blocks share stage with their neighbors.}
+  \caption{Ultra-low latency architecture with highlighted pipeline stages. Not annotated blocks share stages with their neighbors.}
   \label{fig:pipeline-stages}
 \end{figure}
 
-The following components' stages last for two cycles, which suggests that their internal operations could not be completed within a cycle:
+\newpage
+The following components' stages are known to last for two cycles, which suggests that their internal operations cannot be completed within one cycle regardless of used resources:
 
 \begin{itemize}
   \item \textbf{Tensor product} - a single multiply-accumulate operation requires only one cycle, which might seem counterintuitive at first. However, in this case, several multiplication results need to be added together for each output's value, which leads to additional complexity and latency.
@@ -131,7 +132,7 @@ Given the design configuration of the ultra-low latency model, 18 cycles are exp
 \begin{figure}[hpt!]
   \centering
   \includegraphics[trim={0cm 0cm 0cm 4cm}, clip, width=0.7\textwidth, center]{../logs/latency_model.png}
-  \caption{3D plot of the latency model dependency on the number of transformer and feed-forward layers.}
+  \caption{3-dimensional plot of the latency model dependency on the number of transformer and feed-forward layers.}
   \label{fig:latency-model}
 \end{figure}
 
@@ -150,7 +151,7 @@ Starting with the ones that are not expected to contribute any utilization, both
 
 Similar argument can be made about the tensor multiplication, where it is also clear that there is a direct relation to the size of the involved tensor dimensions, but it is not easy to conclude how many DSP slices each multiply-accumulate need. Given that both of the instances of this block operate on the same dimensions, equation \ref{eq:dsp-tensor} uses a more precise notation, where \(H\) stands for the number of self-attention heads.
 
-In order to express the overall DSP model, the input and output sized of each linear layer have to be considered. The following list refers to them using the pipeline stages introduced in figure \ref{fig:pipeline-stages} for unambiguity:
+In order to express the overall DSP model, the input and output sizes of each linear layer have to be considered. The following list refers to them using the pipeline stages introduced in figure \ref{fig:pipeline-stages} for unambiguity:
 
 \begin{itemize}
   \item \textbf{Stage I}: from jet feature number (\(16\)) to self-attention latent dimension \(d\),
@@ -169,12 +170,14 @@ All together, the above dimensions can be summed to \(16d + 3d^2 + d^2 + 2d^2 + 
 
 
 \section{Post-training Quantization}\label{post-training-quantization}
-This section returns to the topic of quantization, but as opposed to \cref{pre-training-quantization}, it explores the quantization of already trained models. This is domain is not researched as much as quantization-aware training due to the lack of ability for a model to \textit{compensate} for the quantization noise during training, hence leading to potentially inferior results. However, recent advancements in this field \cite{80-wang2019haq:} leverage the synergy between post-training quantization and the target hardware platform to produce results with improved latency or energy consumption. The inherent noise issues are offset by a careful per-variable bit-width analysis, driven by a reinforcement learning algorithm. The choice of the algorithm has a deep-rooted issue for more computationally demanding models that also require a search in a wider range of bit-widths\footnote{The mentioned method only explores convolutional neural networks in \([1, 8]\) bit-width range.}.
+This section returns to the topic of quantization, but as opposed to \cref{pre-training-quantization}, it explores the quantization of already trained models. This domain is not researched as much as quantization-aware training due to the lack of ability for a model to \textit{compensate} for the quantization noise during training, hence leading to potentially inferior results. However, recent advancements in this field \cite{80-wang2019haq:} leverage the synergy between post-training quantization and the target hardware platform to produce results with improved latency or energy consumption. The inherent noise issues are offset by a careful per-variable bit-width analysis, driven by a reinforcement learning algorithm. The choice of the algorithm has a deep-rooted issue for more computationally demanding models that also require a search in a wider range of bit-widths\footnote{The mentioned method only explores convolutional neural networks in \([1, 8]\) bit-width range.}.
 
 \subsection{Motivation}
 This report proposes a novel post-training quantization algorithm that can be applied to state-of-the-art transformer neural networks over a wide precision range. Early tests in the HLS environment revealed that a single C simulation for an input with only 100 samples can take around 10 minutes, which dictates a need for a significantly simpler, hence faster, algorithm than Bayesian optimization or reinforcement learning to allow for an exploration that runs in a reasonable amount of time.
 
 The motivation of the algorithm comes from a hypothesis which states that the neighboring layers in a neural network have a relatively high correlation in their optimal bit-widths. Under this assumption, each layer's input, output, weight, bias and accumulator can be safely explored one-by-one, in the order of appearance in the model. \textit{Safely} refers here to a low likelihood of arriving at a local accuracy extremum that is substantially worse than the global one, that could only theoretically be found using a more sophisticated approach. During this \textit{walk} through the design space, several non-trivial constraints about the widths have to be ensured, which are the topic of the next subsection.
+
+\input{quantization/post_quantization_algorithm.tex}
 
 \subsection{Constraints}
 The constraints of a network variable could theoretically be set arbitrarily to convey a high-level requirement of an experienced designer with a knowledge about typical widths used for a component in a given network type. However, the proposed method automates this process by extracting the underlying lookup table characteristics to accommodate users without domain-specific expertise. These characteristics are part of the network configuration that ensures that any precomputed (for increased latency) function is stored with adequate precision that avoids introducing unnecessary errors. To give a more concrete example to this abstract definition, one can consider the range of values yielded from the exponential function. Not only is there a set width for the results, but even relatively small values map to numbers that require several bits of integer precision, so careless reduction to either of the width parts can quickly degrade any learning capacity of the model.
@@ -182,7 +185,7 @@ The constraints of a network variable could theoretically be set arbitrarily to 
 \begin{figure}[hpt!]
   \centering
   \includegraphics[trim={0cm 0cm 0cm 0cm}, width=1.0\textwidth, center]{quantization/width_constraints.pdf}
-  \caption{Visualization of a fixed-point number with its bit-widths as well as constraints imposed by a lookup table. For convenience, red and blue distinguish integer and fractional parts, while the darker hue shows the table-related parts.}
+  \caption{Visualization of a fixed-point number with its bit-widths as well as constraints imposed by a lookup table. For convenience, integer and fractional parts are highlighted in red and blue, with the darker hue showing the table-related number parts.}
   \label{fig:width-constraints}
 \end{figure}
 
@@ -201,70 +204,9 @@ Figure \ref{fig:width-constraints} visualizes a fixed-point number with a detail
 \subsection{Steps}
 A high-level overview of the steps used in the proposed method is depicted in algorithm \ref{alg:post-training-quant}. The only required parameters are the negative and positive accuracy tolerance, which are used to guide the search process. Increasing the negative tolerance relaxes the accuracy constraints ensured after each algorithm step in order to significantly reduce the overall bit-widths. On the other hand, a complete opposite objective can also be achieved as reducing the positive tolerance priorities quality of results over narrower bit-widths. Overall, these parameters can take an arbitrary combination of non-negative values that best expresses the exploration goals.
 
-The algorithm starts by scanning an HLS file that includes all the fixed-point types used in a model, convert them into objects and organizes them into a First In, First Out (FIFO) queue, according to their original order. One by one, objects are popped from the queue and undergo the search process. Firstly, the bit-width that was found in the file is saved, the object inherits from the previous optimal bit-width (based on the correlation hypothesis), and the model is evaluated. Depending on whether the results stay within the accuracy tolerance, the object starts with either its original or the inherited configuration. Afterwards, the integer and fractional parts go through one or two loops - first, at each iteration the width gets incremented as long as it matches the target range. After the first loop, the second one, analogous but checking designs with fewer bits, is only entered if no significant improvements were found when increasing widths. This avoids evaluating same configurations unnecessarily, which goes in line with the overall aim to offer a relatively quickly-converging solution to the very multidimensional optimization problem. Once all width objects reach their optimal state, the found configuration is saved and can be used in a further design space exploration.
+The algorithm starts by scanning an HLS file that includes all the fixed-point types used in a model, convert them into objects and organizes them into a first in, first out (FIFO) queue, according to their original order. One by one, objects are popped from the queue and undergo the search process. Firstly, the bit-width that was found in the file is saved, the object inherits from the previous optimal bit-width (based on the correlation hypothesis), and the model is evaluated. Depending on whether the results stay within the accuracy tolerance, the object starts with either its original or the inherited configuration. Afterwards, the integer and fractional parts go through one or two loops - first, at each iteration the width gets incremented as long as it matches the target range. After the first loop, the second one, analogous but checking designs with fewer bits, is only entered if no significant improvements were found when increasing widths. This avoids evaluating same configurations unnecessarily, which goes in line with the overall aim to offer a relatively quickly-converging solution to the very multidimensional optimization problem. Once all width objects reach their optimal state, the found configuration is saved and can be used in a further design space exploration.
 
 It is important to point out that the aforementioned PyTorch Eager Mode and FX Graph Mode quantization schemes offer post-training quantization, but there are unsuitable for this work due to their lack of flexibility and support for the essential neural network layers. Instead, the HLS source directory is modified and tested in a C Simulation to measure accuracy. While the synthesis process could supplement the algorithm with an additional feedback signal about the precise hardware resource utilization, it takes much more than the simulation, and its results can be estimated to vary linearly with the total number of bit-widths. The only situation when such assumption does not hold is when a hardware component input width limit is reached because then a 1-bit increase requires an additional instance of that component to be instantiated. Ways of avoiding this issue are covered along with the evaluation of the results in \cref{eval:post-training-quantization}.
-
-\begin{algorithm}
-  \caption{Algorithm for performing post-training quantization search}\label{alg:post-training-quant}
-  \begin{algorithmic}
-  \Function{PostTrainingQuantization}{neg\_accuracy\_tolerance, pos\_accuracy\_tolerance}
-
-  \State $previous\_width \gets null$
-  \State $max\_decrement \gets neg\_accuracy\_tolerance \cdot 2$ \Comment{Maximum decrement per parameter}
-  \State $optimal\_accuracy \gets$ find\_accuracy()
-  \State $params \gets$ scan\_file($defines\_file$) \Comment{FIFO with scanned parameter objects}
-
-  \While{$params$ not empty}
-    \State $current \gets params$.pop()
-
-    \If{$previous\_width$ exists} \Comment{Try using width from previous parameter}
-      \State $original\_width \gets params.width$
-      \State update($params$, $previous\_width$)
-      \If{find\_accuracy() $< optimal\_accuracy - max\_decrement$}
-        \State update($params$, $original\_width$)
-      \Else
-        \State $optimal\_accuracy \gets$ find\_accuracy()
-      \EndIf
-    \EndIf
-
-    \For{$part$ in $\{int, frac\}$}
-
-      \State $try\_increase \gets True$
-      \State $pos\_improvement\_found \gets False$
-      \While{$try\_increase$} \Comment{Increment to check for high accuracy gain}
-        \State $param$.increment($part$)
-        \If{find\_accuracy() $ > optimal\_accuracy + pos\_accuracy\_tolerance$}
-          \State $optimal\_accuracy \gets$ find\_accuracy()
-          \State $pos\_improvement\_found \gets True$
-        \Else
-          \State $try\_increase \gets False$
-          \State $param$.decrement($part$)
-        \EndIf
-      \EndWhile
-
-      \If{not $pos\_improvement\_found$} \Comment{Decrement if no good increment}
-        \State $try\_decrease \gets True$
-        \State $acc\_before\_decrease \gets optimal\_accuracy$
-        \While{$try\_increase$}
-          \State $param$.decrement($part$)
-          \If{$acc\_before\_decrease -$ find\_accuracy()$ > max\_decrement$}
-            \State $try\_decrease \gets False$
-            \State $param$.increment($part$)
-          \ElsIf{find\_accuracy() $ > optimal\_accuracy - neg\_accuracy\_tolerance$}
-            \State $optimal\_accuracy \gets$ find\_accuracy()
-          \Else
-            \State $try\_decrease \gets False$
-            \State $param$.increment($part$)
-        \EndIf
-        \EndWhile
-      \EndIf
-    \EndFor
-  \EndWhile
-  \State \textbf{return} $params$
-  \EndFunction
-  \end{algorithmic}
-\end{algorithm}
 
 \section{\hlsml Contributions}
 In this section, the technical contributions to the \hlsml library are descriptively presented, highlighting the areas that this work expands upon. Developed components are shown in figure \ref{fig:hls4ml-contributions}, along with a number of existing components that were expanded upon or are used to draw comparison with. Each group is discussed in one of the following subsections, in an order of increasing design complexity.
@@ -272,7 +214,7 @@ In this section, the technical contributions to the \hlsml library are descripti
 \begin{figure}[hpt!]
   \centering
   \includegraphics[trim={0cm 0cm 0cm 0cm}, clip, width=0.7\textwidth, center]{quantization/hls4ml_blocks.pdf}
-  \caption{Overview of the created implementations (dark-colored) and some existing components with similar functionality (light-colored).}
+  \caption{Overview of the created implementations (darker) and relevant existing components (lighter).}
   \label{fig:hls4ml-contributions}
 \end{figure}
 
@@ -289,4 +231,7 @@ The method used in \hlsml for mapping the precomputed function values to lookup 
 \subsection{High-Level Components}
 It comes as no surprise that \hlsml offers a customizable and efficient fully-connected layer implementation. However, the way of creating an instance without the bias calculation is to provide an array filled with zeros. This is believed to be a shortcoming of the current version, as having a compile-time parameter regarding the bias can make the synthesis process faster given that the HLS can skip the optimization process for that aspect. With bigger and more complex models, this simple change could lead to noticeable reduction in processing time. What is more, it also yielded a marginally smaller design in the case of this work, suggesting that the HLS hardware translation might not be behaving optimally, but that depends on a number of factors and was not evaluated further.
 
-Although the deeply covered self-attention and transformer layers could be viewed as specific to the topic of this report, it has to be remembered that they are the state-of-the-art when it comes to a plethora of applications. At the same time, they are incomparably more complex than any other aforementioned components, not only needing them for correct functionality, but also requiring considerable amount of development time to properly integrate and carefully optimize. Hence. they are considered the most important \hlsml contributions of this work.
+Although the deeply covered self-attention and transformer layers could be viewed as specific to the topic of this report, it has to be remembered that they are the state-of-the-art when it comes to a plethora of applications. At the same time, they are incomparably more complex than any other aforementioned components, not only needing them for correct functionality, but also requiring considerable amount of additional development time to properly integrate and carefully optimize. Hence, they are considered the most important \hlsml contributions of this work.
+
+\section{Summary}
+In this chapter, hardware-specific optimizations of the proposed neural networks are explained in details. Two analytical models are also proposed to allow for a better estimation of design characteristics without the need of creating and synthesizing new HLS implementations. There is also a discussion about the novel post-training quantization algorithm that converges to optimal solutions even in vast search spaces, where existing methods cannot terminate timely. The significant technical contributions to \hlsml library are also presented and compared to already available components. While developed with low-latency transformers in mind, there is once again a great potential for applicability to other use cases.

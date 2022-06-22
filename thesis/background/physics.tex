@@ -2,7 +2,7 @@
 To be able to understand the scope of the project and the applicability of the work in modern research, this chapter gives an overview of the key concepts from particle physics that appear through the paper. The explanation is written for readers with no prior background in physics.
 
 \subsection{Standard Model}
-The Standard Model is a theory that describes the connections between weak, strong and electromagnetic interactions, which are three of the fundamental forces. The possible unification with the forth one - gravity - is an ongoing research \cite{67-krasnov2018gravity}, and while certainly outside the scope of this project, it should be noted that some of the physical experiments that this work explores aim to help with it \cite{68-walz2015gbar,69-pagano2020gravity}.
+The Standard Model is a theory that describes the connections between weak, strong and electromagnetic interactions, which are three of the fundamental forces. The possible unification with the forth one - gravity - is an ongoing research \cite{67-krasnov2018gravity}, and while certainly outside the scope of this project, it should be noted that some of the physical experiments that this work explores aim to help with advancing it \cite{68-walz2015gbar,69-pagano2020gravity}.
 
 The Standard Model also provides a classification of all the elementary particles. A non-exhaustive list of them is described below, with particles that this report is concerned about (as they appear in the proton-proton collisions) being highlighted.
 
@@ -41,9 +41,9 @@ The information about the decay processes seen in equations \ref{eq:jet1}, \ref{
 The two LHC experiments that are of most concern in this report are CMS and ATLAS. They are both large general-purpose particle detectors, that were notably involved in the discovery of the Higgs boson \cite{47-greeene2013higgs}. Several processing steps happen between particles colliding and theories being proven, however real-time particle detectors comprise the very first elements of this pipeline. They are composed of triggers split into the following levels \citep[p.16]{48-trigger}:
 
 \begin{itemize}
-  \item \textbf{Level 1 trigger (L1T)} - it is implemented in hardware (FPGAs) and firmware, it is pipelined (a term explained in details in \autoref{serial-parallel-pipelined}) and it cannot allow for any dead-time, which means that it has to continuously process data with a fixed latency.
-  \item \textbf{Level 2 trigger (L2T)} - it is implemented in hardware and software and can include regional processing.
-  \item \textbf{Level 3 trigger (L3T)} - it is implemented in software, using farms of CPUs. It is close in behavior to non-real-time algorithms.
+  \item \textbf{Level 1 trigger (L1T)}: it is implemented in hardware (FPGAs) and firmware, it is pipelined (a term explained in details in \autoref{serial-parallel-pipelined}) and it cannot allow for any dead-time, which means that it has to continuously process data with a fixed latency.
+  \item \textbf{Level 2 trigger (L2T)}: it is implemented in hardware and software and can include regional processing.
+  \item \textbf{Level 3 trigger (L3T)}: it is implemented in software, using farms of CPUs. It is close in behavior to non-real-time algorithms.
 \end{itemize}
 
 LHC operates in intertwined periods of operation and shutdown. The latter come from the demanding nature of the experiments that necessitates maintenance and upgrades to the apparatus and machinery, as well as the science and engineering advancements which allow for more efficient algorithms and technologies to be adopted. Very recently, after four years of break, LHC restarted experiments, which marks the beginning of "Run 3" \cite{70-keanecern's}. Since their origin, the L2T and L3T have been merged into High Level Trigger (HLT) \citep[p.47]{49-tappertriggering}, which is planned to rely on thousands of multithreaded CPUs and GPUs. As for the L1T key specifications that will be used to evaluate the design in this paper, its input data frequency is 40 MHz, which with a pipeline depth of 500 results in a 12.5 \(\mu s\) latency, and its output frequency to HLT is equal to 750 kHz.
@@ -95,22 +95,6 @@ Using the 30 jet dataset as an example, each sample has between 1 and 30 constit
   \end{bmatrix} \in \mathbb{R}^{N \times L \times 16}
 \end{equation}
 
-The main jet datasets contain \(880,000\) samples regardless of the number of jets per sample, while the HLF dataset contains \(830,000\) examples, which are split into training and test samples in \(70:30\) and \(80:20\) proportions accordingly. In both cases, the datasets are balanced, meaning that they contain all available particle classes in near identical proportions. This is a desired characteristic of data as it avoids having to introduce weighted results as a measure of protecting the model from not learning the underrepresented classes properly. When it comes to the distribution and the range of values for each feature, their visualizations can be seen in figure \ref{fig:distributions-hlf} and TODO for HLF and constituent list datasets respectively.
+The main jet datasets contain \(880,000\) samples regardless of the number of jets per sample, while the HLF dataset contains \(830,000\) examples, which are split into training and test samples in \(70:30\) and \(80:20\) proportions accordingly. In both cases, the datasets are balanced, meaning that they contain all available particle classes in near identical proportions. This is a desired characteristic of data as it avoids having to introduce weighted results as a measure of protecting the model from not learning the underrepresented classes properly. When it comes to the distribution and the range of values for each feature, their visualizations can be seen in figure \ref{fig:distributions-hlf} \cite{87-openml2022hls4ml} and \ref{fig:distributions-constituent} for HLF and constituent list datasets respectively.
 
-\begin{figure}[hpt!]
-  \centering
-  \includegraphics[trim={0cm 0cm 0cm 0cm}, width=1.0\textwidth, center]{background/distributions.png}
-  \caption{Representation of the distributions of feature values in the HLF dataset.}
-  \label{fig:distributions-hlf}
-\end{figure}
-
-It is also worth mentioning that normalization\footnote{Process of subtracting mean and dividing by standard deviation, also referred to as "standardization".} is the only preprocessing measure used in this work, and it is only applied to the HLF dataset. The reasons behind avoiding it in case of the constituent list dataset are discussed in detail in \cref{accuracy-focused-model}. Both dataset samples are simulated and do not contain any illegal or null values that would require dropping or substituting. There is also no need for data augmentation because of the simulated origin of data.
-
-\todofig{Constituent list feature distribution}
-\todofig{|}
-\todofig{|}
-\todofig{|}
-\todofig{|}
-\todofig{|}
-\todofig{|}
-\todofig{|}
+It is also worth mentioning that normalization\footnote{Process of subtracting mean and dividing by standard deviation, also referred to as "standardization", which is explained in more details in \cref{data-normalization}.} is the only preprocessing measure used in this work, and it is only applied to the HLF dataset. The reasons behind avoiding it in case of the constituent list dataset are discussed in detail in \cref{accuracy-focused-model}. Both dataset samples are simulated and do not contain any illegal or null values that would require dropping or substituting. There is also no need for data augmentation because of the simulated origin of data.

@@ -1,14 +1,22 @@
 \chapter{Architecture Exploration}\label{models}
-This chapter presents the proposed neural network architectures. It starts with a baseline TNN network implemented in \texttt{PyTorch}, which then undergoes a series of hardware-aware adaptions specific to jet tagging. During this process two separate architectures are developed, which differ by the input type and design goal. The first one, referred to as the \textit{ultra-low latency} one, targets the HLF jet representation and aims to achieve the lowest possible latency at the cost of accuracy and AUC values. The second one, called \textit{accuracy-focused}, is based on the constituent list jet representation and trade-offs latency for quality of classification while still remaining within L1T timing constraints. In the end, the mechanism of quantization-aware training is explained, with a proposed way of implementing it in this project.
+This chapter presents the proposed neural network architectures. It starts with a baseline TNN implemented in \texttt{PyTorch}, which then undergoes a series of hardware-aware adaptions specific to jet tagging. During this process two separate architectures are developed, which differ by the input type and design goal. The first one, referred to as the \textit{ultra-low latency} one, targets the HLF jet representation and aims to achieve the lowest possible latency at the cost of accuracy and AUC values. The second one, called \textit{accuracy-focused}, is based on the constituent list jet representation and trade-offs latency for quality of classification while still remaining within L1T timing constraints. In the end, the mechanism of quantization-aware training is explained, with a proposed way of implementing it in this project.
 
+\begin{figure}[hpt!]
+  \centering
+  \includegraphics[trim={0cm 0cm 0cm 0cm}, width=0.8\textwidth, center]{models/architecture_exploration.pdf}
+  \caption{Flow diagram guiding the architecture exploration.}
+  \label{fig:architecture-exploration}
+\end{figure}
+
+The way of conducting the architecture exploration is shown in figure \ref{fig:architecture-exploration}. While targeted at low-latency transformer architectures, the described steps and findings of this chapter are applicable to any architecture search.
 
 \section{Base Architecture}
-The starting point of this analysis is derived from transformer architecture used in the original paper \cite{44-vaswani2017attention} and recent proof-of-concept used for jet tagging \cite{3-yuan2021constituentnet:}. The overview of the network components can be seen in figure \ref{fig:constituent-net}.
+The starting point of this analysis is derived from transformer architecture used in the original paper \cite{44-vaswani2017attention} and recent proof-of-concept used for jet tagging \cite{3-yuan2021msc}. The overview of the network components can be seen in figure \ref{fig:constituent-net}.
 
 \begin{figure}[hpt!]
   \centering
   \includegraphics[trim={0cm 0cm 0cm 0cm}, width=0.6\textwidth, center]{models/constituent_net.pdf}
-  \caption{Diagram with an overview of the baseline architecture.}
+  \caption{An overview of the baseline architecture.}
   \label{fig:constituent-net}
 \end{figure}
 
@@ -35,7 +43,7 @@ Along the embedding, an input encoding is concatenated and fed to the transforme
 Choosing a learned hidden state is also more efficient for inference in hardware, as the increased training cost associated with back-propagation of this parameter yields a constant set of values that are known during compile-time of the FPGA and can be implemented using a LUT.
 
 
-\subsection{Normalization and Parameter Extraction}
+\subsection{Normalization and Parameter Extraction}\label{model-normalization}
 As layer normalization does not track and gather running mean and variance statistics, this mechanism is implemented on top of the existing \texttt{PyTorch} implementation to facilitate extracting the aggregated statistics after training. These, along with all the learned weights and biases, are extracted and transformed into specific C++ formats supported in HLS using a custom tool developed for this purpose. This allows for directly initializing the FPGA's BRAMs and LUTs with the model parameters, which avoids the need for an interaction with a host machine.
 
 Obtaining the statistics taken for the data before normalization layers can also be viewed as a hardware-aware optimization. This can be explained with the mathematical derivation presented in equation \ref{eq:normalization-optimization}
@@ -44,12 +52,12 @@ Obtaining the statistics taken for the data before normalization layers can also
   y = \frac{x - E[x]}{\sqrt{Var[x] + \epsilon}} \cdot \gamma + \beta = x \cdot (\frac{\gamma}{\sqrt{Var + \epsilon}}) + (\beta - \frac{\gamma * E}{\sqrt{Var + \epsilon}}) = w \cdot x + b
 \end{equation}
 
-By treating the mean \(E[x]\) and variance \(Var[x]\) of input \(x\) as learned parameters, the square root and division operations can be fully omitted by fusing them into the existing \(\gamma\) and \(\beta\) parameters which simplifies the hardware required for the normalization layers. This is especially useful as FPGAs lack dedicated hardware for these computationally expensive operations, which could lead to suboptimal designs being synthesized. Independently of the implementation in this work, a similar idea has been proposed and successfully used as an optimization in the past \cite{46-fan2018real-time}.
+By treating the expected value \(E[x]\) and variance \(Var[x]\) of input \(x\) as learnable parameters, the square root and division operations can be fully omitted by fusing them into the existing \(\gamma\) and \(\beta\) parameters which simplifies the hardware required for the normalization layers. This is especially useful as FPGAs lack dedicated hardware for these computationally expensive operations, which could lead to suboptimal designs being synthesized. Independently of the implementation in this work, a similar idea has been proposed and successfully used as an optimization in the past \cite{46-fan2018real-time}.
 
 The algorithm behind the parameter extraction is rather simple, and the difficulty comes from the domain specific knowledge of handling \texttt{PyTorch} model parameters and generating the correct files for HLS. The break-down of the necessary steps can be seen in algorithm \ref{alg:parameter-extraction}.
 
 \begin{algorithm}
-  \caption{Mechanism behind model parameter extraction}\label{alg:parameter-extraction}
+  \caption{The mechanism behind model parameter extraction}\label{alg:parameter-extraction}
   \begin{algorithmic}[1]
     \State $state \gets $load\_state(model)
     \State sort($state$)
@@ -80,7 +88,7 @@ The first of the proposed architectures targets the HLF representation dataset, 
 The hypothesis leading the optimization process is that the HLF dataset can be learned by a relatively lower complexity network. The strategy is to start with the accuracy and AUC value of the base architecture and keep applying changes to the network as long as they do lead to significant drops in classification results, with detailed evaluation discussed in 
 \cref{evaluation}. Doing so is inherently beneficial for the later FPGA mapping, as even without hardware-aware changes, a simpler model is likely to require fewer resources and achieve lower latency.
 
-The architecture features that have the highest influence on the overall performance are the size of the latent dimension and number of transformer layer. In the case of the original transformer model \cite{44-vaswani2017attention}, 12 transformer layers are used, split equally into a decoder and encoder parts of the networks. This, along with latent dimension size of 512 shows that jet tagging requires significantly less complexity compared to natural language processing, as the recent ConstituentNet \cite{3-yuan2021constituentnet:} is based on only 3 transformer layers and embedded dimension of 64. However, as the latter network targets a more complex dataset, the first optimization performed in this project yielded a reduction to only a single transformer layer with latent size of 16. The network complexity is directly proportional to the number of layers, while the self-attention complexities shown in \cref{self-attention} can be simplified given the dimensions of \textit{queries}, \textit{keys}, and \textit{values} are shared and equal to \(\in \mathbb{R}^{N \times d}\) in this work, 
+The architecture features that have the highest influence on the overall performance are the size of the latent dimension and number of transformer layer. In the case of the original transformer model \cite{44-vaswani2017attention}, 12 transformer layers are used, split equally into a decoder and encoder parts of the networks. This, along with latent dimension size of 512 shows that jet tagging requires significantly less complexity compared to natural language processing, as the recent ConstituentNet \cite{3-yuan2021msc} is based on only 3 transformer layers and the embedded dimension of size 128. However, as the latter network targets a more complex dataset, the first optimization performed in this project yielded a reduction to only a single transformer layer with latent size of 16. The network complexity is directly proportional to the number of layers, while the self-attention complexities shown in \cref{self-attention} can be simplified given the dimensions of \textit{queries}, \textit{keys}, and \textit{values} are shared and equal to \(\in \mathbb{R}^{N \times d}\) in this work, 
 as shown in equation \ref{eq:qkv-complexity-time-simple} and \ref{eq:qkv-complexity-space-simple} for time and space respectively. It is worth mentioning that the shared dimension \(d\) is purposefully represented this way as it is equal to the model embedded dimension \(d\).
 
 \begin{equation}\label{eq:qkv-complexity-time-simple}
@@ -95,7 +103,7 @@ as shown in equation \ref{eq:qkv-complexity-time-simple} and \ref{eq:qkv-complex
 
 Another successful optimization was simplifying the SiLU to ReLU activations, as in hardware, the latter rely on a single comparator to determine whether to pass input to output directly or set the signal to zero. In contrary, SiLU requires computing the sigmoid function as well as performing a multiplication, which has a non-trivial cost on an FPGA.
 
-Interestingly, the layer normalization was first changed to batch normalization to simplify the tracking and embedding the running data statistics. This only leads to a marginal accuracy decrease, however, it is interesting to point out that so does removing the normalization layers from the design. This can be attributed to the "smoother" distribution of elements of the normalized HLF dataset, which tend to average around zero instead of taking values from a wide range as it is the case for the constituent list representation, shown in figure TODO\todo{reference figure from physics background when it is done}. Hence, the used dataset does not benefit from additional normalization, vastly simplifying the architecture.
+Interestingly, the layer normalization was first changed to batch normalization to simplify the tracking and embedding the running data statistics. This only leads to a marginal accuracy decrease, however, it is interesting to point out that so does removing the normalization layers from the design. This can be attributed to the fact that the HLF dataset is normalized during preprocessing, hence it does not benefit from additional normalization, vastly simplifying the architecture
 
 \subsection{Summary}
 The optimizations described in the previous subsection correspond to a noticeably simpler architecture, which can be seen in figure \ref{fig:constituent-net-simplified}. It is also worth mentioning that the simplifications targeted the components of the transformer block other than the multi-head self-attention block. This is a result of the used mechanism's key role in the learning process as well as the fact that it is difficult to modify it as it uses very basic components, and changing them would impact the underlying, commonly-approved function.
@@ -103,7 +111,7 @@ The optimizations described in the previous subsection correspond to a noticeabl
 \begin{figure}[hpt!]
   \centering
   \includegraphics[trim={0cm 0cm 0cm 0cm}, width=0.45\textwidth, center]{models/constituent_net_simplified.pdf}
-  \caption{Diagram with an overview of the ultra-low latency architecture.}
+  \caption{An overview of the novel arrangement of the ultra-low latency architecture.}
   \label{fig:constituent-net-simplified}
 \end{figure}
 
@@ -112,14 +120,14 @@ The optimizations described in the previous subsection correspond to a noticeabl
 The aim of the second architecture is to exploit a bigger design along with the more complex constituent list dataset to achieve a higher accuracy and AUC value that the ultra-low latency model while still meeting the latency constraints of L1T at LHC. In addition, this design undergoes a design space exploration to compare and reason about a number of existing and novel techniques.
 
 \subsection{Optimization and Tuning}
-Aside from the increase in computational complexity, the biggest difference caused by changing the datasets is the vastly different range and distribution of samples, showcased in figure TODO. While the network could perform normalization as its first layer, this approach was tested to significantly degrade the results quality. This is likely due to the fact that each samples' feature follows a distinct distribution and lays within a different range, so normalizing causes a loss in the carried information.
+Aside from the increase in computational complexity, the biggest difference caused by changing the datasets is the vastly different range and distribution of samples. While the network could perform normalization as its first layer, this approach was tested to significantly degrade the results quality. This is likely due to the fact that each samples' feature follows a distinct distribution and lays within a different range, so normalizing causes a loss in the carried information.
 
 Normalization and data distribution also need to be discussed for a different reason in the context of this architecture. The layer normalization layers present in the base design are not completely omitted this time, and instead changed to batch normalization. Although the layer normalization characteristic of not tracking running statistics and relying on per-layer normalization during evaluation can yield improvement to classification results, it is not a desired behavior for FPGA mapping due to the lack of hardware support for the square root and division operations. This could be resolved in an analogous way to batch norm by simply manually tracking the statistics, but this was experimentally proven to substantially affect the accuracy. What is more, the less clustered and more diverse distributions of constituent list dataset features lead to numerical instability in softmax calculations of the exponential function. Even though this was a marginal issue for the PyTorch implementation, it was quickly observed to drastically change the expected outcome of the early HLS prototype implementations. A solution to this issue lays in using additional normalization layers just before the self-attention softmax blocks, which not only solved this problem, but also very slightly increased the learning capacity of the network.
 
 \begin{figure}[hpt!]
   \centering
   \includegraphics[trim={0cm 0cm 0cm 0cm}, width=0.7\textwidth, center]{models/weight_merging.pdf}
-  \caption{Simple illustration for equivalency between matrix multiplication using merged and unmerged weights on the example of \textit{queries}, \textit{keys}, and \textit{values} used in self-attention.}
+  \caption{Simple illustration of equivalency between matrix multiplication using merged and unmerged weights on the example of \textit{queries}, \textit{keys}, and \textit{values} used in the self-attention layer.}
   \label{fig:weight-merging}
 \end{figure}
 
@@ -133,7 +141,7 @@ In this case, the resulting architecture is much more similar to the base one in
 \begin{figure}[hpt!]
   \centering
   \includegraphics[trim={0cm 0cm 0cm 0cm}, width=0.6\textwidth, center]{models/constituent_net_accuracy.pdf}
-  \caption{Diagram with an overview of the accuracy-focused architecture; the inclusion of batch normalization before softmax within the multi-head self-attention block is not showcased for the sake of clarity.}
+  \caption{An overview of the novel arrangement of the accuracy-focused architecture; the inclusion of batch normalization before softmax within the multi-head self-attention block is not showcased for the sake of clarity.}
   \label{fig:constituent-net-accuracy}
 \end{figure}
 
@@ -145,7 +153,7 @@ significantly smaller ones. This is the case when half (16 bits), single (32 bit
 \begin{figure}[hpt!]
   \centering
   \includegraphics[trim={0cm 0cm 0cm 0cm}, width=0.6\textwidth, center]{models/float_to_fixed.jpg}
-  \caption{Quantization noise from 32-bit floating-point to 3-bit (2-bit integer, 1-bit fractional) fixed-point representation; widths selected to highlight the behavior. Two methods of handling values outside representable range are showed: classic overflow as well as saturation to minimum or maximum value.}
+  \caption{Illustration of the quantization noise occurring in the conversion from a 32-bit floating-point to a 3-bit (2-bit integer, 1-bit fractional) fixed-point representation; widths selected to highlight the behavior. Two methods of handling values outside representable range are showed: classic overflow as well as saturation to minimum or maximum value.}
   \label{fig:float-to-fixed}
 \end{figure}
 
@@ -209,3 +217,7 @@ It is clear that each described solution comes with its own advantages and disad
 \end{figure}
 
 Figure \ref{fig:pre-training-quantization} showcases the designs resulting from quantizing a simple neural network using Brevitas and QPyTorch. The former approach relies on library-provided quantized variants of commonly found neural layers, and each can have its input's, output's and internal parameters' bit-width configured separately to one of the pre-defined types. This technique is more truthful to how FPGAs operate, but at the same time, more demanding in terms of implementation complexity than QPyTorch's one, which exploits the wide range of PyTorch's native layers and only requires custom quantizing blocks in between them. The latter is also slightly less computationally intensive, however both methods results in significantly longer training time than the floating-point representation due to the lack of support for fine-tuned, fixed-point GPU implementation of the network layers. It is also worth mentioning, that Brevitas offers a convenient way of exporting the quantized models to Xilinx hardware representations as well as external tool chains. Lastly, quantization is also proposed and discussed as a post-training mechanism in \cref{post-training-quantization}, with both approaches then evaluated and compared in \cref{evaluation}.
+
+\section{Summary}
+This chapter introduces an architecture search approach that is simpler than other existing solutions \cite{95-qi2021trim:} while generating models that exceed the latency estimations. This leads to the two models with inherent architectural differences caused by the initial design goals. The existing quantization-aware training frameworks are discussed in the hardware-aware context to justify the choice of the optimal tool, which is presented and backed with evaluation data in later chapters. The proposed optimizations are a result of a targeted exploration, but they are applicable to other designs in need of more efficient implementations, with the hardware mapping process described in the next chapter.
+

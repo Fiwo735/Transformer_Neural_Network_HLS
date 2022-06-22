@@ -19,6 +19,8 @@ Due to the scope of the project, there was no extensive hyperparameter search in
 
 The more complex of the discussed transformer architectures was not able to be synthesized as a pipelined design using HLS due to the inherent intricacy of generating pipelined models. The serial implementation offers an interesting trade-off of a design that runs slower but requires substantially less resources. However, many real-life applications operate under strict latency constraints, which could not be met due to the existing limitations of the HLS process and the fundamental issue of transformer's complexity.
 
+The HLF dataset includes features that are built upon the constituents from the second dataset. The literature is not clear about the complexity or details of this process. It is possible that the High-Level Features are not computed directly inside the detectors' infrastructure at LHC and instead should be considered as the first element of the classification's critical path. However, this work assumes that the HLF calculation overhead, while non-trivial, is negligible compared to the neural network inference latency.
+
 \section{Future Work}
 There are four main areas that our work could be expanded upon, which involve modifying the transformer layer, especially the self-attention mechanism, enhancing the post-training quantization method, adapting existing High-Level Synthesis optimization tools, and experimenting with other datasets.
 
@@ -35,24 +37,12 @@ There is an ongoing research into alternative transformer architectures, which i
 Aside from changes to self-attention, trained transformer models could be compressed using techniques like pruning to decrease the number of stored weights which can improve the inference speed and reduce hardware utilization. Additionally, the already optimized batch normalization layers could be further improved by fusing with linear layers to reduce the overall complexity. Finally, recent automatic methods of finding efficient transformer configurations \cite{83-tsai2020finding,84-su2021vitas:} could help with the hardware-aware architecture search challenge.
 
 \subsection{Post-Training Quantization Advancements}
-The proposed post-training quantization algorithm could base its resource estimations on an analytical model to achieve more accurate predictions without compromising the search time. A new metric of energy-consumption could also be taken into consideration to accommodate mobile or embedded platforms' limitations. In order to accelerate the search process while potentially improving its findings, the approach could also benefit from a faster simulation and awareness of tested configurations' positions with regard to the underlying Pareto front or Roofline Model.
+The proposed post-training quantization algorithm could base its resource estimations on an analytical model to achieve more accurate predictions without compromising the search time. A new metric of energy-consumption could also be taken into consideration to accommodate mobile or embedded platforms' limitations. In order to accelerate the search process while potentially improving its findings, the approach could also benefit from a faster simulation and awareness of tested configurations' positions with regard to the underlying Pareto front or Roofline model.
 
 \subsection{Automatic High-Level-Synthesis Optimizations}
 A recent High-Level Synthesis framework called ScaleHLS \cite{ye2021scalehls} promises to generate efficient RTL designs from HLS C++ or directly from PyTorch thanks to the use of optimizations at different levels of abstraction of the underlying Multi-Level Intermediate Representation (MLIR) \cite{mlir} used for PyTorch \cite{86-llvm2020torch-mlir}. This tool was explored during the project, but similarly to the discussed quantization-aware training methods, it does not support the self-attention layer in case of the direct PyTorch model optimization. As for trying it on the already developed HLS implementation, the size and the deep hierarchy involved in this work exceeds the complexity that ScaleHLS can handle. Nonetheless, further improvements might allow this framework to reduce the development time between designing a transformer architecture using \hlsml and testing its hardware implementation, supporting the objective of this work.
 
 \subsection{Other Datasets}
-Both of the datasets used in this project involve classification of five jet categories. However, other examples in the literature often discuss problems with fewer categories, for instance top-tagging, which is an approach to identifying top quarks. Simpler problems are likely to require less complex architectures - an area of the design space that this work proves to be optimal for transformers.
+Both of the datasets used in this project involve classification of five jet categories. However, other examples in the literature often discuss problems with fewer categories, for instance top-tagging, which is an approach to identifying top quarks. Simpler problems are likely to require less complex architectures - an area of the design space that this work proves to be optimal for transformers. On the other hand, experiments that aim to validate extensions to the Standard Model might require different jet categories. A good example is a new neural network architecture targeted at long-lived particles \cite{93-apresyan2019deep}.
 
-%//////////////////////////////////////////////////////
-% at the end, CHECK:
-% hyphens,
-% 3rd person s in verbs,
-% remaining todos,
-% ugly page breaks,
-% axis and titles in figures,
-% correct some references to evaluation to be more specific (find all of them),
-% change explanation in (brackets) to footnotes (always?),
-% ensure no pre-training quantization but quantization-aware training,
-% ensure network names like CNN, TNN are used consistently + no capital letters in convolutional nn, transformer nn,
-% check if all hlsml is use with \command
-% make all itemize lists use bolded : instead - 
+It is also possible for future models to benefit from continual learning algorithms, meaning that they could learn from the continuous data stream generated at LHC, instead of relying on simulated or past datasets. This could be supported by a new continual learning library \cite{92-lomonaco2021avalanche:} to accommodate the infrastructure's improvements from the recently started third operational round at LHC.
