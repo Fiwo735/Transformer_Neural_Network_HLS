@@ -78,7 +78,7 @@ The resulting hardware operations are depicted in figure \ref{fig:log-softmax-op
 \end{figure}
 
 \clearpage
-Although further simplifications, including approximating the summation by finding the maximum (see equation \ref{eq:log-softmax-max}) or simply omitting the logarithm portion of the expression, were also explored, they noticeably lowered the final accuracy and were thus abandoned. \todo{Confirm if page breaks correctly.}
+Although further simplifications, including approximating the summation by finding the maximum (see equation \ref{eq:log-softmax-max}) or simply omitting the logarithm portion of the expression, were also explored, they noticeably lowered the final accuracy and were thus abandoned.
 
 \begin{equation} \label{eq:log-softmax-max}
     \log (\sigma (x_i)) = e^{x_i} - \log(\sum_{j=1}^{N} e^{x_j}) = e^{x_i} - \sum_{j=1}^{N} \log(e^{x_j}) = e^{x_i} - \sum_{j=1}^{N} x_j \approx e^{x_i} - \max(x)
@@ -101,7 +101,7 @@ A visualization of the architecture annotated with the pipeline stages can be se
 
 \begin{figure}[hpt!]
   \centering
-  \includegraphics[trim={0cm 0cm 0cm 0cm}, width=1.0\textwidth, center]{quantization/pipelining_stages.pdf}
+  \includegraphics[trim={0cm 0cm 0cm 0cm}, width=0.9\textwidth, center]{quantization/pipelining_stages.pdf}
   \caption{Ultra-low latency architecture with highlighted pipeline stages. Not annotated blocks share stage with their neighbors.}
   \label{fig:pipeline-stages}
 \end{figure}

@@ -1,7 +1,7 @@
 \chapter{Introduction}\label{introduction}
 
 \section{Motivation}\label{motivation}
-LHC is the world's highest-energy particle collider that is capable of producing and detecting the heaviest types of particles that emerge from events such as proton-proton collisions. The detection is a challenging process as some particles, like quarks and gluons, cannot exist on their own, and they nearly instantly combine which results in collimated sprays of composite particles (hadrons) that are referred to as jets \cite{4-cernjets}. The initial particles created upon collision and their behaviors are of main interest of the physicists, which leads to jet tagging - the challenge of associating particle jets with their origin.
+LHC is the world's highest-energy particle collider that is capable of producing and detecting the heaviest types of particles that emerge from events such as proton-proton collisions. The detection is a challenging process as some particles, like quarks and gluons, cannot exist on their own, and they nearly instantly combine which results in collimated sprays of composite particles (hadrons) that are referred to as jets \cite{4-cernjets}. The initial particles created upon collision and their behaviors are of main interest of physicists, leading to jet tagging - the challenge of associating particle jets with their origin.
 
 There are many detector types used for the analysis of the particle collisions, each based on a different physical phenomenon, which results in availability of both higher and lower level features from each event. The former have been successfully used in the past using more physically motivated machine learning (ML) algorithms, e.g. using computer vision \cite{5-cogan2015jet-images:}. However, more recently, various deep learning approaches have proven to outperform their predecessors \cite{6-de2016jet-images}. It has also been found that all the detected features carry the same underlying information, with convolutional neural networks trained on higher-level data achieving nearly identical accuracy as dense neural networks trained on the data from the other end of the spectrum \cite{7-moore2019reports}.
 
@@ -9,7 +9,7 @@ The information throughput of Petabytes per second collected by the LHC detector
 
 
 \section{Objectives and Challenges}
-The purpose of this project is to develop novel, hardware-aware neural network architectures as well as to establish efficient ways mapping them onto FPGAs. Another objective is to use metaprogramming strategies to integrate them into the \textit{hls4ml} library or standalone tools, with various optimizations approaches that offer trade-offs between latency, throughput and hardware resources usage. Hence, there is an emphasis on creating parametrizable and reusable designs that can support creation of ultra-low latency systems, effectively transforming proof-of-concept implementations into optimized hardware accelerators.
+The purpose of this project is to develop novel, hardware-aware neural network architectures as well as to establish efficient ways mapping them onto FPGAs. Another objective is to use metaprogramming strategies to integrate them into the \hlsml library or standalone tools, with various optimizations approaches that offer trade-offs between latency, throughput and hardware resources usage. Hence, there is an emphasis on creating parametrizable and reusable designs that can support creation of ultra-low latency systems, effectively transforming proof-of-concept implementations into optimized hardware accelerators.
 
 The two main challenges of the project involve:
 
@@ -20,21 +20,21 @@ The two main challenges of the project involve:
 
 
 \section{Contributions and Publication}
-The project aims to benefit the open-source community of ML practitioners and researches that are in need of faster and more parametrizable neural network inference. The main audience for that operation are particle physicists, nonetheless, the hope is for the work to positively contribute many ML fields by offering a reliable tool for acceleration of existing designs and providing a useful resource for learning about the nature of reconfigurable hardware and its optimization potential.
+The project aims to benefit the open-source community of ML practitioners and researchers that are in need of faster and more parametrizable neural network inference. The main audience for that operation are particle physicists, nonetheless, the hope is for the work to positively contribute many ML fields by offering a reliable tool for acceleration of existing designs and providing a useful resource for learning about the nature of reconfigurable hardware and its optimization potential.
 
-The novel aspects proposed in this work can be summarized as follows, with the first two addressing challenge \textbf{C1}, and the latter challenge \textbf{C2}:
+The novel aspects proposed in this work can be summarized as follows, with the first two points addressing challenge \textbf{C1}, and the other two points challenge \textbf{C2}:
 
 \begin{itemize}
-  \item \textbf{Hardware-Aware Network Optimizations}: Two novel architectures are designed with hardware in mind, exploiting the target hardware platform to achieve cutting-edge latency and accuracy.
+  \item \textbf{Hardware-Aware Design}: Two novel transformer architectures are designed with hardware in mind, exploiting the target hardware platform to achieve cutting-edge latency and accuracy.
   
   \item \textbf{Efficient Hardware Implementation}: \hlsml codesign workflow is extended with a number of complex neural network layers that benefit from a range of optimization techniques.
   
-  \item \textbf{Quantization-Aware Transformer Neural Training}: Several available solutions are surveyed and described, and the best one in terms of applicability to state-of-the-art neural network designs is selected and adapted to Transformer Neural Networks.
+  \item \textbf{Quantization-Aware Training}: Several available solutions are surveyed and described, and the best one in terms of applicability to state-of-the-art neural network designs is selected and adapted to transformer neural networks.
   
-  \item \textbf{Custom Post-Training Quantization}: A custom tool is proposed that finds the optimal set of bit-widths for a High-Level Synthesis model according to used-defined constraints.
+  \item \textbf{Post-Training Quantization Search}: A custom algorithm is proposed that finds the optimal set of bit-widths for a High-Level Synthesis model according to used-defined constraints.
 \end{itemize}
 
-The bulk of the work and analysis conducted in this project was summarized in the paper "Accelerating Transformer Neural Networks on FPGAs for High Energy Physics Experiments" and submitted in the long paper category to the \textit{18\textsuperscript{th} International Symposium on Applied Reconfigurable Computing}. A journal article derived from this project is being prepared for publication.
+The bulk of the work and analysis conducted in this project were summarized in the paper "Accelerating Transformer Neural Networks on FPGAs for High Energy Physics Experiments" and submitted in the long paper category to the \textit{18\textsuperscript{th} International Symposium on Applied Reconfigurable Computing}. A journal article derived from this project is being prepared for publication.
 
 \section{Report Outline}
-This report begins by discussing the necessary particle physics background to understand the scope of the work, followed by the related work in the field of machine learning, with an emphasis on the state-of-the-art architectures, and a deeper dive into the reconfigurable hardware technology in \cref{background}. Then in \cref{models}, the two proposed novel neural network architectures are described in details, including the necessary training and processing steps. After that, \cref{quantization} covers both the existing and custom ways of conducting design space exploration and how they were applies in this project. \Cref{evaluation} discusses the evaluation metrics and collected experimental results, which is concluded by \cref{conclusion}, which also proposes future work derived from this analysis. \todo{Confirm at the end if the sections are still as described here}
+This report begins by discussing the necessary particle physics background to understand the scope of the work, followed by the related work in the field of machine learning, with an emphasis on the state-of-the-art architectures, and a deeper dive into the reconfigurable hardware technology in \cref{background}. Then in \cref{models}, the two proposed novel neural network architectures are described in details, including the necessary training and processing steps as well the quantization-aware training. After that, \cref{quantization} covers the hardware implementation of the architectures, provides analytical models for latency and hardware usage, and described the novel post-training quantization algorithm. \Cref{evaluation} discusses the evaluation metrics and collected experimental results, which is concluded by \cref{conclusion}, which also proposes future work that extends upon this analysis.
