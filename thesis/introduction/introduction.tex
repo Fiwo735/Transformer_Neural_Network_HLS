@@ -1,7 +1,7 @@
 \chapter{Introduction}\label{introduction}
 
 \section{Motivation}\label{motivation}
-LHC is the world's highest-energy particle collider that is capable of producing and detecting the heaviest types of particles that emerge from events such as proton-proton collisions. The detection is a challenging process as some particles, like quarks and gluons, cannot exist on their own, and they nearly instantly combine which results in collimated sprays of composite particles (hadrons) that are referred to as jets \cite{4-cernjets}. The initial particles created upon collision and their behaviors are of main interest of the physicists, which leads to jet tagging - the challenge of associating particle jets with their origin.
+LHC is the world's highest-energy particle collider that is capable of producing and detecting the heaviest types of particles that emerge from events such as proton-proton collisions. The detection is a challenging process as some particles, like quarks and gluons, cannot exist on their own, and they nearly instantly combine which results in collimated sprays of composite particles (hadrons) that are referred to as jets \cite{4-cernjets}. The initial particles created upon collision and their behaviors are of main interest of physicists, leading to jet tagging - the challenge of associating particle jets with their origin.
 
 There are many detector types used for the analysis of the particle collisions, each based on a different physical phenomenon, which results in availability of both higher and lower level features from each event. The former have been successfully used in the past using more physically motivated machine learning (ML) algorithms, e.g. using computer vision \cite{5-cogan2015jet-images:}. However, more recently, various deep learning approaches have proven to outperform their predecessors \cite{6-de2016jet-images}. It has also been found that all the detected features carry the same underlying information, with convolutional neural networks trained on higher-level data achieving nearly identical accuracy as dense neural networks trained on the data from the other end of the spectrum \cite{7-moore2019reports}.
 
@@ -9,7 +9,7 @@ The information throughput of Petabytes per second collected by the LHC detector
 
 
 \section{Objectives and Challenges}
-The purpose of this project is to develop novel, hardware-aware neural network architectures as well as to establish efficient ways mapping them onto FPGAs. Another objective is to use metaprogramming strategies to integrate them into the \textit{hls4ml} library or standalone tools, with various optimizations approaches that offer trade-offs between latency, throughput and hardware resources usage. Hence, there is an emphasis on creating parametrizable and reusable designs that can support creation of ultra-low latency systems, effectively transforming proof-of-concept implementations into optimized hardware accelerators.
+The purpose of this project is to develop novel, hardware-aware neural network architectures as well as to establish efficient ways mapping them onto FPGAs. Another objective is to use metaprogramming strategies to integrate them into the \hlsml library or standalone tools, with various optimizations approaches that offer trade-offs between latency, throughput and hardware resources usage. Hence, there is an emphasis on creating parametrizable and reusable designs that can support creation of ultra-low latency systems, effectively transforming proof-of-concept implementations into optimized hardware accelerators.
 
 The two main challenges of the project involve:
 
@@ -20,7 +20,7 @@ The two main challenges of the project involve:
 
 
 \section{Contributions and Publication}
-The project aims to benefit the open-source community of ML practitioners and researches that are in need of faster and more parametrizable neural network inference. The main audience for that operation are particle physicists, nonetheless, the hope is for the work to positively contribute many ML fields by offering a reliable tool for acceleration of existing designs and providing a useful resource for learning about the nature of reconfigurable hardware and its optimization potential.
+The project aims to benefit the open-source community of ML practitioners and researchers that are in need of faster and more parametrizable neural network inference. The main audience for that operation are particle physicists, nonetheless, the hope is for the work to positively contribute many ML fields by offering a reliable tool for acceleration of existing designs and providing a useful resource for learning about the nature of reconfigurable hardware and its optimization potential.
 
 The novel aspects proposed in this work can be summarized as follows, with the first two points addressing challenge \textbf{C1}, and the other two points challenge \textbf{C2}:
 

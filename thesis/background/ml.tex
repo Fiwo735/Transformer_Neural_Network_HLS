@@ -11,14 +11,13 @@ There are several key metrics used for assessing the success of an ML algorithm,
   \item \textbf{Confusion matrix} - a tabular metric that compares the actual samples' classes with the predicted ones, effectively categorizing results into four groups: true positive, false positive, false negative, and true negative. This allows for an easy calculation of precision and recall values.
 \end{itemize}
 
-\indo{Give equations for TPR, FPR, AUC etc.}
-\indo{Explain when accuracy is not enough and AUC and confusion matrix gives a better picture}
+Let's consider an unbalanced dataset where a classifier always selects the most common class. This is clearly a poor choice of a classification method, however it is likely to yield high accuracy, obfuscating the actual classifier's performance. AUC considers the true positive rates across the whole range of false positive rates, which solves that problem while also offering a more comprehensive view of the results. Confusion matrix can be used for finding classes that get confused with each other, highlighting the areas which the classifier should be improved in.
 
 
 \subsection{Deep Neural Networks}
 While there exist a number of ML techniques that have proven successful for various use cases at LHC, like Support Vector Machines \cite{38-valentino2012classification} or Boosted Decision Trees \cite{pmlr-v42-chen14}, in the last years deep neural networks (DNN) have been proposed with improved results for applications like infrastructure monitoring \cite{39-skoczen2016lstm}, offline data analysis \cite{40-ren2020unveiling}, and the main interest of this report - detectors' trigger mechanisms.
 
-In many uses cases the neural networks architectures are optimized and accelerated to shorten the training time (measured in hours or even days) to reduce the time needed for evaluating different design configurations and easily performing the hyperparameter search. However, this work focuses on accelerating the inference to match the extremely low latency required in the LHC detectors' L1 triggers. Although often measured in milliseconds, sub-milliseconds inference time has been achieved for this application with the use of FPGAs using architectures for basic DNN \cite{36-kreinar2018fast}, and recently sub-microseconds latency for graph neural networks (GNN) \cite{42-kreinar2020distance-weighted, 41-elabd2021graph}. These implementations serve as a baseline latency for this project which aims to achieve comparable performance with higher AUC value.
+In many use cases the neural networks architectures are optimized and accelerated to shorten the training time (measured in hours or even days) to reduce the time needed for evaluating different design configurations, and easily performing the hyperparameter search. However, this work focuses on accelerating the inference to match the extremely low latency required in the LHC detectors' L1 triggers. Although often measured in milliseconds, sub-milliseconds inference time has been achieved for this application with the use of FPGAs using architectures for basic DNN \cite{36-kreinar2018fast}, and recently sub-microseconds latency for graph neural networks (GNN) \cite{42-kreinar2020distance-weighted, 41-elabd2021graph}. These implementations serve as a baseline latency for this project which aims to achieve comparable performance with higher AUC value.
 
 \begin{figure}[hpt!]
   \centering
@@ -52,28 +51,13 @@ or more complicated like the Sigmoid Linear Unit (SiLU), based on the sigmoid fu
 
 As layers are tightly connected to each other, this type of neural layer is often referred to as \textit{fully connected} or \textit{linear}. It requires a relatively large number of separate weights and biases, which makes it both computationally and memory intensive, but nonetheless, modern network architectures can have dozens of these layers, not to mention plethora of other types.
 
+Since the invention of deep neural networks, countless other network classes have been developed. The list below gives a brief explanation of those that have been experimented with for jet-tagging.
 
-\subsection{Convolutional Neural Networks}
-\indo{Quick introduction and visualization of CNNs as other notable jet-tagging algorithms use them and are mentioned in this report}
-\indo{|}
-\indo{|}
-\indo{|}
-\indo{|}
-\indo{|}
-
-
-\subsection{Graph and Recurrent Neural Networks}
-\indo{Quick introduction and visualization of graph and recurrent (including GRU and LSTM) NNs as other notable jet-tagging algorithms use them and are mentioned in this report}
-\indo{|}
-\indo{|}
-\indo{|}
-\indo{|}
-\indo{|}
-\indo{|}
-\indo{|}
-\indo{|}
-\indo{|}
-\indo{|}
+\begin{itemize}
+  \item \textbf{Convolutional Neural Networks (CNNs)}: TODO
+  \item \textbf{Graph Neural Networks (GNNs)}: 
+  \item \textbf{Recurrent Neural Networks (RNNs)}: GRU, LSTM
+\end{itemize}
 
 \subsection{Batch and Layer Normalization}
 \indo{Batch norm vs layer norm as both are used in the architecture}
@@ -103,7 +87,7 @@ Softmax can be described as mapping a vector to a ratio between each input's exp
   \label{fig:self-attention-multi-head}
 \end{figure}
 
-A diagram representing the initial implementation of the self-attention can be seen on the left in figure \ref{fig:self-attention-multi-head}. The \textit{Q}, \textit{K}, and \textit{V} stand for \textit{queries}, \textit{keys}, and \textit{values} respectively, which although arbitrary, are meant to give a better understanding behind the idea of this mechanism. It is also important to note, that multiple blocks of self-attention, referred to as \textit{heads}, can be used together, which allows for each head attending information about a different hidden characteristic of an input. The results of all heads are simply concatenated, increasing output's dimensionality, and multiplied with a learned weight, as seen on the right in figure \ref{fig:self-attention-multi-head}. To better comprehend the interactions between information learned by the heads, figure \ref{fig:1-2-8-heads} shows a visualization for 1, 2 and 8 heads on an example sentence, obtained using Tensor2Tensor library \cite{tensor2tensor,73-alammarillustrated}. While it is quite clear in the example that "it" is mostly associated with "The" and "animal" with 1 attention head, the interpretability is worse in case of 2 and 8 attention heads.
+A diagram representing the initial implementation of the self-attention can be seen on the left in figure \ref{fig:self-attention-multi-head}. The \textit{Q}, \textit{K}, and \textit{V} stand for \textit{queries}, \textit{keys}, and \textit{values} respectively, which although arbitrary, are meant to give a better understanding behind the idea of this mechanism. It is also important to note that multiple blocks of self-attention, referred to as \textit{heads}, can be used together, which allows for each head attending information about a different hidden characteristic of an input. The results of all heads are simply concatenated, increasing output's dimensionality, and multiplied with a learned weight, as seen on the right in figure \ref{fig:self-attention-multi-head}. To better comprehend the interactions between information learned by the heads, figure \ref{fig:1-2-8-heads} shows a visualization for 1, 2 and 8 heads on an example sentence, obtained using Tensor2Tensor library \cite{tensor2tensor,73-alammarillustrated}. While it is quite clear in the example that "it" is mostly associated with "The" and "animal" with 1 attention head, the interpretability is worse in case of 2 and 8 attention heads.
 
 \begin{figure}[!hpt]
   \centering
